@@ -234,7 +234,7 @@
                                            v-text="errors.soap_type_id[0]"></small>
                                 </div>
                             </div>
-                            <div v-if="form.soap_type_id != '03'"
+                            <div v-if="form.soap_send_id != '03'"
                                  class="col-md-6">
                                 <div :class="{'has-danger': errors.soap_send_id}"
                                      class="form-group">
@@ -301,8 +301,8 @@
                                 </div>
                             </div>
                         </div>
-
-                        <template v-if="form.soap_type_id == '02'">
+                        <!--JOINSOFTWARE-->
+                        <template v-if="form.soap_type_id == '02' && form.soap_send_id != '03'">
                             <div class="row">
                                 <div class="col-md-12 mt-2">
                                     <h4 class="border-bottom">Consulta integrada de CPE - Validador de documentos

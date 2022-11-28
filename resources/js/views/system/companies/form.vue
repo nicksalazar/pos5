@@ -37,6 +37,7 @@
                             </div>
                         </div>
                     </div>
+                    <!--JOINSOFTWARE-->
                     <template v-if="form.soap_type_id == '02' && form.soap_send_id != '03' || toggle == true">
                         <div class="row" >
                             <div class="col-md-12 mt-2">

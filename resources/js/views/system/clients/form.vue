@@ -445,7 +445,9 @@
                                 </div>
                             </div>
                         </div>
-                        <template v-if="form.soap_type_id == '02' && form.soap_send_id != '03' || toggle == true">
+                        
+                        <!--JOINSOFTWARE-->
+                        <template v-if="form.soap_type_id == '02' && form.soap_send_id != '03' || toggle == true && form.soap_send_id != '03'">
                             <div class="row">
                                 <div class="col-md-12 mt-2">
                                     <h4 class="border-bottom">

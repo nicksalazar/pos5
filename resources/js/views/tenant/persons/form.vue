@@ -129,7 +129,8 @@
                                            v-text="errors.credit_days[0]"></small>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <!--JOINSOFTWARE-->
+                            <div class="col-md-3" hidden>
                                 <div :class="{'has-danger': errors.internal_code}"
                                      class="form-group">
                                     <label class="control-label">Código interno</label>
@@ -158,7 +159,8 @@
                                            v-text="errors.person_type_id[0]"></small>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <!--JOINSOFTWARE-->
+                            <div class="col-md-3" hidden>
                                 <div :class="{'has-danger': errors.barcode}"
                                      class="form-group">
                                     <label class="control-label">Código de barra</label>

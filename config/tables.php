@@ -15,6 +15,7 @@ return [
         'soap_sends' => [
             '01' => 'Sunat',
             '02' => 'Ose',
+            '03' => 'Sri',
         ],
         'soap_types' => [
             '01' => 'Demo',

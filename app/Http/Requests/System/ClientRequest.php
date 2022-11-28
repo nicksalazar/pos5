@@ -48,17 +48,20 @@ class ClientRequest extends FormRequest
             'soap_type_id' => [
                 'required',
             ],
+            //JOINSOFTWARE//
             'soap_username' => [
-                'required_if:soap_type_id,"02"'
+                'required_if:soap_send_id,"02","01"',
+                //'required_if:soap_type_id,"02"'
+                
             ],
             'soap_password' => [
-                'required_if:soap_type_id,"02"'
+                'required_if:soap_send_id,"01","02"',
+                //'required_if:soap_type_id,"02"'
+                
             ],
             'soap_url' => [
-                'required_if:soap_send_id,"02"'
-            ],
-
-
+                'required_if:soap_send_id,"02"',
+            ]
         ];
     }
 
