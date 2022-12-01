@@ -2986,9 +2986,10 @@ export default {
         },
         filterCustomers() {
             if (['0101', '1001', '1004'].includes(this.form.operation_type_id)) {
-
+                //JOINSOFTWARE
                 if (this.form.document_type_id === '01') {
                     this.customers = _.filter(this.all_customers, {'identity_document_type_id': '6'})
+                    //this.customers = this.all_customers               
                 } else {
                     if (this.document_type_03_filter) {
                         this.customers = _.filter(this.all_customers, (c) => {

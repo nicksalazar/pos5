@@ -3320,8 +3320,9 @@ export default {
                             this.form.customer_id = null
                         }
                     }
-
-                    this.customers = _.filter(this.all_customers, {'identity_document_type_id': '6'})
+                    //JOINSOFTWARE//
+                    this.customers = _.filter(this.all_customers, {'identity_document_type_id': ['6','1']})
+                    //this.customers = this.all_customers              
                 } else {
                     if (this.document_type_03_filter) {
                         this.customers = _.filter(this.all_customers, (c) => {

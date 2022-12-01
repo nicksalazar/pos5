@@ -632,8 +632,10 @@
             filterCustomers() {
                 
                 // this.form.customer_id = null
-                if(this.form.document_type_id === '01') {
+                //JOINSOFTWARE FILTER
+                if (this.form.document_type_id === '01') {
                     this.customers = _.filter(this.all_customers, {'identity_document_type_id': '6'})
+                    //this.customers = this.all_customers
                 } else {
                     if(this.document_type_03_filter) {
                         this.customers = _.filter(this.all_customers, (c) => { return c.identity_document_type_id !== '6' })

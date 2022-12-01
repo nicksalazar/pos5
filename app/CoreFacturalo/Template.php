@@ -26,9 +26,9 @@ class Template
         return self::preprintedrender($path_template, $company);
     }
 
-    public function xml($template, $company, $document)
+    public function xml($template, $company, $document, $clave_acceso)
     {
-        return self::render2('xml.'.$template, $company, $document);
+        return self::render2('xml.'.$template, $company, $document, $clave_acceso);
     }
     //JOINSOFTWARE//
     private function render2($view, $company, $document, $clave_acceso)

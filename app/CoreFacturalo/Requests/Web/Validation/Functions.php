@@ -118,9 +118,9 @@ class Functions
         $person = Person::find($inputs['customer_id']);
 
         if($person){
-
+            //JOINSOFTWARE TIPO DOC//
             if (($inputs['operation_type_id'] == '0101')) {
-                if (($inputs['document_type_id'] == '01')) { 
+                if (($inputs['document_type_id'] == '')) { 
                     if (!in_array($person->identity_document_type_id, ['6'], true)) throw new Exception("El tipo doc. identidad {$person->identity_document_type->description} del cliente no es válido.");
                 }
             }
@@ -130,6 +130,14 @@ class Functions
             //         throw new Exception("El tipo doc. identidad {$person->identity_document_type->description} del cliente no es válido.");
             //     }
             // }
+
+            if ($inputs['document_type_id'] === '00') {
+                if ($inputs['total'] >= 50) {
+                    if (in_array($person->identity_document_type_id, ['0'], true)) {
+                        throw new Exception("No se puden emitir facturas a consumirdor final con un valor mayor a 50$");
+                    }
+                }
+            }
 
             if ($inputs['document_type_id'] === '03') {
                 if ($inputs['total'] >= 700) {
