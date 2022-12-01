@@ -5,7 +5,7 @@
     $document_base = ($document->note) ? $document->note : null;
 
     //$path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
-    $document_number = $document->series.'-'.str_pad($document->number, 8, '0', STR_PAD_LEFT);
+    $document_number = $establishment->code.''.substr($document->series,1,3).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
     $accounts = \App\Models\Tenant\BankAccount::where('show_in_documents', true)->get();
 
     if($document_base) {
@@ -90,7 +90,18 @@
         </td>
     </tr>
 </table>
+
 <table class="full-width mt-5">
+    <tr>
+        <td width="120px">CLAVE ACCESO</td>
+        <td width="8px">:</td>
+        <td>{{$document->clave_SRI}}</td>
+    </tr>
+    <tr>
+        <td width="120px">FEHA AUTORIZADO</td>
+        <td width="8px">:</td>
+        <td>{{$document->date_authorization $document->time_authorization}}</td>
+    </tr>
     <tr>
         <td width="120px">FECHA DE EMISIÓN</td>
         <td width="8px">:</td>
@@ -101,6 +112,7 @@
             <td width="120px">N. CTA DETRACCIONES</td>
             <td width="8px">:</td>
             <td>{{ $document->detraction->bank_account}}</td>
+            
         @endif
     </tr>
     @if($invoice)
@@ -232,41 +244,26 @@
 </table>
 
 
-{{--@if ($document->retention)--}}
-{{--    <table class="full-width mt-3">--}}
-{{--        <tr>--}}
-{{--            <td colspan="3">--}}
-{{--                <strong>Información de la retención</strong>--}}
-{{--            </td>--}}
-{{--        </tr>--}}
-{{--        <tr>--}}
-{{--            <td width="120px">Base imponible</td>--}}
-{{--            <td width="8px">:</td>--}}
-{{--            <td>{{ $document->currency_type->symbol}} {{ $document->retention->base }}</td>--}}
-
-{{--            <td width="80px">Porcentaje</td>--}}
-{{--            <td width="8px">:</td>--}}
-{{--            <td>{{ $document->retention->percentage * 100 }}%</td>--}}
-{{--        </tr>--}}
-{{--        <tr>--}}
-{{--            <td width="120px">Monto</td>--}}
-{{--            <td width="8px">:</td>--}}
-{{--            <td>{{ $document->currency_type->symbol}} {{ $document->retention->amount }}</td>--}}
-{{--        </tr>--}}
-{{--    </table>--}}
-{{--@endif--}}
-
-
-@if ($document->isPointSystem())
+@if ($document->retention)
     <table class="full-width mt-3">
         <tr>
-            <td width="120px">P. ACUMULADOS</td>
+            <td colspan="3">
+                <strong>Información de la retención</strong>
+            </td>
+        </tr>
+        <tr>
+            <td width="120px">Base imponible</td>
             <td width="8px">:</td>
-            <td>{{ $document->person->accumulated_points }}</td>
+            <td>{{ $document->currency_type->symbol}} {{ $document->retention->base }}</td>
 
-            <td width="140px">PUNTOS POR LA COMPRA</td>
+            <td width="80px">Porcentaje</td>
             <td width="8px">:</td>
-            <td>{{ $document->getPointsBySale() }}</td>
+            <td>{{ $document->retention->percentage * 100 }}%</td>
+        </tr>
+        <tr>
+            <td width="120px">Monto</td>
+            <td width="8px">:</td>
+            <td>{{ $document->currency_type->symbol}} {{ $document->retention->amount }}</td>
         </tr>
     </table>
 @endif
@@ -345,19 +342,11 @@
 </table>
 @endif
 
-@if ($document->dispatch)
-    <br/>
-    <strong>Guías de remisión</strong>
-    <table>
-        <tr>
-            <td>{{ $document->dispatch->number_full }}</td>
-        </tr>
-    </table>
 
-@elseif ($document->reference_guides)
+@if ($document->reference_guides)
     @if (count($document->reference_guides) > 0)
     <br/>
-    <strong>Guías de remisión</strong>
+    <strong>Guias de remisión</strong>
     <table>
         @foreach($document->reference_guides as $guide)
             <tr>
@@ -425,13 +414,6 @@
         <td>DESCRIPCIÓN</td>
         <td>:</td>
         <td>{{ $document_base->note_description }}</td>
-    </tr>
-    @endif
-    @if($document->folio)
-    <tr>
-        <td>FOLIO</td>
-        <td>:</td>
-        <td>{{ $document->folio }}</td>
     </tr>
     @endif
 </table>
@@ -516,11 +498,6 @@
                     @endforeach
                 @endif
 
-                @if($row->item->used_points_for_exchange ?? false)
-                    <br>
-                    <span style="font-size: 9px">*** Canjeado por {{$row->item->used_points_for_exchange}}  puntos ***</span>
-                @endif
-
                 @if($document->has_prepayment)
                     <br>
                     *** Pago Anticipado ***
@@ -549,7 +526,7 @@
             @else
                 <td class="text-right align-top">{{ number_format($row->unit_price, 2) }}</td>
             @endif
-
+            
             <td class="text-right align-top">
                 @if($row->discounts)
                     @php
@@ -621,14 +598,14 @@
         @if ($document->document_type_id === '07')
             @if($document->total_taxed >= 0)
             <tr>
-                <td colspan="8" class="text-right">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
-                <td class="text-right">{{ number_format($document->total_taxed, 2) }}</td>
+                <td colspan="8" class="text-right font-bold">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
+                <td class="text-right font-bold">{{ number_format($document->total_taxed, 2) }}</td>
             </tr>
             @endif
         @elseif($document->total_taxed > 0)
             <tr>
-                <td colspan="8" class="text-right">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
-                <td class="text-right">{{ number_format($document->total_taxed, 2) }}</td>
+                <td colspan="8" class="text-right font-bold">BASE IMPONIBLE: {{ $document->currency_type->symbol }}</td>
+                <td class="text-right font-bold">{{ number_format($document->total_taxed, 2) }}</td>
             </tr>
         @endif
 
@@ -639,8 +616,8 @@
             </tr>
         @endif
         <tr>
-            <td colspan="8" class="text-right">IGV: {{ $document->currency_type->symbol }}</td>
-            <td class="text-right">{{ number_format($document->total_igv, 2) }}</td>
+            <td colspan="8" class="text-right font-bold">IVA: {{ $document->currency_type->symbol }}</td>
+            <td class="text-right font-bold">{{ number_format($document->total_igv, 2) }}</td>
         </tr>
 
         @if($document->total_isc > 0)
@@ -686,7 +663,7 @@
 
         @if($document->perception)
             <tr>
-                <td colspan="8" class="text-right font-bold">IMPORTE TOTAL: {{ $document->currency_type->symbol }}</td>
+                <td colspan="8" class="text-right font-bold"> IMPORTE TOTAL: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold">{{ number_format($document->total, 2) }}</td>
             </tr>
             <tr>
@@ -694,26 +671,12 @@
                 <td class="text-right font-bold">{{ number_format($document->perception->amount, 2) }}</td>
             </tr>
             <tr>
-                <td colspan="8" class="text-right font-bold">TOTAL A PAGAR: {{ $document->currency_type->symbol }}</td>
+                <td colspan="8" class="text-right font-bold">TOTAL: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold">{{ number_format(($document->total + $document->perception->amount), 2) }}</td>
-            </tr>
-        @elseif($document->retention)
-            <tr>
-                <td colspan="8" class="text-right font-bold"
-                    style="font-size: 16px;">IMPORTE TOTAL: {{ $document->currency_type->symbol }}</td>
-                <td class="text-right font-bold" style="font-size: 16px;">{{ number_format($document->total, 2) }}</td>
-            </tr>
-            <tr>
-                <td colspan="8" class="text-right">TOTAL RETENCIÓN ({{ $document->retention->percentage * 100 }}%): {{ $document->currency_type->symbol }}</td>
-                <td class="text-right">{{ number_format($document->retention->amount, 2) }}</td>
-            </tr>
-            <tr>
-                <td colspan="8" class="text-right">IMPORTE NETO: {{ $document->currency_type->symbol }}</td>
-                <td class="text-right">{{ number_format(($document->total - $document->retention->amount), 2) }}</td>
             </tr>
         @else
             <tr>
-                <td colspan="8" class="text-right font-bold">TOTAL A PAGAR: {{ $document->currency_type->symbol }}</td>
+                <td colspan="8" class="text-right font-bold">TOTAL: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold">{{ number_format($document->total, 2) }}</td>
             </tr>
         @endif
@@ -726,10 +689,12 @@
         @endif
 
         @if($balance < 0)
+
             <tr>
                 <td colspan="8" class="text-right font-bold">VUELTO: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold">{{ number_format(abs($balance),2, ".", "") }}</td>
             </tr>
+
         @endif
 
 

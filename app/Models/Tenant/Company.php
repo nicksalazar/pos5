@@ -28,6 +28,7 @@ class Company extends ModelTenant
         'soap_url',
         'certificate',
         'certificate_due',
+        'certificate_pss',
         'logo',
         'detraction_account',
         'operation_amazonia',
@@ -36,7 +37,6 @@ class Company extends ModelTenant
         'integrated_query_client_id',
         'integrated_query_client_secret',
         'app_logo',
-        
         'send_document_to_pse',
         'url_send_cdr_pse',
         'url_signature_pse',

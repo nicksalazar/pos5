@@ -1,7 +1,7 @@
 <?php
 
+//JOINSOFTWARE//
 namespace App\CoreFacturalo;
-
 use App\Http\Controllers\Tenant\EmailController;
 use Exception;
 use Mpdf\Mpdf;
@@ -39,8 +39,9 @@ use Modules\Inventory\Models\Warehouse;
 use App\CoreFacturalo\Requests\Inputs\Functions;
 use App\Models\Tenant\PurchaseSettlement;
 use App\CoreFacturalo\Services\Helpers\SendDocumentPse;
-use Modules\Finance\Traits\FilePaymentTrait;
-
+use App\CoreFacturalo\SRI\FirmarSri;
+use Illuminate\Support\Facades\Log;
+use App\CoreFacturalo\WS\Services\AuthSri;
 
 /**
  * Class Facturalo
@@ -49,7 +50,7 @@ use Modules\Finance\Traits\FilePaymentTrait;
  */
 class Facturalo
 {
-    use StorageDocument, FinanceTrait, KardexTrait, FilePaymentTrait;
+    use StorageDocument, FinanceTrait, KardexTrait;
 
     const REGISTERED = '01';
     const SENT = '03';
@@ -63,6 +64,7 @@ class Facturalo
     protected $company;
     protected $isDemo;
     protected $isOse;
+    protected $isSRI;
     protected $signer;
     protected $wsClient;
     protected $document;
@@ -77,6 +79,10 @@ class Facturalo
     protected $response;
     protected $apply_change;
     protected $sendDocumentPse;
+    protected $clave;
+    protected $clave_acceso;
+    protected $digito_verificador_clave;
+    protected $doc_type;
 
     public function __construct()
     {
@@ -84,6 +90,7 @@ class Facturalo
         $this->company = Company::active();
         $this->isDemo = ($this->company->soap_type_id === '01')?true:false;
         $this->isOse = ($this->company->soap_send_id === '02')?true:false;
+        $this->isSRI = ($this->company->soap_send_id === '03')?true:false;
         $this->signer = new XmlSigned();
         $this->wsClient = new WsClient();
         $this->sendDocumentPse = new SendDocumentPse($this->company);
@@ -114,9 +121,11 @@ class Facturalo
     {
         $this->actions = array_key_exists('actions', $inputs)?$inputs['actions']:[];
         $this->type = $inputs['type'];
-
+        //log::info($this->actions['format_pdf']);
         switch ($this->type) {
             case 'debit':
+                $this->doc_type = '05';
+                break;
             case 'credit':
                 $document = Document::create($inputs);
                 foreach ($inputs['items'] as $row) {
@@ -125,14 +134,13 @@ class Facturalo
                 $document->note()->create($inputs['note']);
                 if($this->type === 'credit') $this->saveFee($document, $inputs['fee']);
                 $this->document = Document::find($document->id);
+                $this->doc_type = '04';
                 break;
             case 'invoice':
                 $document = Document::create($inputs);
                 $this->savePayments($document, $inputs['payments']);
                 $this->saveFee($document, $inputs['fee']);
                 foreach ($inputs['items'] as $row) {
-//                    $purchase_unit_price = $row['purchase_unit_price'];
-//                    $row['item']['purchase_unit_price'] = $purchase_unit_price;
                     $document->items()->create($row);
                     // $row['document_id']=  $document->id;
                     // $item = new DocumentItem($row);
@@ -143,6 +151,7 @@ class Facturalo
                 if($inputs['transport']) $document->transport()->create($inputs['transport']);
                 $document->invoice()->create($inputs['invoice']);
                 $this->document = Document::find($document->id);
+                $this->doc_type = '01';
                 break;
             case 'summary':
                 $document = Summary::create($inputs);
@@ -164,6 +173,7 @@ class Facturalo
                     $document->documents()->create($row);
                 }
                 $this->document = Retention::find($document->id);
+                $this->doc_type = '07';
                 break;
             case 'perception':
                 $document = Perception::create($inputs);
@@ -221,14 +231,92 @@ class Facturalo
         }
     }
 
-    public function createXmlUnsigned()
+    public function sendEmail2()
     {
-        $template = new Template();
-        $this->xmlUnsigned = XmlFormat::format($template->xml($this->type, $this->company, $this->document));
-        $this->uploadFile($this->xmlUnsigned, 'unsigned');
-        return $this;
+
+        $company = $this->company;
+        $document = $this->document;
+        $email = ($this->document->customer) ? $this->document->customer->email : $this->document->supplier->email;
+        $mailable =new DocumentEmail($company, $document);
+        $id =  $document->id;
+        $model = __FILE__.";;".__LINE__;
+        $sendIt = EmailController::SendMail($email, $mailable, $id, $model);
+        /*
+        Configuration::setConfigSmtpMail();
+        $array_email = explode(',', $email);
+        if (count($array_email) > 1) {
+            foreach ($array_email as $email_to) {
+                $email_to = trim($email_to);
+            if(!empty($email_to)) {
+                    Mail::to($email_to)->send(new DocumentEmail($company, $document));
+                }
+            }
+        } else {
+            Mail::to($email)->send(new DocumentEmail($company, $document));
+        }
+        */
     }
 
+
+
+    public function createXmlUnsigned()
+    {
+        $serie = null;
+
+        if($this->doc_type == 01){
+            $serie = str_pad(substr($this->document->series,1,3), '3', '0', STR_PAD_LEFT);
+        }else{
+            $serie = str_pad(substr($this->document->series,2,2), '3', '0', STR_PAD_LEFT);
+        }
+
+        //Log::info('INFO ADICIONAL :'.$this->document->additional_information[0]);
+
+        $establecimeinto = Establishment::find($this->document->establishment_id);
+        $this->clave = "" . date('dmY', strtotime($this->document->date_of_issue)) . "" .$this->doc_type. "" . $this->company->number . "2".$establecimeinto->code."".$serie. str_pad($this->document->number , '9', '0', STR_PAD_LEFT) . "" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
+        $this->digito_verificador_clave = $this->validar_clave($this->clave);
+        $this->clave_acceso = $this->clave . "" . $this->digito_verificador_clave . "";
+        $this->document->clave_SRI = $this->clave_acceso;
+        
+        $this->document->update();
+        $template = new Template();
+        $this->xmlUnsigned = XmlFormat::format($template->xml($this->type, $this->company, $this->document, $this->clave_acceso));
+        $this->uploadFile($this->xmlUnsigned, 'unsigned');
+        return $this;
+
+    }
+
+    /*
+        Funcion para validar la clave generada de los documentos
+    */
+    public function validar_clave($clave) {
+
+        if ($clave == "") {
+            $verificado = false;
+            return $verificado;
+        }
+
+        $x = 2;
+        $sumatoria = 0;
+        for ($i = strlen($clave) - 1; $i >= 0; $i--) {
+            if ($x > 7) {
+                $x = 2;
+            }
+            $sumatoria = $sumatoria + ($clave[$i] * $x);
+            $x++;
+        }
+        $digito = $sumatoria % 11;
+        $digito = 11 - $digito;
+
+        switch ($digito) {
+            case 10:
+                $digito = "1";
+                break;
+            case 11:
+                $digito = "0";
+                break;
+        }
+        return $digito;
+    }
 
     /**
      * Firma digital xml
@@ -244,11 +332,21 @@ class Facturalo
         }else{
 
             $this->setPathCertificate();
-            $this->signer->setCertificateFromFile($this->pathCertificate);
-            $this->xmlSigned = $this->signer->signXml($this->xmlUnsigned);
+            //$this->signer->setCertificateFromFile($this->pathCertificate);
+            //$this->xmlSigned = $this->signer->signXml($this->xmlUnsigned);
+            $firma = new FirmarSri();
+            $this->xmlSigned = $firma->Firma_SRI($this->clave_acceso, $this->pathCertificate,$this->company->soap_username,$this->xmlUnsigned);  
+            //Log::info('resultado Frima: '.json_encode($this->xmlSigned));
         }
 
         $this->uploadFile($this->xmlSigned, 'signed');
+
+        $this->response = [
+            'sent' => true,
+            'code' => 200,
+            'description' => 'DOCUMENTOS GENERADOS Y FIRMADOS',
+            'notes' => 'SE GENERO LOS XML Y EL DOCUENTO PDF'
+        ];
 
         return $this;
     }
@@ -262,11 +360,9 @@ class Facturalo
 
     public function updateQr()
     {
-        if(config('tenant.save_qrcode')) {
-            $this->document->update([
-                'qr' => $this->getQr(),
-            ]);
-        }
+        $this->document->update([
+            'qr' => $this->getQr(),
+        ]);
     }
 
     public function updateState($state_type_id)
@@ -329,6 +425,7 @@ class Facturalo
     }
 
     public function createPdf($document = null, $type = null, $format = null, $output = 'pdf') {
+
         ini_set("pcre.backtrack_limit", "5000000");
         $template = new Template();
         $pdf = new Mpdf();
@@ -364,12 +461,6 @@ class Facturalo
             $pdf_margin_right = 5;
             $pdf_margin_bottom = 15;
             $pdf_margin_left = 14;
-        }
-        if (substr($base_pdf_template, 0, 7) === 'facnova') {
-            $pdf_margin_top = 10;
-            $pdf_margin_right = 4;
-            $pdf_margin_bottom = 5;
-            $pdf_margin_left = 15;
         }
 
         $html = $template->pdf($base_pdf_template, $this->type, $this->company, $this->document, $format_pdf);
@@ -432,37 +523,21 @@ class Facturalo
 
             //ajustes para footer amazonia
 
-            if($this->configuration->legend_footer
-                AND $format_pdf === 'ticket'
-                AND !in_array($base_pdf_template, ['ticket_c']))
-            {
+            if($this->configuration->legend_footer AND $format_pdf === 'ticket') {
                 $height_legend = 15;
-            } elseif($this->configuration->legend_footer
-                AND $format_pdf === 'ticket_58'
-                AND !in_array($base_pdf_template, ['ticket_c']))
-            {
+            } elseif($this->configuration->legend_footer AND $format_pdf === 'ticket_58') {
                 $height_legend = 30;
-            } elseif($this->configuration->legend_footer
-                AND $format_pdf === 'ticket_50')
-            {
-                $height_legend = 10;
+            } elseif($this->configuration->legend_footer AND $format_pdf === 'ticket_50') {
+                $height_legend = 50;
             } else {
                 $height_legend = 10;
-            }
-
-            $append_height = 0;
-
-            if($this->type === 'dispatch')
-            {
-                $append_height = 15;
-                $this->appendHeightFromDispatch($append_height, $format, $this->document);
             }
 
             $pdf = new Mpdf([
                 'mode' => 'utf-8',
                 'format' => [
                     $width,
-                    80 +
+                    180 +
                     (($quantity_rows * 8) + $extra_by_item_description) +
                     ($document_payments * 8) +
                     ($discount_global * 8) +
@@ -489,7 +564,6 @@ class Facturalo
                     $extra_by_item_additional_information+
                     $height_legend+
                     $document_transport+
-                    $append_height+
                     $document_retention
                 ],
                 'margin_top' => 0,
@@ -618,26 +692,24 @@ class Facturalo
 
         // if (($format_pdf != 'ticket') AND ($format_pdf != 'ticket_58') AND ($format_pdf != 'ticket_50')) {
             // dd($base_pdf_template);// = config(['tenant.pdf_template'=> $configuration]);
-        if(config('tenant.pdf_template_footer')) {
-            $html_footer = '';
-            if (($format_pdf != 'ticket') AND ($format_pdf != 'ticket_58') AND ($format_pdf != 'ticket_50')) {
-                $html_footer = $template->pdfFooter($base_pdf_template, in_array($this->document->document_type_id, ['09']) ? null : $this->document);
-                $html_footer_legend = "";
-            }
-            // dd($this->configuration->legend_footer && in_array($this->document->document_type_id, ['01', '03']));
-            // se quiere visuzalizar ahora la legenda amazona en todos los formatos
-            $html_footer_legend = '';
-            if($this->configuration->legend_footer
-                && in_array($this->document->document_type_id, ['01', '03'])
-                && !in_array($base_pdf_template, ['ticket_c'])
-            ){
-                $html_footer_legend = $template->pdfFooterLegend($base_pdf_template, $document);
-            }
+            if(config('tenant.pdf_template_footer')) {
+                $html_footer = '';
+                if (($format_pdf != 'ticket') AND ($format_pdf != 'ticket_58') AND ($format_pdf != 'ticket_50')) {
+                    $html_footer = $template->pdfFooter($base_pdf_template, in_array($this->document->document_type_id, ['09']) ? null : $this->document);
+                    $html_footer_legend = "";
+                }
+                // dd($this->configuration->legend_footer && in_array($this->document->document_type_id, ['01', '03']));
+                // se quiere visuzalizar ahora la legenda amazona en todos los formatos
+                $html_footer_legend = '';
+                if($this->configuration->legend_footer && in_array($this->document->document_type_id, ['01', '03'])){
+                    $html_footer_legend = $template->pdfFooterLegend($base_pdf_template, $document);
+                }
 
-            $pdf->SetHTMLFooter($html_footer.$html_footer_legend);
-        }
-//            $html_footer = $template->pdfFooter();
-//            $pdf->SetHTMLFooter($html_footer);
+                $pdf->SetHTMLFooter($html_footer.$html_footer_legend);
+
+            }
+        //            $html_footer = $template->pdfFooter();
+        //            $pdf->SetHTMLFooter($html_footer);
         // }
 
         if ($base_pdf_template === 'brand') {
@@ -692,74 +764,12 @@ class Facturalo
         else {
             $pdf->WriteHTML($stylesheet, HTMLParserMode::HEADER_CSS);
             $pdf->WriteHTML($html, HTMLParserMode::HTML_BODY);
-
-            $helper_facturalo = new HelperFacturalo();
-
-            if($helper_facturalo->isAllowedAddDispatchTicket($format_pdf, $this->type, $this->document))
-            {
-                $helper_facturalo->addDocumentDispatchTicket($pdf, $this->company, $this->document, [
-                    $template,
-                    $base_pdf_template,
-                    $width,
-                    ($quantity_rows * 8) + $extra_by_item_description
-                ]);
-            }
         }
 
         // echo $html_header.$html.$html_footer; exit();
         $this->uploadFile($pdf->output('', 'S'), 'pdf');
         return $this;
     }
-
-
-
-    /**
-     *
-     * Agregar altura para ticket de guia
-     *
-     * @param  float $append_height
-     * @param  $document
-     * @return void
-     */
-    private function appendHeightFromDispatch(&$append_height, $format, $document)
-    {
-        $base_height = 0;
-        $observations = 0;
-        $data_affected_document = 0;
-        $transfer_reason_type = 0;
-        $transport_mode_type = 0;
-        $driver = 0;
-        $license_plate = 0;
-        $secondary_license_plates = 0;
-
-        if($format == 'ticket_58')
-        {
-            $base_height = 80;
-            if($document->data_affected_document) $data_affected_document = 25;
-        }
-        else
-        {
-            $base_height = 50;
-            if($document->data_affected_document) $data_affected_document = 20;
-        }
-
-        if($document->observations) $observations = 30;
-        if($document->transfer_reason_type) $transfer_reason_type = 6;
-        if($document->transport_mode_type) $transport_mode_type = 6;
-        if($document->license_plate) $license_plate = 5;
-        if($document->secondary_license_plates) $secondary_license_plates = 5;
-
-        if($document->driver)
-        {
-            if($document->driver->number)  $driver += 5;
-            if($document->driver->license)  $driver += 5;
-        }
-
-        $append_height += $base_height + $observations + $data_affected_document + $transfer_reason_type + $transport_mode_type + $driver
-                            + $license_plate + $secondary_license_plates;
-
-    }
-
 
     public function loadXmlSigned()
     {
@@ -768,14 +778,138 @@ class Facturalo
         return $this;
     }
 
+    /*JOINSOFTWARE */
+    public function validateDocumentSRI(){
+
+        $url = null;
+        if($this->isDemo){
+
+            $url = "https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl";
+
+        }else{
+
+            $url = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl";
+        }
+        
+        $request = new AuthSri();
+        $authSRI = $request->send($url,$this->document->clave_SRI);
+        
+        if($authSRI != ''){
+
+            $mensaje = null;
+            $code = null;
+            $estado = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['estado'];
+
+           
+
+            if($estado == 'RECHAZADA'){
+
+                //$this->updateStateDocuments(self::REJECTED);
+                $this->document->update([
+                    'state_type_id' => self::REJECTED
+                ]);
+                $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
+                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje'];
+            
+            }elseif($estado == 'AUTORIZADO'){
+
+                $fechaAutorizado = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['fechaAutorizacion'];
+                $fechaArray = explode('T',$fechaAutorizado);
+                
+                //$this->updateStateDocuments(self::ACCEPTED);
+                $this->document->update([
+                    'state_type_id' => self::ACCEPTED,
+                    'date_authorization'=> $fechaArray[0],
+                    'time_authorization'=> substr($fechaArray[1],0,8)
+                ]);
+
+                $code = 200;
+                $mensaje = 'DOCUMENTO AUTORIZADO POR EL SRI';
+                $documento = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['comprobante'];
+
+                $this->uploadFile($documento, 'autorizado');
+
+                if($this->document->documnet_type_id == '01'){
+                    $this->type = 'invoice';
+                    $this->doc_type = '01';
+
+                }else if($this->document->documnet_type_id == '07'){
+                    $this->type = 'credit';
+                    $this->doc_type = '07';
+                }
+                //$this->doc_type = '01';
+                $this->actions['format_pdf'] = 'a4';
+
+                $this->createPdf();
+
+                $this->sendEmail2();
+            
+            }elseif($estado == 'NO AUTORIZADO'){
+
+                Log::info('ESTADO: '.$estado);
+                $this->document->update([
+                    'state_type_id' => self::REJECTED
+                ]);
+                $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
+                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje'];
+            
+                
+
+            }else{
+
+                $this->document->update([
+                    'state_type_id' => self::OBSERVED
+                ]);
+                $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
+                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje'];
+            
+            }
+
+            
+
+            $this->response = [
+                'sent' => true,
+                'code' => $code,
+                'description' => $mensaje,
+                'notes' => $estado
+            ];
+
+            $this->document->update([
+                'regularize_shipping' => true,
+                'response_regularize_shipping' => [
+                    'code' => $code,
+                    'description' => $estado
+                ]
+            ]);
+        }else{
+
+            $this->response = [
+                'sent' => true,
+                'code' => 500,
+                'description' => 'NO SE PUDO VALIDAR EL DOCUMENTO EN EL SRI',
+                'notes' => 'INTENTELO MAS TARDE'
+            ];
+
+            $this->document->update([
+                'regularize_shipping' => true,
+                'response_regularize_shipping' => [
+                    'code' => 500,
+                    'description' => 'NO SE PUDO VALIDAR EL DOCUMENTO EN EL SRI'
+                ]
+            ]);
+        }
+
+    }
     private function senderXmlSigned()
     {
         $this->setDataSoapType();
         $sender = in_array($this->type, ['summary', 'voided'])?new SummarySender():new BillSender();
         $sender->setClient($this->wsClient);
         $sender->setCodeProvider(new XmlErrorCodeProvider());
+        $this->loadXmlSigned();
+        return $sender->send($this->endpoint, $this->xmlSigned);
 
-        return $sender->send($this->document->filename, $this->xmlSigned);
+
     }
 
     public function senderXmlSignedBill()
@@ -804,14 +938,27 @@ class Facturalo
 
         if($this->company->send_document_to_pse)
         {
-            if(in_array($this->type, ['invoice', 'dispatch', 'credit', 'debit']))
+            if(in_array($this->type, ['invoice', 'dispatch']))
             {
                 $send_to_pse = true;
             }
-            elseif(in_array($this->type, ['voided', 'summary']))
+            elseif($this->type === 'voided')
             {
-                $send_to_pse = $this->document->getSendToPse($this->sendDocumentPse);
+                // validar si los documentos informados en la RA son facturas y fueron enviados a pse
+                $filter_quantity_documents = $this->document->documents->where('document.document_type_id', '01')
+                                                                        ->where('document.send_to_pse', true)
+                                                                        ->count();
+
+                if($this->document->documents->count() === $filter_quantity_documents)
+                {
+                    $send_to_pse = true;
+                }
+                else
+                {
+                    $this->sendDocumentPse->throwException('Documento a anular no es factura o no fue enviado al PSE.');
+                }
             }
+
         }
 
         return $send_to_pse;
@@ -830,38 +977,78 @@ class Facturalo
     {
         $res = $this->senderXmlSigned();
 
-        if($res->isSuccess()) {
+        if($res) {
 
-            $cdrResponse = $res->getCdrResponse();
-            $this->uploadFile($res->getCdrZip(), 'cdr');
+            $responseSRI = $res;
+            $estado = NULL;
+            $code = NULL;
+            $mensaje = NULL;
+            
+            try{
 
-            //enviar cdr a pse
-            $this->sendCdrToPse($res->getCdrZip(), $this->document);
-            //enviar cdr a pse
+                $estado = $responseSRI['RespuestaRecepcionComprobante']['estado'];
 
-            $code = $cdrResponse->getCode();
-            $description = $cdrResponse->getDescription();
+                if($estado == 'DEVUELTA'){
 
-            $this->response = [
-                'sent' => true,
-                'code' => $cdrResponse->getCode(),
-                'description' => $cdrResponse->getDescription(),
-                'notes' => $cdrResponse->getNotes()
-            ];
+                    $code = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['identificador'];
+                    $mensaje = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['mensaje'];
 
-            $this->validationCodeResponse($code, $description);
+                }elseif($estado == 'RECIBIDA'){
+
+                    $code = 200;
+                    $mensaje = "DOCUMENTO RECIBIDO POR EL SRI";
+
+                }else{
+
+                    $code = 0;
+                    $mensaje = 'NO SE RECUPERO UNA RESPUESTA DEL SRI';
+
+                }
+                $this->updateState(self::OBSERVED);
+                $this->response = [
+                    'sent' => true,
+                    'code' => $code,
+                    'description' => $mensaje,
+                    'notes' => $estado
+                ];
+
+                $this->document->update([
+                    'regularize_shipping' => true,
+                    'response_regularize_shipping' => [
+                        'code' => $code,
+                        'description' => $mensaje
+                    ]
+                ]);
+                
+                
+            }catch(Exception $ex){
+
+                $estado = 'PENDIENTE';
+                $code = 500;
+                $mensaje = 'SIN RESPUESTA DEL SRI';
+
+                $this->response = [
+                    'sent' => false,
+                    'code' => $code,
+                    'description' => $mensaje,
+                    'notes' => $estado
+                ];
+
+                $this->updateRegularizeShipping($code, $mensaje);
+
+            }
 
         } else {
-            $code = $res->getError()->getCode();
-            $message = $res->getError()->getMessage();
+            $code = 110;
+            $message = 'SIN RESPUESTA DEL SRI';
+
             $this->response = [
-                'sent' => true,
+                'sent' => false,
                 'code' => $code,
                 'description' => $message
             ];
-
-            $this->validationCodeResponse($code, $message);
-
+            
+            $this->updateRegularizeShipping($code, $message);
         }
     }
 
@@ -877,7 +1064,7 @@ class Facturalo
             $this->updateRegularizeShipping($code, $message);
             return;
         }
-        //dd($message);
+
         // if($code === 'ERROR_CDR') {
         //     return;
         // }
@@ -996,18 +1183,11 @@ class Facturalo
                 if($extService->getCustomStatusCode() === 0){
 
                     // if($this->document->summary_status_type_id === '1') {
-                    if(in_array($this->document->summary_status_type_id, ['1', '2']))
-                    {
+                    if(in_array($this->document->summary_status_type_id, ['1', '2'])) {
                         $this->updateStateDocuments(self::ACCEPTED);
-                    }
-                    else
-                    {
+                    } else {
                         $this->updateStateDocuments(self::VOIDED);
                     }
-
-                    //enviar cdr a pse
-                    $this->sendCdrToPse($res->getCdrZip(), $this->document);
-                    //enviar cdr a pse
 
                 }else if($extService->getCustomStatusCode() === 99){
 
@@ -1016,7 +1196,7 @@ class Facturalo
                 }
 
             } else {
-
+                
                 //enviar cdr a pse
                 $this->sendCdrToPse($res->getCdrZip(), $this->document);
                 //enviar cdr a pse
@@ -1074,8 +1254,17 @@ class Facturalo
     private function setDataSoapType()
     {
         $this->setSoapCredentials();
-        $this->wsClient->setCredentials($this->soapUsername, $this->soapPassword);
-        $this->wsClient->setService($this->endpoint);
+
+        if($this->isSRI){
+
+            $this->wsClient->setService($this->endpoint);
+
+        }else{
+            $this->wsClient->setCredentials($this->soapUsername, $this->soapPassword);
+            $this->wsClient->setService($this->endpoint);
+        }
+        
+        
     }
 
     private function setPathCertificate()
@@ -1083,7 +1272,12 @@ class Facturalo
         if($this->isOse) {
             $this->pathCertificate = storage_path('app'.DIRECTORY_SEPARATOR.
                 'certificates'.DIRECTORY_SEPARATOR.$this->company->certificate);
-        } else {
+        }else if($this->isSRI){
+            
+            $this->pathCertificate = storage_path('app'.DIRECTORY_SEPARATOR.'certificates'.DIRECTORY_SEPARATOR.$this->company->certificate);
+            
+
+        }else {
             if($this->isDemo) {
                 $this->pathCertificate = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.
                     'WS'.DIRECTORY_SEPARATOR.
@@ -1095,17 +1289,6 @@ class Facturalo
                     'certificates'.DIRECTORY_SEPARATOR.$this->company->certificate);
             }
         }
-
-//        if($this->isDemo) {
-//            $this->pathCertificate = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.
-//                'WS'.DIRECTORY_SEPARATOR.
-//                'Signed'.DIRECTORY_SEPARATOR.
-//                'Resources'.DIRECTORY_SEPARATOR.
-//                'certificate.pem');
-//        } else {
-//            $this->pathCertificate = storage_path('app'.DIRECTORY_SEPARATOR.
-//                'certificates'.DIRECTORY_SEPARATOR.$this->company->certificate);
-//        }
     }
 
     private function setSoapCredentials()
@@ -1115,16 +1298,28 @@ class Facturalo
 
             $this->soapUsername = $this->company->soap_username;
             $this->soapPassword = $this->company->soap_password;
+            $this->endpoint = $this->company->soap_url;
+            //            dd($this->soapPassword);
 
         }else{
-
-            if($this->isDemo) {
-                $this->soapUsername = $this->company->number.'MODDATOS';
-                $this->soapPassword = 'moddatos';
-            } else {
-                $this->soapUsername = $this->company->soap_username;
-                $this->soapPassword = $this->company->soap_password;
+            
+            if($this->isSRI){
+                if($this->isDemo){
+                    $this->endpoint = 'https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl';
+                }else{
+                    $this->endpoint = 'https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl';
+                }  
+            }else{
+                if($this->isDemo) {
+                    $this->soapUsername = $this->company->number.'MODDATOS';
+                    $this->soapPassword = 'moddatos';
+                } else {
+                    $this->soapUsername = $this->company->soap_username;
+                    $this->soapPassword = $this->company->soap_password;
+                }
             }
+
+            
 
         }
 
@@ -1133,9 +1328,9 @@ class Facturalo
 //        $this->soapPassword = ($this->isDemo)?'moddatos':$this->company->soap_password;
 
         if($this->isOse) {
-            $this->endpoint = $this->company->soap_url;
-//            dd($this->soapPassword);
-        } else {
+            
+
+        }else {
             switch ($this->type) {
                 case 'perception':
                 case 'retention':
@@ -1196,8 +1391,8 @@ class Facturalo
 
     }
 
-    private function savePayments($document, $payments)
-    {
+    private function savePayments($document, $payments){
+
         $total = $document->total;
         $balance = $total - collect($payments)->sum('payment');
 
@@ -1227,8 +1422,7 @@ class Facturalo
                     "reference" => $row['reference'],
                     "payment_destination_id" => isset($row['payment_destination_id']) ? $row['payment_destination_id'] : null,
                     "change" => $change,
-                    "payment" => $payment,
-                    "payment_received" => isset($row['payment_received']) ? $row['payment_received'] : null,
+                    "payment" => $payment
                 ];
 
             });
@@ -1242,9 +1436,6 @@ class Facturalo
             }
 
             $record = $document->payments()->create($row);
-
-            // para carga de voucher
-            $this->saveFilesFromPayments($row, $record, 'documents');
 
             //considerar la creacion de una caja chica cuando recien se crea el cliente
             if(isset($row['payment_destination_id'])){

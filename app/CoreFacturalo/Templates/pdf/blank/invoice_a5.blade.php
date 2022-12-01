@@ -5,7 +5,7 @@
     $document_base = ($document->note) ? $document->note : null;
 
     //$path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
-    $document_number = $document->series.'-'.str_pad($document->number, 8, '0', STR_PAD_LEFT);
+    $document_number = $establishment->code.''.substr($document->series,1,3).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
     $accounts = \App\Models\Tenant\BankAccount::all();
 
     if($document_base) {
@@ -82,6 +82,10 @@
 </table>
 <table class="full-width mt-2">
     <tr>
+        <td width="120px">CLAVE DE ACCESO</td>
+        <td width="8px">:</td>
+        <td>{{$document->clave_SRI}}</td>
+        
         <td width="120px">FECHA DE EMISIÓN</td>
         <td width="8px">:</td>
         <td>{{$document->date_of_issue->format('Y-m-d')}}</td>
@@ -439,7 +443,7 @@
         @endif
         @if($document->total_taxed > 0)
             <tr>
-                <td colspan="5" class="text-right font-bold">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
+                <td colspan="5" class="text-right font-bold">BASE IMPONIBLE: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold">{{ number_format($document->total_taxed, 2) }}</td>
             </tr>
         @endif
@@ -456,11 +460,11 @@
             </tr>
         @endif
         <tr>
-            <td colspan="5" class="text-right font-bold">IGV: {{ $document->currency_type->symbol }}</td>
+            <td colspan="5" class="text-right font-bold">IVA: {{ $document->currency_type->symbol }}</td>
             <td class="text-right font-bold">{{ number_format($document->total_igv, 2) }}</td>
         </tr>
         <tr>
-            <td colspan="5" class="text-right font-bold">TOTAL A PAGAR: {{ $document->currency_type->symbol }}</td>
+            <td colspan="5" class="text-right font-bold">TOTAL: {{ $document->currency_type->symbol }}</td>
             <td class="text-right font-bold">{{ number_format($document->total, 2) }}</td>
         </tr>
         @if($balance < 0)
@@ -632,17 +636,7 @@
     </table>
 @endif --}}
 
-@if ($document->terms_condition)
-        <br>
-        <table class="full-width">
-            <tr>
-                <td>
-                    <h6 style="font-size: 12px; font-weight: bold;">Términos y condiciones del servicio</h6>
-                    {!! $document->terms_condition !!}
-                </td>
-            </tr>
-        </table>
-    @endif
+
 
 </body>
 </html>

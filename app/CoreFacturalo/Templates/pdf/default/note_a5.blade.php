@@ -73,6 +73,11 @@
 </table>
 <table class="full-width mt-5">
     <tr>
+        <td width="120px">FEHA AUTORIZADO</td>
+        <td width="8px">:</td>
+        <td>{{$document->date_authorization $document->time_authorization}}</td>
+    </tr>
+    <tr>
         <td width="120px">FECHA DE EMISIÓN</td>
         <td width="8px">:</td>
         <td>{{$document->date_of_issue->format('Y-m-d')}}</td>

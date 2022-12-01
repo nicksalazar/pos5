@@ -388,7 +388,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </el-collapse-item>
                     <el-collapse-item
                         name="2"
@@ -445,7 +444,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!--JOINSOFTWARE-->
                         <template v-if="form.soap_type_id == '02' && form.soap_send_id != '03' || toggle == true && form.soap_send_id != '03'">
                             <div class="row">
@@ -538,7 +537,7 @@
                                 <div :class="{'has-danger': errors.certificate}"
                                      class="form-group">
                                     <label class="control-label">
-                                        Certificado pfx
+                                        Certificado p12
                                     </label>
                                     <el-upload
                                         ref="upload"

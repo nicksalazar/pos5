@@ -170,7 +170,7 @@ class DocumentController extends Controller
 
         //tru de boletas en env esta en true filtra a los con dni   , false a todos
         $identity_document_type_id = $this->getIdentityDocumentTypeId($request->document_type_id, $request->operation_type_id);
-//        $operation_type_id_id = $this->getIdentityDocumentTypeId($request->operation_type_id);
+        //$operation_type_id_id = $this->getIdentityDocumentTypeId($request->operation_type_id);
 
         $customers = Person::where('number', 'like', "%{$request->input}%")
             ->orWhere('name', 'like', "%{$request->input}%")
@@ -658,8 +658,8 @@ class DocumentController extends Controller
             $facturalo->signXmlUnsigned();
             $facturalo->updateHash();
             $facturalo->updateQr();
-            $facturalo->createPdf();
-            $facturalo->senderXmlSignedBill();
+            //$facturalo->createPdf();
+            //$facturalo->senderXmlSignedBill();
 
             return $facturalo;
         });
@@ -674,6 +674,27 @@ class DocumentController extends Controller
                 'number_full' => $document->number_full,
                 'response' => $response
             ]
+        ];
+    }
+
+    /*JOINSOFTWARE */
+    public function validarSRI($document_id) {
+        $document = Document::find($document_id);
+
+        $fact = DB::connection('tenant')->transaction(function () use ($document) {
+            $facturalo = new Facturalo();
+            $facturalo->setDocument($document);
+            $facturalo->validateDocumentSRI();
+            $facturalo->createPdf();
+            return $facturalo;
+            
+        });
+
+        $response = $fact->getResponse();
+
+        return [
+            'success' => true,
+            'message' => $response['description'],
         ];
     }
 

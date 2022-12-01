@@ -138,7 +138,7 @@ class Item extends ModelTenant
         'purchase_affectation_igv_type_id',
         'calculate_quantity',
         'has_igv',
-
+        'percentage_igv',
         'stock',
         'stock_min',
         'percentage_of_profit',
@@ -941,8 +941,9 @@ class Item extends ModelTenant
             'purchase_unit_value'              => $purchase_unit_value,
             'purchase_unit_price'              => $purchase_unit_price,
             'unit_type_id'                     => $this->unit_type_id,
-            'original_unit_type_id'                     => $this->unit_type_id,
-            'sale_affectation_igv_type'     => $this->sale_affectation_igv_type,
+            'original_unit_type_id'            => $this->unit_type_id,
+            'sale_affectation_igv_type'        => $this->sale_affectation_igv_type,
+            'percentage_igv'                   => $this->percentage_igv,
             'sale_affectation_igv_type_id'     => $this->sale_affectation_igv_type_id,
             'purchase_affectation_igv_type_id' => $this->purchase_affectation_igv_type_id,
             'calculate_quantity'               => (bool)$this->calculate_quantity,
@@ -1090,6 +1091,7 @@ class Item extends ModelTenant
         $decimal_units = (int)$configuration->decimal_quantity;
         $stockPerCategory = ItemMovement::getStockByCategory($this->id,auth()->user()->establishment_id);
         $has_igv = (bool)$this->has_igv;
+        $percentage_icv = $this->sale_affectation_igv_type;
         $igv = 1.18; // El igv es de 18%
         $affectation_igv_types_exonerated_unaffected = self::AffectationIgvTypesExoneratedUnaffected();
         if (in_array($this->sale_affectation_igv_type_id, $affectation_igv_types_exonerated_unaffected)) {
@@ -1142,6 +1144,7 @@ class Item extends ModelTenant
             'amount_sale_unit_price' => $this->sale_unit_price,
             'calculate_quantity' => (bool)$this->calculate_quantity,
             'has_igv' => (bool)$this->has_igv,
+            'percentage_igv' => $this->percentage_igv,
             'active' => (bool)$this->active,
             'has_igv_description' => $has_igv_description,
             'purchase_has_igv_description' => $purchase_has_igv_description,

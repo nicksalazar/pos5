@@ -3,7 +3,7 @@
     $customer = $document->customer;
     $invoice = $document->invoice;
     //$path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
-    $document_number = $document->series.'-'.str_pad($document->number, 8, '0', STR_PAD_LEFT);
+    $document_number = $establishment->code.''.substr($document->series,1,3).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
     $accounts = \App\Models\Tenant\BankAccount::all();
     $document_base = ($document->note) ? $document->note : null;
     $payments = $document->payments;
@@ -67,7 +67,7 @@
     </tr>
     @endisset
     <tr>
-        <td class="text-center ">{{ ($establishment->telephone !== '-')? 'Central telefónica: '.$establishment->telephone : '' }}</td>
+        <td class="text-center ">{{ ($establishment->telephone !== '-')? 'Teléfono: '.$establishment->telephone : '' }}</td>
     </tr>
     <tr>
         <td class="text-center">{{ ($establishment->email !== '-')? 'Email: '.$establishment->email : '' }}</td>
@@ -93,6 +93,9 @@
 </table>
 <table class="full-width">
     <tr >
+        <td width="" class="pt-3"><p class="desc-9">C. Acceso:</p></td>
+        <td width="" class="pt-3 "><p class="desc-9">{{ $document->clave_SRI }}</p></td>
+
         <td width="" class="pt-3"><p class="desc">F. Emisión:</p></td>
         <td width="" class="pt-3"><p class="desc">{{ $document->date_of_issue->format('Y-m-d') }}</p></td>
     </tr>
@@ -602,15 +605,7 @@
                 </tr>
 
         </tr>
-        @if ($document->terms_condition)
-        <tr>
-            <td class="desc">
-                <br>
-                <h6 style="font-size: 10px; font-weight: bold;">Términos y condiciones del servicio</h6>
-                {!! $document->terms_condition !!}
-            </td>
-        </tr>
-    @endif
+
     <tr>
         <td class="text-center desc pt-5">Para consultar el comprobante ingresar a {!! url('/buscar') !!}</td>
     </tr>

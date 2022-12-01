@@ -24,6 +24,7 @@ class CertificateController extends Controller
 
     public function uploadFile(Request $request)
     {
+        //JOINSOFTWARE CERTIFICADO P12 //
         if ($request->hasFile('file')) {
             try {
                 $company = Company::active();
@@ -31,12 +32,14 @@ class CertificateController extends Controller
                 $file = $request->file('file');
                 $pfx = file_get_contents($file);
                 $pem = GenerateCertificate::typePEM($pfx, $password);
-                $name = 'certificate_'.$company->number.'.pem';
+                //$name = 'certificate_'.$company->number.'.pem';
+                $name = 'certificate_'.$company->number.'.p12';
                 if(!file_exists(storage_path('app'.DIRECTORY_SEPARATOR.'certificates'))) {
                     mkdir(storage_path('app'.DIRECTORY_SEPARATOR.'certificates'));
                 }
                 file_put_contents(storage_path('app'.DIRECTORY_SEPARATOR.'certificates'.DIRECTORY_SEPARATOR.$name), $pem);
                 $company->certificate = $name;
+                $company->certificate_pass = $password;
                 $company->save();
 
                 return [

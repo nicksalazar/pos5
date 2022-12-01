@@ -1633,10 +1633,10 @@ export default {
             const pattern_number = new RegExp("^[0-9]+$", "i");
 
             if (this.form.identity_document_type_id === "6") {
-                if (this.form.number.length !== 11) {
+                if (this.form.number.length !== 13) {
                     return {
                         success: false,
-                        message: `El campo número debe tener 11 dígitos.`
+                        message: `El campo número debe tener 13 dígitos.`
                     };
                 }
 
@@ -1649,10 +1649,10 @@ export default {
             }
 
             if (this.form.identity_document_type_id === "1") {
-                if (this.form.number.length !== 8) {
+                if (this.form.number.length !== 10) {
                     return {
                         success: false,
-                        message: `El campo número debe tener 8 dígitos.`
+                        message: `El campo número debe tener 10 dígitos.`
                     };
                 }
 

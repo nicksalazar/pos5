@@ -28,7 +28,14 @@ class Template
 
     public function xml($template, $company, $document)
     {
-        return self::render('xml.'.$template, $company, $document);
+        return self::render2('xml.'.$template, $company, $document);
+    }
+    //JOINSOFTWARE//
+    private function render2($view, $company, $document, $clave_acceso)
+    {
+        view()->addLocation(__DIR__.'/Templates');
+
+        return view($view, compact('company', 'document','clave_acceso'))->render();
     }
 
     private function render($view, $company, $document)

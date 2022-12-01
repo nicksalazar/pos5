@@ -3,8 +3,9 @@
     $customer = $document->customer;
     $invoice = $document->invoice;
     //$path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
-    $document_number = $document->series.'-'.str_pad($document->number, 8, '0', STR_PAD_LEFT);
+    $document_number = $establishment->code.''.substr($document->series,1,3).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
     $accounts = \App\Models\Tenant\BankAccount::where('show_in_documents', true)->get();
+    $user = \App\Models\Tenant\User::where('id', $document->user_id )->select('name')->get();
     $document_base = ($document->note) ? $document->note : null;
     $payments = $document->payments;
 
@@ -73,7 +74,7 @@
     </tr>
     @endisset
     <tr>
-        <td class="text-center ">{{ ($establishment->telephone !== '-')? 'Central telefónica: '.$establishment->telephone : '' }}</td>
+        <td class="text-center ">{{ ($establishment->telephone !== '-')? 'Teléfono: '.$establishment->telephone : '' }}</td>
     </tr>
     <tr>
         <td class="text-center">{{ ($establishment->email !== '-')? 'Email: '.$establishment->email : '' }}</td>
@@ -98,7 +99,11 @@
     </tr>
 </table>
 <table class="full-width">
-    <tr >
+    <tr>
+        <td width="" class="pt-3"><p class="desc-9">C. Acceso:</p></td>
+        <td width="" class="pt-3 "><p class="desc-9">{{ $document->clave_SRI }}</p></td>
+    </tr>
+    <tr>
         <td width="" class="pt-3"><p class="desc">F. Emisión:</p></td>
         <td width="" class="pt-3"><p class="desc">{{ $document->date_of_issue->format('Y-m-d') }}</p></td>
     </tr>
@@ -145,18 +150,6 @@
             </td>
         </tr>
     @endif
-    
-    @if ($document->isPointSystem())
-        <tr>
-            <td><p class="desc">P. Acumulados:</p></td>
-            <td><p class="desc">{{ $document->person->accumulated_points }}</p></td>
-        </tr>
-        <tr>
-            <td><p class="desc">Puntos por la compra:</p></td>
-            <td><p class="desc">{{ $document->getPointsBySale() }}</p></td>
-        </tr>
-    @endif
-
 
     @if ($document->detraction)
     {{--<strong>Operación sujeta a detracción</strong>--}}
@@ -289,6 +282,7 @@
             <td><p class="desc">{{ $document->quotation->sale_opportunity->number_full}}</p></td>
         </tr>
     @endisset
+
 </table>
 
 @if ($document->guides)
@@ -373,16 +367,7 @@
 @endif
 
 
-@if ($document->dispatch)
-    <br/>
-    <strong>Guías de remisión</strong>
-    <table>
-        <tr>
-            <td>{{ $document->dispatch->number_full }}</td>
-        </tr>
-    </table>
-
-@elseif (count($document->reference_guides) > 0)
+@if (count($document->reference_guides) > 0)
 <br/>
 <strong>Guias de remisión</strong>
 <table>
@@ -482,11 +467,6 @@
                      {{$item}}<br>
                  @endforeach
                  {{-- {{join( "-", $itemSet->getItemsSet($row->item_id) )}} --}}
-                @endif
-
-                @if($row->item->used_points_for_exchange ?? false)
-                    <br>
-                    <small>*** Canjeado por {{$row->item->used_points_for_exchange}}  puntos ***</small>
                 @endif
 
                 @if($document->has_prepayment)
