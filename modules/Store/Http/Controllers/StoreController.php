@@ -158,6 +158,7 @@ class StoreController extends Controller
                 return $date_percentage;
             }
         }
-        return 0.18;
+        
+        return 0.12;
     }
 }

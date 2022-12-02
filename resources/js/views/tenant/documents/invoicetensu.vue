@@ -706,10 +706,10 @@
                     if (row.affectation_igv_type_id === '40') {
                         total_exportation += parseFloat(row.total_value)
                     }
-                    if (['10', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
+                    if (['10','11','12', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
                         total_free += parseFloat(row.total_value)
                     }
-                    if (['10', '20', '30', '40'].indexOf(row.affectation_igv_type_id) > -1) {
+                    if (['10','11','12', '20', '30', '40'].indexOf(row.affectation_igv_type_id) > -1) {
                         total_igv += parseFloat(row.total_igv)
                         total += parseFloat(row.total)
                     }

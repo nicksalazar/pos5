@@ -2157,8 +2157,8 @@ export default {
                 this.$message.error('El monto debe ser menor o igual al del anticipo');
 
             }
-
-            this.form.prepayments[index].total = (this.form.affectation_type_prepayment == 10) ? _.round(this.form.prepayments[index].amount * 1.18, 2) : this.form.prepayments[index].amount
+            //JOINSOFTWARE// 
+            this.form.prepayments[index].total = (this.form.affectation_type_prepayment == 10) ? _.round(this.form.prepayments[index].amount * 1.12, 2) : this.form.prepayments[index].amount
 
             this.changeTotalPrepayment()
 
@@ -3109,7 +3109,7 @@ export default {
                     total_exportation += parseFloat(row.total_value)
                 }
 
-                if (['10',
+                if (['10','11','12',
                     // '20', '21',
                     '20',
                     '30', '31', '32', '33', '34', '35', '36',
@@ -3117,7 +3117,7 @@ export default {
                     total_free += parseFloat(row.total_value)
                 }
 
-                if (['10',
+                if (['10','11','12',
                     '20', '21',
                     '30', '31', '32', '33', '34', '35', '36',
                     '40'].indexOf(row.affectation_igv_type_id) > -1) {

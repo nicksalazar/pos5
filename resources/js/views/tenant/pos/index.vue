@@ -1819,10 +1819,31 @@ export default {
                         search_item_bd.sale_unit_price
                     );
                 }
+                
+                //JOINSOFTWARE //
+                let unit_price = 0;
 
-                let unit_price = exist_item.item.has_igv
+                if(exist_item.affectation_igv_type_id === '10'){
+                    unit_price = exist_item.item.has_igv
+                        ? exist_item.item.sale_unit_price
+                        : exist_item.item.sale_unit_price * 1.12;
+                    this.percentage_igv = 0.12;
+                }else if(exist_item.affectation_igv_type_id === '11'){
+                    unit_price = exist_item.item.has_igv
+                        ? exist_item.item.sale_unit_price
+                        : exist_item.item.sale_unit_price * 1.08;
+                    this.percentage_igv = 0.08;
+                }else if(exist_item.affectation_igv_type_id === '12'){
+                    unit_price = exist_item.item.has_igv
+                        ? exist_item.item.sale_unit_price
+                        : exist_item.item.sale_unit_price * 1.14;
+                    this.percentage_igv = 0.14;
+                }else{
+                    unit_price = exist_item.item.has_igv
                     ? exist_item.item.sale_unit_price
                     : exist_item.item.sale_unit_price * (1 + this.percentage_igv);
+                }
+
                 // exist_item.unit_price = unit_price
 
                 // balanza
@@ -1877,9 +1898,32 @@ export default {
                 this.form_item.quantity = 1;
                 this.form_item.aux_quantity = 1;
 
-                let unit_price = this.form_item.has_igv
+                //JOINSOFTWARE//
+                let unit_price = 0;
+
+                if(item.sale_affectation_igv_type_id === '10'){
+
+                    unit_price = this.form_item.has_igv
+                        ? item.sale_unit_price
+                        : item.sale_unit_price * 1.12;
+
+                }else if(item.sale_affectation_igv_type_id === '11'){
+
+                    unit_price = this.form_item.has_igv
+                        ? item.sale_unit_price
+                        : item.sale_unit_price * 1.08;
+
+                }else if(item.sale_affectation_igv_type_id === '12'){
+
+                    unit_price = this.form_item.has_igv
+                        ? item.sale_unit_price
+                        : item.sale_unit_price * 1.14;
+                }else{
+
+                    this.form_item.has_igv
                     ? this.form_item.unit_price_value
                     : this.form_item.unit_price_value * (1 + this.percentage_igv);
+                }
 
                 // balanza
                 this.setScaleQuantityIfNotExistItem()
@@ -1946,7 +1990,7 @@ export default {
             }
 
             // console.log(this.row)
-            // console.log(this.form.items)
+            console.log(this.form.items)
             await this.calculateTotal();
             this.loading = false;
 
@@ -1996,7 +2040,17 @@ export default {
                 total_discount += parseFloat(row.total_discount);
                 total_charge += parseFloat(row.total_charge);
 
-                if (row.affectation_igv_type_id === "10")
+                if (row.affectation_igv_type_id === "10" )
+                {
+                    // total_taxed += parseFloat(row.total_value);
+                    total_taxed += (row.total_value_without_rounding) ? parseFloat(row.total_value_without_rounding) : parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === "11" )
+                {
+                    // total_taxed += parseFloat(row.total_value);
+                    total_taxed += (row.total_value_without_rounding) ? parseFloat(row.total_value_without_rounding) : parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === "12")
                 {
                     // total_taxed += parseFloat(row.total_value);
                     total_taxed += (row.total_value_without_rounding) ? parseFloat(row.total_value_without_rounding) : parseFloat(row.total_value)
@@ -2015,9 +2069,9 @@ export default {
                 if (row.affectation_igv_type_id === "40") {
                     total_exportation += parseFloat(row.total_value);
                 }
-
+                //JOINSOFTWARE//
                 if (
-                    ["10", "20", "30", "40"].indexOf(
+                    ["10","11","12","13", "20", "30", "40"].indexOf(
                         row.affectation_igv_type_id
                     ) < 0
                 ) {
@@ -2025,7 +2079,7 @@ export default {
                 }
 
                 // if (["10", "20", "30", "40"].indexOf(row.affectation_igv_type_id) > -1)
-                if (["10", "20", "30", "40", '21'].indexOf(row.affectation_igv_type_id) > -1)
+                if (["10","11","12", "20", "30", "40", '21'].indexOf(row.affectation_igv_type_id) > -1)
                 {
                     // total_igv += parseFloat(row.total_igv);
                     // total += parseFloat(row.total);
@@ -2041,8 +2095,8 @@ export default {
                 }
 
                 total_plastic_bag_taxes += parseFloat(row.total_plastic_bag_taxes)
-
-                if (['11', '12', '13', '14', '15', '16'].includes(row.affectation_igv_type_id)) {
+/*
+                if (['10','11', '12', '14', '15', '16'].includes(row.affectation_igv_type_id)) {
 
                     let unit_value = row.total_value / row.quantity
                     let total_value_partial = unit_value * row.quantity
@@ -2056,7 +2110,7 @@ export default {
                     total += parseFloat(row.total) //se agrega suma al total para considerar el icbper
 
                 }
-
+*/
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)

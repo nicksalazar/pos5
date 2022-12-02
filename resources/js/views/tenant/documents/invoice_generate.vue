@@ -3415,7 +3415,7 @@ export default {
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
 
-                if (row.affectation_igv_type_id === '10') {
+                if (row.affectation_igv_type_id === '10' || row.affectation_igv_type_id === '11' || row.affectation_igv_type_id === '12') {
                     // total_taxed += parseFloat(row.total_value)
                     if (row.total_value_without_rounding) {
                         total_taxed += parseFloat(row.total_value_without_rounding)
@@ -3450,16 +3450,15 @@ export default {
                 if (row.affectation_igv_type_id === '40') {
                     total_exportation += parseFloat(row.total_value)
                 }
-
-                if (['10',
-                    // '20', '21',
+                //JOINSOFTWARE//
+                if (['10','11','12',
                     '20',
                     '30', '31', '32', '33', '34', '35', '36',
                     '40'].indexOf(row.affectation_igv_type_id) < 0) {
                     total_free += parseFloat(row.total_value)
                 }
 
-                if (['10',
+                if (['10','11','12',
                     '20', '21',
                     '30', '31', '32', '33', '34', '35', '36',
                     '40'].indexOf(row.affectation_igv_type_id) > -1) {
@@ -3500,7 +3499,7 @@ export default {
                 total_plastic_bag_taxes += parseFloat(row.total_plastic_bag_taxes)
 
 
-                if (['11', '12', '13', '14', '15', '16'].includes(row.affectation_igv_type_id)) {
+                if (['14', '15', '16'].includes(row.affectation_igv_type_id)) {
 
                     let unit_value = row.total_value / row.quantity
                     let total_value_partial = unit_value * row.quantity

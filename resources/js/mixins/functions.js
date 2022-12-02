@@ -3,7 +3,8 @@ export const functions = {
         return {
             loading_search_exchange_rate: false,
             loading_search: false,
-            percentage_igv: 0.18
+            percentage_igv: 0.12
+            //percentage_igv: 0.18
         }
     },
     methods: {
@@ -80,6 +81,7 @@ export const functions = {
             })
                 .then(response => {
                     this.percentage_igv = response.data;
+                    console.log(this.form.percentage_igv);
                 });
         },
         async getPercentageIgvWithParams(establishment_id, date_of_issue) 

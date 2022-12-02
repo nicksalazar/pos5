@@ -1586,10 +1586,29 @@ export default {
                     );
                 }
 
-                let unit_price = exist_item.item.has_igv
+                let unit_price = 0
+
+                if(exist_item.affectation_igv_type_id ==='10'){
+                    unit_price = exist_item.item.has_igv
+                    ? exist_item.item.sale_unit_price
+                    : exist_item.item.sale_unit_price * 1.12;
+                }else if(exist_item.affectation_igv_type_id ==='11'){
+                    unit_price = exist_item.item.has_igv
+                    ? exist_item.item.sale_unit_price
+                    : exist_item.item.sale_unit_price * 1.08;
+                }else if(exist_item.affectation_igv_type_id ==='12'){
+                    unit_price = exist_item.item.has_igv
+                    ? exist_item.item.sale_unit_price
+                    : exist_item.item.sale_unit_price * 1.14;
+                }else {
+                    unit_price = exist_item.item.has_igv
                     ? exist_item.item.sale_unit_price
                     : exist_item.item.sale_unit_price * (1 + this.percentage_igv);
+                }
+
                 // exist_item.unit_price = unit_price
+
+
                 exist_item.item.unit_price = unit_price;
 
                 exist_item.has_plastic_bag_taxes = exist_item.item.has_plastic_bag_taxes;
@@ -1625,10 +1644,28 @@ export default {
                 this.form_item.affectation_igv_type_id = this.form_item.item.sale_affectation_igv_type_id;
                 this.form_item.quantity = 1;
                 this.form_item.aux_quantity = 1;
+                //JINSOFTWARE //
 
-                let unit_price = this.form_item.has_igv
+                let unit_price = 0 
+                if(item.sale_affectation_igv_type_id === '10'){
+                    unit_price = this.form_item.has_igv
+                        ? this.form_item.unit_price_value
+                        : this.form_item.unit_price_value * 1.12;
+                }else if(item.sale_affectation_igv_type_id === '11'){
+                    unit_price = this.form_item.has_igv
+                        ? this.form_item.unit_price_value
+                        : this.form_item.unit_price_value * 1.08;
+                }else if(item.sale_affectation_igv_type_id === '12'){
+                    unit_price = this.form_item.has_igv
+                        ? this.form_item.unit_price_value
+                        : this.form_item.unit_price_value * 1.14;
+                }else {
+                    unit_price = this.form_item.has_igv
                     ? this.form_item.unit_price_value
                     : this.form_item.unit_price_value * (1 + this.percentage_igv);
+                }
+
+           
 
                 this.form_item.unit_price = unit_price;
                 this.form_item.item.unit_price = unit_price;
@@ -1724,6 +1761,12 @@ export default {
                 if (row.affectation_igv_type_id === "10") {
                     total_taxed += parseFloat(row.total_value);
                 }
+                if (row.affectation_igv_type_id === "11") {
+                    total_taxed += parseFloat(row.total_value);
+                }
+                if (row.affectation_igv_type_id === "12") {
+                    total_taxed += parseFloat(row.total_value);
+                }
                 if (row.affectation_igv_type_id === "20") {
                     total_exonerated += parseFloat(row.total_value);
                 }
@@ -1734,14 +1777,14 @@ export default {
                     total_exportation += parseFloat(row.total_value);
                 }
                 if (
-                    ["10", "20", "30", "40"].indexOf(
+                    ["10", "11","12","20", "30", "40"].indexOf(
                         row.affectation_igv_type_id
                     ) < 0
                 ) {
                     total_free += parseFloat(row.total_value);
                 }
                 if (
-                    ["10", "20", "30", "40"].indexOf(
+                    ["10","11","12", "20", "30", "40"].indexOf(
                         row.affectation_igv_type_id
                     ) > -1
                 ) {

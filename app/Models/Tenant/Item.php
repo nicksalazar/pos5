@@ -903,10 +903,11 @@ class Item extends ModelTenant
 
         $purchase_unit_price = $this->purchase_unit_price;
         $purchase_unit_value = $this->purchase_unit_price;
+        //JOINSOFTWARE 1.18//
         if($this->purchase_has_igv) {
-            $purchase_unit_value = round($purchase_unit_price / 1.18, 8);
+            $purchase_unit_value = round($purchase_unit_price / 1.12, 8);
         } else {
-            $purchase_unit_price = $purchase_unit_value * 1.18;
+            $purchase_unit_price = $purchase_unit_value * 1.12;
         }
 
         $data = [
@@ -1092,7 +1093,8 @@ class Item extends ModelTenant
         $stockPerCategory = ItemMovement::getStockByCategory($this->id,auth()->user()->establishment_id);
         $has_igv = (bool)$this->has_igv;
         $percentage_icv = $this->sale_affectation_igv_type;
-        $igv = 1.18; // El igv es de 18%
+       // $igv = 1.18; // El igv es de 18%
+        $igv = $this->percentage_igv;
         $affectation_igv_types_exonerated_unaffected = self::AffectationIgvTypesExoneratedUnaffected();
         if (in_array($this->sale_affectation_igv_type_id, $affectation_igv_types_exonerated_unaffected)) {
             // Exonerado, solo se multiplica por la unidad para que no haga cambio.

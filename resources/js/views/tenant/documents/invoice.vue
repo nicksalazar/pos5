@@ -1781,6 +1781,7 @@ export default {
                     id: "10",
                 }
             }
+            item.percentage_igv = item.percentage_igv;
             item.presentation = {};
             item.unit_price = item.sale_unit_price;
             item.item = {
@@ -2104,7 +2105,6 @@ export default {
                 this.$message.error('El monto debe ser menor o igual al del anticipo');
 
             }
-
             this.form.prepayments[index].total = (this.form.affectation_type_prepayment == 10) ? _.round(this.form.prepayments[index].amount * 1.12, 2) : this.form.prepayments[index].amount
 
             this.changeTotalPrepayment()
@@ -3061,7 +3061,6 @@ export default {
                 }
 
                 if (['10','11','12',
-                    // '20', '21',
                     '20',
                     '30', '31', '32', '33', '34', '35', '36',
                     '40'].indexOf(row.affectation_igv_type_id) < 0) {
@@ -3091,8 +3090,6 @@ export default {
                     } else {
                         total += parseFloat(row.total)
                     }
-
-
                 }
 
                 // console.log(row.total_value)
@@ -3109,7 +3106,7 @@ export default {
                 total_plastic_bag_taxes += parseFloat(row.total_plastic_bag_taxes)
 
 
-                if (['13', '14', '15', '16'].includes(row.affectation_igv_type_id)) {
+                if (['14', '15', '16'].includes(row.affectation_igv_type_id)) {
 
                     let unit_value = row.total_value / row.quantity
                     let total_value_partial = unit_value * row.quantity

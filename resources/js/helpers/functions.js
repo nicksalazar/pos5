@@ -1,6 +1,6 @@
 function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pigv) {
-    // console.log(currency_type_id_new, exchange_rate_sale)
-
+    //console.log("porcentage ICG: "+pigv);
+    //pigv = 0.12;
     let currency_type_id_old = row_old.item.currency_type_id
     let unit_price = parseFloat(row_old.item.unit_price)
     // } else {
@@ -8,7 +8,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     // }
     let warehouse_id = row_old.warehouse_id
 
-    // console.log(row_old)
+    console.log(row_old)
 
     if (currency_type_id_old === 'PEN' && currency_type_id_old !== currency_type_id_new) {
         unit_price = unit_price / exchange_rate_sale;
@@ -83,9 +83,22 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     // console.log(row)
 
     let percentage_igv = pigv * 100
+
+    if(row.affectation_igv_type_id === '11'){
+        percentage_igv = 8
+    }else if (row.affectation_igv_type_id === '12'){
+        percentage_igv = 14
+    }else if(row.affectation_igv_type_id === '10'){
+        percentage_igv = 12
+    }else{
+        percentage_igv = 18
+    }
+
+    row.percentage_igv = percentage_igv;
+    
     let unit_value = row.unit_price
 
-    if (row.affectation_igv_type_id === '10') {
+    if (row.affectation_igv_type_id === '10' || row.affectation_igv_type_id === '11' || row.affectation_igv_type_id === '12') {
         unit_value = row.unit_price / (1 + percentage_igv / 100)
     }
 
@@ -226,7 +239,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     let total_igv = 0
 
-    if (row.affectation_igv_type_id === '10') {
+    if (row.affectation_igv_type_id === '10' || row.affectation_igv_type_id === '11' || row.affectation_igv_type_id === '12' ) {
         total_igv = total_base_igv * percentage_igv / 100
     }
     if (row.affectation_igv_type_id === '20') { //Exonerated
@@ -366,7 +379,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     //     row.total_plastic_bag_taxes = total_plastic_bag_taxes
     // }
 
-    // console.log(row)
+    console.log(row)
     return row
 }
 

@@ -945,8 +945,8 @@ export default {
             let unit_price = this.form.unit_price
 
             if (!affectation_igv_types_exonerated_unaffected.includes(this.form.affectation_igv_type_id)) {
-
-                unit_price = (this.form.purchase_has_igv) ? this.form.unit_price : this.form.unit_price * 1.18;
+                //JOINSOFTWARE 1.18//
+                unit_price = (this.form.purchase_has_igv) ? this.form.unit_price : this.form.unit_price * 1.12;
 
             }
 
