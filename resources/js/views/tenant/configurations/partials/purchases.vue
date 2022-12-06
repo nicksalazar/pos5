@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-6 mt-4">
             <label class="control-label">
-                Poder cambiar el IGV global de los items en la compra.
+                Poder cambiar el IVA global de los items en la compra.
             </label>
             <div :class="{'has-danger': errors.enabled_global_igv_to_purchase}"
                  class="form-group">
@@ -19,9 +19,9 @@
 
         <div class="col-md-6 mt-4">
             <label class="control-label">
-                Seleccionar por defecto <b>Poder cambiar el IGV global de los items en la compra</b>
+                Seleccionar por defecto <b>Poder cambiar el IVA global de los items en la compra</b>
                 <el-tooltip class="item"
-                            content="Solo aplica si la configuración 'Poder cambiar el IGV global de los items en la compra' se encuentra habilitada"
+                            content="Solo aplica si la configuración 'Poder cambiar el IVA global de los items en la compra' se encuentra habilitada"
                             effect="dark"
                             placement="top-start">
                     <i class="fa fa-info-circle"></i>

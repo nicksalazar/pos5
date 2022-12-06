@@ -21,7 +21,7 @@ class BillSender extends BaseSunat
      */
     public function send($filename, $content)
     {
-        //Log::info('content BILLSENDER : '.$content);
+        Log::info("url a enviar $filename");
         $response = null;
         $servicio = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl"; //url del servicio
         $client = new nusoap_client("$filename", 'wsdl');

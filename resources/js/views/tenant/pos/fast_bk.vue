@@ -751,7 +751,7 @@
                                     v-if="form.total_igv > 0"
                                     class="font-weight-semibold  m-0"
                                 >
-                                    <td class="font-weight-semibold">IGV</td>
+                                    <td class="font-weight-semibold">IVA</td>
                                     <td class="font-weight-semibold">:</td>
                                     <td class="text-right text-blue">
                                         {{ currency_type.symbol }}

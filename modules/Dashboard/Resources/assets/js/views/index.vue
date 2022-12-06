@@ -132,7 +132,7 @@
                                         <tbody>
                                             <tr class="text-info text-bold">
                                                 <td>Total Cobrado</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ sale_note.totals.total_payment }}</td>
+                                                <td class="text-right font-weight-bold">USD/&nbsp;{{ sale_note.totals.total_payment }}</td>
                                             </tr>
                                             <tr class="text-danger text-bold">
                                                 <td>Pendiente de cobro</td>

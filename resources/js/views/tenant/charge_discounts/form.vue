@@ -14,7 +14,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.base}">
-                            <label class="control-label">Afecta la base imponible del IGV</label>
+                            <label class="control-label">Afecta la base imponible del IVA</label>
                             <el-switch
                                     v-model="form.base"
                                     active-text="Si"

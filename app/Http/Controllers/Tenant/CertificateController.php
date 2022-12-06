@@ -37,7 +37,7 @@ class CertificateController extends Controller
                 if(!file_exists(storage_path('app'.DIRECTORY_SEPARATOR.'certificates'))) {
                     mkdir(storage_path('app'.DIRECTORY_SEPARATOR.'certificates'));
                 }
-                file_put_contents(storage_path('app'.DIRECTORY_SEPARATOR.'certificates'.DIRECTORY_SEPARATOR.$name), $pem);
+                file_put_contents(storage_path('app'.DIRECTORY_SEPARATOR.'certificates'.DIRECTORY_SEPARATOR.$name), $pfx);
                 $company->certificate = $name;
                 $company->certificate_pass = $password;
                 $company->save();

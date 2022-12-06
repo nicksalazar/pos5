@@ -685,7 +685,7 @@ class DocumentController extends Controller
             $facturalo = new Facturalo();
             $facturalo->setDocument($document);
             $facturalo->validateDocumentSRI();
-            $facturalo->createPdf();
+            //$facturalo->createPdf();
             return $facturalo;
             
         });

@@ -116,7 +116,7 @@
                         </div>
                         <div class="row m-0 p-0 h-17 d-flex align-items-center">
                             <div class="col-sm-6 py-1">
-                                <p class="font-weight-semibold mb-0">IGV</p>
+                                <p class="font-weight-semibold mb-0">IVA</p>
                             </div>
                             <div class="col-sm-6 py-1 text-right">
                                 <p class="font-weight-semibold mb-0">
@@ -150,7 +150,7 @@
                         </div>
                         <div class="row m-0 p-0 h-25 d-flex align-items-center">
                             <div class="col-sm-6 py-1">
-                                <p class="font-weight-semibold mb-0">IGV</p>
+                                <p class="font-weight-semibold mb-0">IVA</p>
                             </div>
                             <div class="col-sm-6 py-1 text-right">
                                 <p class="font-weight-semibold mb-0">
@@ -445,7 +445,7 @@ export default {
 
                 this.form.discounts.push({
                     discount_type_id: '03',
-                    description: 'Descuentos globales que no afectan la base imponible del IGV/IVAP',
+                    description: 'Descuentos globales que no afectan la base imponible del IVA/IVAP',
                     factor: factor,
                     amount: amount,
                     base: base
@@ -472,12 +472,21 @@ export default {
             let total_plastic_bag_taxes = 0
             let total_base_isc = 0
             let total_isc = 0
-
+            //JOINSOFTWARE//
             this.form.items.forEach((row) => {
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
 
                 if (row.affectation_igv_type_id === '10') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '11') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '12') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '30') {
                     total_taxed += parseFloat(row.total_value)
                 }
                 if (row.affectation_igv_type_id === '20') {

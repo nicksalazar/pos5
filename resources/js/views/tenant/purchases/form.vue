@@ -561,7 +561,7 @@
                                     form.total_taxed
                                                            }}</p>
                             <p v-if="form.total_igv > 0"
-                               class="text-right">IGV: {{ currency_type.symbol }} {{ form.total_igv }}</p>
+                               class="text-right">IVA: {{ currency_type.symbol }} {{ form.total_igv }}</p>
 
                             <p v-if="form.total_isc > 0"
                                class="text-right">ISC: {{ currency_type.symbol }} {{ form.total_isc }}</p>

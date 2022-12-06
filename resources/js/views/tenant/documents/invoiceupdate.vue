@@ -394,7 +394,7 @@
                                                     <!-- <td>{{ currency_type.symbol }} {{ form.total_prepayment }}</td> -->
                                                 </tr>
                                                 <tr v-if="form.total_igv > 0">
-                                                    <td>IGV:</td>
+                                                    <td>IVA:</td>
                                                     <td>{{ currency_type.symbol }} {{ form.total_igv }}</td>
                                                 </tr>
                                                 <tr v-if="form.total_isc > 0">
@@ -760,7 +760,7 @@
                                         <td>{{ currency_type.symbol }} {{ form.total_discount }}</td>
                                     </tr>
                                     <tr v-if="form.total_igv > 0">
-                                        <td>IGV:</td>
+                                        <td>IVA:</td>
                                         <td>{{ currency_type.symbol }} {{ form.total_igv }}</td>
                                     </tr>
                                     <tr v-if="form.total_isc > 0">
@@ -2325,7 +2325,7 @@ export default {
 
                     this.form.discounts.push({
                         discount_type_id: "04",
-                        description: "Descuentos globales por anticipos gravados que afectan la base imponible del IGV/IVAP",
+                        description: "Descuentos globales por anticipos gravados que afectan la base imponible del IVA/IVAP",
                         factor: factor,
                         amount: amount,
                         base: base
@@ -2718,7 +2718,7 @@ export default {
 
                 this.form.retention = {
                     base: base,
-                    code: '62', //Código de Retención del IGV
+                    code: '62', //Código de Retención del IVA
                     amount: amount,
                     percentage: percentage
                 }
@@ -3282,7 +3282,7 @@ export default {
 
                 this.form.charges.push({
                     charge_type_id: '50',
-                    description: 'Cargos globales que no afectan la base imponible del IGV/IVAP',
+                    description: 'Cargos globales que no afectan la base imponible del IVA/IVAP',
                     factor: factor,
                     amount: amount,
                     base: base

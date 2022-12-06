@@ -8,7 +8,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     // }
     let warehouse_id = row_old.warehouse_id
 
-    console.log(row_old)
+    //console.log(row_old)
 
     if (currency_type_id_old === 'PEN' && currency_type_id_old !== currency_type_id_new) {
         unit_price = unit_price / exchange_rate_sale;
@@ -90,6 +90,9 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         percentage_igv = 14
     }else if(row.affectation_igv_type_id === '10'){
         percentage_igv = 12
+    }
+    else if(row.affectation_igv_type_id === '30' || row.affectation_igv_type_id === '20' ){
+        percentage_igv = 0
     }else{
         percentage_igv = 18
     }
@@ -379,7 +382,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     //     row.total_plastic_bag_taxes = total_plastic_bag_taxes
     // }
 
-    console.log(row)
+    //console.log(row)
     return row
 }
 

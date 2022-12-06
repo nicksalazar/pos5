@@ -520,7 +520,7 @@ export default {
                     visible: false
                 },
                 real_unit_price: {
-                    title: 'Mostrar el precio de venta total (con el cálculo IGV)',
+                    title: 'Mostrar el precio de venta total (con el cálculo IVA)',
                     visible: false
                 },
                 extra_data: {

@@ -83,6 +83,7 @@ class Facturalo
     protected $clave_acceso;
     protected $digito_verificador_clave;
     protected $doc_type;
+    protected $urlSri;
 
     public function __construct()
     {
@@ -272,11 +273,10 @@ class Facturalo
         //Log::info('INFO ADICIONAL :'.$this->document->additional_information[0]);
 
         $establecimeinto = Establishment::find($this->document->establishment_id);
-        $this->clave = "" . date('dmY', strtotime($this->document->date_of_issue)) . "" .$this->doc_type. "" . $this->company->number . "2".$establecimeinto->code."".$serie. str_pad($this->document->number , '9', '0', STR_PAD_LEFT) . "" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
+        $this->clave = "" . date('dmY', strtotime($this->document->date_of_issue)) . "" .$this->doc_type. "" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".$establecimeinto->code."".$serie. str_pad($this->document->number , '9', '0', STR_PAD_LEFT) . "" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
         $this->digito_verificador_clave = $this->validar_clave($this->clave);
         $this->clave_acceso = $this->clave . "" . $this->digito_verificador_clave . "";
         $this->document->clave_SRI = $this->clave_acceso;
-        
         $this->document->update();
         $template = new Template();
         $this->xmlUnsigned = XmlFormat::format($template->xml($this->type, $this->company, $this->document, $this->clave_acceso));
@@ -335,7 +335,7 @@ class Facturalo
             //$this->signer->setCertificateFromFile($this->pathCertificate);
             //$this->xmlSigned = $this->signer->signXml($this->xmlUnsigned);
             $firma = new FirmarSri();
-            $this->xmlSigned = $firma->Firma_SRI($this->clave_acceso, $this->pathCertificate,$this->company->soap_username,$this->xmlUnsigned);  
+            $this->xmlSigned = $firma->Firma_SRI($this->clave_acceso, $this->pathCertificate,$this->company->certificate_pass,$this->xmlUnsigned);  
             //Log::info('resultado Frima: '.json_encode($this->xmlSigned));
         }
 
@@ -838,11 +838,11 @@ class Facturalo
                     $this->doc_type = '07';
                 }
                 //$this->doc_type = '01';
-                $this->actions['format_pdf'] = 'a4';
+                $this->actions['format_pdf'] = 'a5';
 
                 $this->createPdf();
 
-                $this->sendEmail2();
+                //$this->sendEmail2();
             
             }elseif($estado == 'NO AUTORIZADO'){
 
@@ -851,9 +851,7 @@ class Facturalo
                     'state_type_id' => self::REJECTED
                 ]);
                 $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
-                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje'];
-            
-                
+                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje']; 
 
             }else{
 
@@ -864,8 +862,6 @@ class Facturalo
                 $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje'];
             
             }
-
-            
 
             $this->response = [
                 'sent' => true,
@@ -903,11 +899,13 @@ class Facturalo
     private function senderXmlSigned()
     {
         $this->setDataSoapType();
+        $this->setSoapCredentials();
+
         $sender = in_array($this->type, ['summary', 'voided'])?new SummarySender():new BillSender();
         $sender->setClient($this->wsClient);
         $sender->setCodeProvider(new XmlErrorCodeProvider());
         $this->loadXmlSigned();
-        return $sender->send($this->endpoint, $this->xmlSigned);
+        return $sender->send($this->urlSri, $this->xmlSigned);
 
 
     }
@@ -1041,7 +1039,7 @@ class Facturalo
         } else {
             $code = 110;
             $message = 'SIN RESPUESTA DEL SRI';
-
+            Log::error($res);
             $this->response = [
                 'sent' => false,
                 'code' => $code,
@@ -1305,9 +1303,9 @@ class Facturalo
             
             if($this->isSRI){
                 if($this->isDemo){
-                    $this->endpoint = 'https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl';
+                    $this->urlSri = 'https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl';
                 }else{
-                    $this->endpoint = 'https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl';
+                    $this->urlSri = 'https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl';
                 }  
             }else{
                 if($this->isDemo) {
@@ -1324,8 +1322,8 @@ class Facturalo
         }
 
 
-//        $this->soapUsername = ($this->isDemo)?$this->company->number.'MODDATOS':$this->company->soap_username;
-//        $this->soapPassword = ($this->isDemo)?'moddatos':$this->company->soap_password;
+        // $this->soapUsername = ($this->isDemo)?$this->company->number.'MODDATOS':$this->company->soap_username;
+        // $this->soapPassword = ($this->isDemo)?'moddatos':$this->company->soap_password;
 
         if($this->isOse) {
             

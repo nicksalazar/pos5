@@ -372,7 +372,7 @@
                                     form.total_taxed
                                                            }}</p>
                             <p v-if="form.total_igv > 0"
-                               class="text-right">IGV: {{ currency_type.symbol }} {{ form.total_igv }}</p>
+                               class="text-right">IVA: {{ currency_type.symbol }} {{ form.total_igv }}</p>
 
                             <h3 v-if="form.total > 0"
                                 class="text-right"><b>TOTAL: </b>{{ currency_type.symbol }} {{ form.total }}

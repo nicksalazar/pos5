@@ -775,7 +775,7 @@
                                     v-if="form.total_igv > 0"
                                     class="font-weight-semibold  m-0"
                                 >
-                                    <td class="font-weight-semibold">IGV</td>
+                                    <td class="font-weight-semibold">IVA</td>
                                     <td class="font-weight-semibold">:</td>
                                     <td class="text-right text-blue">
                                         {{ currency_type.symbol }}
@@ -837,7 +837,7 @@
 
             <div class="col-12 text-right px-0" v-if="form.total_igv > 0">
               <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">IGV: </span>
+                <span class="font-weight-semibold">IVA: </span>
                 <span class="text-blue">{{currency_type.symbol}} {{form.total_igv}}</span>
               </h4>
             </div> -->
@@ -1583,7 +1583,7 @@ export default {
                 date_of_issue: moment().format("YYYY-MM-DD"),
                 time_of_issue: moment().format("HH:mm:ss"),
                 customer_id: null,
-                currency_type_id: "PEN",
+                currency_type_id: "USD",
                 purchase_order: null,
                 exchange_rate_sale: 1,
                 total_prepayment: 0,
@@ -1877,6 +1877,9 @@ export default {
             } 
             else 
             {
+                console.log("item precio: ")
+                console.log(item.sale_unit_price)
+
                 response = await this.getStatusStock(
                     item.item_id,
                     presentation
@@ -1899,7 +1902,7 @@ export default {
                 this.form_item.aux_quantity = 1;
 
                 //JOINSOFTWARE//
-                let unit_price = 0;
+                let unit_price = this.form_item.unit_price_value;
 
                 if(item.sale_affectation_igv_type_id === '10'){
 
@@ -1953,7 +1956,10 @@ export default {
                 this.form_item.percentage_isc = this.form_item.item.percentage_isc
                 this.form_item.system_isc_type_id = this.form_item.item.system_isc_type_id
 
-                // console.log(this.form_item)
+                console.log(unit_price)
+                console.log('antes de enviar a functions')
+                console.log(this.form_item )
+
                 this.row = calculateRowItem(
                     this.form_item,
                     this.form.currency_type_id,
@@ -2069,6 +2075,7 @@ export default {
                 if (row.affectation_igv_type_id === "40") {
                     total_exportation += parseFloat(row.total_value);
                 }
+
                 //JOINSOFTWARE//
                 if (
                     ["10","11","12","13", "20", "30", "40"].indexOf(
@@ -2095,8 +2102,8 @@ export default {
                 }
 
                 total_plastic_bag_taxes += parseFloat(row.total_plastic_bag_taxes)
-/*
-                if (['10','11', '12', '14', '15', '16'].includes(row.affectation_igv_type_id)) {
+
+                if (['14', '15', '16'].includes(row.affectation_igv_type_id)) {
 
                     let unit_value = row.total_value / row.quantity
                     let total_value_partial = unit_value * row.quantity
@@ -2110,7 +2117,7 @@ export default {
                     total += parseFloat(row.total) //se agrega suma al total para considerar el icbper
 
                 }
-*/
+
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
