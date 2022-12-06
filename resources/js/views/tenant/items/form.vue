@@ -149,7 +149,7 @@
                         <div class="col-md-6">
                             <div :class="{'has-danger': errors.sale_affectation_igv_type_id}"
                                  class="form-group">
-                                <label class="control-label">Tipo de afectación</label>
+                                <label class="control-label">Tipo de impuesto</label>
                                 <el-select
                                     v-model="form.sale_affectation_igv_type_id"
                                     filterable
@@ -894,7 +894,7 @@
                         <div class="col-md-8">
                             <div :class="{'has-danger': errors.purchase_affectation_igv_type_id}"
                                  class="form-group">
-                                <label class="control-label">Tipo de afectación</label>
+                                <label class="control-label">Tipo de impuesto</label>
                                 <el-select v-model="form.purchase_affectation_igv_type_id"
                                            @change="changePurchaseAffectationIgvType">
                                     <el-option v-for="option in affectation_igv_types"

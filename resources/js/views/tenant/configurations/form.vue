@@ -811,9 +811,9 @@
                             <div class="col-md-6 mt-4">
                                 <div :class="{'has-danger': errors.affectation_igv_type_id}"
                                         class="form-group">
-                                    <label class="control-label">Tipo de afectación
+                                    <label class="control-label">Tipo de impuesto
                                         <el-tooltip class="item"
-                                                    content="Tipo de afectación predeterminada al registrar nuevo producto y rentar habitación en hoteles (Disponible Op. Gravadas y Exoneradas)"
+                                                    content="Tipo de impuesto predeterminada al registrar nuevo producto y rentar habitación en hoteles (Disponible Op. Gravadas y Exoneradas)"
                                                     effect="dark"
                                                     placement="top-start">
                                             <i class="fa fa-info-circle"></i>
@@ -873,7 +873,7 @@
                             </div>
 
                             <div class="col-md-6 mt-4">
-                                <label class="control-label">Modificar Tipo de afectación (Gravado -
+                                <label class="control-label">Modificar Tipo de impuesto (Gravado -
                                                                 Bonificación)
                                     <el-tooltip
                                         class="item"

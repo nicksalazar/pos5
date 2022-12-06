@@ -14,7 +14,7 @@
 
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.purchase_affectation_igv_type_id}">
-                            <label class="control-label">Tipo de afectación (Compra)</label>
+                            <label class="control-label">Tipo de impuesto (Compra)</label>
                             <el-select v-model="form.purchase_affectation_igv_type_id" filterable>
                                 <el-option v-for="option in affectation_igv_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
                             </el-select>
