@@ -159,9 +159,9 @@ class TenantCatalogsTable extends Migration
         });
         //JOINSOFTWARE AGREGAR IVAS//
         DB::table('cat_affectation_igv_types')->insert([
-            ['id' => '10', 'active' => false,  'exportation' => false, 'free' => false, 'description' => 'Gravado - Operación Onerosa'],
-            ['id' => '11', 'active' => false,  'exportation' => false, 'free' => false,  'description' => 'Gravado – Retiro por premio'],
-            ['id' => '12', 'active' => false,  'exportation' => false, 'free' => false,  'description' => 'Gravado – Retiro por donación'],
+            ['id' => '10', 'active' => true,  'exportation' => false, 'free' => false, 'description' => 'Gravado - IVA 12'],
+            ['id' => '11', 'active' => true,  'exportation' => false, 'free' => false,  'description' => 'Gravado – IVA 8'],
+            ['id' => '12', 'active' => true,  'exportation' => false, 'free' => false,  'description' => 'Gravado – IVA 14'],
             ['id' => '13', 'active' => false,  'exportation' => false, 'free' => false,  'description' => 'Gravado – Retiro'],
             ['id' => '14', 'active' => false,  'exportation' => false, 'free' => true,  'description' => 'Gravado – Retiro por publicidad'],
             ['id' => '15', 'active' => false,  'exportation' => false, 'free' => true,  'description' => 'Gravado – Bonificaciones'],
@@ -169,7 +169,7 @@ class TenantCatalogsTable extends Migration
             ['id' => '17', 'active' => false, 'exportation' => false, 'free' => true,  'description' => 'Gravado – IVAP'],
             ['id' => '20', 'active' => false,  'exportation' => false, 'free' => false, 'description' => 'Exonerado - Operación Onerosa'],
             ['id' => '21', 'active' => false,  'exportation' => false, 'free' => true,  'description' => 'Exonerado – Transferencia Gratuita'],
-            ['id' => '30', 'active' => false,  'exportation' => false, 'free' => false, 'description' => 'Inafecto - Operación Onerosa'],
+            ['id' => '30', 'active' => true,  'exportation' => false, 'free' => false, 'description' => 'Inafecto - IVA 0'],
             ['id' => '31', 'active' => false,  'exportation' => false, 'free' => true,  'description' => 'Inafecto – Retiro por Bonificación'],
             ['id' => '32', 'active' => false,  'exportation' => false, 'free' => true,  'description' => 'Inafecto – Retiro'],
             ['id' => '33', 'active' => false,  'exportation' => false, 'free' => true,  'description' => 'Inafecto – Retiro por Muestras Médicas'],
@@ -178,11 +178,11 @@ class TenantCatalogsTable extends Migration
             ['id' => '36', 'active' => false,  'exportation' => false, 'free' => true,  'description' => 'Inafecto - Retiro por publicidad'],
             ['id' => '37', 'active' => false,  'exportation' => false, 'free' => true,  'description' => 'Inafecto - Transferencia gratuita'],
             ['id' => '40', 'active' => false,  'exportation' => true,  'free' => false, 'description' => 'Exportación de bienes o servicios'],
-            ['id' => '50', 'active' => true,  'exportation' => false,  'free' => false, 'description' => 'Iva - 0'],
-            ['id' => '51', 'active' => true,  'exportation' => false,  'free' => false, 'description' => 'Iva - 8'],
-            ['id' => '52', 'active' => true,  'exportation' => false,  'free' => false, 'description' => 'Iva - 12'],
-            ['id' => '53', 'active' => true,  'exportation' => false,  'free' => false, 'description' => 'Iva - 14'],
-            ['id' => '60', 'active' => true,  'exportation' => false,  'free' => false, 'description' => 'Sin IVA'],
+            ['id' => '50', 'active' => false,  'exportation' => false,  'free' => false, 'description' => 'Iva - 0'],
+            ['id' => '51', 'active' => false,  'exportation' => false,  'free' => false, 'description' => 'Iva - 8'],
+            ['id' => '52', 'active' => false,  'exportation' => false,  'free' => false, 'description' => 'Iva - 12'],
+            ['id' => '53', 'active' => false,  'exportation' => false,  'free' => false, 'description' => 'Iva - 14'],
+            ['id' => '60', 'active' => false,  'exportation' => false,  'free' => false, 'description' => 'Sin IVA'],
         ]);
 
         /*
