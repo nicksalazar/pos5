@@ -184,7 +184,7 @@
                                 class="col-12 col-md-3 form-group"
                                 :class="{ 'has-danger': errors.affectation_igv_type_id }"
                             >
-                                <label for="rate">Tipo de afectación</label>
+                                <label for="rate">Tipo de impuesto</label>
 
                                 <el-select
                                     v-model="form.affectation_igv_type_id"
