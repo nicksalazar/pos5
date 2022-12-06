@@ -320,7 +320,7 @@
                             <div class="col-md-3">
                                 <div :class="{'has-danger': errors.department_id}"
                                      class="form-group">
-                                    <label class="control-label">Departamento</label>
+                                    <label class="control-label">Provincia</label>
                                     <el-select v-model="form.department_id"
                                                dusk="department_id"
                                                filterable
@@ -340,7 +340,7 @@
                             <div class="col-md-3">
                                 <div :class="{'has-danger': errors.province_id}"
                                      class="form-group">
-                                    <label class="control-label">Provincia</label>
+                                    <label class="control-label">Ciudad</label>
                                     <el-select v-model="form.province_id"
                                                dusk="province_id"
                                                filterable
@@ -360,7 +360,7 @@
                             <div class="col-md-3">
                                 <div :class="{'has-danger': errors.province_id}"
                                      class="form-group">
-                                    <label class="control-label">Distrito</label>
+                                    <label class="control-label">Sector</label>
                                     <el-select v-model="form.district_id"
                                                dusk="district_id"
                                                filterable
@@ -797,8 +797,8 @@ export default {
                 number: '',
                 name: null,
                 trade_name: null,
-                country_id: 'PE',
-                nationality_id: 'PE',
+                country_id: 'EC',
+                nationality_id: 'EC',
                 department_id: null,
                 province_id: null,
                 district_id: null,
@@ -899,7 +899,7 @@ export default {
 
             this.form.addresses.push({
                 'id': null,
-                'country_id': 'PE',
+                'country_id': 'EC',
                 'location_id': [],
                 'address': null,
                 'email': null,

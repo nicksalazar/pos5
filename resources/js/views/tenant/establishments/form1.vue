@@ -229,7 +229,7 @@
                 this.form = {
                     id: null,
                     description: null,
-                    country_id: 'PE',
+                    country_id: 'EC',
                     department_id: null,
                     province_id: null,
                     district_id: null,

@@ -15,8 +15,8 @@ class TenantAddDataDefaultVariousClientsToPersons extends Migration
      */
     public function up()
     {
-        $number = '99999999';
-        $name = 'Clientes - Varios';
+        $number = '9999999999999';
+        $name = 'Consumidor final';
         $identity_document_type_id = '0';
         $type = 'customers';
 
@@ -31,7 +31,9 @@ class TenantAddDataDefaultVariousClientsToPersons extends Migration
                 'name' => $name,
                 'identity_document_type_id' => $identity_document_type_id,
                 'type' => $type,
-                'country_id' => 'PE',
+                'country_id' => 'EC',
+                'address' => 'N/A',
+                'telephone' => '9999999999',
             ]);
         }
     }

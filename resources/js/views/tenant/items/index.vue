@@ -171,9 +171,9 @@
                         <th v-if="columns.real_unit_price.visible"
                             class="text-center">P. venta
                         </th>
-                        <th class="text-center">Tiene Igv (Venta)</th>
+                        <th class="text-center">Tiene IVA (Venta)</th>
                         <th v-if="columns.purchase_has_igv_description.visible"
-                            class="text-center">Tiene Igv (Compra)
+                            class="text-center">Tiene IVA (Compra)
                         </th>
                         <th class="text-right"></th>
                     </tr>
@@ -500,7 +500,7 @@ export default {
                     visible: false
                 },
                 purchase_has_igv_description: {
-                    title: 'Tiene Igv (Compra)',
+                    title: 'Tiene IVA (Compra)',
                     visible: false
                 },
                 model: {
