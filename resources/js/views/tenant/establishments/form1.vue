@@ -12,7 +12,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group" :class="{'has-danger': errors.code}">
-                            <label class="control-label">Código Domicilio Fiscal</label>
+                            <label class="control-label">Código Establecimineto</label>
                             <el-input v-model="form.code" :maxlength="4"></el-input>
                             <small class="form-control-feedback" v-if="errors.code" v-text="errors.code[0]"></small>
                         </div>

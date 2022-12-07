@@ -11,7 +11,7 @@
                 </div>
                 <div class="col-md-5">
                     <div class="form-group" :class="{'has-danger': errors.certificate}">
-                        <label class="control-label">Certificado pfx</label>
+                        <label class="control-label">Certificado p12</label>
                         <el-upload
                                    ref="upload"
                                    :headers="headers"
@@ -67,7 +67,7 @@
                 }
             },
             create() {
-                this.titleDialog = 'Generar Certificado PEM'
+                this.titleDialog = 'Generar Certificado P12'
             },
 //            submit() {
 //                this.loading_submit = true

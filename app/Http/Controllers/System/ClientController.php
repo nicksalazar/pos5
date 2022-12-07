@@ -379,6 +379,7 @@
                 $temp_path = $request->input('temp_path');
 
                 $name_certificate = $request->input('certificate');
+                $password = $request->input('password_certificate');
 
                 if ($temp_path) {
 
@@ -386,11 +387,12 @@
                         $password = $request->input('password_certificate');
                         $pfx = file_get_contents($temp_path);
                         $pem = GenerateCertificate::typePEM($pfx, $password);
-                        $name = 'certificate_' . $request->input('number') . '.pem';
+                        //$name = 'certificate_' . $request->input('number') . '.pem';
+                        $name = 'certificate_' . $request->input('number') . '.p12';
                         if (!file_exists(storage_path('app' . DIRECTORY_SEPARATOR . 'certificates'))) {
                             mkdir(storage_path('app' . DIRECTORY_SEPARATOR . 'certificates'));
                         }
-                        file_put_contents(storage_path('app' . DIRECTORY_SEPARATOR . 'certificates' . DIRECTORY_SEPARATOR . $name), $pem);
+                        file_put_contents(storage_path('app' . DIRECTORY_SEPARATOR . 'certificates' . DIRECTORY_SEPARATOR . $name), $pfx);
                         $name_certificate = $name;
 
                     } catch (Exception $e) {
@@ -445,7 +447,8 @@
                         'soap_username' => $request->soap_username,
                         'soap_password' => $request->soap_password,
                         'soap_url' => $request->soap_url,
-                        'certificate' => $name_certificate
+                        'certificate' => $name_certificate,
+                        'certificate_pass' => $password
                     ]);
 
 
@@ -558,18 +561,19 @@
             $configuration = Configuration::first();
 
             $name_certificate = $configuration->certificate;
-
+            $password = $request->input('password_certificate');
             if ($temp_path) {
 
                 try {
                     $password = $request->input('password_certificate');
                     $pfx = file_get_contents($temp_path);
                     $pem = GenerateCertificate::typePEM($pfx, $password);
-                    $name = 'certificate_' . 'admin_tenant' . '.pem';
+                    //$name = 'certificate_' . 'admin_tenant' . '.pem';
+                    $name = 'certificate_' . 'admin_tenant' . '.p12';
                     if (!file_exists(storage_path('app' . DIRECTORY_SEPARATOR . 'certificates'))) {
                         mkdir(storage_path('app' . DIRECTORY_SEPARATOR . 'certificates'));
                     }
-                    file_put_contents(storage_path('app' . DIRECTORY_SEPARATOR . 'certificates' . DIRECTORY_SEPARATOR . $name), $pem);
+                    file_put_contents(storage_path('app' . DIRECTORY_SEPARATOR . 'certificates' . DIRECTORY_SEPARATOR . $name), $pfx);
                     $name_certificate = $name;
 
                 } catch (Exception $e) {
@@ -634,6 +638,7 @@
                 'soap_password' => $request->soap_password,
                 'soap_url' => $request->soap_url,
                 'certificate' => $name_certificate,
+                'certificate_pass' => $password
             ]);
 
             $plan = Plan::findOrFail($request->input('plan_id'));
