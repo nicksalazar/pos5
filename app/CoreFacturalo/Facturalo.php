@@ -838,7 +838,7 @@ class Facturalo
                     $this->doc_type = '07';
                 }
                 //$this->doc_type = '01';
-                $this->actions['format_pdf'] = 'a5';
+                $this->actions['format_pdf'] = 'invoice_a4';
 
                 $this->createPdf();
 

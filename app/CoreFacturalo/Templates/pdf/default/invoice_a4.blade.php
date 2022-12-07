@@ -100,7 +100,7 @@
     <tr>
         <td width="120px">FEHA AUTORIZADO</td>
         <td width="8px">:</td>
-        <td>{{$document->date_authorization $document->time_authorization}}</td>
+        <td>{{$document->date_authorization}} {{ $document->time_authorization}}</td>
     </tr>
     <tr>
         <td width="120px">FECHA DE EMISIÓN</td>
