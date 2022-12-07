@@ -28,7 +28,7 @@
             </div>
             <div class="row pt-2" v-else>
                 <div class="col-md-12">
-                    <el-button  type="primary" @click="clickCreate">Subir Certificado .pfx</el-button>
+                    <el-button  type="primary" @click="clickCreate">Subir Certificado .p12</el-button>
                 </div>
             </div>
             <div class="title border-bottom">
