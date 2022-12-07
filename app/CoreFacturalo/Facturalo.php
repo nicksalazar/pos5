@@ -815,34 +815,37 @@ class Facturalo
 
                 $fechaAutorizado = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['fechaAutorizacion'];
                 $fechaArray = explode('T',$fechaAutorizado);
+                Log::info('gettype: '.$fechaArray[0].' -- '.substr($fechaArray[1],0,8));
+
                 
-                //$this->updateStateDocuments(self::ACCEPTED);
                 $this->document->update([
-                    'state_type_id' => self::ACCEPTED,
-                    'date_authorization'=> $fechaArray[0],
-                    'time_authorization'=> substr($fechaArray[1],0,8)
+                    'state_type_id' => self::ACCEPTED
                 ]);
+                
+                $this->document->date_authorization = $fechaArray[0];
+                $this->document->time_authorization = substr($fechaArray[1],0,8);
+                $this->document->update();
 
                 $code = 200;
                 $mensaje = 'DOCUMENTO AUTORIZADO POR EL SRI';
                 $documento = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['comprobante'];
 
                 $this->uploadFile($documento, 'autorizado');
-
+                $tipodoc = 'invoice';
                 if($this->document->documnet_type_id == '01'){
-                    $this->type = 'invoice';
+                    $tipodoc = 'invoice';
                     $this->doc_type = '01';
 
                 }else if($this->document->documnet_type_id == '07'){
-                    $this->type = 'credit';
+            
+                    $tipodoc = 'credit';
                     $this->doc_type = '07';
                 }
-                //$this->doc_type = '01';
-                $this->actions['format_pdf'] = 'invoice_a4';
-
-                $this->createPdf();
-
-                //$this->sendEmail2();
+                $this->actions['format_pdf'] = 'blank';
+                $this->createPdf($this->document, $tipodoc, 'a4');
+                $temp = tempnam(sys_get_temp_dir(), 'pdf');
+                file_put_contents($temp, $this->getStorage($this->document->filename, 'pdf'));
+                $this->sendEmail2();
             
             }elseif($estado == 'NO AUTORIZADO'){
 
@@ -1021,16 +1024,33 @@ class Facturalo
                 
             }catch(Exception $ex){
 
-                $estado = 'PENDIENTE';
-                $code = 500;
-                $mensaje = 'SIN RESPUESTA DEL SRI';
+                
 
-                $this->response = [
-                    'sent' => false,
-                    'code' => $code,
-                    'description' => $mensaje,
-                    'notes' => $estado
-                ];
+                try {
+
+                    $code = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['identificador'];
+                    $mensaje = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['mensaje'];
+
+                    $this->response = [
+                        'sent' => true,
+                        'code' => $code,
+                        'description' => $mensaje
+                    ];
+
+                }catch(Exception $ex){
+
+                    $estado = 'PENDIENTE';
+                    $code = 500;
+                    $mensaje = 'SIN RESPUESTA DEL SRI';
+
+                    $this->response = [
+                        'sent' => false,
+                        'code' => $code,
+                        'description' => json_encode($ex),
+                        'notes' => $estado
+                    ];
+                }
+                
 
                 $this->updateRegularizeShipping($code, $mensaje);
 

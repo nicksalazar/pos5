@@ -39,7 +39,7 @@ class BillSender extends BaseSunat
             //Log::info('__getLastResponseHeaders: '.json_encode($client->__getLastResponseHeaders()));
             Log::info('gettype: '.gettype($response));
             Log::info('response: '.json_encode($response));
-    
+            //Log::info('response: '.$response['RespuestaRecepcionComprobante']['estado']);
             
             $cdrZip = $response;
             /*$result
