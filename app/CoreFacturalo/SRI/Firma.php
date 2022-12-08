@@ -169,7 +169,7 @@ class Firma {
             $aux = 'openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1';
 
             //$salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
-            $salida = shell_exec('openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            $salida = shell_exec('sudo openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
 
             
             if (strpos($salida, 'verified OK') !== false) {
@@ -183,7 +183,7 @@ class Firma {
                     $pkey = openssl_pkey_get_private($items, $this->config['pass']);
 
                     $this->privateKey = openssl_get_privatekey($pkey);
-//var_dump($pkey);Die;     
+                    //var_dump($pkey);Die;     
                     //$estado = openssl_x509_check_private_key($this->certificate, $this->privateKey);
 
                     if (openssl_x509_check_private_key($this->certificate, $this->privateKey)) {
@@ -201,7 +201,7 @@ class Firma {
                     return array('error' => true, 'mensaje' => "la clave privara no corresponde al certificado.");
                 }
             } else
-                return array('error' => true, 'mensaje' => $aux);
+                return array('error' => true, 'mensaje' => $salida);
         } catch (Exception $ex) {
             return array('error' => true, 'mensaje' => $ex->getMessage());
         }

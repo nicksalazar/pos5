@@ -130,9 +130,10 @@
                                 <div class="card-body p-0" v-show="!loaders.sale_note">
                                     <table class="table mb-0 table-sm">
                                         <tbody>
+                                            <!-- JOINSOFTWARE -->
                                             <tr class="text-info text-bold">
                                                 <td>Total Cobrado</td>
-                                                <td class="text-right font-weight-bold">USD/&nbsp;{{ sale_note.totals.total_payment }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ sale_note.totals.total_payment }}</td>
                                             </tr>
                                             <tr class="text-danger text-bold">
                                                 <td>Pendiente de cobro</td>

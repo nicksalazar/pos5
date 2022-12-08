@@ -19,7 +19,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Illuminate\Support\Arr;
 use Modules\Dashboard\Helpers\DashboardInventory;
 use App\Models\Tenant\Configuration;
-
+use App\Models\Tenant\ConfigurationCash;
 /**
  * Class DashboardController
  *
@@ -36,8 +36,16 @@ class DashboardController extends Controller
         $company = Company::select('soap_type_id')->first();
         $soap_company  = $company->soap_type_id;
         $configuration = Configuration::first();
+        //$currency=$configuration->currency_type_id;
+        $currency=$configuration->currency_type_id;
 
-        return view('dashboard::index', compact('soap_company','configuration'));
+        
+
+        
+        $cash= ConfigurationCash::where('id','=',$currency);
+           
+
+        return view('dashboard::index', compact('soap_company','configuration','cash'));
     }
 
     public function filter()
@@ -46,6 +54,11 @@ class DashboardController extends Controller
             'establishments' => DashboardView::getEstablishments()
         ];
     }
+
+   
+
+
+
 
     public function globalData()
     {
