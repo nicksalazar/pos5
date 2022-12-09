@@ -294,7 +294,7 @@ class TenantLocationTable extends Migration
             ['id' => '22', 'description' => 'ORELLANA'],
             ['id' => '23', 'description' => 'SANTO DOMINGO DE LOS TSACHILA'], 
             ['id' => '24', 'description' => 'SANTA ELENA'],
-            ['id' => '90', 'description' => 'ZONAS NO DELIMITADAS],
+            ['id' => '90', 'description' => 'ZONAS NO DELIMITADAS'],
         ]);
 
         Schema::create('provinces', function (Blueprint $table) {
