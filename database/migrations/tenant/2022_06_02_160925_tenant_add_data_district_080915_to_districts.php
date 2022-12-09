@@ -16,7 +16,7 @@ class TenantAddDataDistrict080915ToDistricts extends Migration
      */
     public function up()
     {
-        SetDataHelper::createDistrict('080915', 'Kumpirushiato');
+        //SetDataHelper::createDistrict('080915', 'Kumpirushiato');
     }
 
     /**

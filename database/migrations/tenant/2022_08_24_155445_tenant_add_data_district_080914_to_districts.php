@@ -14,7 +14,7 @@ class TenantAddDataDistrict080914ToDistricts extends Migration
      */
     public function up()
     {
-        SetDataHelper::createDistrict('080914', 'Megantoni');
+        //SetDataHelper::createDistrict('080914', 'Megantoni');
     }
 
     /**

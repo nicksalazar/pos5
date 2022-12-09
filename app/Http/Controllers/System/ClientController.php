@@ -684,10 +684,10 @@
 
             $establishment_id = DB::connection('tenant')->table('establishments')->insertGetId([
                 'description' => 'Oficina Principal',
-                'country_id' => 'PE',
-                'department_id' => '15',
-                'province_id' => '1501',
-                'district_id' => '150101',
+                'country_id' => 'EC',
+                'department_id' => '01',
+                'province_id' => '0101',
+                'district_id' => '010101',
                 'address' => '-',
                 'email' => $request->input('email'),
                 'telephone' => '-',

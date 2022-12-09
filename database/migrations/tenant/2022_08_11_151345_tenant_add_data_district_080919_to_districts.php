@@ -14,7 +14,7 @@ class TenantAddDataDistrict080919ToDistricts extends Migration
      */
     public function up()
     {
-        SetDataHelper::createDistrict('080919', 'Union Ashaninka');
+        //SetDataHelper::createDistrict('080919', 'Union Ashaninka');
     }
 
     /**
