@@ -4,4 +4,9 @@
     "/css/auth.css": "/css/auth.css",
     "/js/vendor.js": "/js/vendor.js",
     "/js/manifest.js": "/js/manifest.js"
+    "/js/app.js": "/js/app.js?id=4a4fbf273f32438706b6",
+    "/css/app.css": "/css/app.css?id=9a296110578b39822324",
+    "/css/auth.css": "/css/auth.css?id=d33bdc227f840ea209e1",
+    "/js/vendor.js": "/js/vendor.js?id=b05b8ba129b131165064",
+    "/js/manifest.js": "/js/manifest.js?id=360cf4a2ac3af2c3da19"
 }

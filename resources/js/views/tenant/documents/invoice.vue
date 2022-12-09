@@ -1084,124 +1084,126 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body p-2 border-top">
-                                <div class="col-12 py-2 px-0">
-                                    <div class="row no-gutters">
-                                        <div class="col-10">¿Es comprobante de contingencia?</div>
-                                        <div class="col-2">
-                                            <el-switch v-model="is_contingency"
-                                                       @change="changeEstablishment"></el-switch>
-                                        </div>
-                                    </div>
-                                </div>
-                                <template v-if="!is_client">
+                            <!--
+                                <div class="card-body p-2 border-top">
                                     <div class="col-12 py-2 px-0">
                                         <div class="row no-gutters">
-                                            <div class="col-10">¿Es un pago anticipado?</div>
+                                            <div class="col-10">¿Es comprobante de contingencia?</div>
                                             <div class="col-2">
-                                                <el-switch v-if="!prepayment_deduction"
-                                                           v-model="form.has_prepayment"
-                                                           @change="changeHasPrepayment"></el-switch>
+                                                <el-switch v-model="is_contingency"
+                                                        @change="changeEstablishment"></el-switch>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 py-2 px-0">
-                                        <div class="row no-gutters">
-                                            <div class="col-10">Deducción de los pagos anticipados</div>
-                                            <div class="col-2">
-                                                <el-switch v-if="!form.has_prepayment"
-                                                           v-model="prepayment_deduction"
-                                                           @change="changePrepaymentDeduction"></el-switch>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <el-select v-if="form.has_prepayment || prepayment_deduction"
-                                                       v-model="form.affectation_type_prepayment"
-                                                       class="mb-2"
-                                                       @change="changeAffectationTypePrepayment">
-                                                <el-option :key="10"
-                                                           :value="10"
-                                                           label="Gravado"></el-option>
-                                                <el-option :key="20"
-                                                           :value="20"
-                                                           label="Exonerado"></el-option>
-                                                <el-option :key="30"
-                                                           :value="30"
-                                                           label="Inafecto"></el-option>
-                                            </el-select>
                                         </div>
                                     </div>
                                     <template v-if="!is_client">
-                                        <div v-if="prepayment_deduction"
-                                             class="">
-                                            <div class="form-group">
-                                                <table style="width: 100%">
-                                                    <tr v-for="(row,index) in form.prepayments"
-                                                        :key="index">
-                                                        <td>
-                                                            <el-select v-model="row.document_id"
-                                                                       filterable
-                                                                       @change="changeDocumentPrepayment(index)">
-                                                                <el-option v-for="option in prepayment_documents"
-                                                                           :key="option.id"
-                                                                           :label="option.description"
-                                                                           :value="option.id"></el-option>
-                                                            </el-select>
-                                                        </td>
-                                                        <td>
-                                                            <el-input v-model="row.amount"
-                                                                      @input="inputAmountPrepayment(index)"></el-input>
-                                                        </td>
-                                                        <td align="right">
-
-                                                            <button class="btn waves-effect waves-light btn-xs btn-danger"
-                                                                    type="button"
-                                                                    @click.prevent="clickRemovePrepayment(index)">
-                                                                <i class="fa fa-trash"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                                <label class="control-label">
-                                                    <a class=""
-                                                       href="#"
-                                                       @click.prevent="clickAddPrepayment"><i class="fa fa-plus font-weight-bold text-info"></i>
-                                                        <span style="color: #777777">Agregar comprobante anticipado</span></a>
-                                                </label>
+                                        <div class="col-12 py-2 px-0">
+                                            <div class="row no-gutters">
+                                                <div class="col-10">¿Es un pago anticipado?</div>
+                                                <div class="col-2">
+                                                    <el-switch v-if="!prepayment_deduction"
+                                                            v-model="form.has_prepayment"
+                                                            @change="changeHasPrepayment"></el-switch>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="col-12 py-2 px-0">
+                                            <div class="row no-gutters">
+                                                <div class="col-10">Deducción de los pagos anticipados</div>
+                                                <div class="col-2">
+                                                    <el-switch v-if="!form.has_prepayment"
+                                                            v-model="prepayment_deduction"
+                                                            @change="changePrepaymentDeduction"></el-switch>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <el-select v-if="form.has_prepayment || prepayment_deduction"
+                                                        v-model="form.affectation_type_prepayment"
+                                                        class="mb-2"
+                                                        @change="changeAffectationTypePrepayment">
+                                                    <el-option :key="10"
+                                                            :value="10"
+                                                            label="Gravado"></el-option>
+                                                    <el-option :key="20"
+                                                            :value="20"
+                                                            label="Exonerado"></el-option>
+                                                    <el-option :key="30"
+                                                            :value="30"
+                                                            label="Inafecto"></el-option>
+                                                </el-select>
+                                            </div>
+                                        </div>
+                                        <template v-if="!is_client">
+                                            <div v-if="prepayment_deduction"
+                                                class="">
+                                                <div class="form-group">
+                                                    <table style="width: 100%">
+                                                        <tr v-for="(row,index) in form.prepayments"
+                                                            :key="index">
+                                                            <td>
+                                                                <el-select v-model="row.document_id"
+                                                                        filterable
+                                                                        @change="changeDocumentPrepayment(index)">
+                                                                    <el-option v-for="option in prepayment_documents"
+                                                                            :key="option.id"
+                                                                            :label="option.description"
+                                                                            :value="option.id"></el-option>
+                                                                </el-select>
+                                                            </td>
+                                                            <td>
+                                                                <el-input v-model="row.amount"
+                                                                        @input="inputAmountPrepayment(index)"></el-input>
+                                                            </td>
+                                                            <td align="right">
+
+                                                                <button class="btn waves-effect waves-light btn-xs btn-danger"
+                                                                        type="button"
+                                                                        @click.prevent="clickRemovePrepayment(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    <label class="control-label">
+                                                        <a class=""
+                                                        href="#"
+                                                        @click.prevent="clickAddPrepayment"><i class="fa fa-plus font-weight-bold text-info"></i>
+                                                            <span style="color: #777777">Agregar comprobante anticipado</span></a>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <div v-if="config.active_allowance_charge && form.total > 0"
+                                            class="col-12 py-2 px-0">
+                                            <div class="row no-gutters">
+                                                <div class="col-8"><strong>Porcentaje otros cargos</strong></div>
+                                                <div class="col-4">
+                                                    <el-input-number v-model="config.percentage_allowance_charge"
+                                                                    :min="0"
+                                                                    controls-position="right"
+                                                                    size="mini"
+                                                                    @change="calculateTotal"></el-input-number>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-12 py-2 px-0"
+                                            v-if="show_has_retention">
+                                            <div class="row no-gutters">
+                                                <div class="col-10">¿Tiene retención de igv?</div>
+                                                <div class="col-2">
+                                                    <el-switch v-model="form.has_retention"
+                                                            @change="changeRetention"></el-switch>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </template>
-
-                                    <div v-if="config.active_allowance_charge && form.total > 0"
-                                         class="col-12 py-2 px-0">
-                                        <div class="row no-gutters">
-                                            <div class="col-8"><strong>Porcentaje otros cargos</strong></div>
-                                            <div class="col-4">
-                                                <el-input-number v-model="config.percentage_allowance_charge"
-                                                                 :min="0"
-                                                                 controls-position="right"
-                                                                 size="mini"
-                                                                 @change="calculateTotal"></el-input-number>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-12 py-2 px-0"
-                                         v-if="show_has_retention">
-                                        <div class="row no-gutters">
-                                            <div class="col-10">¿Tiene retención de igv?</div>
-                                            <div class="col-2">
-                                                <el-switch v-model="form.has_retention"
-                                                           @change="changeRetention"></el-switch>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </template>
-                            </div>
+                                </div>
+                            -->
                             <el-collapse v-model="activePanel"
                                          accordion>
                                 <el-collapse-item name="1">
