@@ -307,7 +307,6 @@ class TenantLocationTable extends Migration
         });
 
         DB::table('provinces')->insert([
-            
             ['id' => '0101',  'description' => 'CAMILO PONCE ENRÍQUEZ', 'department_id' =>  '01'],
             ['id' => '0102',  'description' => 'CHORDELEG', 'department_id' =>  '01'],
             ['id' => '0103',  'description' => 'CUENCA', 'department_id' =>  '01'],
@@ -542,8 +541,9 @@ class TenantLocationTable extends Migration
 
             $table->foreign('province_id')->references('id')->on('provinces');
         });
-
+        
         DB::table('districts')->insert([
+            
             ['id' => '010101', 'description' => 'Chachapoyas', 'province_id' => '0101'],
             /*
             ['id' => '010102', 'description' => 'Asunción', 'province_id' => '0101'],
@@ -2099,8 +2099,12 @@ class TenantLocationTable extends Migration
             ['id' => '190302', 'description' => 'Chontabamba', 'province_id' => '1903'],
             ['id' => '190303', 'description' => 'Huancabamba', 'province_id' => '1903'],
             ['id' => '190304', 'description' => 'Palcazu', 'province_id' => '1903'],
-            */
-            ]);
+            ['id' => '190305', 'description' => 'Pozuzo', 'province_id' => '1903'],
+            ['id' => '190306', 'description' => 'Puerto Bermúdez', 'province_id' => '1903'],
+            ['id' => '190307', 'description' => 'Villa Rica', 'province_id' => '1903'],
+            ['id' => '190308', 'description' => 'Constitución', 'province_id' => '1903'],
+        ]);
+        
     }
 
     /**

@@ -50,6 +50,7 @@ class BillSender extends BaseSunat
 
         } catch (\SoapFault $e) {
             $result->setError($this->getErrorFromFault($e));
+            Log::info('exception try to consult SRI: '.json_encode($e));
             return false;
         }
         //$fileObjeto = json_decode(json_encode($response, JSON_FORCE_OBJECT));

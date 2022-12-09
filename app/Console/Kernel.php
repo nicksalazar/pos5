@@ -30,8 +30,8 @@ class Kernel extends ConsoleKernel
         // Llena las tablas para libro mayor - Se desactiva CMAR - buscar opcion de url
         // $schedule->command('account_ledger:fill')->hourly();
         //ejecutar comandos SRI
-        $schedule->command('tenancy:run sri:send')->everyMinute();
-        $schedule->command('tenancy:run sri:see')->everyMinute();
+        $schedule->command('tenancy:run sri:send')->everyMinute()->withoutOverlapping();
+        $schedule->command('tenancy:run sri:see')->everyMinute()->withoutOverlapping();
     }
 
     /**
