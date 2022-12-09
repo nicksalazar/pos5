@@ -797,7 +797,7 @@ export default {
                 });
             } else {
                 let document_type = _.find(this.document_types, {id: this.form.document_type_id})
-                let firstChar = (this.document.group_id === '01') ? 'F' : 'B'
+                let firstChar = (this.document.group_id === '01') ? 'N' : 'B'
                 this.series = _.filter(this.all_series, (s) => {
                     return (s.document_type_id === document_type.id && s.number.substr(0, 1) === firstChar)
                 });
