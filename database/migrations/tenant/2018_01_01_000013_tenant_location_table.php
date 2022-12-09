@@ -545,6 +545,7 @@ class TenantLocationTable extends Migration
         DB::table('districts')->insert([
             
             ['id' => '010101', 'description' => 'Chachapoyas', 'province_id' => '0101'],
+            /*
             ['id' => '010102', 'description' => 'Asunción', 'province_id' => '0101'],
             ['id' => '010103', 'description' => 'Balsas', 'province_id' => '0101'],
             ['id' => '010104', 'description' => 'Cheto', 'province_id' => '0101'],
