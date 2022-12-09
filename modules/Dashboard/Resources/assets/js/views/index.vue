@@ -137,11 +137,11 @@
                                             </tr>
                                             <tr class="text-danger text-bold">
                                                 <td>Pendiente de cobro</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ sale_note.totals.total_to_pay }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ sale_note.totals.total_to_pay }}</td>
                                             </tr>
                                             <tr class="text-bold">
                                                 <td class="">Total</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ sale_note.totals.total }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ sale_note.totals.total }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -177,15 +177,15 @@
                                         <tbody>
                                             <tr class="text-info text-bold">
                                                 <td>Total Cobrado</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ document.totals.total_payment }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ document.totals.total_payment }}</td>
                                             </tr>
                                             <tr class="text-danger text-bold">
                                                 <td>Pendiente de cobro</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ document.totals.total_to_pay }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ document.totals.total_to_pay }}</td>
                                             </tr>
                                             <tr class="text-bold">
                                                 <td class="">Total</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ document.totals.total }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ document.totals.total }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -223,15 +223,15 @@
                                         <tbody>
                                             <tr class="text-info text-bold">
                                                 <td>Total notas de venta</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ general.totals.total_sale_notes }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ general.totals.total_sale_notes }}</td>
                                             </tr>
                                             <tr class="text-danger text-bold">
                                                 <td>Total comprobantes</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ general.totals.total_documents }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ general.totals.total_documents }}</td>
                                             </tr>
                                             <tr class="text-bold">
                                                 <td class="">Total</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ general.totals.total }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ general.totals.total }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -280,29 +280,29 @@
                                                 <td>
                                                     <el-popover placement="right" width="100%" trigger="hover">
                                                         <p><span class="custom-badge">T. Ventas - T. Compras/Gastos</span></p>
-                                                        <p>Total comprobantes:<span class="custom-badge pull-right">S/ {{ balance.totals.total_document }}</span></p>
-                                                        <p>Total notas de venta:<span class="custom-badge pull-right">S/ {{ balance.totals.total_sale_note }}</span></p>
-                                                        <p>Total compras:<span class="custom-badge pull-right">- S/ {{ balance.totals.total_purchase }}</span></p>
-                                                        <p>Total gastos:<span class="custom-badge pull-right">- S/ {{ balance.totals.total_expense }}</span></p>
+                                                        <p>Total comprobantes:<span class="custom-badge pull-right"> {{(this.configuration.currency_type_id)}} {{ balance.totals.total_document }}</span></p>
+                                                        <p>Total notas de venta:<span class="custom-badge pull-right"> {{(this.configuration.currency_type_id)}} {{ balance.totals.total_sale_note }}</span></p>
+                                                        <p>Total compras:<span class="custom-badge pull-right">- {{(this.configuration.currency_type_id)}} {{ balance.totals.total_purchase }}</span></p>
+                                                        <p>Total gastos:<span class="custom-badge pull-right">- {{(this.configuration.currency_type_id)}} {{ balance.totals.total_expense }}</span></p>
                                                         <el-button icon="el-icon-view" type="primary" size="mini" slot="reference" circle></el-button>
                                                     </el-popover>
                                                     Totales
                                                 </td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ balance.totals.all_totals_payment }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ balance.totals.all_totals_payment }}</td>
                                             </tr>
                                             <tr class="text-danger text-bold">
                                                 <td>
                                                     <el-popover placement="right" width="100%" trigger="hover">
                                                     <p><span class="custom-badge">T. Pagos Ventas - T. Pagos Compras/Gastos</span></p>
-                                                    <p>Total pagos comprobantes:<span class="custom-badge pull-right">S/ {{ balance.totals.total_payment_document }}</span></p>
-                                                    <p>Total pagos notas de venta:<span class="custom-badge pull-right">S/ {{ balance.totals.total_payment_sale_note }}</span></p>
-                                                    <p>Total pagos compras:<span class="custom-badge pull-right">- S/ {{ balance.totals.total_payment_purchase }}</span></p>
-                                                    <p>Total pagos gastos:<span class="custom-badge pull-right">- S/ {{ balance.totals.total_payment_expense }}</span></p>
+                                                    <p>Total pagos comprobantes:<span class="custom-badge pull-right"> {{(this.configuration.currency_type_id)}} {{ balance.totals.total_payment_document }}</span></p>
+                                                    <p>Total pagos notas de venta:<span class="custom-badge pull-right"> {{(this.configuration.currency_type_id)}} {{ balance.totals.total_payment_sale_note }}</span></p>
+                                                    <p>Total pagos compras:<span class="custom-badge pull-right">- {{(this.configuration.currency_type_id)}} {{ balance.totals.total_payment_purchase }}</span></p>
+                                                    <p>Total pagos gastos:<span class="custom-badge pull-right">- {{(this.configuration.currency_type_id)}} {{ balance.totals.total_payment_expense }}</span></p>
                                                     <el-button icon="el-icon-view" type="danger" size="mini" slot="reference" circle></el-button>
                                                     </el-popover>
                                                     Total pagos
                                                 </td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ balance.totals.all_totals_payment }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ balance.totals.all_totals_payment }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -357,15 +357,15 @@
                                             </tr>
                                             <tr class="text-info text-bold">
                                                 <td>Ingreso</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ utilities.totals.total_income }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ utilities.totals.total_income }}</td>
                                             </tr>
                                             <tr class="text-danger text-bold">
                                                 <td>Egreso</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ utilities.totals.total_egress }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ utilities.totals.total_egress }}</td>
                                             </tr>
                                             <tr class="text-bold">
                                                 <td class="">Utilidad</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ utilities.totals.utility }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ utilities.totals.utility }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -412,15 +412,15 @@
                                         <tbody>
                                             <tr class="text-info text-bold">
                                                 <td>Total percepciones</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ purchase.totals.purchases_total_perception }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ purchase.totals.purchases_total_perception }}</td>
                                             </tr>
                                             <tr class="text-danger text-bold">
                                                 <td>Total compras</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ purchase.totals.purchases_total }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ purchase.totals.purchases_total }}</td>
                                             </tr>
                                             <tr class="text-bold">
                                                 <td class="">Total</td>
-                                                <td class="text-right font-weight-bold">S/&nbsp;{{ purchase.totals.total }}</td>
+                                                <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ purchase.totals.total }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
