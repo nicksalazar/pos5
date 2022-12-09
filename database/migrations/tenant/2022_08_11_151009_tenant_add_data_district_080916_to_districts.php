@@ -14,7 +14,7 @@ class TenantAddDataDistrict080916ToDistricts extends Migration
      */
     public function up()
     {
-        SetDataHelper::createDistrict('080916', 'Cielo Punco');
+        //SetDataHelper::createDistrict('080916', 'Cielo Punco');
     }
 
     /**
