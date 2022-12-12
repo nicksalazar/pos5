@@ -104,7 +104,8 @@
 
                     <div class="col-md-6">
                         <el-input v-model="form.customer_telephone">
-                            <template slot="prepend">+51</template>
+                            <!-- JOINSOFTWARE -->
+                            <template slot="prepend">+593</template>
                                 <el-button slot="append" @click="clickSendWhatsapp" >Enviar
                                     <el-tooltip class="item" effect="dark"  content="Es necesario tener aperturado Whatsapp web" placement="top-start">
                                         <i class="fab fa-whatsapp" ></i>
