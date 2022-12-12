@@ -850,11 +850,12 @@ class Facturalo
             }elseif($estado == 'NO AUTORIZADO'){
 
                 Log::info('ESTADO: '.$estado);
+
                 $this->document->update([
                     'state_type_id' => self::REJECTED
                 ]);
-                $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
-                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje']; 
+                $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje'][0]['identificador'];
+                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje'][0]['mensaje']; 
 
             }else{
 
