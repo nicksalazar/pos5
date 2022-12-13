@@ -850,11 +850,12 @@ class Facturalo
             }elseif($estado == 'NO AUTORIZADO'){
 
                 Log::info('ESTADO: '.$estado);
+
                 $this->document->update([
                     'state_type_id' => self::REJECTED
                 ]);
-                $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
-                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje']; 
+                $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje'][0]['identificador'];
+                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje'][0]['mensaje']; 
 
             }else{
 
@@ -874,7 +875,7 @@ class Facturalo
             ];
 
             $this->document->update([
-                'regularize_shipping' => true,
+                'regularize_shipping' => false,
                 'response_regularize_shipping' => [
                     'code' => $code,
                     'description' => $estado
@@ -890,7 +891,7 @@ class Facturalo
             ];
 
             $this->document->update([
-                'regularize_shipping' => true,
+                'regularize_shipping' => false,
                 'response_regularize_shipping' => [
                     'code' => 500,
                     'description' => 'NO SE PUDO VALIDAR EL DOCUMENTO EN EL SRI'
@@ -1007,14 +1008,14 @@ class Facturalo
                 }
                 $this->updateState(self::OBSERVED);
                 $this->response = [
-                    'sent' => true,
+                    'sent' => false,
                     'code' => $code,
                     'description' => $mensaje,
                     'notes' => $estado
                 ];
 
                 $this->document->update([
-                    'regularize_shipping' => true,
+                    'regularize_shipping' => false,
                     'response_regularize_shipping' => [
                         'code' => $code,
                         'description' => $mensaje
