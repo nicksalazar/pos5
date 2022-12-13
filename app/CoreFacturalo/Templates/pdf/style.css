@@ -2,7 +2,6 @@ body {
     direction: ltr;
     font-size: 100%;
     font-family: 'monospace', sans-serif;
-    background-color: red;
 }
 
 table {
@@ -643,14 +642,3 @@ table tr td {
 .width-first-td {
     width: 55px;
 }
-
-.extra {
-  display: grid;
-  grid-template-columns: 1fr 1fr; 
-  grid-template-rows: 1fr; 
-  gap: 0px 0px;
-  grid-template-areas: 
-    "t1 t2";
-}
-.t1 { grid-area: t1; }
-.t2 { grid-area: t2; }

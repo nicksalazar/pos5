@@ -1,11 +1,10 @@
 @php
     $establishment = $document->establishment;
     $customer = $document->customer;
-    //$bootstrap = app_path('https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css');
     $invoice = $document->invoice;
     $document_base = ($document->note) ? $document->note : null;
 
-    $path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
+    //$path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
     $document_number = $establishment->code.''.substr($document->series,1,3).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
     $accounts = \App\Models\Tenant\BankAccount::where('show_in_documents', true)->get();
 
@@ -34,408 +33,13 @@
 
 @endphp
 
+
 <html>
 <head>
     {{--<title>{{ $document_number }}</title>--}}
-    {{--<link href="{{ $path_style }}" rel="stylesheet" />--}}
-    <!--{{--<link rel="stylesheet" href="{{ $bootstrap }}" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" >--}}-->
+    {{--<link rel="stylesheet" href="{{ $path_style }}" />--}}
 </head>
 <body>
-    <!--
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6">
-                <img alt="Bootstrap Image Preview" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg" />
-            </div>
-            <div class="col-md-6">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>
-                                #
-                            </th>
-                            <th>
-                                Product
-                            </th>
-                            <th>
-                                Payment Taken
-                            </th>
-                            <th>
-                                Status
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                01/04/2012
-                            </td>
-                            <td>
-                                Default
-                            </td>
-                        </tr>
-                        <tr class="table-active">
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                01/04/2012
-                            </td>
-                            <td>
-                                Approved
-                            </td>
-                        </tr>
-                        <tr class="table-success">
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                02/04/2012
-                            </td>
-                            <td>
-                                Declined
-                            </td>
-                        </tr>
-                        <tr class="table-warning">
-                            <td>
-                                3
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                03/04/2012
-                            </td>
-                            <td>
-                                Pending
-                            </td>
-                        </tr>
-                        <tr class="table-danger">
-                            <td>
-                                4
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                04/04/2012
-                            </td>
-                            <td>
-                                Call in to confirm
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>
-                                #
-                            </th>
-                            <th>
-                                Product
-                            </th>
-                            <th>
-                                Payment Taken
-                            </th>
-                            <th>
-                                Status
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                01/04/2012
-                            </td>
-                            <td>
-                                Default
-                            </td>
-                        </tr>
-                        <tr class="table-active">
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                01/04/2012
-                            </td>
-                            <td>
-                                Approved
-                            </td>
-                        </tr>
-                        <tr class="table-success">
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                02/04/2012
-                            </td>
-                            <td>
-                                Declined
-                            </td>
-                        </tr>
-                        <tr class="table-warning">
-                            <td>
-                                3
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                03/04/2012
-                            </td>
-                            <td>
-                                Pending
-                            </td>
-                        </tr>
-                        <tr class="table-danger">
-                            <td>
-                                4
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                04/04/2012
-                            </td>
-                            <td>
-                                Call in to confirm
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>
-                                #
-                            </th>
-                            <th>
-                                Product
-                            </th>
-                            <th>
-                                Payment Taken
-                            </th>
-                            <th>
-                                Status
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                01/04/2012
-                            </td>
-                            <td>
-                                Default
-                            </td>
-                        </tr>
-                        <tr class="table-active">
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                01/04/2012
-                            </td>
-                            <td>
-                                Approved
-                            </td>
-                        </tr>
-                        <tr class="table-success">
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                02/04/2012
-                            </td>
-                            <td>
-                                Declined
-                            </td>
-                        </tr>
-                        <tr class="table-warning">
-                            <td>
-                                3
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                03/04/2012
-                            </td>
-                            <td>
-                                Pending
-                            </td>
-                        </tr>
-                        <tr class="table-danger">
-                            <td>
-                                4
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                04/04/2012
-                            </td>
-                            <td>
-                                Call in to confirm
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-6">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>
-                                #
-                            </th>
-                            <th>
-                                Product
-                            </th>
-                            <th>
-                                Payment Taken
-                            </th>
-                            <th>
-                                Status
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                01/04/2012
-                            </td>
-                            <td>
-                                Default
-                            </td>
-                        </tr>
-                        <tr class="table-active">
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                01/04/2012
-                            </td>
-                            <td>
-                                Approved
-                            </td>
-                        </tr>
-                        <tr class="table-success">
-                            <td>
-                                2
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                02/04/2012
-                            </td>
-                            <td>
-                                Declined
-                            </td>
-                        </tr>
-                        <tr class="table-warning">
-                            <td>
-                                3
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                03/04/2012
-                            </td>
-                            <td>
-                                Pending
-                            </td>
-                        </tr>
-                        <tr class="table-danger">
-                            <td>
-                                4
-                            </td>
-                            <td>
-                                TB - Monthly
-                            </td>
-                            <td>
-                                04/04/2012
-                            </td>
-                            <td>
-                                Call in to confirm
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h3 class="text-center">
-                    h3. Lorem ipsum dolor sit amet.
-                </h3>
-                <p>
-                    Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam eget sapien sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus. <em>Morbi commodo sodales nisi id sodales. Proin consectetur, nisi id commodo imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui.</em> Proin massa magna, vulputate nec bibendum nec, posuere nec lacus. <small>Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.</small>
-                </p>
-            </div>
-        </div>
-    </div>
-    -->
 
     <!-- Separeted code1 -->
 
@@ -1238,68 +842,100 @@
     -->
 
     <!-- Separeted code2 -->
+    <!-- Code from JOINSOFTWARE -->
 
-    <div>
-        <div>
-            <img alt="Bootstrap Image Preview" src="https://www.pngitem.com/pimgs/m/47-479827_join-now-png-transparent-images-join-logo-png.png" width="100px" height="100px" style="margin-left: 50px"/>
-            <div style="background: #eaeaea; padding-bottom: 30px; padding-left: 15px; padding-right: 15px; padding-top: 15px">
-                <strong>Emisor: </strong>JOIN-SOFTWARE S.A.<br></br>
-                <strong>RUC: </strong>1793054773001<br></br>
-                <strong>Matriz: </strong>QUITO DISTRITO METROPOLITANO / CATALINA ALDAZ Y PORTUGAL<br></br>
-                <strong>Correo: </strong>info@joinec.net<br></br>
-                <strong>Teléfono: </strong>0992716817<br></br>
-                <strong>Obligado a llevar contabilidad: </strong>None<br></br>
-                <strong>CONTRIBUYENTE RÉGIMEN RIMPE</strong>
-            </div>
-        </div>
-        <div>
-            <div style="background: #eaeaea;"></div>
-            <div style="padding: 15px; justify-content: space-between;">
-                <strong>FACTURA </strong>No.001-001-000000305
-            </div>
-            <div style="background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-top: 20px">
-                <strong>Número de Autorización:</strong><br></br>
-                0712202201179305477300120010010000003050825288415<br></br><br></br>
-                <strong>Fecha y hora de Autorización:</strong><br></br>
-                07/12/2022 12:01:21<br></br><br></br>
-                <strong>Ambiente: </strong>PRODUCCION<br></br>
-                <strong>Emisión: </strong>NORMAL<br></br>
-                <strong>Clave de Acceso:</strong><br></br>
-                0712202201179305477300120010010000003050825288415
-            </div>
-        </div>
-    </div>
-    <div style="display: flex; background: #eaeaea; padding-bottom: 20px; padding-left: 15px; padding-right: 15px;">
-        <div>
-            <strong>Razón Social: </strong> VC-CONECTION SOCIEDAD POR ACCIONES SIMPLIFICADA<br></br>
-            <strong>Dirección: </strong> Calle PADRE AGUIRRE Numero 11-32 Intersección MARISCAL<br></br>
-            <strong>Fecha Emisión: </strong> 07/12/2022
-        </div>
-        <div>
-            <strong>RUC/CI: </strong> 0190502929001<br></br><br></br>
-            <strong>Teléfono: </strong><br></br>
-            <strong>Correo: </strong> administracion@joinec.net
-        </div>
+    <table class="full-width">
+        <tbody>
+            <tr>
+                <td>
+                    <img alt="Bootstrap Image Preview" src="https://www.pngitem.com/pimgs/m/47-479827_join-now-png-transparent-images-join-logo-png.png" width="100px" height="100px" style="margin-left: 50px"/>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-bottom: 40px; padding-top: 15px;">
+                                    <strong>Emisor: </strong>JOIN-SOFTWARE S.A.<br></br>
+                                    <strong>RUC: </strong>1793054773001<br></br>
+                                    <strong>Matriz: </strong>QUITO DISTRITO METROPOLITANO / CATALINA ALDAZ Y PORTUGAL<br></br>
+                                    <strong>Correo: </strong>info@joinec.net<br></br>
+                                    <strong>Teléfono: </strong>0992716817<br></br>
+                                    <strong>Obligado a llevar contabilidad: </strong>None<br></br>
+                                    <strong>CONTRIBUYENTE RÉGIMEN RIMPE</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="background: #eaeaea; height: 30px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px 15px 10px 15px; text-align: center;">
+                                    <pre style="tab-size: 16; font-size: 14px"><strong>FACTURA        </strong>        No.001-001-000000305</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-top: 20px">
+                                    <strong>Número de Autorización:</strong><br></br>
+                                    0712202201179305477300120010010000003050825288415<br></br><br></br>
+                                    <strong>Fecha y hora de Autorización:</strong><br></br>
+                                    07/12/2022 12:01:21<br></br><br></br>
+                                    <strong>Ambiente: </strong>PRODUCCION<br></br>
+                                    <strong>Emisión: </strong>NORMAL<br></br>
+                                    <strong>Clave de Acceso:</strong><br></br>
+                                    0712202201179305477300120010010000003050825288415
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="background: #eaeaea; padding-bottom: 20px; padding-left: 15px; padding-right: 15px;">
+        <table class="full-width">
+            <tbody>
+                <tr>
+                    <td>
+                        <div>
+                            <strong>Razón Social: </strong> VC-CONECTION SOCIEDAD POR ACCIONES SIMPLIFICADA<br></br>
+                            <strong>Dirección: </strong> Calle PADRE AGUIRRE Numero 11-32 Intersección MARISCAL<br></br>
+                            <strong>Fecha Emisión: </strong> 07/12/2022
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <br></br>
+                            <strong>RUC/CI: </strong> 0190502929001<br></br><br></br>
+                            <strong>Teléfono: </strong><br></br>
+                            <strong>Correo: </strong> administracion@joinec.net
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div>
         <table class="full-width mt-10 mb-10">
-            <thead class="">
-            <tr class="bg-grey">
-                <th class="border-top-bottom text-center py-2" width="8%">CANT.</th>
-                <th class="border-top-bottom text-center py-2" width="8%">UNIDAD</th>
-                <th class="border-top-bottom text-left py-2">DESCRIPCIÓN</th>
-                <th class="border-top-bottom text-left py-2">MODELO</th>
-                <th class="border-top-bottom text-center py-2" width="8%">LOTE</th>
-                <th class="border-top-bottom text-center py-2" width="8%">SERIE</th>
-                <th class="border-top-bottom text-right py-2" width="12%">P.UNIT</th>
-                <th class="border-top-bottom text-right py-2" width="8%">DTO.</th>
-                <th class="border-top-bottom text-right py-2" width="12%">TOTAL</th>
+            <thead>
+            <tr style="background: #eaeaea;">
+                <th class="text-center py-2 pl-4" width="10%">CANT.</th>
+                <th class="text-center py-2" width="8%">UNIDAD</th>
+                <th class="text-left py-2">DESCRIPCIÓN</th>
+                <th class="text-left py-2">MODELO</th>
+                <th class="text-center py-2" width="8%">LOTE</th>
+                <th class="text-center py-2" width="8%">SERIE</th>
+                <th class="text-right py-2" width="12%">P.UNIT</th>
+                <th class="text-right py-2" width="8%">DTO.</th>
+                <th class="text-right py-2 pr-4" width="12%">TOTAL</th>
             </tr>
             </thead>
             <tbody>
             @foreach($document->items as $row)
-                <tr>
-                    <td class="text-center align-top">
+                <tr style="background: #f7f7f5;">
+                    <td class="text-left align-top pl-4">
                         @if(((int)$row->quantity != $row->quantity))
                             {{ $row->quantity }}
                         @else
@@ -1391,10 +1027,10 @@
                         0
                         @endif
                     </td>
-                    <td class="text-right align-top">{{ number_format($row->total, 2) }}</td>
+                    <td class="text-right align-top pr-4">{{ number_format($row->total, 2) }}</td>
                 </tr>
-                <tr>
-                    <td colspan="9" class="border-bottom"></td>
+                <tr style="background: #f7f7f5;">
+                    <td colspan="9"></td>
                 </tr>
             @endforeach
 
@@ -1402,7 +1038,7 @@
 
             @if ($document->prepayments)
                 @foreach($document->prepayments as $p)
-                <tr>
+                <tr style="background: #f7f7f5;">
                     <td class="text-center align-top">1</td>
                     <td class="text-center align-top">NIU</td>
                     <td class="text-left align-top">
@@ -1415,80 +1051,67 @@
                     <td class="text-right align-top">0</td>
                     <td class="text-right align-top">-{{ number_format($p->total, 2) }}</td>
                 </tr>
-                <tr>
-                    <td colspan="9" class="border-bottom"></td>
+                <tr style="background: #f7f7f5;">
+                    <td colspan="9"></td>
                 </tr>
                 @endforeach
             @endif
 
+                <!-- Reordenate this
                 @if($document->total_exportation > 0)
                     <tr>
                         <td colspan="8" class="text-right font-bold">OP. EXPORTACIÓN: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->total_exportation, 2) }}</td>
+                        <td class="text-right font-bold pr-4">{{ number_format($document->total_exportation, 2) }}</td>
                     </tr>
                 @endif
                 @if($document->total_free > 0)
                     <tr>
                         <td colspan="8" class="text-right font-bold">OP. GRATUITAS: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->total_free, 2) }}</td>
+                        <td class="text-right font-bold pr-4">{{ number_format($document->total_free, 2) }}</td>
                     </tr>
                 @endif
                 @if($document->total_unaffected > 0)
                     <tr>
                         <td colspan="8" class="text-right font-bold">OP. INAFECTAS: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->total_unaffected, 2) }}</td>
+                        <td class="text-right font-bold pr-4">{{ number_format($document->total_unaffected, 2) }}</td>
                     </tr>
                 @endif
                 @if($document->total_exonerated > 0)
                     <tr>
                         <td colspan="8" class="text-right font-bold">OP. EXONERADAS: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->total_exonerated, 2) }}</td>
+                        <td class="text-right font-bold pr-4">{{ number_format($document->total_exonerated, 2) }}</td>
                     </tr>
                 @endif
+                -->
 
-                @if ($document->document_type_id === '07')
-                    @if($document->total_taxed >= 0)
-                    <tr>
-                        <td colspan="8" class="text-right font-bold">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->total_taxed, 2) }}</td>
-                    </tr>
-                    @endif
-                @elseif($document->total_taxed > 0)
-                    <tr>
-                        <td colspan="8" class="text-right font-bold">BASE IMPONIBLE: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->total_taxed, 2) }}</td>
-                    </tr>
-                @endif
-
+                <!-- Reordenate this
                 @if($document->total_plastic_bag_taxes > 0)
                     <tr>
                         <td colspan="8" class="text-right font-bold">ICBPER: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->total_plastic_bag_taxes, 2) }}</td>
+                        <td class="text-right font-bold pr-4">{{ number_format($document->total_plastic_bag_taxes, 2) }}</td>
                     </tr>
                 @endif
-                <tr>
-                    <td colspan="8" class="text-right font-bold">IVA: {{ $document->currency_type->symbol }}</td>
-                    <td class="text-right font-bold">{{ number_format($document->total_igv, 2) }}</td>
-                </tr>
+                -->
 
+                <!-- Reordenate this
                 @if($document->total_isc > 0)
                 <tr>
                     <td colspan="8" class="text-right font-bold">ISC: {{ $document->currency_type->symbol }}</td>
-                    <td class="text-right font-bold">{{ number_format($document->total_isc, 2) }}</td>
+                    <td class="text-right font-bold pr-4">{{ number_format($document->total_isc, 2) }}</td>
                 </tr>
                 @endif
 
                 @if($document->total_discount > 0 && $document->subtotal > 0)
                 <tr>
                     <td colspan="8" class="text-right font-bold">SUBTOTAL: {{ $document->currency_type->symbol }}</td>
-                    <td class="text-right font-bold">{{ number_format($document->subtotal, 2) }}</td>
+                    <td class="text-right font-bold pr-4">{{ number_format($document->subtotal, 2) }}</td>
                 </tr>
                 @endif
 
                 @if($document->total_discount > 0)
                     <tr>
                         <td colspan="8" class="text-right font-bold">{{(($document->total_prepayment > 0) ? 'ANTICIPO':'DESCUENTO TOTAL')}}: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->total_discount, 2) }}</td>
+                        <td class="text-right font-bold pr-4">{{ number_format($document->total_discount, 2) }}</td>
                     </tr>
                 @endif
 
@@ -1502,40 +1125,22 @@
                         @endphp
                         <tr>
                             <td colspan="8" class="text-right font-bold">CARGOS ({{$total_factor}}%): {{ $document->currency_type->symbol }}</td>
-                            <td class="text-right font-bold">{{ number_format($document->total_charge, 2) }}</td>
+                            <td class="text-right font-bold pr-4">{{ number_format($document->total_charge, 2) }}</td>
                         </tr>
                     @else
                         <tr>
                             <td colspan="8" class="text-right font-bold">CARGOS: {{ $document->currency_type->symbol }}</td>
-                            <td class="text-right font-bold">{{ number_format($document->total_charge, 2) }}</td>
+                            <td class="text-right font-bold pr-4">{{ number_format($document->total_charge, 2) }}</td>
                         </tr>
                     @endif
                 @endif
+                -->
 
-                @if($document->perception)
-                    <tr>
-                        <td colspan="8" class="text-right font-bold"> IMPORTE TOTAL: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->total, 2) }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="8" class="text-right font-bold">PERCEPCIÓN: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->perception->amount, 2) }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="8" class="text-right font-bold">TOTAL: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format(($document->total + $document->perception->amount), 2) }}</td>
-                    </tr>
-                @else
-                    <tr>
-                        <td colspan="8" class="text-right font-bold">TOTAL: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->total, 2) }}</td>
-                    </tr>
-                @endif
-
+                <!-- Reordenate this
                 @if(($document->retention || $document->detraction) && $document->total_pending_payment > 0)
                     <tr>
                         <td colspan="8" class="text-right font-bold">M. PENDIENTE: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format($document->total_pending_payment, 2) }}</td>
+                        <td class="text-right font-bold pr-4">{{ number_format($document->total_pending_payment, 2) }}</td>
                     </tr>
                 @endif
 
@@ -1543,92 +1148,119 @@
 
                     <tr>
                         <td colspan="8" class="text-right font-bold">VUELTO: {{ $document->currency_type->symbol }}</td>
-                        <td class="text-right font-bold">{{ number_format(abs($balance),2, ".", "") }}</td>
+                        <td class="text-right font-bold pr-4">{{ number_format(abs($balance),2, ".", "") }}</td>
                     </tr>
 
                 @endif
-
-
-
+                -->
             </tbody>
         </table>
     </div>
-    <div class="extra">
-        <div class="t1">
-            <table class="" width="60%">
-                <thead class="">
-                    <tr class="bg-grey">
-                        <th class="py-2" style="text-align: start; padding-left: 15px; padding-right: 15px;">Información Adicional</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Descripción</td>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Consultoría primera quincena de diciembre 2022</td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="" width="60%">
-                <thead class="">
-                    <tr class="bg-grey">
-                        <th class="py-2" style="text-align: start; padding-left: 15px; padding-right: 15px;">Formas de pago</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Otros con Utilización del Sistema Financiero</td>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">$224.00</td>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">0 días</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="t2">
-            <table class="" width="40%">
-                <tbody>
-                    <tr>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Subtotal Sin Impuestos:</td>
-                        <td class="bg-grey" style="text-align: end; padding-left: 15px; padding-right: 15px;">$200.00</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Subtotal 12%:</td>
-                        <td class="bg-grey" style="text-align: end; padding-left: 15px; padding-right: 15px;">$200.00</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Subtotal 0%:</td>
-                        <td class="bg-grey" style="text-align: end; padding-left: 15px; padding-right: 15px;">$0.00</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Subtotal No Objeto IVA:</td>
-                        <td class="bg-grey" style="text-align: end; padding-left: 15px; padding-right: 15px;">$0.00</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Descuentos:</td>
-                        <td class="bg-grey" style="text-align: end; padding-left: 15px; padding-right: 15px;">$0.00</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">ICE:</td>
-                        <td class="bg-grey" style="text-align: end; padding-left: 15px; padding-right: 15px;">$0.00</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">IVA 12%:</td>
-                        <td class="bg-grey" style="text-align: end; padding-left: 15px; padding-right: 15px;">$24.00</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Servicio %:</td>
-                        <td class="bg-grey" style="text-align: end; padding-left: 15px; padding-right: 15px;">$0.00</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Valor Total:</td>
-                        <td class="bg-grey" style="text-align: end; padding-left: 15px; padding-right: 15px;">$224.00</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <table class="full-width">
+        <tbody>
+            <tr>
+                <td width="60%" style="position: relative;">
+                    <div style="position: absolute; width: 50%; padding-top: 7px; padding-bottom: 7px">
+                        <table class="full-width">
+                            <thead class="">
+                                <tr style="background: #eaeaea;">
+                                    <th class="py-2" style="text-align: start; padding-left: 15px; padding-right: 15px;">Información Adicional</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background: #f7f7f5;">
+                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Descripción</td>
+                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Consultoría primera quincena de diciembre 2022</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="full-width">
+                            <thead class="">
+                                <tr style="background: #eaeaea;">
+                                    <th class="py-2" style="text-align: start; padding-left: 15px; padding-right: 15px;">Formas de pago</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background: #f7f7f5;">
+                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Otros con Utilización del Sistema Financiero</td>
+                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">$224.00</td>
+                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">0 días</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+                <td width="40%">
+                    <table class="full-width" style="border-spacing: 0px 5px; border-collapse: separate;">
+                    @if ($document->document_type_id === '07')
+                        @if($document->total_taxed >= 0)
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ number_format($document->total_taxed, 2) }}</td>
+                        </tr>
+                        @endif
+                    @elseif($document->total_taxed > 0)
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal Sin Impuestos:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($document->total_taxed, 2) }}</td>
+                        </tr>
+                    @endif
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 12%:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">$200.00</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 0%:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal No Objeto IVA:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Descuentos:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">ICE:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">IVA 12%:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($document->total_igv, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Servicio %:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">$0.00</td>
+                        </tr>
+                        @if($document->perception)
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">IMPORTE TOTAL:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($document->total, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">PERCEPCIÓN:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($document->perception->amount, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">TOTAL:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format(($document->total + $document->perception->amount), 2) }}</td>
+                        </tr>
+                        @else
+                        <tr>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Valor Total:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($document->total, 2) }}</td>
+                        </tr>
+                        @endif
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
     <div style="background: #eaeaea; padding: 5px 15px 20px 15px">
         <h5 style="text-align: center; margin-top: 0px; margin-bottom: 0px"><strong>Factura de Join Software S.A.</strong></h5>
         <p>Has recibido una factura de JOIN ! :)</p>
     </div>
+
 </body>
 </html>
