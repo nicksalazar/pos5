@@ -545,7 +545,6 @@ class TenantLocationTable extends Migration
         DB::table('districts')->insert([
             
             ['id' => '010101', 'description' => 'Chachapoyas', 'province_id' => '0101'],
-            
             ['id' => '010102', 'description' => 'Asunción', 'province_id' => '0101'],
             ['id' => '010103', 'description' => 'Balsas', 'province_id' => '0101'],
             ['id' => '010104', 'description' => 'Cheto', 'province_id' => '0101'],
@@ -629,6 +628,7 @@ class TenantLocationTable extends Migration
             ['id' => '010705', 'description' => 'Jamalca', 'province_id' => '0107'],
             ['id' => '010706', 'description' => 'Lonya Grande', 'province_id' => '0107'],
             ['id' => '010707', 'description' => 'Yamon', 'province_id' => '0107'],
+            /*
             ['id' => '020101', 'description' => 'Huaraz', 'province_id' => '0201'],
             ['id' => '020102', 'description' => 'Cochabamba', 'province_id' => '0201'],
             ['id' => '020103', 'description' => 'Colcabamba', 'province_id' => '0201'],
@@ -2103,6 +2103,7 @@ class TenantLocationTable extends Migration
             ['id' => '190306', 'description' => 'Puerto Bermúdez', 'province_id' => '1903'],
             ['id' => '190307', 'description' => 'Villa Rica', 'province_id' => '1903'],
             ['id' => '190308', 'description' => 'Constitución', 'province_id' => '1903'],
+            */
         ]);
         
     }
