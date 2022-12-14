@@ -6,7 +6,7 @@
     }
     
     $document_number = $establishment->code.''.substr($document->series,1,3).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
-    $url =  public_path("storage/uploads/logos/".$company->logo);
+    $url =  asset("storage/uploads/logos/".$company->logo);
     @endphp
 
 <!doctype html>
