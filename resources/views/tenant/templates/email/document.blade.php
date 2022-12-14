@@ -4,8 +4,10 @@
     if($establishment->logo) {
         $logo = "{$establishment->logo}";
     }
+    
     $document_number = $establishment->code.''.substr($document->series,1,3).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
-@endphp
+    $url =  asset("storage/uploads/logos/".$company->logo);
+    @endphp
 
 <!doctype html>
 <html lang="es">
@@ -112,17 +114,20 @@
         </ul>
         -->
 
+
         <!-- JOINSOFTWARE Code2 -->
         <div class="main">
             <div class="fdiv">
                 <img alt="logo" src="{{ asset('logo/logo2.png') }}" width="70%" height="100%">
-                <!--<h3 id="title1">Impulsado por <img alt="Bootstrap Image Preview" src="https://www.pngitem.com/pimgs/m/47-479827_join-now-png-transparent-images-join-logo-png.png" width="15px" height="15px"/></h3>-->
-            </div>
+                 </div>
             <div class="fdiv">
                 <h3 id="title">{{ $company->name }}</h3>
                 <h3 id="title">Has recibido un Documento Electrónico de</h3>
                 @if($company->logo)
-                <img alt="{{$company->name}}" src="data:{{mime_content_type(public_path('{$logo}'))}};base64, {{base64_encode(file_get_contents(public_path('{$logo}')))}}" width="50px" height="50px"/>
+                <!--<img src="data:{{mime_content_type(public_path("storage/uploads/logos/{$company->logo}"))}};base64, {{base64_encode(file_get_contents(public_path("storage/uploads/logos/{$company->logo}")))}}" alt="{{$company->name}}" class="company_logo" style="max-width: 150px;">
+                -->
+                <img alt="{{$company->name}}" src="{{ $url }}" width="50px" height="50px">
+                
                 @else
                 <img alt="logo" src="{{ asset('logo/logo.jpg') }}" width="50px" height="50px">
                 @endif
