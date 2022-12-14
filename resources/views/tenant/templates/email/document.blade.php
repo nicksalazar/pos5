@@ -122,7 +122,7 @@
                 <h3 id="title">{{ $company->name }}</h3>
                 <h3 id="title">Has recibido un Documento Electrónico de</h3>
                 @if($company->logo)
-                <img alt="{{$company->name}}" src="data:{{mime_content_type(public_path('{$logo}'))}};base64, {{base64_encode(file_get_contents(public_path('{$logo}')))}}" width="50px" height="50px"/>
+                <img src="data:{{mime_content_type(public_path("{$logo}"))}};base64, {{base64_encode(file_get_contents(public_path("{$logo}")))}}" alt="{{$company->name}}" class="company_logo" style="max-width: 150px;"width="100px" height="100px" style="margin-left: 50px" >
                 @else
                 <img alt="logo" src="{{ asset('logo/logo.jpg') }}" width="50px" height="50px">
                 @endif
