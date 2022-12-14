@@ -1084,7 +1084,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!--
+                            <!-- JOINSOFTWARE
                                 <div class="card-body p-2 border-top">
                                     <div class="col-12 py-2 px-0">
                                         <div class="row no-gutters">
