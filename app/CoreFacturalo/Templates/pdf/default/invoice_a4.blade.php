@@ -886,10 +886,11 @@
                         </div>
                    
                 @else
-                    
-                        <!--{{--<img src="{{ asset('logo/logo.jpg') }}" class="company_logo" style="max-width: 150px" width="100px" height="100px" style="margin-left: 50px">--}}-->
+                {{--<img src="{{ asset('logo/logo.jpg') }}" class="company_logo" style="max-width: 150px">--}}
+                        <!--
+                        {{--<img src="{{ asset('logo/logo.jpg') }}" class="company_logo" style="max-width: 150px" width="100px" height="100px" style="margin-left: 50px">--}}
                         <img alt="Bootstrap Image Preview" src="https://www.pngitem.com/pimgs/m/47-479827_join-now-png-transparent-images-join-logo-png.png" width="100px" height="100px" style="margin-left: 50px"/>
-                    
+                        -->
                 @endif
                         
                     <!--<img alt="Bootstrap Image Preview" src="https://www.pngitem.com/pimgs/m/47-479827_join-now-png-transparent-images-join-logo-png.png" width="100px" height="100px" style="margin-left: 50px"/>-->
