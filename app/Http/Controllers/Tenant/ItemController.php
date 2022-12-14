@@ -1410,8 +1410,8 @@ class ItemController extends Controller
         $system_isc_types = SystemIscType::whereActive()->get();
         $price_types = PriceType::whereActive()->get();
         $operation_types = OperationType::whereActive()->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->whereActive()->get();
+        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->whereActive()->get();
         $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
         $is_client = $this->getIsClient();
 

@@ -239,8 +239,8 @@ class DocumentController extends Controller
         $note_debit_types = NoteDebitType::whereActive()->orderByDescription()->get();
         $currency_types = CurrencyType::whereActive()->get();
         $operation_types = OperationType::whereActive()->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->whereActive()->get();
+        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->whereActive()->get();
         $company = Company::active();
         $document_type_03_filter = config('tenant.document_type_03_filter');
         // $sellers = User::where('establishment_id',$establishment_id)->whereIn('type', ['seller', 'admin'])->orWhere('id', $userId)->get();
@@ -321,8 +321,8 @@ class DocumentController extends Controller
         $system_isc_types = SystemIscType::whereActive()->get();
         $price_types = PriceType::whereActive()->get();
         $operation_types = OperationType::whereActive()->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->whereActive()->get();
+        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->whereActive()->get();
         $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
         $is_client = $this->getIsClient();
         $validate_stock_add_item = InventoryConfiguration::getRecordIndividualColumn('validate_stock_add_item');

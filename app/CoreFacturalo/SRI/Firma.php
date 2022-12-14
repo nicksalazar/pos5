@@ -168,9 +168,9 @@ class Firma {
 
             $aux = 'openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1';
             //ejecutar comando openssl en windows//
-            //$salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            $salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
             //servidor linux ejecutar comando openssl ///
-            $salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            //$salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
 
             
             if (strpos($salida, 'verified OK') !== false) {
@@ -184,6 +184,7 @@ class Firma {
                     $pkey = openssl_pkey_get_private($items, $this->config['pass']);
 
                     $this->privateKey = openssl_get_privatekey($pkey);
+
                     //var_dump($pkey);Die;     
                     //$estado = openssl_x509_check_private_key($this->certificate, $this->privateKey);
 
