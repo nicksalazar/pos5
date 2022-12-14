@@ -4,8 +4,10 @@
     if($establishment->logo) {
         $logo = "{$establishment->logo}";
     }
+    
     $document_number = $establishment->code.''.substr($document->series,1,3).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
-@endphp
+    $url =  public_path("storage/uploads/logos/".$company->logo);
+    @endphp
 
 <!doctype html>
 <html lang="es">
@@ -124,7 +126,7 @@
                 @if($company->logo)
                 <!--<img src="data:{{mime_content_type(public_path("storage/uploads/logos/{$company->logo}"))}};base64, {{base64_encode(file_get_contents(public_path("storage/uploads/logos/{$company->logo}")))}}" alt="{{$company->name}}" class="company_logo" style="max-width: 150px;">
                 -->
-                <img src="{{public_path('storage/uploads/logos/{$company->logo}')}}" alt="{{$company->name}}" class="company_logo" style="max-width: 150px;">
+                <img src="{{ $url }}" alt="{{$company->name}}" class="company_logo" style="max-width: 150px;">
                 
                 @else
                 <img alt="logo" src="{{ asset('logo/logo.jpg') }}" width="50px" height="50px">
