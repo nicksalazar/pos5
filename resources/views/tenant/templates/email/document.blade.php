@@ -115,7 +115,7 @@
         <!-- JOINSOFTWARE Code2 -->
         <div class="main">
             <div class="fdiv">
-                <img alt="logo" src="https://www.pngitem.com/pimgs/m/47-479827_join-now-png-transparent-images-join-logo-png.png" width="70%" height="100%">
+                <img alt="logo" src="{{ asset('logo/logo2.png') }}" width="70%" height="100%">
                 <!--<h3 id="title1">Impulsado por <img alt="Bootstrap Image Preview" src="https://www.pngitem.com/pimgs/m/47-479827_join-now-png-transparent-images-join-logo-png.png" width="15px" height="15px"/></h3>-->
             </div>
             <div class="fdiv">
@@ -124,7 +124,7 @@
                 @if($company->logo)
                 <img alt="{{$company->name}}" src="data:{{mime_content_type(public_path('{$logo}'))}};base64, {{base64_encode(file_get_contents(public_path('{$logo}')))}}" width="50px" height="50px"/>
                 @else
-                <img alt="logo" src="https://www.pngitem.com/pimgs/m/47-479827_join-now-png-transparent-images-join-logo-png.png" width="50px" height="50px">
+                <img alt="logo" src="{{ asset('logo/logo.jpg') }}" width="50px" height="50px">
                 @endif
                 <hr class="solid">
                 <h3>FAC {{ $document_number }}</h3>
