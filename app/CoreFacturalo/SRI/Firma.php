@@ -184,6 +184,7 @@ class Firma {
                     $pkey = openssl_pkey_get_private($items, $this->config['pass']);
 
                     $this->privateKey = openssl_get_privatekey($pkey);
+
                     //var_dump($pkey);Die;     
                     //$estado = openssl_x509_check_private_key($this->certificate, $this->privateKey);
 

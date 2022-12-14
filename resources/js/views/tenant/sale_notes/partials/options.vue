@@ -64,7 +64,8 @@
                 </div>
                 <div class="col-md-12 mt-3">
                     <el-input v-model="form.customer_telephone">
-                        <template slot="prepend">+51</template>
+                        <!-- JOINSOFTWARE -->
+                        <template slot="prepend">+593</template>
                         <el-button slot="append"
                                    @click="clickSendWhatsapp">Enviar
                             <el-tooltip class="item"
