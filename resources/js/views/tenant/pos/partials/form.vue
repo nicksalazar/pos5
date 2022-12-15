@@ -210,6 +210,7 @@
                                 </div>
                             </el-tab-pane>
 
+                            <!-- JOINSOFTWARE
                             <el-tab-pane label="UNSPSC" name="third">
                                 <div class="row">
 
@@ -227,6 +228,7 @@
                                 </div>
 
                             </el-tab-pane>
+                            -->
 
                         </el-tabs>
                     </div>

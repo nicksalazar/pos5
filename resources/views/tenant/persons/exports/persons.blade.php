@@ -28,9 +28,9 @@
                                 <th>Correo</th>
                                 <th>Teléfono</th>
                                 <th>Ubigeo</th>
-                                <th>Departamento</th>
-                                <th>Povincia</th>
-                                <th>Distrito</th>
+                                <th>Provincia</th>
+                                <th>Ciudad</th>
+                                <th>Cantón</th>
                                 <th>Zona</th>
                                 <th>Vendedor</th>
                                 <th>Observacion</th>

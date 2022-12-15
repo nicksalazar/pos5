@@ -276,6 +276,7 @@
                                 <!-- </template> -->
                             </div>
                         </div>
+                        <!-- JOINSOFTWARE
                         <div class="col-md-3">
                             <div :class="{'has-danger': errors.item_code}"
                                  class="form-group">
@@ -294,6 +295,7 @@
                                        v-text="errors.item_code[0]"></small>
                             </div>
                         </div>
+                        -->
                         <div class="col-md-3">
                             <div :class="{'has-danger': errors.line}"
                                  class="form-group">
@@ -335,7 +337,7 @@
                                        v-text="errors.sanitary[0]"></small>
                             </div>
                         </div>
-                        <!-- cod_digemid -->
+                        <!-- JOINSOFTWARE
                         <div v-show="showPharmaElement"
                              class="col-md-3">
                             <div :class="{'has-danger': errors.cod_digemid}"
@@ -357,7 +359,7 @@
                                        v-text="errors.cod_digemid[0]"></small>
                             </div>
                         </div>
-
+                        -->
                         <div class="col-md-3">
                             <div :class="{'has-danger': errors.factory_code}"
                                  class="form-group">
@@ -384,11 +386,13 @@
                                 <table class="table table-sm mb-0 table-borderless">
                                     <thead>
                                     <tr>
+                                        <!-- JOINSOFTWARE
                                         <th width="25%">
                                             <el-checkbox v-model="form.has_perception"
                                                          @change="changeHasPerception">Incluye percepción
                                             </el-checkbox>
                                         </th>
+                                        -->
                                         <th width="25%">
                                             <div v-show="form.unit_type_id !='ZZ'">
                                                 <el-checkbox v-model="form.lots_enabled"

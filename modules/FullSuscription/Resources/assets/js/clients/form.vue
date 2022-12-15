@@ -327,9 +327,9 @@
                     </div>
                 </el-tab-pane>
                 <!-- País -->
-                <!-- Departamento -->
                 <!-- Provincia -->
-                <!-- Distrito -->
+                <!-- Ciudad -->
+                <!-- Cantón -->
                 <!-- Direccion -->
                 <!-- Telefono -->
                 <!-- Correo electronico contacto -->
@@ -339,9 +339,9 @@
                              name="second">
                     <span slot="label">Dirección</span>
                     <!-- País -->
-                    <!-- Departamento -->
                     <!-- Provincia -->
-                    <!-- Distrito -->
+                    <!-- Ciudad -->
+                    <!-- Cantón -->
                     <!-- Direccion -->
                     <div class="row">
                         <!-- País -->
@@ -371,14 +371,14 @@
                                 ></small>
                             </div>
                         </div>
-                        <!-- Departamento -->
+                        <!-- Provincia -->
                         <div class="col-md-3">
                             <div
                                 :class="{ 'has-danger': errors.department_id }"
                                 class="form-group"
                             >
                                 <label class="control-label"
-                                >Departamento</label
+                                >Provincia</label
                                 >
                                 <el-select
                                     v-model="form.department_id"
@@ -401,13 +401,13 @@
                                 ></small>
                             </div>
                         </div>
-                        <!-- Provincia -->
+                        <!-- Ciudad -->
                         <div class="col-md-3">
                             <div
                                 :class="{ 'has-danger': errors.province_id }"
                                 class="form-group"
                             >
-                                <label class="control-label">Provincia</label>
+                                <label class="control-label">Ciudad</label>
                                 <el-select
                                     v-model="form.province_id"
                                     dusk="province_id"
@@ -429,13 +429,13 @@
                                 ></small>
                             </div>
                         </div>
-                        <!-- Distrito -->
+                        <!-- Cantón -->
                         <div class="col-md-3">
                             <div
                                 :class="{ 'has-danger': errors.province_id }"
                                 class="form-group"
                             >
-                                <label class="control-label">Distrito</label>
+                                <label class="control-label">Cantón</label>
                                 <el-select
                                     v-model="form.district_id"
                                     dusk="district_id"
@@ -921,7 +921,7 @@
                                 <div :class="{'has-danger': errors.department_id}"
                                      class="form-group">
                                     <label class="control-label">
-                                        Departamento
+                                        Provincia
                                     </label>
                                     <el-select
                                         v-model="form.department_id"
@@ -945,7 +945,7 @@
                                 <div :class="{'has-danger': errors.province_id}"
                                      class="form-group">
                                     <label class="control-label">
-                                        Provincia
+                                        Ciudad
                                     </label>
                                     <el-select
                                         v-model="form.province_id"
@@ -971,7 +971,7 @@
                                 <div :class="{'has-danger': errors.province_id}"
                                      class="form-group">
                                     <label class="control-label">
-                                        Distrito
+                                        Cantón
                                     </label>
                                     <el-select
                                         v-model="form.district_id"
