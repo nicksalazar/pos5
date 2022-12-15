@@ -329,7 +329,7 @@
                                         <small class="form-control-feedback" v-if="errors.sale_affectation_igv_type_id" v-text="errors.sale_affectation_igv_type_id[0]"></small>
                                     </div>
                                 </div>
-
+                                <!-- JOINSOFTWARE
                                 <div class="short-div col-md-4">
                                     <div class="form-group" :class="{'has-danger': errors.item_code}">
                                         <label class="control-label">Código Sunat
@@ -341,6 +341,7 @@
                                         <small class="form-control-feedback" v-if="errors.item_code" v-text="errors.item_code[0]"></small>
                                     </div>
                                 </div>
+                                -->
                                 <div class="short-div col-md-4">
 
                                     <div class="form-group" :class="{'has-danger': errors.internal_id}">
