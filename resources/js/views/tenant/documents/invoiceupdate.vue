@@ -377,7 +377,7 @@
                                                     <td>{{ currency_type.symbol }} {{ form.total_free }}</td>
                                                 </tr>
                                                 <tr v-if="form.total_unaffected > 0">
-                                                    <td>OP.INAFECTAS:</td>
+                                                    <td>SUBTOTAL 0%:</td>
                                                     <td>{{ currency_type.symbol }} {{ form.total_unaffected }}</td>
                                                 </tr>
                                                 <tr v-if="form.total_exonerated > 0">
@@ -385,7 +385,7 @@
                                                     <td>{{ currency_type.symbol }} {{ form.total_exonerated }}</td>
                                                 </tr>
                                                 <tr v-if="form.total_taxed > 0">
-                                                    <td>OP.GRAVADA:</td>
+                                                    <td>SUBTOTAL 12%:</td>
                                                     <td>{{ currency_type.symbol }} {{ form.total_taxed }}</td>
                                                 </tr>
                                                 <tr v-if="form.total_prepayment > 0">
@@ -744,7 +744,7 @@
                                         <td>{{ currency_type.symbol }} {{ form.total_free }}</td>
                                     </tr>
                                     <tr v-if="form.total_unaffected > 0">
-                                        <td>OP.INAFECTAS:</td>
+                                        <td>SUBTOTAL 0%:</td>
                                         <td>{{ currency_type.symbol }} {{ form.total_unaffected }}</td>
                                     </tr>
                                     <tr v-if="form.total_exonerated > 0">
@@ -752,7 +752,7 @@
                                         <td>{{ currency_type.symbol }} {{ form.total_exonerated }}</td>
                                     </tr>
                                     <tr v-if="form.total_taxed > 0">
-                                        <td>OP.GRAVADA:</td>
+                                        <td>SUBTOTAL 12%:</td>
                                         <td>{{ currency_type.symbol }} {{ form.total_taxed }}</td>
                                     </tr>
                                     <tr v-if="form.total_prepayment > 0">

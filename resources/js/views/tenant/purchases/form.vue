@@ -551,13 +551,13 @@
                                     form.total_free
                                                           }}</p>
                             <p v-if="form.total_unaffected > 0"
-                               class="text-right">OP.INAFECTAS: {{ currency_type.symbol }}
+                               class="text-right">SUBTOTAL 0%: {{ currency_type.symbol }}
                                                                 {{ form.total_unaffected }}</p>
                             <p v-if="form.total_exonerated > 0"
                                class="text-right">OP.EXONERADAS: {{ currency_type.symbol }}
                                                                 {{ form.total_exonerated }}</p>
                             <p v-if="form.total_taxed > 0"
-                               class="text-right">OP.GRAVADA: {{ currency_type.symbol }} {{
+                               class="text-right">SUBTOTAL 12%: {{ currency_type.symbol }} {{
                                     form.total_taxed
                                                            }}</p>
                             <p v-if="form.total_igv > 0"

@@ -28,8 +28,8 @@
                                 <th>Razon Social</th>
                                 <th>Zona</th>
                                 <th>Tipo de cliente</th>
-                                <th>Departamento</th>
-                                <th>Distrito</th>
+                                <th>Provincia</th>
+                                <th>Cantón</th>
                                 <th class="">Total Factura</th>
 
                                 @for ($i = 1; $i <= $payment_count; $i++)

@@ -262,11 +262,11 @@
                                        v-text="errors.country_id[0]"></small>
                             </div>
                         </div>
-                        <!-- Departamento -->
+                        <!-- Provincia -->
                         <div class="col-md-3">
                             <div :class="{'has-danger': errors.department_id}"
                                  class="form-group">
-                                <label class="control-label">Departamento</label>
+                                <label class="control-label">Provincia</label>
                                 <el-select v-model="form.department_id"
                                            dusk="department_id"
                                            filterable
@@ -282,11 +282,11 @@
                                        v-text="errors.department_id[0]"></small>
                             </div>
                         </div>
-                        <!-- Provincia -->
+                        <!-- Ciudad -->
                         <div class="col-md-3">
                             <div :class="{'has-danger': errors.province_id}"
                                  class="form-group">
-                                <label class="control-label">Provincia</label>
+                                <label class="control-label">Ciudad</label>
                                 <el-select v-model="form.province_id"
                                            dusk="province_id"
                                            filterable
@@ -302,11 +302,11 @@
                                        v-text="errors.province_id[0]"></small>
                             </div>
                         </div>
-                        <!-- Distrito -->
+                        <!-- Cantón -->
                         <div class="col-md-3">
                             <div :class="{'has-danger': errors.province_id}"
                                  class="form-group">
-                                <label class="control-label">Distrito</label>
+                                <label class="control-label">Cantón</label>
                                 <el-select v-model="form.district_id"
                                            dusk="district_id"
                                            filterable
@@ -689,7 +689,7 @@
                                 <div :class="{'has-danger': errors.department_id}"
                                      class="form-group">
                                     <label class="control-label">
-                                        Departamento
+                                        Provincia
                                     </label>
                                     <el-select
                                         v-model="form.department_id"
@@ -713,7 +713,7 @@
                                 <div :class="{'has-danger': errors.province_id}"
                                      class="form-group">
                                     <label class="control-label">
-                                        Provincia
+                                        Ciudad
                                     </label>
                                     <el-select
                                         v-model="form.province_id"
@@ -739,7 +739,7 @@
                                 <div :class="{'has-danger': errors.province_id}"
                                      class="form-group">
                                     <label class="control-label">
-                                        Distrito
+                                        Cantón
                                     </label>
                                     <el-select
                                         v-model="form.district_id"
