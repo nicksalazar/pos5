@@ -89,6 +89,9 @@ trait StorageDocument
             case 'expense':
                 $extension = 'pdf';
                 break;
+            case 'image':
+                $extension = 'png';
+                break;
         }
 
         $this->_filename = $filename.'.'.$extension;

@@ -882,7 +882,7 @@
                 @if($company->logo)
                     
                         <div class="company_logo_box">
-                            <img src="data:{{mime_content_type(public_path("{$logo}"))}};base64, {{base64_encode(file_get_contents(public_path("{$logo}")))}}" alt="{{$company->name}}" class="company_logo" style="max-width: 150px;"width="100px" height="100px" style="margin-left: 50px" >
+                            <img src="data:{{mime_content_type(public_path("{$logo}"))}};base64, {{base64_encode(file_get_contents(public_path("{$logo}")))}}" alt="{{$company->name}}" class="company_logo" width="100px" height="100px" style="margin-left: 50px; padding-bottom: 40px; max-width: 150px;" >
                         </div>
                    
                 @else
@@ -897,7 +897,7 @@
                     <table>
                         <tbody>
                             <tr>
-                                <td style="text-transform: uppercase; background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-bottom: 40px; padding-top: 15px;">
+                                <td style="text-transform: uppercase; background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-bottom: 60px; padding-top: 15px;">
                                     <strong>Emisor: </strong>{{ $company->name }}<br></br>
                                     <strong>RUC: </strong>{{ $company->number }}<br></br>
                                     <strong>Matriz: </strong> <h7 style="text-transform: uppercase;">{{ ($establishment->address !== '-')? $establishment->address : '' }}{{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}{{ ($establishment->province_id !== '-')? ', '.$establishment->province->description : '' }}{{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}</h7><br></br>
@@ -943,6 +943,7 @@
                                     @endif
                                     <strong>Emisión: </strong>NORMAL<br></br>
                                     <strong>Clave de Acceso:</strong><br></br>
+                                    <div class="text-left"><img class="qr_code" src="data:image/png;base64, {{ $document->qr }}" /></div>
                                     {{$document->clave_SRI}}
                                 </td>
                             </tr>

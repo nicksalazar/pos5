@@ -109,11 +109,15 @@
                     <th>TC</th>
                     <th>Total Cargos</th>
                     <th>Total Exonerado</th>
-                    <th>Total Inafecto</th>
+                    <th>Subtotal 0%</th>
                     <th>Total Gratuito</th>
-                    <th>Total Gravado</th>
+                    <!-- JOINSOFTWARE -->
+                    <!-- Total Gravado -> Subtotal 12% -->
+                    <th>Subtotal 12%</th>
                     <th>Descuento total</th>
-                    <th>Total IGV</th>
+                    <!-- JOINSOFTWARE -->
+                    <!-- Total IGV -> Total IVA -->
+                    <th>Total IVA</th>
                     <th>Total ISC</th>
                     <th>Total</th>
                     <th>Saldo / Por pagar</th>

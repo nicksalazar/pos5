@@ -421,6 +421,12 @@ class Facturalo
 
         $qrCode = new QrCodeGenerate();
         $qr = $qrCode->displayPNGBase64($text);
+        Log::error($this->document->clave_SRI);
+        $barcode = $qrCode->generarCodigoBarras($this->document->clave_SRI);
+        //Log::error('Log imagen 2');
+        //Log::error($qr);
+        //Storage::disk('tenant')->put('/barcode', $barcode);
+        //$this->uploadStorage('barcode', $barcode, 'image');
         return $qr;
     }
 
