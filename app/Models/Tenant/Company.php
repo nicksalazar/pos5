@@ -55,8 +55,7 @@ class Company extends ModelTenant
         'contribuyente_especial',
         'agente_retencion',
         'agente_retencion_num',
-        'contribuyente_especial_num',
-
+        'contribuyente_especial_num'
     ];
 
     protected $casts = [

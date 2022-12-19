@@ -55,10 +55,12 @@ class Facturalo
     const REGISTERED = '01';
     const SENT = '03';
     const ACCEPTED = '05';
+    const NOACCEPTED = '09';
     const OBSERVED = '07';
-    const REJECTED = '09';
+    const REJECTED = '31';
     const CANCELING = '13';
     const VOIDED = '11';
+    const RETURNED = '30';
 
     protected $configuration;
     protected $company;
@@ -852,7 +854,7 @@ class Facturalo
                 Log::info('ESTADO: '.$estado);
 
                 $this->document->update([
-                    'state_type_id' => self::REJECTED
+                    'state_type_id' => self::NOACCEPTED
                 ]);
                 $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
                 $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje']; 
@@ -998,7 +1000,7 @@ class Facturalo
                 $estado = $responseSRI['RespuestaRecepcionComprobante']['estado'];
 
                 if($estado == 'DEVUELTA'){
-                    $this->updateState(self::REJECTED);
+                    $this->updateState(self::RETURNED);
                     $code = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['identificador'];
                     $mensaje = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['mensaje'];
 

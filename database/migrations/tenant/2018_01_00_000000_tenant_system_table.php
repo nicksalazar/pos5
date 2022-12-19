@@ -18,15 +18,17 @@ class TenantSystemTable extends Migration
             $table->char('id', 2)->index();
             $table->string('description');
         });
-
+        //JOINSOFTWARE ESTADOS DE DOCUMENTOS EN EL SRI//
         DB::table('state_types')->insert([
             ['id' => '01', 'description' => 'Registrado'],
             ['id' => '03', 'description' => 'Enviado'],
-            ['id' => '05', 'description' => 'Aceptado'],
-            ['id' => '07', 'description' => 'Observado'],
-            ['id' => '09', 'description' => 'Rechazado'],
+            ['id' => '05', 'description' => 'Autorizado'],
+            ['id' => '07', 'description' => 'Recibido'],
+            ['id' => '09', 'description' => 'No Autorizado'],
             ['id' => '11', 'description' => 'Anulado'],
             ['id' => '13', 'description' => 'Por anular'],
+            ['id' => '30', 'description' => 'Devuelto'],
+            ['id' => '31', 'description' => 'Rechazado'],
         ]);
 
         Schema::create('soap_types', function (Blueprint $table) {

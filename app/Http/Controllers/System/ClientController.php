@@ -626,7 +626,7 @@
                     'message' => $e->getMessage()
                 ];
             }
-
+            //JOINSOFTWARE CAMPOS ADICIONES COMPANIA//
             DB::connection('tenant')->table('companies')->insert([
                 'identity_document_type_id' => '6',
                 'number' => $request->input('number'),
@@ -638,7 +638,15 @@
                 'soap_password' => $request->soap_password,
                 'soap_url' => $request->soap_url,
                 'certificate' => $name_certificate,
-                'certificate_pass' => $password
+                'certificate_pass' => $password,
+                'rimpe_emp' => $request->input('rimpe_emp'),
+                'rimpe_np'=>$request->input('rimpe_np'),
+                'rise'=>$request->input('rise'),
+                'contribuyente_especial'=>$request->input('contribuyente_especial'),
+                'obligado_contabilidad'=>$request->input('obligado_contabilidad'),
+                'agente_retencion'=>$request->input('agente_retencion'),
+                'agente_retencion_num'=>$request->input('agente_retencion_num'),
+                'contribuyente_especial_num'=>$request->input('contribuyente_especial_num'),
             ]);
 
             $plan = Plan::findOrFail($request->input('plan_id'));
