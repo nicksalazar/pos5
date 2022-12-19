@@ -79,6 +79,7 @@ class Client extends Model
         'smtp_user',
         'smtp_password',
         'smtp_encryption',
+
         'rimpe_emp',
         'rimpe_np',
         'rise',
@@ -86,7 +87,8 @@ class Client extends Model
         'contribuyente_especial',
         'agente_retencion',
         'agente_retencion_num',
-        'contribuyente_especial_num',
+        'contribuyente_especial_num'
+        
     ];
 
     /**
