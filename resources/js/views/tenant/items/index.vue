@@ -171,9 +171,11 @@
                         <th v-if="columns.real_unit_price.visible"
                             class="text-center">P. venta
                         </th>
-                        <th class="text-center">Tiene IVA (Venta)</th>
+                        <!-- JOINSOFTWARE -->
+                        <th class="text-center">Incluye IVA (Venta)</th>
+                        <!-- JOINSOFTWARE -->
                         <th v-if="columns.purchase_has_igv_description.visible"
-                            class="text-center">Tiene IVA (Compra)
+                            class="text-center">Incluye IVA (Compra)
                         </th>
                         <th class="text-right"></th>
                     </tr>
@@ -500,6 +502,7 @@ export default {
                     visible: false
                 },
                 purchase_has_igv_description: {
+                    // JOINSOFTWARE
                     title: 'Tiene IVA (Compra)',
                     visible: false
                 },

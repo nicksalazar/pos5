@@ -750,7 +750,7 @@
                                     class="font-weight-semibold  m-0"
                                 >
                                     <td class="font-weight-semibold">
-                                        OP.INAFECTAS
+                                        SUBTOTAL 0%
                                     </td>
                                     <td class="font-weight-semibold">:</td>
                                     <td class="text-right text-blue">
@@ -763,7 +763,7 @@
                                     class="font-weight-semibold  m-0"
                                 >
                                     <td class="font-weight-semibold">
-                                        OP.GRAVADA
+                                        SUBTOTAL 12%
                                     </td>
                                     <td class="font-weight-semibold">:</td>
                                     <td class="text-right text-blue">
@@ -809,7 +809,7 @@
 
                         <!-- <div class="col-12 text-right px-0" v-if="form.total_taxed > 0">
               <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">OP.GRAVADA: </span>
+                <span class="font-weight-semibold">SUBTOTAL 12%: </span>
                 <span class="text-blue">{{currency_type.symbol}} {{ form.total_taxed }}</span>
               </h4>
             </div>
@@ -823,7 +823,7 @@
 
             <div class="col-12 text-right px-0" v-if="form.total_unaffected > 0">
               <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">OP.INAFECTAS: </span>
+                <span class="font-weight-semibold">SUBTOTAL 0%: </span>
                 <span class="text-blue">{{currency_type.symbol}} {{ form.total_unaffected }}</span>
               </h4>
             </div>

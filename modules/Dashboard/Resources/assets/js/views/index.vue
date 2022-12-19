@@ -175,6 +175,7 @@
                                 <div class="card-body p-0" v-show="!loaders.document">
                                     <table class="table mb-0 table-sm">
                                         <tbody>
+                                            <!-- JOINSOFTWARE -->
                                             <tr class="text-info text-bold">
                                                 <td>Total Cobrado</td>
                                                 <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ document.totals.total_payment }}</td>
@@ -221,6 +222,7 @@
                                 <div class="card-body p-0" v-show="!loaders.general">
                                     <table class="table mb-0 table-sm">
                                         <tbody>
+                                            <!-- JOINSOFTWARE -->
                                             <tr class="text-info text-bold">
                                                 <td>Total notas de venta</td>
                                                 <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ general.totals.total_sale_notes }}</td>
@@ -276,6 +278,7 @@
                                 <div class="card-body p-0" v-show="!loaders.balance">
                                     <table class="table mb-0 table-sm">
                                         <tbody>
+                                            <!-- JOINSOFTWARE -->
                                             <tr class="text-info text-bold">
                                                 <td>
                                                     <el-popover placement="right" width="100%" trigger="hover">
@@ -355,6 +358,7 @@
                                                     </div>
                                                 </td>
                                             </tr>
+                                            <!-- JOINSOFTWARE -->
                                             <tr class="text-info text-bold">
                                                 <td>Ingreso</td>
                                                 <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ utilities.totals.total_income }}</td>
@@ -410,6 +414,7 @@
                                 <div class="card-body p-0" v-show="!loaders.purchase">
                                     <table class="table mb-0 table-sm">
                                         <tbody>
+                                            <!-- JOINSOFTWARE -->
                                             <tr class="text-info text-bold">
                                                 <td>Total percepciones</td>
                                                 <td class="text-right font-weight-bold"> {{(this.configuration.currency_type_id)}} {{ purchase.totals.purchases_total_perception }}</td>

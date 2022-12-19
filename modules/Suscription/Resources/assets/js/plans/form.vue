@@ -214,7 +214,7 @@
                                     </p>
                                     <p v-if="fakeForm.total_unaffected > 0"
                                        class="text-right">
-                                        OP.INAFECTAS: {{ currency_type.symbol }} {{ fakeForm.total_unaffected }}
+                                        SUBTOTAL 0%: {{ currency_type.symbol }} {{ fakeForm.total_unaffected }}
                                     </p>
                                     <p v-if="fakeForm.total_exonerated > 0"
                                        class="text-right">
@@ -222,7 +222,7 @@
                                     </p>
                                     <p v-if="fakeForm.total_taxed > 0"
                                        class="text-right">
-                                        OP.GRAVADA: {{ currency_type.symbol }} {{ fakeForm.total_taxed }}
+                                        SUBTOTAL 12%: {{ currency_type.symbol }} {{ fakeForm.total_taxed }}
                                     </p>
                                     <p v-if="fakeForm.total_igv > 0"
                                        class="text-right">
