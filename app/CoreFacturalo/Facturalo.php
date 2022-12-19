@@ -862,9 +862,16 @@ class Facturalo
                 $this->document->update([
                     'state_type_id' => self::OBSERVED
                 ]);
-                $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
-                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje'];
-            
+                if($authSRI['RespuestaAutorizacionComprobante']['numeroComprobantes'] > 0){
+                    $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
+                    $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje'];
+                }else{
+
+                    $code = 500;
+                    $mensaje = 'NO SE ENCONTRO EL DOCUMENTO EN EL SISTEMA DEL SRI';
+
+                }
+                
             }
 
             $this->response = [
@@ -991,12 +998,12 @@ class Facturalo
                 $estado = $responseSRI['RespuestaRecepcionComprobante']['estado'];
 
                 if($estado == 'DEVUELTA'){
-
+                    $this->updateState(self::REJECTED);
                     $code = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['identificador'];
                     $mensaje = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['mensaje'];
 
                 }elseif($estado == 'RECIBIDA'){
-
+                    $this->updateState(self::OBSERVED);
                     $code = 200;
                     $mensaje = "DOCUMENTO RECIBIDO POR EL SRI";
 
@@ -1006,7 +1013,7 @@ class Facturalo
                     $mensaje = 'NO SE RECUPERO UNA RESPUESTA DEL SRI';
 
                 }
-                $this->updateState(self::OBSERVED);
+                
                 $this->response = [
                     'sent' => false,
                     'code' => $code,
