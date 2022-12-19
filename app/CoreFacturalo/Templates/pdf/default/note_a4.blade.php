@@ -34,7 +34,6 @@
     {{--<link href="{{ $path_style }}" rel="stylesheet" />--}}
 </head>
 <body>
-
 <table class="full-width">
     <tr>
         @if($company->logo)

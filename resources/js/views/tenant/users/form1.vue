@@ -908,9 +908,11 @@ export default {
         },
         filterDocumentTypes(data)
         {
-            return data.filter(element => {
+            //JOINSOFTWARE TIPOS DE DOCUMENTOS EN FORMULARIO DE CREAR CLIENTES//
+            /*return data.filter(element => {
                 return ['01', '03', '80', '09'].includes(element.id) 
-            })
+            })*/
+            return data
         },
         submit() {
             const modulesAndLevelsSelecteds = this.$refs.tree.getCheckedNodes();
