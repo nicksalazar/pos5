@@ -4,10 +4,13 @@ namespace App\CoreFacturalo\Helpers\QrCode;
 
 use Mpdf\QrCode\QrCode;
 use Mpdf\QrCode\Output;
+// HERE WAS JOINSOFTWARE
 use BarcodeBakery\Barcode\BCGcode128;
 use BarcodeBakery\Common\BCGColor;
 use BarcodeBakery\Common\BCGDrawing;
-use BarcodeBakery\Common\BCGFontInfo;
+use BarcodeBakery\Common\BCGFontFile;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class QrCodeGenerate
 {
@@ -19,32 +22,34 @@ class QrCodeGenerate
         return ($base64);
     }
 
+    //JOINSOFTWARE
     public function generarCodigoBarras($claveAcceso) {
+        $font = new BCGFontFile(public_path('fonts/arial.ttf'), 18);
         $colorBlack = new BCGColor(0, 0, 0);
         $colorWhite = new BCGColor(255, 255, 255);
 
         // Barcode Part
         $code = new BCGcode128();
-        $code->setScale(4);
+        $code->setScale(2);
         $code->setThickness(30);
         $code->setForegroundColor($colorBlack);
         $code->setBackgroundColor($colorWhite);
+        $code->setFont($font);
         $code->setStart(null);
         $code->setTilde(true);
-        $code->parse('123448546545613215648951321234485465456132156414');
-
-        // Drawing Part
-        //$drawing = new BCGDrawing($code, $colorWhite);
-
-        //header('Content-Type: image/png');
-        //$drawing->finish(BCGDrawing::IMG_FORMAT_PNG);
+        $code->parse($claveAcceso);
+        $code->clearLabels();
         // Drawing Part
         $drawing = new BCGDrawing($code, $colorWhite);
-        $drawing->finish(BCGDrawing::IMG_FORMAT_PNG, 'barcode.png');
-        //Log::error('Log imagen');
-        $this->redim('barcode.png', 'barcode_mod.png', 1000, 200);
+        $drawing->finish(BCGDrawing::IMG_FORMAT_PNG, $claveAcceso.'.png');
+        $this->redim($claveAcceso.'.png', $claveAcceso.'_mod.png', 350, 200);
+        $img = file_get_contents($claveAcceso.'_mod.png');
+        unlink($claveAcceso.'.png');
+        unlink($claveAcceso.'_mod.png');
+        return (base64_encode($img));
     }
 
+    //JOINSOFTWARE
     public function redim($ruta1, $ruta2, $ancho, $alto) {
         # se obtene la dimension y tipo de imagen 
         $datos = getimagesize($ruta1);

@@ -3,6 +3,7 @@
 namespace App\CoreFacturalo\Helpers\Storage;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 trait StorageDocument
 {
@@ -12,6 +13,7 @@ trait StorageDocument
     public function uploadStorage($filename, $file_content, $file_type, $root = null)
     {
         $this->setData($filename, $file_type, $root);
+        //Log::error("Ruta 1: ".$this->_folder.DIRECTORY_SEPARATOR.$this->_filename);
         Storage::disk('tenant')->put($this->_folder.DIRECTORY_SEPARATOR.$this->_filename, $file_content);
     }
 
