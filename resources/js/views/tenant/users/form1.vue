@@ -661,7 +661,7 @@ export default {
     methods: {
         onUploadSuccess(response, file, fileList) {
             if (response.success) 
-            {series
+            {
                 this.form.photo_filename = response.data.filename
                 this.form.photo_temp_image = response.data.temp_image
                 this.form.photo_temp_path = response.data.temp_path
