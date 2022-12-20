@@ -135,7 +135,8 @@
                     description: null,
                     name: null,
                     unit_type_id: 'NIU',
-                    currency_type_id: 'PEN',
+                    // JOINSOFTWARE currency_type_id: 'PEN',
+                    currency_type_id: this.config.currency_type_id,
                     purchase_unit_price: 0,
                     purchase_affectation_igv_type_id: null,
                 }

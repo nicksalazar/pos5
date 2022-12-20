@@ -694,7 +694,7 @@ class Purchase extends ModelTenant
 
     /**
      * 
-     * Obtener total inafecto y realizar conversión a soles de acuerdo al tipo de cambio
+     * Obtener Subtotal 0% y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
      */
