@@ -1164,7 +1164,7 @@
                 @if($company->logo)
                     
                         <div class="company_logo_box">
-                            <img src="data:{{mime_content_type(public_path("{$logo}"))}};base64, {{base64_encode(file_get_contents(public_path("{$logo}")))}}" alt="{{$company->name}}" class="company_logo" style="margin-left: 50px; padding-bottom: 40px; max-width: 150px;" >
+                            <img src="data:{{mime_content_type(public_path("{$logo}"))}};base64, {{base64_encode(file_get_contents(public_path("{$logo}")))}}" alt="{{$company->name}}" class="company_logo" style="margin-left: 50px; padding-bottom: 40px; max-width: 150px" >
                         </div>
                    
                 @else
@@ -1285,7 +1285,7 @@
                         <strong>FECHA EMISIÓN (comprobante a modificar): </strong>
                     </td>
                     <td>
-                        Fecha(dd/mm/yy)
+                        Date(dd/mm/yy)
                     </td>
                 </tr>
                 <tr>
