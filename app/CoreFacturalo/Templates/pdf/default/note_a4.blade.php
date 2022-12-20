@@ -32,7 +32,6 @@
 <head>
 </head>
 <body>
-
 <table class="full-width">
     <tr>
         @if($company->logo)

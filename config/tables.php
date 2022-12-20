@@ -2,15 +2,18 @@
 
 return [
     'system' => [
+        //JOINSOFTWARE ESTADOS//
         'state_types' => [
             '01' => 'Registrado',
             '03' => 'Enviado',
-            '05' => 'Aceptado',
-            '07' => 'Observado',
-            '09' => 'Rechazado',
+            '05' => 'Autorizado',
+            '07' => 'Recibido',
+            '09' => 'No Autorizado',
             '11' => 'Anulado',
             '13' => 'Anulando',// 'Anulación registrada',
             '15' => 'Anulando',// 'Anulación enviada',
+            '30' => 'Devuelta',// 'DEVUELTA POR EL SRI',
+            '31' => 'Rechazado',// 'DEVUELTA POR EL SRI',
         ],
         'soap_sends' => [
             '01' => 'Sunat',
