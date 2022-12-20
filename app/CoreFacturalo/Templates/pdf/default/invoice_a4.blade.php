@@ -882,7 +882,7 @@
                 @if($company->logo)
                     
                         <div class="company_logo_box">
-                            <img src="data:{{mime_content_type(public_path("{$logo}"))}};base64, {{base64_encode(file_get_contents(public_path("{$logo}")))}}" alt="{{$company->name}}" class="company_logo" style="max-width: 150px;"width="100px" height="100px" style="margin-left: 50px" >
+                            <img src="data:{{mime_content_type(public_path("{$logo}"))}};base64, {{base64_encode(file_get_contents(public_path("{$logo}")))}}" alt="{{$company->name}}" class="company_logo" width="100px" height="100px" style="margin-left: 50px; padding-bottom: 40px; max-width: 150px;" >
                         </div>
                    
                 @else
@@ -897,7 +897,7 @@
                     <table>
                         <tbody>
                             <tr>
-                                <td style="text-transform: uppercase; background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-bottom: 40px; padding-top: 15px;">
+                                <td style="text-transform: uppercase; background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-bottom: 60px; padding-top: 15px;">
                                     <strong>Emisor: </strong>{{ $company->name }}<br></br>
                                     <strong>RUC: </strong>{{ $company->number }}<br></br>
                                     <strong>Matriz: </strong> <h7 style="text-transform: uppercase;">{{ ($establishment->address !== '-')? $establishment->address : '' }}{{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}{{ ($establishment->province_id !== '-')? ', '.$establishment->province->description : '' }}{{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}</h7><br></br>
@@ -927,23 +927,35 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-top: 20px">
-                                    <strong>Número de Autorización:</strong><br></br>
-                                    {{$document->clave_SRI}}<br></br><br></br>
-                                    <strong>Fecha y hora de Autorización:</strong><br></br>
-                                    {{$document->date_authorization}} {{ $document->time_authorization}}<br></br><br></br>
+                                <td style="background: #eaeaea; padding-top: 20px; padding-left: 15px; padding-right: 15px;">
+                                    <strong>Número de Autorización:</strong>
+                                    <br></br>
+                                    <h6 style="font-size: 13px;">{{$document->clave_SRI}}</h6>
+                                    <br></br>
+                                    <br></br>
+                                    <strong>Fecha y hora de Autorización:</strong>
+                                    <br></br>
+                                    {{$document->date_authorization}} {{ $document->time_authorization}}
+                                    <br></br>
+                                    <br></br>
                                     @if($company->soap_type_id === '01')
-                                    <strong>Ambiente: </strong>PRUEBAS<br></br>
+                                    <strong>Ambiente: </strong>PRUEBAS
+                                    <br></br>
                                     @endif
                                     @if($company->soap_type_id === '03')
-                                    <strong>Ambiente: </strong>INTERNO<br></br>
+                                    <strong>Ambiente: </strong>INTERNO
+                                    <br></br>
                                     @endif
                                     @if($company->soap_type_id === '02')
-                                    <strong>Ambiente: </strong>PRODUCCION<br></br>
+                                    <strong>Ambiente: </strong>PRODUCCION
+                                    <br></br>
                                     @endif
-                                    <strong>Emisión: </strong>NORMAL<br></br>
-                                    <strong>Clave de Acceso:</strong><br></br>
-                                    {{$document->clave_SRI}}
+                                    <strong>Emisión: </strong>NORMAL
+                                    <br></br>
+                                    <strong>Clave de Acceso:</strong>
+                                    <br></br>
+                                    <div class="text-left">&nbsp;&nbsp;<img class="qr_code" src="data:image/png;base64, {{ $document->qr }}" /></div>
+                                    <h6 style="font-size: 13px;">{{ $document->clave_SRI }}</h6>
                                 </td>
                             </tr>
                         </tbody>
@@ -1255,8 +1267,8 @@
                     @if ($document->document_type_id === '07')
                         @if($document->total_taxed >= 0)
                         <tr>
-                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
-                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ number_format($document->total_taxed, 2) }}</td>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">OP. GRAVADAS:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($document->total_taxed, 2) }}</td>
                         </tr>
                         @endif
                     @elseif($document->total_taxed > 0)
@@ -1283,7 +1295,7 @@
                         </tr>
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">ICE:</td>
-                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">$0.00</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}0.00</td>
                         </tr>
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">IVA 12%:</td>

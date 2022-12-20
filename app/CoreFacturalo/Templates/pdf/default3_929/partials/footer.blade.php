@@ -262,8 +262,10 @@ $total_array_chunk = count($array_chunk);
                                     valign=top>{{ $total_gratuita }}</td>
                             </tr>
                             <tr>
+                                <!-- JOINSOFTWARE -->
+                                <!-- Total IGV -> Total IVA -->
                                 <td style="{{ $three_borders }}"
-                                    valign=top><b>Total IGV {{ $igv }}%</b></td>
+                                    valign=top><b>Total IVA {{ $igv }}%</b></td>
                                 <td style="{{ $three_borders }}"
                                     valign=top>{{ $total_igv }}</td>
                             </tr>

@@ -770,7 +770,9 @@
 <error code="2650">Factura de operacion sujeta al IVAP , no debe consignar valor para ISC o debe ser 0</error>
 <error code="2651">Factura de operacion sujeta al IVAP , no debe consignar valor para IGV o debe ser 0</error>
 <error code="2652">Factura de operacion sujeta al IVAP , debe registrar mensaje 2007</error>
-<error code="2653">Servicios prestados No domiciliados. Total IGV debe se mayor a cero</error>
+<!-- JOINSOFTWARE -->
+<!-- Total IGV -> Total IVA -->
+<error code="2653">Servicios prestados No domiciliados. Total IVA debe se mayor a cero</error>
 <error code="2654">Servicios prestados No domiciliados. Código tributo a consignar debe ser 1000</error>
 <error code="2655">Servicios prestados No domiciliados. El código de afectación debe ser 40</error>
 <error code="2656">Servicios prestados No domiciliados. Código tributo  UN/ECE debe ser VAT</error>

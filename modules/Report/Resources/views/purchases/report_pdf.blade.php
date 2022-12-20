@@ -121,8 +121,12 @@
                                 <th class="" >T.Gratuito</th> -->
                                 <th>Moneda</th>
                                 <th>Total ISC</th>
-                                <th>Total Gravado</th>
-                                <th>Total IGV</th>
+                                <!-- JOINSOFTWARE -->
+                                <!-- Total Gravado -> Subtotal 12% -->
+                                <th>Subtotal 12%</th>
+                                <!-- JOINSOFTWARE -->
+                                <!-- Total IGV -> Total IVA -->
+                                <th>Total IVA</th>
                                 <th>Total</th>
                             </tr>
                         </thead>

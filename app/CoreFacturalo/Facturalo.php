@@ -423,7 +423,9 @@ class Facturalo
 
         $qrCode = new QrCodeGenerate();
         $qr = $qrCode->displayPNGBase64($text);
-        return $qr;
+        //JOINSOFTWARE
+        $barcode = $qrCode->generarCodigoBarras($this->document->clave_SRI);
+        return $barcode;
     }
 
     public function createPdf($document = null, $type = null, $format = null, $output = 'pdf') {
