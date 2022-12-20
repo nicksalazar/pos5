@@ -1213,8 +1213,12 @@ export default {
             if (this.configuration.default_document_type_03) {
                 this.form.document_type_id = "03";
             } else {
+                //JOINSOFTWARE CAMBIO TIPO DOCUMENTO POR DEFECTO EN POS//
+                this.form.document_type_id = "01";
+                /*
                 this.form.document_type_id =
                     customer.identity_document_type_id == "6" ? "01" : "03";
+                */
             }
 
             this.setLocalStorageIndex("customer", this.customer);

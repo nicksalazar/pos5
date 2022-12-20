@@ -26,9 +26,11 @@ class EstablishmentRequest extends FormRequest
             'province_id' => [
                 'required',
             ],
+            //JOINSOFTWARE DISTRIC_ID//
+            /*
             'district_id' => [
                 'required',
-            ],
+            ],*/
             'address' => [
                 'required',
             ],

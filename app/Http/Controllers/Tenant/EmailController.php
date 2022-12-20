@@ -1,7 +1,6 @@
 <?php
 
     namespace App\Http\Controllers\Tenant;
-
     use App\Http\Controllers\Controller;
     use App\Models\Tenant\Configuration;
     use App\Models\Tenant\EmailSendLog;
@@ -9,7 +8,7 @@
     use Illuminate\Support\Facades\Mail;
     use Log;
     use Swift_RfcComplianceException;
-
+    use Illuminate\Support\Facades\Config;
     class EmailController extends Controller
     {
         /** @var string|null */
@@ -90,10 +89,16 @@
         protected function SendAMail($mailable)
         {
             Configuration::setConfigSmtpMail();
+            
+            
             $ret = true;
+            
+            Log::error(json_encode(Config::get('mail')));
             try {
+
                 Mail::to($this->getArrayEmail())->send($mailable);
                 $this->saveModel($ret);
+
             } catch (Swift_RfcComplianceException $e) {
                 $ret = false;
                 $this
@@ -104,6 +109,7 @@
                 $this->saveError();
                 $this->saveModel();
             } catch (Exception $e) {
+                //Log::error(json_encode($e));
                 $ret = false;
                 $this
                     ->setError($e->getMessage())

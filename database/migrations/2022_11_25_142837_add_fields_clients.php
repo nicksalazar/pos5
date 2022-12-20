@@ -16,12 +16,12 @@ class AddFieldsClients extends Migration
         //
         Schema::table('clients', function (Blueprint $table) {
 
-            $table->boolean('rimpe_emp')->default(false);
-            $table->boolean('rimpe_np')->default(false);
-            $table->boolean('rise')->default(false);
-            $table->boolean('contribuyente_especial')->default(false);
-            $table->boolean('obligado_contabilidad')->default(false);
-            $table->boolean('agente_retencion')->default(false);
+            $table->boolean('rimpe_emp')->nullable();
+            $table->boolean('rimpe_np')->nullable();
+            $table->boolean('rise')->nullable();
+            $table->boolean('contribuyente_especial')->nullable();
+            $table->boolean('obligado_contabilidad')->nullable();
+            $table->boolean('agente_retencion')->nullable();
             $table->string('agente_retencion_num')->nullable();
             $table->string('contribuyente_especial_num')->nullable();
 
