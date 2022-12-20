@@ -53,7 +53,6 @@
                 <h5>{{ 'RUC '.$company->number }}</h5>
                 <h6 style="text-transform: uppercase;">
                     {{ ($establishment->address !== '-')? $establishment->address : '' }}
-                    {{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}
                     {{ ($establishment->province_id !== '-')? ', '.$establishment->province->description : '' }}
                     {{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}
                 </h6>
