@@ -1159,7 +1159,7 @@
     <table class="full-width">
         <tbody>
             <tr>
-                <td>
+                <td width="50%">
                 @if($company->logo)
                     
                         <div class="company_logo_box">
@@ -1203,7 +1203,7 @@
                         </tbody>
                     </table>
                 </td>
-                <td>
+                <td width="50%">
                     <table>
                         <tbody>
                             <tr>
@@ -1211,7 +1211,7 @@
                             </tr>
                             <tr>
                                 <td style="padding: 10px 15px 10px 15px; text-align: center;">
-                                    <pre style="tab-size: 16; font-size: 14px"><strong>NOTA DE CRÉDITO        </strong>        {{$document_number}}</pre>
+                                    <pre style="tab-size: 16; font-size: 14px"><strong>NOTA DE CRÉDITO        </strong>       {{$document_number}}</pre>
                                 </td>
                             </tr>
                             <tr>
@@ -1608,10 +1608,12 @@
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 12%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total12, 2) }}</td>
                         </tr>
+                        <!-- JOINSOFTWARE
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 14%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total14, 2) }}</td>
                         </tr>
+                        -->
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 0%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total0, 2) }}</td>
@@ -1628,10 +1630,12 @@
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">IVA 12%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($totalIVA12, 2) }}</td>
                         </tr>
+                        <!-- JOINSOFTWARE
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">IVA 14%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($totalIVA14, 2) }}</td>
                         </tr>
+                        -->
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Servicio %:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}0.00</td>
