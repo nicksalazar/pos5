@@ -26,12 +26,12 @@ class QrCodeGenerate
     public function generarCodigoBarras($claveAcceso) {
         $font = new BCGFontFile(public_path('fonts/arial.ttf'), 18);
         $colorBlack = new BCGColor(0, 0, 0);
-        $colorWhite = new BCGColor(255, 255, 255);
+        $colorWhite = new BCGColor(234, 234, 234);
 
         // Barcode Part
         $code = new BCGcode128();
-        $code->setScale(2);
-        $code->setThickness(30);
+        $code->setScale(4);
+        $code->setThickness(40);
         $code->setForegroundColor($colorBlack);
         $code->setBackgroundColor($colorWhite);
         $code->setFont($font);
