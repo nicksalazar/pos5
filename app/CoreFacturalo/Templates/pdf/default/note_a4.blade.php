@@ -1181,16 +1181,23 @@
                                 <td style="text-transform: uppercase; background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-bottom: 60px; padding-top: 15px;">
                                     <strong>Emisor: </strong>{{ $company->name }}<br></br>
                                     <strong>RUC: </strong>{{ $company->number }}<br></br>
-                                    <strong>Matriz: </strong> <h7 style="text-transform: uppercase;">{{ ($establishment->address !== '-')? $establishment->address : '' }}{{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}{{ ($establishment->province_id !== '-')? ', '.$establishment->province->description : '' }}{{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}</h7><br></br>
+                                    <strong>Matriz: </strong> <h7 style="text-transform: uppercase;">{{ ($establishment->address !== '-')? $establishment->address : '' }}<!-- JOINSOFTWARE {{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}-->{{ ($establishment->province_id !== '-')? /* JOINSOFTWARE ', '.*/$establishment->province->description : '' }}{{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}</h7><br></br>
                                     <strong>Correo: </strong>{{ ($establishment->email !== '-')? ''.$establishment->email : '' }}<br></br>
                                     <strong>Teléfono: </strong>{{ ($establishment->telephone !== '-')? ''.$establishment->telephone : '' }}<br></br>
                                     @if($company->obligado_contabilidad)
                                     <strong>Obligado a llevar contabilidad: </strong>SI<br></br>
+                                    @else
+                                    <strong>Obligado a llevar contabilidad: </strong>NO<br></br>
                                     @endif
                                     @if($company->contribuyente_especial)
-                                    <strong>Contribuyente especial: </strong>SI<br></br>
+                                    <strong>Contribuyente especial: </strong>{{ $company->contribuyente_especial_num }}<br></br>
                                     @endif
-        
+                                    @if($company->agente_retencion)
+                                    <strong>Agente de Retención Resolución No.: </strong>{{ $company->agente_retencion_num }}<br></br>
+                                    @endif
+                                    @if($company->rimpe_emp || $company->rimpe_np)
+                                    <strong>CONTRIBUYENTE RÉGIMEN RIMPE</strong><br></br>
+                                    @endif
                                 </td>
                             </tr>
                         </tbody>
@@ -1211,7 +1218,7 @@
                                 <td style="background: #eaeaea; padding-top: 20px; padding-left: 15px; padding-right: 15px;">
                                     <strong>Número de Autorización:</strong>
                                     <br></br>
-                                    {{$document->clave_SRI}}
+                                    <h6 style="font-size: 13px;">{{$document->clave_SRI}}</h6>
                                     <br></br>
                                     <br></br>
                                     <strong>Fecha y hora de Autorización:</strong>
