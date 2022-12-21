@@ -900,7 +900,7 @@
                                 <td style="text-transform: uppercase; background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-bottom: 60px; padding-top: 15px;">
                                     <strong>Emisor: </strong>{{ $company->name }}<br></br>
                                     <strong>RUC: </strong>{{ $company->number }}<br></br>
-                                    <strong>Matriz: </strong> <h7 style="text-transform: uppercase;">{{ ($establishment->address !== '-')? $establishment->address : '' }}{{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}{{ ($establishment->province_id !== '-')? ', '.$establishment->province->description : '' }}{{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}</h7><br></br>
+                                    <strong>Matriz: </strong> <h7 style="text-transform: uppercase;">{{ ($establishment->address !== '-')? $establishment->address : '' }}{{ ($establishment->province_id !== '-')? ', '.$establishment->province->description : '' }}{{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}</h7><br></br>
                                     <strong>Correo: </strong>{{ ($establishment->email !== '-')? ''.$establishment->email : '' }}<br></br>
                                     <strong>Teléfono: </strong>{{ ($establishment->telephone !== '-')? ''.$establishment->telephone : '' }}<br></br>
                                     @if($company->obligado_contabilidad)
