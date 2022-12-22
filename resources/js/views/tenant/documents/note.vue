@@ -366,7 +366,7 @@ import {calculateRowItem} from '../../../helpers/functions'
 export default {
     components: {DocumentFormItem, DocumentOptions},
     mixins: [functions, exchangeRate],
-    props: ['document_affected', 'configuration'],
+    props: ['document_affected', 'configuration', 'authUser',],
     data() {
         return {
             recordItem: null,
@@ -418,6 +418,7 @@ export default {
 
                 this.changeDocumentType()
                 this.changeDateOfIssue()
+                this.setDefaultDocumentType();
             })
         await this.getPercentageIgv();
         this.getCustomer()
@@ -429,6 +430,9 @@ export default {
 
     },
     computed: {
+        ...mapState([
+            'config',
+        ]),
         isCreditNoteAndType13: function () {
             return (this.form.document_type_id === '07' && this.form.note_credit_or_debit_type_id === '13')
         },
@@ -787,6 +791,39 @@ export default {
                 })
 
         },
+        setDefaultSerieByDocument()
+        {
+            if(this.authUser.multiple_default_document_types)
+            {
+                const default_document_type_serie = _.find(this.authUser.default_document_types, { document_type_id : this.form.document_type_id})
+
+                if(default_document_type_serie)
+                {
+                    const exist_serie = _.find(this.series, { id : default_document_type_serie.series_id})
+                    if(exist_serie) this.form.series_id = default_document_type_serie.series_id
+                }
+            }
+
+        },
+        // #307 Ajuste para seleccionar automaticamente el tipo de comprobante y serie
+        setDefaultDocumentType(from_function) {
+            if(this.authUser.multiple_default_document_types) return
+
+            this.default_series_type = this.config.user.serie;
+            this.default_document_type = this.config.user.document_id;
+            // if (this.default_document_type === undefined) this.default_document_type = null;
+            // if (this.default_series_type === undefined) this.default_series_type = null;
+
+            let alt = _.find(this.document_types, {'id': this.default_document_type});
+            if (this.default_document_type !== null && alt !== undefined) {
+                this.form.document_type_id = this.default_document_type;
+                this.changeDocumentType()
+                alt = _.find(this.series, {'id': this.default_series_type});
+                if (this.default_series_type !== null && alt !== undefined) {
+                    this.form.series_id = this.default_series_type;
+                }
+            }
+        },
         changeDocumentType() {
             this.form.note_credit_or_debit_type_id = null
             this.form.series_id = null
@@ -807,6 +844,7 @@ export default {
 
             this.initData()
             this.validateHasDiscounts()
+            this.setDefaultSerieByDocument()
 
         },
         changeDateOfIssue() {

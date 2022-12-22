@@ -832,11 +832,11 @@ class Facturalo
 
                 $this->uploadFile($documento, 'autorizado');
                 $tipodoc = 'invoice';
-                if($this->document->documnet_type_id == '01'){
+                if($this->document->documnet_type_id === '01'){
                     $tipodoc = 'invoice';
                     $this->doc_type = '01';
 
-                }else if($this->document->documnet_type_id == '07'){
+                }else if($this->document->documnet_type_id === '07'){
             
                     $tipodoc = 'credit';
                     $this->doc_type = '07';
