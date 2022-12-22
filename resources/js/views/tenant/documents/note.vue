@@ -362,11 +362,18 @@ import DocumentFormItem from './partials/item.vue'
 import DocumentOptions from '../documents/partials/options.vue'
 import {functions, exchangeRate} from '../../../mixins/functions'
 import {calculateRowItem} from '../../../helpers/functions'
+//JOINSOFTWARE
+//import {mapActions, mapState} from "vuex/dist/vuex.mjs";
 
 export default {
     components: {DocumentFormItem, DocumentOptions},
     mixins: [functions, exchangeRate],
-    props: ['document_affected', 'configuration'],
+    props: [
+        'document_affected',
+        'configuration',
+        //JOINSOFTWARE
+        //'authUser',
+    ],
     data() {
         return {
             recordItem: null,
@@ -381,6 +388,9 @@ export default {
             document_types: [],
             currency_types: [],
             customers: [],
+            //JOINSOFTWARE
+            //all_series: [],
+            //series: [],
             all_series: [],
             series: [],
             currency_type: {},
@@ -400,11 +410,17 @@ export default {
     },
     async created() {
         this.document = this.document_affected
+        //JOINSOFTWARE
+        //this.loadConfiguration()
+        //this.$store.commit('setConfiguration', this.configuration)
         await this.initForm()
         await this.$http.get(`/${this.resource}/tables`)
             .then(response => {
                 this.document_types = response.data.document_types_note
                 this.currency_types = response.data.currency_types
+                //JOINSOFTWARE
+                //this.$store.commit('setAllSeries', response.data.series)
+                //JOINSOFTWARE
                 this.all_series = response.data.series
                 // this.customers = response.data.customers
                 this.note_credit_types = response.data.note_credit_types
@@ -418,6 +434,8 @@ export default {
 
                 this.changeDocumentType()
                 this.changeDateOfIssue()
+                //JOINSOFTWARE
+                //this.setDefaultDocumentType();
             })
         await this.getPercentageIgv();
         this.getCustomer()
@@ -429,6 +447,14 @@ export default {
 
     },
     computed: {
+        //JOINSOFTWARE
+        /*
+        ...mapState([
+            'config',
+            'series',
+            'all_series',
+        ]),
+        */
         isCreditNoteAndType13: function () {
             return (this.form.document_type_id === '07' && this.form.note_credit_or_debit_type_id === '13')
         },
@@ -591,6 +617,9 @@ export default {
             }
 
         },
+        ...mapActions([
+            'loadConfiguration',
+        ]),
         async initFormCreditNoteAndType13() {
 
             this.errors = {}
@@ -787,6 +816,46 @@ export default {
                 })
 
         },
+        //JOINSOFTWARE
+        /*
+        setDefaultSerieByDocument()
+        {
+            if(this.authUser.multiple_default_document_types)
+            {
+                const default_document_type_serie = _.find(this.authUser.default_document_types, { document_type_id : this.form.document_type_id})
+
+                if(default_document_type_serie)
+                {
+                    const exist_serie = _.find(this.series, { id : default_document_type_serie.series_id})
+                    if(exist_serie) this.form.series_id = default_document_type_serie.series_id
+                }
+            }
+
+        },
+        */
+        //JOINSOFTWARE
+        // #307 Ajuste para seleccionar automaticamente el tipo de comprobante y serie
+        /*
+        setDefaultDocumentType(from_function) {
+
+            if(this.authUser.multiple_default_document_types) return
+
+            this.default_series_type = this.config.user.serie;
+            this.default_document_type = this.config.user.document_id;
+            // if (this.default_document_type === undefined) this.default_document_type = null;
+            // if (this.default_series_type === undefined) this.default_series_type = null;
+
+            let alt = _.find(this.document_types, {'id': this.default_document_type});
+            if (this.default_document_type !== null && alt !== undefined) {
+                this.form.document_type_id = this.default_document_type;
+                this.changeDocumentType()
+                alt = _.find(this.series, {'id': this.default_series_type});
+                if (this.default_series_type !== null && alt !== undefined) {
+                    this.form.series_id = this.default_series_type;
+                }
+            }
+        },
+        */
         changeDocumentType() {
             this.form.note_credit_or_debit_type_id = null
             this.form.series_id = null
@@ -807,7 +876,8 @@ export default {
 
             this.initData()
             this.validateHasDiscounts()
-
+            //JOINSOFTWARE
+            //this.setDefaultSerieByDocument()
         },
         changeDateOfIssue() {
             this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
@@ -954,7 +1024,9 @@ export default {
                     }
                 })
                 .then(() => {
-                    this.loading_submit = false
+                    this.loading_submit = false;
+                    //JOINSOFTWARE
+                    //this.setDefaultDocumentType();
                 })
         },
         getCustomer() {
