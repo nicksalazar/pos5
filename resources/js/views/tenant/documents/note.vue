@@ -617,9 +617,12 @@ export default {
             }
 
         },
+        //JOINSOFTWARE
+        /*
         ...mapActions([
             'loadConfiguration',
         ]),
+        */
         async initFormCreditNoteAndType13() {
 
             this.errors = {}
