@@ -62,7 +62,7 @@
     <tr>
         <td class="text-center" style="text-transform: uppercase;">
             {{ ($establishment->address !== '-')? $establishment->address : '' }}
-            {{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}
+            <!--{{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}-->
             {{ ($establishment->province_id !== '-')? ', '.$establishment->province->description : '' }}
             {{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}
         </td>

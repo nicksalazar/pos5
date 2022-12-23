@@ -423,7 +423,9 @@ class Facturalo
 
         $qrCode = new QrCodeGenerate();
         $qr = $qrCode->displayPNGBase64($text);
-        return $qr;
+        //JOINSOFTWARE
+        $barcode = $qrCode->generarCodigoBarras($this->document->clave_SRI);
+        return $barcode;
     }
 
     public function createPdf($document = null, $type = null, $format = null, $output = 'pdf') {
@@ -833,14 +835,14 @@ class Facturalo
                 $documento = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['comprobante'];
 
                 $this->uploadFile($documento, 'autorizado');
-                $tipodoc = 'invoice';
-                if($this->document->documnet_type_id == '01'){
+                $tipodoc = '';
+                if($this->document->document_type_id === '01'){
                     $tipodoc = 'invoice';
                     $this->doc_type = '01';
 
-                }else if($this->document->documnet_type_id == '07'){
+                }else if($this->document->document_type_id === '07'){
             
-                    $tipodoc = 'credit';
+                    $tipodoc = 'note';
                     $this->doc_type = '07';
                 }
                 $this->actions['format_pdf'] = 'blank';
@@ -1485,6 +1487,7 @@ class Facturalo
         // dd($inputs);
         switch ($this->type) {
             case 'invoice':
+                $this->doc_type = '01';
                 $document = Document::find($id);
                 // si cambia la serie
                 if($inputs['series'] !== $document->series){

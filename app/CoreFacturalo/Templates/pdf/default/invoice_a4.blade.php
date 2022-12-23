@@ -878,11 +878,11 @@
     <table class="full-width">
         <tbody>
             <tr>
-                <td>
+                <td width="50%">
                 @if($company->logo)
                     
                         <div class="company_logo_box">
-                            <img src="data:{{mime_content_type(public_path("{$logo}"))}};base64, {{base64_encode(file_get_contents(public_path("{$logo}")))}}" alt="{{$company->name}}" class="company_logo" style="max-width: 150px;"width="100px" height="100px" style="margin-left: 50px" >
+                            <img src="data:{{mime_content_type(public_path("{$logo}"))}};base64, {{base64_encode(file_get_contents(public_path("{$logo}")))}}" alt="{{$company->name}}" class="company_logo" style="margin-left: 50px; padding-bottom: 40px; max-width: 150px" >
                         </div>
                    
                 @else
@@ -897,7 +897,7 @@
                     <table>
                         <tbody>
                             <tr>
-                                <td style="text-transform: uppercase; background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-bottom: 40px; padding-top: 15px;">
+                                <td style="text-transform: uppercase; background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-bottom: 60px; padding-top: 15px;">
                                     <strong>Emisor: </strong>{{ $company->name }}<br></br>
                                     <strong>RUC: </strong>{{ $company->number }}<br></br>
                                     <strong>Matriz: </strong> <h7 style="text-transform: uppercase;">{{ ($establishment->address !== '-')? $establishment->address : '' }}{{ ($establishment->province_id !== '-')? /* JOINSOFTWARE ', '.*/$establishment->province->description : '' }}{{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}</h7><br></br>
@@ -905,17 +905,24 @@
                                     <strong>Teléfono: </strong>{{ ($establishment->telephone !== '-')? ''.$establishment->telephone : '' }}<br></br>
                                     @if($company->obligado_contabilidad)
                                     <strong>Obligado a llevar contabilidad: </strong>SI<br></br>
+                                    @else
+                                    <strong>Obligado a llevar contabilidad: </strong>NO<br></br>
                                     @endif
                                     @if($company->contribuyente_especial)
-                                    <strong>Contribuyente especial: </strong>SI<br></br>
+                                    <strong>Contribuyente especial: </strong>{{ $company->contribuyente_especial_num }}<br></br>
                                     @endif
-        
+                                    @if($company->agente_retencion)
+                                    <strong>Agente de Retención Resolución No.: </strong>{{ $company->agente_retencion_num }}<br></br>
+                                    @endif
+                                    @if($company->rimpe_emp || $company->rimpe_np)
+                                    <strong>CONTRIBUYENTE RÉGIMEN RIMPE</strong><br></br>
+                                    @endif
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </td>
-                <td>
+                <td width="50%">
                     <table>
                         <tbody>
                             <tr>
@@ -923,27 +930,39 @@
                             </tr>
                             <tr>
                                 <td style="padding: 10px 15px 10px 15px; text-align: center;">
-                                    <pre style="tab-size: 16; font-size: 14px"><strong>FACTURA        </strong>        No.{{$document_number}}</pre>
+                                    <pre style="tab-size: 16; font-size: 14px"><strong>FACTURA         </strong>         No.{{$document_number}}</pre>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-top: 20px">
-                                    <strong>Número de Autorización:</strong><br></br>
-                                    {{$document->clave_SRI}}<br></br><br></br>
-                                    <strong>Fecha y hora de Autorización:</strong><br></br>
-                                    {{$document->date_authorization}} {{ $document->time_authorization}}<br></br><br></br>
+                                <td style="background: #eaeaea; padding-top: 20px; padding-left: 15px; padding-right: 15px;">
+                                    <strong>Número de Autorización:</strong>
+                                    <br></br>
+                                    <h6 style="font-size: 13px;">{{$document->clave_SRI}}</h6>
+                                    <br></br>
+                                    <br></br>
+                                    <strong>Fecha y hora de Autorización:</strong>
+                                    <br></br>
+                                    {{$document->date_authorization}} {{ $document->time_authorization}}
+                                    <br></br>
+                                    <br></br>
                                     @if($company->soap_type_id === '01')
-                                    <strong>Ambiente: </strong>PRUEBAS<br></br>
+                                    <strong>Ambiente: </strong>PRUEBAS
+                                    <br></br>
                                     @endif
                                     @if($company->soap_type_id === '03')
-                                    <strong>Ambiente: </strong>INTERNO<br></br>
+                                    <strong>Ambiente: </strong>INTERNO
+                                    <br></br>
                                     @endif
                                     @if($company->soap_type_id === '02')
-                                    <strong>Ambiente: </strong>PRODUCCION<br></br>
+                                    <strong>Ambiente: </strong>PRODUCCION
+                                    <br></br>
                                     @endif
-                                    <strong>Emisión: </strong>NORMAL<br></br>
-                                    <strong>Clave de Acceso:</strong><br></br>
-                                    {{$document->clave_SRI}}
+                                    <strong>Emisión: </strong>NORMAL
+                                    <br></br>
+                                    <strong>Clave de Acceso:</strong>
+                                    <br></br>
+                                    <div class="text-left">&nbsp;&nbsp;<img class="qr_code" src="data:image/png;base64, {{ $document->qr }}" /></div>
+                                    <h6 style="font-size: 13px;">{{ $document->clave_SRI }}</h6>
                                 </td>
                             </tr>
                         </tbody>
@@ -1255,8 +1274,8 @@
                     @if ($document->document_type_id === '07')
                         @if($document->total_taxed >= 0)
                         <tr>
-                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
-                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ number_format($document->total_taxed, 2) }}</td>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">OP. GRAVADAS:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($document->total_taxed, 2) }}</td>
                         </tr>
                         @endif
                     @elseif($document->total_taxed > 0)
@@ -1269,10 +1288,12 @@
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 12%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total12, 2) }}</td>
                         </tr>
+                        <!-- JOINSOFTWARE
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 14%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total14, 2) }}</td>
                         </tr>
+                        -->
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 0%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total0, 2) }}</td>
@@ -1283,16 +1304,18 @@
                         </tr>
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">ICE:</td>
-                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">$0.00</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}0.00</td>
                         </tr>
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">IVA 12%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($totalIVA12, 2) }}</td>
                         </tr>
+                        <!-- JOINSOFTWARE
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">IVA 14%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($totalIVA14, 2) }}</td>
                         </tr>
+                        -->
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Servicio %:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}0.00</td>

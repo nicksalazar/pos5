@@ -225,6 +225,8 @@ class DocumentController extends Controller
         if (\Auth::user()) {
             $user = \Auth::user();
         }
+        //JOINSOFTWARE
+        $authUser = $user->getDataOnlyAuthUser();
         $document_id = $user->document_id;
         $series_id = $user->series_id;
         $establishment_id = $user->establishment_id;
@@ -283,6 +285,8 @@ class DocumentController extends Controller
         return compact(
             'document_id',
             'series_id',
+            //JOINSOFTWARE
+            'authUser',
             'customers',
             'establishments',
             'series',
@@ -793,7 +797,6 @@ class DocumentController extends Controller
         $fact = DB::connection('tenant')->transaction(function () use ($request, $id) {
             $facturalo = new Facturalo();
             $facturalo->update($request->all(), $id);
-
             $facturalo->createXmlUnsigned();
             $facturalo->signXmlUnsigned();
             $facturalo->updateHash();

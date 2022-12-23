@@ -39,11 +39,14 @@
 
                             <th v-if="columns.total_charge.visible">Total Cargos</th>
                             <th>Total Exonerado</th>
-                            <th>Total Inafecto</th>
+                            <th>Subtotal 0%</th>
                             <th>Total Gratuito</th>
-                            <th>Total Gravado</th>
-
-                            <th class="">Total IGV</th>
+                            <!-- JOINSOFTWARE -->
+                            <!-- Total Gravado -> Subtotal 12% -->
+                            <th>Subtotal 12%</th>
+                            <!-- JOINSOFTWARE -->
+                            <!-- Total IGV -> Total IVA -->
+                            <th class="">Total IVA</th>
                             <th class="" v-if="columns.total_isc.visible">Total ISC</th>
                             <th class="">Total</th>
                             
