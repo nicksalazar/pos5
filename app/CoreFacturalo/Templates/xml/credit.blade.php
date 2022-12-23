@@ -15,7 +15,9 @@
     $DocAfectado = str_pad($estable , '3', '0', STR_PAD_LEFT).'-'.substr($series,1,3).'-'.str_pad($number , '9', '0', STR_PAD_LEFT);
 
     $total_IVA12 = 0;
+    $total_IVA0 = 0;
     $total_BASE12 = 0;
+    $total_BASE0 = 0;
     $total_IVA8= 0;
     $total_BASE8 = 0;
     $total_IVA14 = 0;
@@ -33,6 +35,10 @@
         if($row->affectation_igv_type_id == 12){
             $total_IVA14 = $total_IVA14 + $row->total_igv;
             $total_BASE14 = $total_BASE14 + $row->total_base_igv;
+        }
+        if($row->affectation_igv_type_id == 30){
+            $total_IVA0 = 0;
+            $total_BASE0 = $total_BASE0 + $row->total_base_igv;
         }
 
     }
@@ -78,6 +84,14 @@
         <valorModificacion>{{ $document->total }}</valorModificacion>
         <moneda>DOLAR</moneda>
         <totalConImpuestos>
+            @if($total_IVA0 > 0)
+            <totalImpuesto>
+                <codigo>2</codigo>
+                <codigoPorcentaje>2</codigoPorcentaje>
+                <baseImponible>{{  $total_BASE0 }}</baseImponible>
+                <valor>{{ $total_IVA0 }}</valor>
+            </totalImpuesto>
+            @endif
             @if($total_IVA12 > 0)
             <totalImpuesto>
                 <codigo>2</codigo>
@@ -140,6 +154,15 @@
                     <tarifa>{{ 14 }}</tarifa>
                     <baseImponible>{{ $row->total_base_igv }}</baseImponible>
                     <valor>{{ $row->total_igv }}</valor>
+                </impuesto>
+            @endif
+            @if($row->total_base_igv > 0 && $row->affectation_igv_type_id == 30)
+                <impuesto>
+                    <codigo>2</codigo>
+                    <codigoPorcentaje>0</codigoPorcentaje>
+                    <tarifa>{{ 0 }}</tarifa>
+                    <baseImponible>{{ $row->total_base_igv }}</baseImponible>
+                    <valor>{{ 0 }}</valor>
                 </impuesto>
             @endif
         </impuestos>

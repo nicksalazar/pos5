@@ -427,6 +427,8 @@ export default {
                 this.note_debit_types = response.data.note_debit_types
                 this.operation_types = response.data.operation_types
                 this.user = response.data.user;
+                //JOINSOFTWARE
+                this.authUser = response.data.authUser;
 
                 this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
                 this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
@@ -435,7 +437,7 @@ export default {
                 this.changeDocumentType()
                 this.changeDateOfIssue()
                 //JOINSOFTWARE
-                //this.setDefaultDocumentType();
+                this.setDefaultDocumentType();
             })
         await this.getPercentageIgv();
         this.getCustomer()
@@ -820,7 +822,7 @@ export default {
 
         },
         //JOINSOFTWARE
-        /*
+        
         setDefaultSerieByDocument()
         {
             if(this.authUser.multiple_default_document_types)
@@ -835,16 +837,16 @@ export default {
             }
 
         },
-        */
+        
         //JOINSOFTWARE
         // #307 Ajuste para seleccionar automaticamente el tipo de comprobante y serie
-        /*
+        
         setDefaultDocumentType(from_function) {
 
             if(this.authUser.multiple_default_document_types) return
 
-            this.default_series_type = this.config.user.serie;
-            this.default_document_type = this.config.user.document_id;
+            this.default_series_type = this.document.user.serie;
+            this.default_document_type = this.document.user.document_id;
             // if (this.default_document_type === undefined) this.default_document_type = null;
             // if (this.default_series_type === undefined) this.default_series_type = null;
 
@@ -858,7 +860,7 @@ export default {
                 }
             }
         },
-        */
+        
         changeDocumentType() {
             this.form.note_credit_or_debit_type_id = null
             this.form.series_id = null
@@ -880,7 +882,7 @@ export default {
             this.initData()
             this.validateHasDiscounts()
             //JOINSOFTWARE
-            //this.setDefaultSerieByDocument()
+            this.setDefaultSerieByDocument()
         },
         changeDateOfIssue() {
             this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
@@ -1029,7 +1031,7 @@ export default {
                 .then(() => {
                     this.loading_submit = false;
                     //JOINSOFTWARE
-                    //this.setDefaultDocumentType();
+                    this.setDefaultDocumentType();
                 })
         },
         getCustomer() {
