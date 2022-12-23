@@ -491,6 +491,7 @@ export default {
         await this.$http.get(`/${this.resource}/record`)
             .then(response => {
                 if (response.data !== '') {
+                    console.log("Data: ", response.data.data);
                     this.form = response.data.data
                 }
                 // console.log(2)
@@ -526,6 +527,12 @@ export default {
                 identity_document_type_id: '06000006',
                 number: null,
                 name: null,
+                rimpe_emp: null,
+                rimpe_np: null,
+                rise: null,
+                contribuyente_especial: null,
+                obligado_contabilidad: null,
+                agente_retencion: null,
                 trade_name: null,
                 soap_send_id: '01',
                 soap_type_id: '01',
