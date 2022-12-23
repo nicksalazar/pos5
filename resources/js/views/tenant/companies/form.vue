@@ -352,6 +352,47 @@
                             </div>
                         </div>
 
+                        <template v-if="form.agente_retencion == true">
+                            <div class="col-md-6 center-el-checkbox mt-4">
+                                <div :class="{'has-danger': errors.agente_retencion_num}"
+                                    class="form-group">
+                                    <label class="control-label">
+                                        Numero de Agente de Retención
+                                    </label>
+                                    <el-input
+                                        v-model="form.agente_retencion_num"
+                                        dusk="name">
+                                    </el-input>
+                                    <br>
+                                    <small
+                                        v-if="errors.agente_retencion_num"
+                                        class="form-control-feedback"
+                                        v-text="errors.agente_retencion_num[0]">
+                                    </small>
+                                </div>
+                            </div>
+                        </template>
+                        <template v-if="form.contribuyente_especial == true">
+                            <div class="col-md-6 center-el-checkbox mt-4">
+                                <div :class="{'has-danger': errors.contribuyente_especial_num}"
+                                    class="form-group">
+                                    <label class="control-label">
+                                        Numero de Contribuyente Especial
+                                    </label>
+                                    <el-input
+                                        v-model="form.contribuyente_especial_num"
+                                        dusk="name">
+                                    </el-input>
+                                    <br>
+                                    <small
+                                        v-if="errors.contribuyente_especial_num"
+                                        class="form-control-feedback"
+                                        v-text="errors.contribuyente_especial_num[0]">
+                                    </small>
+                                </div>
+                            </div>
+                        </template>
+
                         <template v-if=" form.soap_send_id != '03' || form.soap_type_id == '02' || form.soap_send_id == '02'">
                             <div class="row">
                                 <div class="col-md-12 mt-2">
@@ -491,7 +532,7 @@ export default {
         await this.$http.get(`/${this.resource}/record`)
             .then(response => {
                 if (response.data !== '') {
-                    console.log("Data: ", response.data.data);
+                    //console.log("Data: ", response.data.data);
                     this.form = response.data.data
                 }
                 // console.log(2)
@@ -533,6 +574,8 @@ export default {
                 contribuyente_especial: null,
                 obligado_contabilidad: null,
                 agente_retencion: null,
+                agente_retencion_num: null,
+                contribuyente_especial_num: null,
                 trade_name: null,
                 soap_send_id: '01',
                 soap_type_id: '01',

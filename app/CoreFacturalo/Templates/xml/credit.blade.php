@@ -87,7 +87,7 @@
             @if($total_BASE0 > 0)
             <totalImpuesto>
                 <codigo>2</codigo>
-                <codigoPorcentaje>2</codigoPorcentaje>
+                <codigoPorcentaje>0</codigoPorcentaje>
                 <baseImponible>{{  $total_BASE0 }}</baseImponible>
                 <valor>{{ $total_IVA0 }}</valor>
             </totalImpuesto>
