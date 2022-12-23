@@ -84,7 +84,7 @@
         <valorModificacion>{{ $document->total }}</valorModificacion>
         <moneda>DOLAR</moneda>
         <totalConImpuestos>
-            @if($total_IVA0 > 0)
+            @if($total_BASE0 > 0)
             <totalImpuesto>
                 <codigo>2</codigo>
                 <codigoPorcentaje>2</codigoPorcentaje>
