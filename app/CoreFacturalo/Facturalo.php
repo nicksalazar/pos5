@@ -1487,6 +1487,7 @@ class Facturalo
         // dd($inputs);
         switch ($this->type) {
             case 'invoice':
+                $this->doc_type = '01';
                 $document = Document::find($id);
                 // si cambia la serie
                 if($inputs['series'] !== $document->series){
