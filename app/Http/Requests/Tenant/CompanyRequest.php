@@ -28,6 +28,14 @@ class CompanyRequest extends FormRequest
                 'required',
                 Rule::unique('tenant.companies')->ignore($id),
             ],
+            'agente_retencion_num' => [
+                'required',
+                Rule::unique('tenant.companies')->ignore($id),
+            ],
+            'contribuyente_especial_num' => [
+                'required',
+                Rule::unique('tenant.companies')->ignore($id),
+            ],
             'soap_type_id' => [
                 'nullable'
             ],
