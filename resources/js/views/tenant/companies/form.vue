@@ -352,6 +352,7 @@
                             </div>
                         </div>
 
+                        <!-- JOINSOFTWARE -->
                         <template v-if="form.agente_retencion == true">
                             <div class="col-md-6 center-el-checkbox mt-4">
                                 <div :class="{'has-danger': errors.agente_retencion_num}"
@@ -372,6 +373,7 @@
                                 </div>
                             </div>
                         </template>
+                        <!-- JOINSOFTWARE -->
                         <template v-if="form.contribuyente_especial == true">
                             <div class="col-md-6 center-el-checkbox mt-4">
                                 <div :class="{'has-danger': errors.contribuyente_especial_num}"
@@ -532,6 +534,7 @@ export default {
         await this.$http.get(`/${this.resource}/record`)
             .then(response => {
                 if (response.data !== '') {
+                    //JOINSOFTWARE
                     //console.log("Data: ", response.data.data);
                     this.form = response.data.data
                 }
@@ -568,6 +571,7 @@ export default {
                 identity_document_type_id: '06000006',
                 number: null,
                 name: null,
+                //JOINSOFTWARE
                 rimpe_emp: null,
                 rimpe_np: null,
                 rise: null,

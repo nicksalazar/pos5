@@ -28,10 +28,12 @@ class CompanyRequest extends FormRequest
                 'required',
                 Rule::unique('tenant.companies')->ignore($id),
             ],
+            //JOINSOFTWARE
             'agente_retencion_num' => [
                 'required',
                 Rule::unique('tenant.companies')->ignore($id),
             ],
+            //JOINSOFTWARE
             'contribuyente_especial_num' => [
                 'required',
                 Rule::unique('tenant.companies')->ignore($id),
@@ -47,6 +49,18 @@ class CompanyRequest extends FormRequest
                 'required_if:soap_type_id,"02"',
                 'required_if:soap_send_id,"02"'
             ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            //JOINSOFTWARE
+            'agente_retencion_num.required' => 'El campo número de agente retención es obligatorio.',
+            'contribuyente_especial_num.required' => 'El campo número de contribuyente especial es obligatorio.',
         ];
     }
 }
