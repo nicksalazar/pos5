@@ -252,6 +252,106 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- JOINSOFTWARE -->
+                        <!-- Tipo de contribuyente -->
+                        <div class="row">
+                            <div class="col-md-12 mt-2">
+                                <h4 class="border-bottom">Tipo de contribuyente</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 center-el-checkbox mt-4">
+                                <div :class="{'has-danger': errors.rimpe_emp}"
+                                    class="form-group">
+                                    <el-checkbox
+                                        v-model="form.rimpe_emp">
+                                        Régimen RIMPE (Emprendedores)
+                                    </el-checkbox>
+                                    <br>
+                                    <small
+                                        v-if="errors.rimpe_emp"
+                                        class="form-control-feedback"
+                                        v-text="errors.rimpe_emp[0]">
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 center-el-checkbox mt-4">
+                                <div :class="{'has-danger': errors.rimpe_np}"
+                                    class="form-group">
+                                    <el-checkbox
+                                        v-model="form.rimpe_np">
+                                        Régimen RIMPE (Negocio Popular)
+                                    </el-checkbox>
+                                    <br>
+                                    <small
+                                        v-if="errors.rimpe_np"
+                                        class="form-control-feedback"
+                                        v-text="errors.rimpe_np[0]">
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 center-el-checkbox mt-4">
+                                <div :class="{'has-danger': errors.rise}"
+                                    class="form-group">
+                                    <el-checkbox
+                                        v-model="form.rise">
+                                        Régimen RISE
+                                    </el-checkbox>
+                                    <br>
+                                    <small
+                                        v-if="errors.rise"
+                                        class="form-control-feedback"
+                                        v-text="errors.rise[0]">
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 center-el-checkbox mt-4">
+                                <div :class="{'has-danger': errors.contribuyente_especial}"
+                                    class="form-group">
+                                    <el-checkbox
+                                        v-model="form.contribuyente_especial">
+                                        Contribuyente Especial
+                                    </el-checkbox>
+                                    <br>
+                                    <small
+                                        v-if="errors.contribuyente_especial"
+                                        class="form-control-feedback"
+                                        v-text="errors.contribuyente_especial[0]">
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 center-el-checkbox mt-4">
+                                <div :class="{'has-danger': errors.obligado_contabilidad}"
+                                    class="form-group">
+                                    <el-checkbox
+                                        v-model="form.obligado_contabilidad">
+                                        Obligado Contabilidad
+                                    </el-checkbox>
+                                    <br>
+                                    <small
+                                        v-if="errors.obligado_contabilidad"
+                                        class="form-control-feedback"
+                                        v-text="errors.obligado_contabilidad[0]">
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 center-el-checkbox mt-4">
+                                <div :class="{'has-danger': errors.agente_retencion}"
+                                    class="form-group">
+                                    <el-checkbox
+                                        v-model="form.agente_retencion">
+                                        Agente de Retención
+                                    </el-checkbox>
+                                    <br>
+                                    <small
+                                        v-if="errors.agente_retencion"
+                                        class="form-control-feedback"
+                                        v-text="errors.agente_retencion[0]">
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
                         <template v-if=" form.soap_send_id != '03' || form.soap_type_id == '02' || form.soap_send_id == '02'">
                             <div class="row">
                                 <div class="col-md-12 mt-2">
@@ -391,6 +491,7 @@ export default {
         await this.$http.get(`/${this.resource}/record`)
             .then(response => {
                 if (response.data !== '') {
+                    console.log("Data: ", response.data.data);
                     this.form = response.data.data
                 }
                 // console.log(2)
@@ -426,6 +527,12 @@ export default {
                 identity_document_type_id: '06000006',
                 number: null,
                 name: null,
+                rimpe_emp: null,
+                rimpe_np: null,
+                rise: null,
+                contribuyente_especial: null,
+                obligado_contabilidad: null,
+                agente_retencion: null,
                 trade_name: null,
                 soap_send_id: '01',
                 soap_type_id: '01',

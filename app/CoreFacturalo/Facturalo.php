@@ -842,7 +842,7 @@ class Facturalo
 
                 }else if($this->document->document_type_id === '07'){
             
-                    $tipodoc = 'credit';
+                    $tipodoc = 'note';
                     $this->doc_type = '07';
                 }
                 $this->actions['format_pdf'] = 'blank';
