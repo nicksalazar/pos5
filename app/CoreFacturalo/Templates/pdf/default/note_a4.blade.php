@@ -274,7 +274,8 @@
 
     //$path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
     $document_base = $document->note;
-    $document_number = $document->series.'-'.str_pad($document->number, 8, '0', STR_PAD_LEFT);
+    $establishment2 = $document_base->affected_document->establishment->code;
+    $document_number = $document->establishment->code.substr($document->series, 1).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
     $document_type_description_array = [
         '01' => 'FACTURA',
         '03' => 'BOLETA DE VENTA',
@@ -291,7 +292,7 @@
 
     if($document_base) {
 
-        $affected_document_number = ($document_base->affected_document) ? $document_base->affected_document->series.'-'.str_pad($document_base->affected_document->number, 8, '0', STR_PAD_LEFT) : $document_base->data_affected_document->series.'-'.str_pad($document_base->data_affected_document->number, 8, '0', STR_PAD_LEFT);
+        $affected_document_number = ($document_base->affected_document) ? $establishment2.substr($document_base->affected_document->series, 1).''.str_pad($document_base->affected_document->number, 9, '0', STR_PAD_LEFT) : $document_base->data_affected_document->series.'-'.str_pad($document_base->data_affected_document->number, 8, '0', STR_PAD_LEFT);
 
     } else {
 
@@ -1211,7 +1212,7 @@
                             </tr>
                             <tr>
                                 <td style="padding: 10px 15px 10px 15px; text-align: center;">
-                                    <pre style="tab-size: 16; font-size: 14px"><strong>NOTA DE CRÉDITO        </strong>       {{$document_number}}</pre>
+                                    <pre style="tab-size: 16; font-size: 14px"><strong>NOTA DE CRÉDITO     </strong>     No.{{$document_number}}</pre>
                                 </td>
                             </tr>
                             <tr>
@@ -1280,7 +1281,7 @@
                 @if(!is_null($document_base))
                 <tr>
                     <td style="text-transform: uppercase;">
-                        <strong>DOC. AFECTADO: </strong>                        
+                        <strong>Comprobante que se modifica: </strong>                        
                     </td>
                     <td>
                         <pre>FACTURA&nbsp;&nbsp;    {{ $affected_document_number }}</pre>
@@ -1291,9 +1292,10 @@
                         <strong>FECHA EMISIÓN (comprobante a modificar): </strong>
                     </td>
                     <td>
-                        Date(dd/mm/yy)
+                        {{ $document_base->affected_document->date_of_issue->format('m-d-Y') }}
                     </td>
                 </tr>
+                <!--
                 <tr>
                     <td>
                         <strong>TIPO DE NOTA: </strong>
@@ -1302,9 +1304,10 @@
                         {{ ($document_base->note_type === 'credit')?$document_base->note_credit_type->description:$document_base->note_debit_type->description}}
                     </td>
                 </tr>
+                -->
                 <tr>
-                    <td>
-                        <strong>DESCRIPCIÓN: </strong>
+                    <td style="text-transform: uppercase;">
+                        <strong>Razón de Modificación: </strong>
                     </td>
                     <td>
                         {{ $document_base->note_description }}
@@ -1573,12 +1576,15 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <!--
                         <table class="full-width">
+                            
                             <thead class="">
                                 <tr style="background: #eaeaea;">
                                     <th class="py-2" style="text-align: start; padding-left: 15px; padding-right: 15px;">Formas de pago</th>
                                 </tr>
                             </thead>
+                            
                             <tbody>
                                 <tr style="background: #f7f7f5;">
                                     <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Otros con Utilización del Sistema Financiero</td>
@@ -1587,6 +1593,7 @@
                                 </tr>
                             </tbody>
                         </table>
+                        -->
                     </div>
                 </td>
                 <td width="40%">

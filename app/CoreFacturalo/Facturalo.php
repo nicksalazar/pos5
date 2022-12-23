@@ -835,14 +835,14 @@ class Facturalo
                 $documento = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['comprobante'];
 
                 $this->uploadFile($documento, 'autorizado');
-                $tipodoc = 'invoice';
-                if($this->document->documnet_type_id == '01'){
+                $tipodoc = '';
+                if($this->document->document_type_id === '01'){
                     $tipodoc = 'invoice';
                     $this->doc_type = '01';
 
-                }else if($this->document->documnet_type_id == '07'){
+                }else if($this->document->document_type_id === '07'){
             
-                    $tipodoc = 'note';
+                    $tipodoc = 'credit';
                     $this->doc_type = '07';
                 }
                 $this->actions['format_pdf'] = 'blank';
