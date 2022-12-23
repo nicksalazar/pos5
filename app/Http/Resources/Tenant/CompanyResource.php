@@ -53,6 +53,7 @@ class CompanyResource extends JsonResource
             'client_id_pse' => $this->client_id_pse,
             'app_logo' => $this->app_logo,
 
+            //JOINSOFTWARE
             'rimpe_emp' => (bool)$this->rimpe_emp,
             'rimpe_np' => (bool)$this->rimpe_np,
             'rise' => (bool)$this->rise,

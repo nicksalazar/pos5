@@ -15,8 +15,10 @@
     $DocAfectado = str_pad($estable , '3', '0', STR_PAD_LEFT).'-'.substr($series,1,3).'-'.str_pad($number , '9', '0', STR_PAD_LEFT);
 
     $total_IVA12 = 0;
+    //JOINSOFTWARE
     $total_IVA0 = 0;
     $total_BASE12 = 0;
+    //JOINSOFTWARE
     $total_BASE0 = 0;
     $total_IVA8= 0;
     $total_BASE8 = 0;
