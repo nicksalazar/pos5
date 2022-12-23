@@ -59,6 +59,8 @@ class CompanyResource extends JsonResource
             'contribuyente_especial' => (bool)$this->contribuyente_especial,
             'obligado_contabilidad' => (bool)$this->obligado_contabilidad,
             'agente_retencion' => (bool)$this->agente_retencion,
+            'agente_retencion_num' => $this->agente_retencion_num,
+            'contribuyente_especial_num' => $this->contribuyente_especial_num,
         ];
     }
 }
