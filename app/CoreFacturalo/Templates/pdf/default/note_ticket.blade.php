@@ -40,7 +40,8 @@
 <body>
 
 @if($company->logo)
-    <div class="text-center company_logo_box pt-5">
+{{-- JOINSOFTWARE -> pt-5 --}}
+    <div class="text-center company_logo_box">
         <img src="data:{{mime_content_type(public_path("storage/uploads/logos/{$company->logo}"))}};base64, {{base64_encode(file_get_contents(public_path("storage/uploads/logos/{$company->logo}")))}}" alt="{{$company->name}}" class="company_logo_ticket contain">
     </div>
 {{-- JOINSOFTWARE @else
@@ -49,7 +50,7 @@
     </div>
 --}}
 @endif
-<table class="full-width">
+<table class="full-width mx-2">
     <tr>
         <td class="text-center"><h3>{{ $company->name }}</h3></td>
     </tr>
@@ -77,7 +78,7 @@
         <td class="text-center pb-3 border-bottom"><h3>{{ $document_number }}</h3></td>
     </tr>
 </table>
-<table class="full-width">
+<table class="full-width mx-2">
     <tr>
         <td width="45%" class="pt-3"><p class="desc">Fecha de emisión:</p></td>
         <td width="" class="pt-3"><p class="desc">{{ $document->date_of_issue->format('Y-m-d') }}</p></td>
@@ -172,7 +173,7 @@
         </tr>
     @endif --}}
 </table>
-<table class="full-width mt-10 mb-10">
+<table class="full-width mt-10 mb-10 mx-2">
     <thead class="">
     <tr>
         <th class="border-top-bottom desc-9 text-left">CANT.</th>
@@ -262,7 +263,7 @@
         </tr>
     </tbody>
 </table>
-<table class="full-width">
+<table class="full-width mx-2">
     <tr>
         @foreach($document->legends as $row)
             <td class="desc pt-3" style="text-transform: uppercase;">Son: <span class="font-bold">{{ $row->value }} {{ $document->currency_type->description }}</span></td>

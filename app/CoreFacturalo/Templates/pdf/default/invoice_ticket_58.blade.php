@@ -25,7 +25,8 @@
 <body>
 
 @if($company->logo)
-    <div class="text-center company_logo_box pt-5">
+{{-- JOINSOFTWARE -> pt-5 --}}
+    <div class="text-center company_logo_box">
         <img src="data:{{mime_content_type(public_path("storage/uploads/logos/{$company->logo}"))}};base64, {{base64_encode(file_get_contents(public_path("storage/uploads/logos/{$company->logo}")))}}" alt="{{$company->name}}" class="company_logo_ticket contain">
     </div>
 {{--@else--}}
@@ -33,7 +34,7 @@
         {{--<img src="{{ asset('logo/logo.jpg') }}" class="company_logo_ticket contain">--}}
     {{--</div>--}}
 @endif
-<table class="full-width">
+<table class="full-width mx-2">
     <tr>
         <td class="text-center"><h4>{{ $company->name }}</h4></td>
     </tr>
@@ -80,7 +81,7 @@
         <td class="text-center pb-3 border-bottom"><h5>No.{{ $document_number }}</h5></td>
     </tr>
 </table>
-<table class="full-width">
+<table class="full-width mx-2">
     <tr>
         <td width="" class="pt-3"><p class="desc-9">C. Acceso:</p></td>
         <td width="" class="pt-3 "><p class="desc-9">{{ $document->clave_SRI }}</p></td>
@@ -254,7 +255,7 @@
 
 @if ($document->guides)
 {{--<strong>Guías:</strong>--}}
-<table>
+<table class="full-width mx-2">
     @foreach($document->guides as $guide)
         <tr>
             @if(isset($guide->document_type_description))
@@ -271,8 +272,8 @@
 
 @if (count($document->reference_guides) > 0)
 <br/>
-<strong>Guias de remisión</strong>
-<table>
+<strong class="mx-2">Guias de remisión</strong>
+<table class="full-width mx-2">
     @foreach($document->reference_guides as $guide)
         <tr>
             <td>{{ $guide->series }}</td>
@@ -284,7 +285,7 @@
 @endif
 
 @if(!is_null($document_base))
-<table>
+<table class="full-width mx-2">
     <tr>
         <td class="desc">Documento Afectado:</td>
         <td class="desc">{{ $affected_document_number }}</td>
@@ -300,7 +301,7 @@
 </table>
 @endif
 
-<table class="full-width mt-10 mb-10">
+<table class="full-width mt-10 mb-10 mx-2">
     <thead class="">
     <tr>
         <th class="border-top-bottom desc-9 text-left">CANT.</th>
@@ -478,7 +479,7 @@
         @endif
     </tbody>
 </table>
-<table class="full-width">
+<table class="full-width mx-2">
     <tr>
 
         @foreach(array_reverse((array) $document->legends) as $row)
