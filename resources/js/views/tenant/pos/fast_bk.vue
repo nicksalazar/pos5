@@ -726,7 +726,7 @@
                                     class="font-weight-semibold  m-0"
                                 >
                                     <td class="font-weight-semibold">
-                                        OP.INAFECTAS
+                                        SUBTOTAL 0%
                                     </td>
                                     <td class="font-weight-semibold">:</td>
                                     <td class="text-right text-blue">
@@ -739,7 +739,7 @@
                                     class="font-weight-semibold  m-0"
                                 >
                                     <td class="font-weight-semibold">
-                                        OP.GRAVADA
+                                        SUBTOTAL 12%
                                     </td>
                                     <td class="font-weight-semibold">:</td>
                                     <td class="text-right text-blue">
@@ -1322,8 +1322,12 @@ export default {
             if (this.configuration.default_document_type_03) {
                 this.form.document_type_id = "03";
             } else {
+                //JOINSOFTWARE CAMBIO TIPO DOCUMENTO POR DEFECTO EN POS//
+                this.form.document_type_id = "01";
+                /*
                 this.form.document_type_id =
                     customer.identity_document_type_id == "6" ? "01" : "03";
+                */
             }
 
             this.setLocalStorageIndex("customer", this.customer);

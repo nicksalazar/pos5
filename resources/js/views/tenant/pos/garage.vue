@@ -597,13 +597,8 @@
                                     class="btn btn-sm btn-default w-100"
                                     @click="selectCurrencyType"
                                 >
-                                    <template
-                                        v-if="form.currency_type_id == 'PEN'"
-                                    >
-                                        <strong>S/</strong>
-                                    </template>
-                                    <template v-else>
-                                        <strong>$</strong>
+                                    <template >
+                                        <strong>{{ currency_type.symbol }}</strong>
                                     </template>
                                     <!-- <i class="fa fa-usd" aria-hidden="true"></i> -->
                                 </a>
@@ -1321,8 +1316,12 @@ export default {
             {
                 this.form.document_type_id = "03";
             } else {
+                 //JOINSOFTWARE CAMBIO TIPO DOCUMENTO POR DEFECTO EN POS//
+                 this.form.document_type_id = "01";
+                /*
                 this.form.document_type_id =
                     customer.identity_document_type_id == "6" ? "01" : "03";
+                */
             }
 
             // console.log(this.customer);
@@ -1423,7 +1422,7 @@ export default {
                 date_of_issue: moment().format("YYYY-MM-DD"),
                 time_of_issue: moment().format("HH:mm:ss"),
                 customer_id: null,
-                currency_type_id: "PEN",
+                currency_type_id: "USD",
                 purchase_order: null,
                 exchange_rate_sale: 1,
                 total_prepayment: 0,
@@ -1997,9 +1996,12 @@ export default {
             });
         },
         selectCurrencyType() {
-            this.form.currency_type_id =
-                this.form.currency_type_id === "PEN" ? "USD" : "PEN";
-            this.changeCurrencyType();
+            if(this.currency_types.length > 1){
+                this.form.currency_type_id =
+                    this.form.currency_type_id === "PEN" ? "USD" : "PEN";
+                this.changeCurrencyType();
+            }
+            
         },
         async changeCurrencyType() {
             // console.log(this.form.currency_type_id)

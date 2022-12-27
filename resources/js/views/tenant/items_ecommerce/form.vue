@@ -179,6 +179,7 @@
                                    v-text="errors.internal_id[0]"></small>
                         </div>
                     </div>
+                    <!-- JOINSOFTWARE
                     <div class="col-md-3">
                         <div :class="{'has-danger': errors.item_code}"
                              class="form-group">
@@ -197,6 +198,7 @@
                                    v-text="errors.item_code[0]"></small>
                         </div>
                     </div>
+                    -->
                     <div v-show="recordId==null"
                          class="col-md-3">
                         <div :class="{'has-danger': errors.stock}"
@@ -235,7 +237,7 @@
                                    v-text="errors.warehouse_id[0]"></small>
                         </div>
                     </div>
-
+                    <!-- JOINSOFTWARE
                     <div class="col-md-3 center-el-checkbox">
                         <div class="form-group">
                             <el-checkbox v-model="has_percentage_perception"
@@ -244,6 +246,7 @@
                             <br>
                         </div>
                     </div>
+                    
                     <div v-show="has_percentage_perception"
                          class="col-md-3 center-el-checkbox">
                         <div class="form-group">
@@ -252,6 +255,8 @@
                             <el-input v-model="form.percentage_perception"></el-input>
                         </div>
                     </div>
+                    -->
+                    
                     <!-- <div class="col-md-3 center-el-checkbox">
                         <div class="form-group" >
                             <el-checkbox v-model="have_account" @change="changeHaveAccount">¿Tiene cuenta contable?</el-checkbox><br>
@@ -713,7 +718,8 @@ export default {
                 name: null,
                 second_name: null,
                 unit_type_id: 'NIU',
-                currency_type_id: 'PEN',
+                // JOINSOFTWARE currency_type_id: 'PEN',
+                currency_type_id: this.config.currency_type_id,
                 sale_unit_price: 0,
                 purchase_unit_price: 0,
                 has_isc: false,

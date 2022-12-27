@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid p-0">
-        <div class="row page-header pr-0 no-gutters" style="height:auto">
+        <div class="row page-header pr-0 no-gutters" style="height:auto;">
             <Keypress
                 key-event="keyup"
                 :key-code="112"
@@ -15,7 +15,7 @@
       </div> -->
             <div class="col-md-5">
                 <!-- <h2 class="text-sm">POS</h2> -->
-                <h2>
+                <h2 style="width: 45%">
                     <el-switch
                         v-model="search_item_by_barcode"
                         active-text="Buscar con escáner de código de barras"
@@ -28,7 +28,7 @@
                     </template> -->
                 </h2>
                 
-                <div class="row" v-if="search_item_by_barcode">
+                <div class="row" v-if="search_item_by_barcode" style="width: 42;">
                     <div class="col-md-12">
                         <el-checkbox class="mt-1 font-weight-bold" v-model="search_item_by_barcode_presentation">Por presentación</el-checkbox>
                     </div>
@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <h2>
+                <h2 style="padding-left: 0; padding-right: 0;">
                     <el-tooltip
                         class="item"
                         effect="dark"
@@ -72,7 +72,7 @@
                         </button>
                     </el-tooltip>
                 </h2>
-                <h2>
+                <h2 style="padding-right: 0;">
                     <el-tooltip
                         class="item"
                         effect="dark"
@@ -89,7 +89,7 @@
                         </button>
                     </el-tooltip>
                 </h2>
-                <h2>
+                <h2 style="padding-right: 0;">
                     <el-tooltip
                         class="item"
                         effect="dark"
@@ -106,7 +106,7 @@
                         </button>
                     </el-tooltip>
                 </h2>
-                <h2>
+                <h2 style="padding-right: 0;">
                     <el-tooltip
                         class="item"
                         effect="dark"
@@ -289,7 +289,7 @@
                                                 <span style="font-size:16px;">&#9998;</span>
                                             </button>
                                             ({{ item.unit_type_id }})
-                                            {{ item.currency_type_symbol }}
+                                            {{ item.currency_type_id }}
                                             {{ item.sale_unit_price }}
                                         </h5>
                                     </template>
@@ -609,13 +609,9 @@
                                     class="btn btn-sm btn-default w-100"
                                     @click="selectCurrencyType"
                                 >
-                                    <template
-                                        v-if="form.currency_type_id == 'PEN'"
-                                    >
-                                        <strong>S/</strong>
-                                    </template>
-                                    <template v-else>
-                                        <strong>$</strong>
+                                    
+                                    <template>
+                                        <strong>{{ currency_type.symbol }}</strong>
                                     </template>
                                     <!-- <i class="fa fa-usd" aria-hidden="true"></i> -->
                                 </a>
@@ -750,7 +746,7 @@
                                     class="font-weight-semibold  m-0"
                                 >
                                     <td class="font-weight-semibold">
-                                        OP.INAFECTAS
+                                        SUBTOTAL 0%
                                     </td>
                                     <td class="font-weight-semibold">:</td>
                                     <td class="text-right text-blue">
@@ -763,7 +759,7 @@
                                     class="font-weight-semibold  m-0"
                                 >
                                     <td class="font-weight-semibold">
-                                        OP.GRAVADA
+                                        SUBTOTAL 12%
                                     </td>
                                     <td class="font-weight-semibold">:</td>
                                     <td class="text-right text-blue">
@@ -809,7 +805,7 @@
 
                         <!-- <div class="col-12 text-right px-0" v-if="form.total_taxed > 0">
               <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">OP.GRAVADA: </span>
+                <span class="font-weight-semibold">SUBTOTAL 12%: </span>
                 <span class="text-blue">{{currency_type.symbol}} {{ form.total_taxed }}</span>
               </h4>
             </div>
@@ -823,7 +819,7 @@
 
             <div class="col-12 text-right px-0" v-if="form.total_unaffected > 0">
               <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">OP.INAFECTAS: </span>
+                <span class="font-weight-semibold">SUBTOTAL 0%: </span>
                 <span class="text-blue">{{currency_type.symbol}} {{ form.total_unaffected }}</span>
               </h4>
             </div>
@@ -924,6 +920,7 @@
         </item-unit-types>
     </div>
 </template>
+
 <style>
 .el-select-dropdown__item.hover {
     /* background-color: red; */
@@ -995,13 +992,13 @@
         padding-top: 175px;
     }
 }
+
 @media (max-width: 767px)
 {
     .page-header {
         margin: 0px 0px 5px 0px;
     }
 }
-
 </style>
 
 <script>
@@ -1494,8 +1491,12 @@ export default {
             }else if (this.configuration.default_document_type_03) {
                 this.form.document_type_id = "03";
             } else {
+                 //JOINSOFTWARE CAMBIO TIPO DOCUMENTO POR DEFECTO EN POS//
+                 this.form.document_type_id = "01";
+                /*
                 this.form.document_type_id =
                     customer.identity_document_type_id == "6" ? "01" : "03";
+                */
             }
 
             this.setLocalStorageIndex("customer", this.customer);
@@ -2428,9 +2429,13 @@ export default {
             });
         },
         selectCurrencyType() {
-            this.form.currency_type_id =
-                this.form.currency_type_id === "PEN" ? "USD" : "PEN";
-            this.changeCurrencyType();
+            if(this.currency_types.length > 1){
+                this.form.currency_type_id =
+                    this.form.currency_type_id === "PEN" ? "USD" : "PEN";
+                this.changeCurrencyType();
+            }else{
+                console.log('no tienes mas de una moneda configurada');
+            } 
         },
         async changeCurrencyType() {
             // console.log(this.form.currency_type_id)

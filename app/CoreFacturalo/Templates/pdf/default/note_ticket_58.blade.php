@@ -3,7 +3,10 @@
     $customer = $document->customer;
 
     $document_base = $document->note;
-    $document_number = $document->series.'-'.str_pad($document->number, 8, '0', STR_PAD_LEFT);
+    //JOINSOFTWARE
+    $establishment2 = $document_base->affected_document->establishment->code;
+    //JOINSOFTWARE
+    $document_number = $document->establishment->code.substr($document->series, 1).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
     $document_type_description_array = [
         '01' => 'FACTURA',
         '03' => 'BOLETA DE VENTA',
@@ -22,8 +25,8 @@
         '1' => 'DNI',
         '6' => 'RUC',
     ];
-
-    $affected_document_number = ($document_base->affected_document) ? $document_base->affected_document->series.'-'.str_pad($document_base->affected_document->number, 8, '0', STR_PAD_LEFT) : $document_base->data_affected_document->series.'-'.str_pad($document_base->data_affected_document->number, 8, '0', STR_PAD_LEFT);
+    //JOINSOFTWARE
+    $affected_document_number = ($document_base->affected_document) ? $establishment2.substr($document_base->affected_document->series, 1).''.str_pad($document_base->affected_document->number, 9, '0', STR_PAD_LEFT) : $document_base->data_affected_document->series.'-'.str_pad($document_base->data_affected_document->number, 8, '0', STR_PAD_LEFT);
 
     //$path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
     // $optional = $document->optional;
@@ -40,10 +43,10 @@
     <div class="text-center company_logo_box pt-5">
         <img src="data:{{mime_content_type(public_path("storage/uploads/logos/{$company->logo}"))}};base64, {{base64_encode(file_get_contents(public_path("storage/uploads/logos/{$company->logo}")))}}" alt="{{$company->name}}" class="company_logo_ticket contain">
     </div>
-@else
+{{-- @else
     <div class="text-center company_logo_box pt-5">
         <img src="{{ asset('logo/logo.jpg') }}" class="company_logo_ticket contain">
-    </div>
+    </div> --}}
 @endif
 <table class="full-width">
     <tr>
@@ -55,7 +58,7 @@
     <tr>
         <td class="text-center" style="text-transform: uppercase;">
             {{ ($establishment->address !== '-')? $establishment->address : '' }}
-            {{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}
+            <!--{{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}-->
             {{ ($establishment->province_id !== '-')? ', '.$establishment->province->description : '' }}
             {{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}
         </td>
@@ -70,7 +73,7 @@
         <td class="text-center pt-3 border-top"><h4>{{ $document->document_type->description }}</h4></td>
     </tr>
     <tr>
-        <td class="text-center pb-3 border-bottom"><h3>{{ $document_number }}</h3></td>
+        <td class="text-center pb-3 border-bottom"><h3>No.{{ $document_number }}</h3></td>
     </tr>
 </table>
 <table class="full-width">
@@ -120,16 +123,19 @@
             </tr>
         @endforeach
     @endif
+    <!-- JOINSOFTWARE -->
     <tr>
-        <td class="desc">Documento Afectado:</td>
-        <td class="desc">{{ $affected_document_number }}</td>
+        <td class="desc">Comprobante que se modifica:</td>
+        <td class="desc"><pre>FACTURA&nbsp;&nbsp;    {{ $affected_document_number }}</pre></td>
     </tr>
+    <!-- JOINSOFTWARE -->
     <tr>
-        <td class="desc">Tipo de nota:</td>
-        <td class="desc">{{ ($document_base->note_type === 'credit')?$document_base->note_credit_type->description:$document_base->note_debit_type->description}}</td>
+        <td class="desc">Fecha Emisión (comprobante a modificar):</td>
+        <td class="desc">{{ $document_base->affected_document->date_of_issue->format('m-d-Y') }}</td>
     </tr>
+    <!-- JOINSOFTWARE -->
     <tr>
-        <td class="align-top desc">Descripción:</td>
+        <td class="align-top desc">Razón de Modificación:</td>
         <td class="text-left desc">{{ $document_base->note_description }}</td>
     </tr>
     {{-- @if ($optional->salesman)
@@ -216,9 +222,10 @@
                 <td class="text-right font-bold desc">{{ number_format($document->total_exonerated, 2) }}</td>
             </tr>
         @endif
+        <!-- JOINSOFTWARE -->
         @if($document->total_taxed > 0)
             <tr>
-                <td colspan="4" class="text-right font-bold desc">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
+                <td colspan="4" class="text-right font-bold desc">SUBTOTAL 12%: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold desc">{{ number_format($document->total_taxed, 2) }}</td>
             </tr>
         @endif
@@ -228,8 +235,9 @@
                 <td class="text-right font-bold">{{ number_format($document->total_discount, 2) }}</td>
             </tr>
         @endif
+        <!-- JOINSOFTWARE -->
         <tr>
-            <td colspan="4" class="text-right font-bold desc">IGV: {{ $document->currency_type->symbol }}</td>
+            <td colspan="4" class="text-right font-bold desc">IVA: {{ $document->currency_type->symbol }}</td>
             <td class="text-right font-bold desc">{{ number_format($document->total_igv, 2) }}</td>
         </tr>
         <tr>
@@ -263,11 +271,36 @@
             <td class="desc">{{ $document->optional->observations }}</td>
         </tr>
     @endif
+    <!-- JOINSOFTWARE -->
+    <tr>
+        <td class="text-center desc" style="text-transform: uppercase;">
+            @if($company->rimpe_emp || $company->rimpe_np)
+            CONTRIBUYENTE RÉGIMEN RIMPE
+            @endif
+        </td>
+    </tr>
+    <!-- JOINSOFTWARE -->
+    <tr>
+        <td class="text-center desc" style="text-transform: uppercase;">
+            @if($company->obligado_contabilidad)
+            Obligado a llevar contabilidad: SI
+            @else
+            Obligado a llevar contabilidad: NO
+            @endif
+        </td>
+    </tr>
+    <!-- JOINSOFTWARE -->
+    <tr>
+        <td class="text-center desc"style="text-transform: uppercase;">
+            Clave de Acceso/AutorizaciÓn:
+        </td>
+    </tr>
     <tr>
         <td class="text-center pt-5"><img class="qr_code" src="data:image/png;base64, {{ $document->qr }}" /></td>
     </tr>
+    <!-- JOINSOFTWARE -->
     <tr>
-        <td class="text-center desc">Código Hash: {{ $document->hash }}</td>
+        <td class="text-center desc">{{ $document->clave_SRI }}</td>
     </tr>
     <tr>
         <td class="text-center desc pt-5">Para consultar el comprobante ingresar a {!! url('/buscar') !!}</td>

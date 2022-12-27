@@ -513,7 +513,7 @@
 
                             <!-- descuentos -->
 
-                            <div class="row mt-1 mb-2"  v-if="form.total > 0">
+                            <div class="row mt-1 mb-2"  v-if="form.total_discount > 0">
 
                                 <div class="col-lg-10 float-right">
                                     <label class="float-right control-label">
@@ -551,13 +551,13 @@
                                     form.total_free
                                                           }}</p>
                             <p v-if="form.total_unaffected > 0"
-                               class="text-right">OP.INAFECTAS: {{ currency_type.symbol }}
+                               class="text-right">SUBTOTAL 0%: {{ currency_type.symbol }}
                                                                 {{ form.total_unaffected }}</p>
                             <p v-if="form.total_exonerated > 0"
                                class="text-right">OP.EXONERADAS: {{ currency_type.symbol }}
                                                                 {{ form.total_exonerated }}</p>
                             <p v-if="form.total_taxed > 0"
-                               class="text-right">OP.GRAVADA: {{ currency_type.symbol }} {{
+                               class="text-right">SUBTOTAL 12%: {{ currency_type.symbol }} {{
                                     form.total_taxed
                                                            }}</p>
                             <p v-if="form.total_igv > 0"
@@ -1264,6 +1264,12 @@ export default {
                 if (row.affectation_igv_type_id === '10') {
                     total_taxed += parseFloat(row.total_value)
                 }
+                if (row.affectation_igv_type_id === '11') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '12') {
+                    total_taxed += parseFloat(row.total_value)
+                }
                 if (row.affectation_igv_type_id === '20') {
                     total_exonerated += parseFloat(row.total_value)
                 }
@@ -1273,7 +1279,7 @@ export default {
                 if (row.affectation_igv_type_id === '40') {
                     total_exportation += parseFloat(row.total_value)
                 }
-                if (['10', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
+                if (['10','11','12', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
                     total_free += parseFloat(row.total_value)
                 }
 

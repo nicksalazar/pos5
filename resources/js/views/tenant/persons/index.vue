@@ -51,9 +51,9 @@
                         <th v-if="columns.seller.visible === true" class="text-center">Vendedor asignado</th>
                         <th v-if="columns.email.visible === true" class="text-center">Correo</th>
                         <th v-if="columns.telephone.visible === true" class="text-center">Telefono</th>
-                        <th v-if="columns.department.visible === true" class="text-center">Departamento</th>
-                        <th v-if="columns.province.visible === true" class="text-center">Provincia</th>
-                        <th v-if="columns.district.visible === true" class="text-center">Distrito</th>
+                        <th v-if="columns.department.visible === true" class="text-center">Provincia</th>
+                        <th v-if="columns.province.visible === true" class="text-center">Ciudad</th>
+                        <th v-if="columns.district.visible === true" class="text-center">Cantón</th>
 
                         <th class="text-center" v-if="showAccumulatedPoints">Puntos acumulados</th>
 

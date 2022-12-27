@@ -99,7 +99,7 @@
                         <td>S/ @{{ summary.total_exonerated }}</td>
                     </tr>
                     <tr v-if="summary.total_taxed > 0">
-                        <td>OP.GRAVADA</td>
+                        <td>SUBTOTAL 12%</td>
                         <td>S/ @{{ summary.total_taxed }}</td>
                     </tr>
                     <tr v-if="summary.total_igv > 0">

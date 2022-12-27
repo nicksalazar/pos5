@@ -13,6 +13,7 @@
     use Modules\Inventory\Models\Warehouse;
     use Modules\LevelAccess\Models\ModuleLevel;
     use App\Models\Tenant\Skin;
+    use Illuminate\Support\Facades\Log;
 
     /**
      * Class App\Models\Tenant\Configuration
@@ -438,7 +439,9 @@
         public static function setConfigSmtpMail()
         {
             $config = self::first();
+
             if (empty($config)) $config = new self();
+            
             if (
                 !empty($config->smtp_host) &&
                 !empty($config->smtp_port) &&
@@ -452,6 +455,7 @@
                 Config::set('mail.password', $config->smtp_password);
                 Config::set('mail.encryption', $config->smtp_encryption);
             }
+           
             return $config;
         }
 
@@ -794,6 +798,7 @@
         public function getSmtpHost()
         {
             return empty($this->smtp_host) ? config('mail.host') : $this->smtp_host;
+           
         }
 
         /**
@@ -832,6 +837,7 @@
         public function getSmtpUser()
         {
             return empty($this->smtp_user) ? config('mail.username') : $this->smtp_user;
+           
         }
 
         /**
@@ -851,6 +857,7 @@
         public function getSmtpPassword()
         {
             return empty($this->smtp_password) ? config('mail.password') : $this->smtp_password;
+            
         }
 
         /**
@@ -870,6 +877,7 @@
         public function getSmtpEncryption()
         {
             return empty($this->smtp_encryption) ? config('mail.encryption') : $this->smtp_encryption;
+            
         }
 
         /**

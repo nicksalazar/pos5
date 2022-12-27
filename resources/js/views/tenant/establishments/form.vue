@@ -34,7 +34,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group" :class="{'has-danger': errors.department_id}">
-                                <label class="control-label">Departamento</label>
+                                <label class="control-label">Provincia</label>
                                 <el-select v-model="form.department_id" filterable @change="filterProvince">
                                     <el-option v-for="option in all_departments" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                 </el-select>
@@ -43,7 +43,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group" :class="{'has-danger': errors.province_id}">
-                                <label class="control-label">Provincia</label>
+                                <label class="control-label">Ciudad</label>
                                 <el-select v-model="form.province_id" filterable @change="filterDistrict">
                                     <el-option v-for="option in provinces" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                 </el-select>
@@ -54,7 +54,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group" :class="{'has-danger': errors.province_id}">
-                                <label class="control-label">Distrito</label>
+                                <label class="control-label">Cantón</label>
                                 <el-select v-model="form.district_id" filterable>
                                     <el-option v-for="option in districts" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                 </el-select>

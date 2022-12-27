@@ -227,8 +227,8 @@
             $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
             $currency_types = CurrencyType::whereActive()->get();
             // $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
-            $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-            $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+            $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->whereActive()->get();
+            $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->whereActive()->get();
             $company = Company::active();
             $document_type_03_filter = config('tenant.document_type_03_filter');
             $payment_method_types = PaymentMethodType::orderBy('id', 'desc')->get();

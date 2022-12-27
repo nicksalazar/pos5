@@ -66,13 +66,13 @@ class TenantCatalogsTable extends Migration
 
         DB::table('cat_document_types')->insert([
             ['id' => '01', 'active' => true,  'short' => 'FT', 'description' => 'FACTURA ELECTRÓNICA'],
-            ['id' => '03', 'active' => true,  'short' => 'BV', 'description' => 'BOLETA DE VENTA ELECTRÓNICA'],
+            ['id' => '03', 'active' => false,  'short' => 'BV', 'description' => 'BOLETA DE VENTA ELECTRÓNICA'],
             ['id' => '07', 'active' => true,  'short' => 'NC', 'description' => 'NOTA DE CRÉDITO'],
-            ['id' => '08', 'active' => true,  'short' => 'ND', 'description' => 'NOTA DE DÉBITO'],
-            ['id' => '09', 'active' => true,  'short' => null, 'description' => 'GUIA DE REMISIÓN REMITENTE'],
-            ['id' => '20', 'active' => true,  'short' => null, 'description' => 'COMPROBANTE DE RETENCIÓN ELECTRÓNICA'],
-            ['id' => '31', 'active' => true,  'short' => null, 'description' => 'Guía de remisión transportista'],
-            ['id' => '40', 'active' => true,  'short' => null, 'description' => 'COMPROBANTE DE PERCEPCIÓN ELECTRÓNICA'],
+            ['id' => '08', 'active' => false,  'short' => 'ND', 'description' => 'NOTA DE DÉBITO'],
+            ['id' => '09', 'active' => false,  'short' => null, 'description' => 'GUIA DE REMISIÓN REMITENTE'],
+            ['id' => '20', 'active' => false,  'short' => null, 'description' => 'COMPROBANTE DE RETENCIÓN ELECTRÓNICA'],
+            ['id' => '31', 'active' => false,  'short' => null, 'description' => 'Guía de remisión transportista'],
+            ['id' => '40', 'active' => false,  'short' => null, 'description' => 'COMPROBANTE DE PERCEPCIÓN ELECTRÓNICA'],
             ['id' => '71', 'active' => false, 'short' => null, 'description' => 'Guia de remisión remitente complementaria'],
             ['id' => '72', 'active' => false, 'short' => null, 'description' => 'Guia de remisión transportista complementaria'],
         ]);
@@ -135,7 +135,7 @@ class TenantCatalogsTable extends Migration
         DB::table('cat_identity_document_types')->insert([
             ['id' => '0', 'active' => false,  'description' => 'CONSUMIDOR FINAL'],
             ['id' => '1', 'active' => true,  'description' => 'CÉDULA'],
-            ['id' => '4', 'active' => true,  'description' => 'CE'],
+            ['id' => '4', 'active' => false,  'description' => 'CE'],
             ['id' => '6', 'active' => true,  'description' => 'RUC'],
             ['id' => '7', 'active' => true,  'description' => 'Pasaporte'],
             ['id' => 'A', 'active' => false, 'description' => 'Ced. Diplomática de identidad'],
@@ -609,16 +609,16 @@ class TenantCatalogsTable extends Migration
         });
 
         DB::table('cat_charge_discount_types')->insert([
-            ['id' => '00', 'active' => true,  'base' => true,  'level' => 'item',   'type' => 'discount', 'description' => 'Descuentos que afectan la base imponible del IGV/IVAP'],
-            ['id' => '01', 'active' => true,  'base' => false, 'level' => 'item',   'type' => 'discount', 'description' => 'Descuentos que no afectan la base imponible del IGV/IVAP'],
+            ['id' => '00', 'active' => true,  'base' => true,  'level' => 'item',   'type' => 'discount', 'description' => 'Descuentos que afectan la base imponible'],
+            ['id' => '01', 'active' => false,  'base' => false, 'level' => 'item',   'type' => 'discount', 'description' => 'Descuentos que no afectan la base imponible del IGV/IVAP'],
             ['id' => '02', 'active' => true,  'base' => true,  'level' => 'global', 'type' => 'discount', 'description' => 'Descuentos globales que afectan la base imponible del IGV/IVAP'],
-            ['id' => '03', 'active' => true,  'base' => false, 'level' => 'global', 'type' => 'discount', 'description' => 'Descuentos globales que no afectan la base imponible del IGV/IVAP'],
+            ['id' => '03', 'active' => false,  'base' => false, 'level' => 'global', 'type' => 'discount', 'description' => 'Descuentos globales que no afectan la base imponible del IGV/IVAP'],
             ['id' => '04', 'active' => false, 'base' => true,  'level' => 'global', 'type' => 'discount', 'description' => 'Descuentos globales por anticipos gravados que afectan la base imponible del IGV/IVAP'],
             ['id' => '05', 'active' => false, 'base' => false, 'level' => 'global', 'type' => 'discount', 'description' => 'Descuentos globales por anticipos exonerados'],
             ['id' => '06', 'active' => false, 'base' => false, 'level' => 'global', 'type' => 'discount', 'description' => 'Descuentos globales por anticipos inafectos'],
             ['id' => '45', 'active' => false, 'base' => true,  'level' => 'global', 'type' => 'charge',   'description' => 'FISE'],
             ['id' => '46', 'active' => true,  'base' => false, 'level' => 'global', 'type' => 'charge',   'description' => 'Recargo al consumo y/o propinas'],
-            ['id' => '47', 'active' => true,  'base' => true,  'level' => 'item',   'type' => 'charge',   'description' => 'Cargos que afectan la base imponible del IGV/IVAP'],
+            ['id' => '47', 'active' => false,  'base' => true,  'level' => 'item',   'type' => 'charge',   'description' => 'Cargos que afectan la base imponible del IGV/IVAP'],
             ['id' => '48', 'active' => true,  'base' => false, 'level' => 'item',   'type' => 'charge',   'description' => 'Cargos que no afectan la base imponible del IGV/IVAP'],
             ['id' => '49', 'active' => true,  'base' => true,  'level' => 'global', 'type' => 'charge',   'description' => 'Cargos globales que afectan la base imponible del IGV/IVAP'],
             ['id' => '50', 'active' => true,  'base' => false, 'level' => 'global', 'type' => 'charge',   'description' => 'Cargos globales que no afectan la base imponible del IGV/IVAP'],

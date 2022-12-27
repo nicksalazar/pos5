@@ -237,12 +237,12 @@
                                 {{ currency_type.symbol }} {{ form.total_exportation }}</p>
                             <p class="text-right" v-if="form.total_free > 0">OP.GRATUITAS: {{ currency_type.symbol }}
                                 {{ form.total_free }}</p>
-                            <p class="text-right" v-if="form.total_unaffected > 0">OP.INAFECTAS: {{
+                            <p class="text-right" v-if="form.total_unaffected > 0">SUBTOTAL 0%: {{
                                     currency_type.symbol
                                 }} {{ form.total_unaffected }}</p>
                             <p class="text-right" v-if="form.total_exonerated > 0">OP.EXONERADAS:
                                 {{ currency_type.symbol }} {{ form.total_exonerated }}</p>
-                            <p class="text-right" v-if="form.total_taxed > 0">OP.GRAVADA: {{ currency_type.symbol }}
+                            <p class="text-right" v-if="form.total_taxed > 0">SUBTOTAL 12%: {{ currency_type.symbol }}
                                 {{ form.total_taxed }}</p>
                             <p class="text-right" v-if="form.total_igv > 0">IVA: {{ currency_type.symbol }}
                                 {{ form.total_igv }}</p>
@@ -362,11 +362,18 @@ import DocumentFormItem from './partials/item.vue'
 import DocumentOptions from '../documents/partials/options.vue'
 import {functions, exchangeRate} from '../../../mixins/functions'
 import {calculateRowItem} from '../../../helpers/functions'
+//JOINSOFTWARE
+//import {mapActions, mapState} from "vuex/dist/vuex.mjs";
 
 export default {
     components: {DocumentFormItem, DocumentOptions},
     mixins: [functions, exchangeRate],
-    props: ['document_affected', 'configuration', 'authUser',],
+    props: [
+        'document_affected',
+        'configuration',
+        //JOINSOFTWARE
+        //'authUser',
+    ],
     data() {
         return {
             recordItem: null,
@@ -381,6 +388,9 @@ export default {
             document_types: [],
             currency_types: [],
             customers: [],
+            //JOINSOFTWARE
+            //all_series: [],
+            //series: [],
             all_series: [],
             series: [],
             currency_type: {},
@@ -400,17 +410,25 @@ export default {
     },
     async created() {
         this.document = this.document_affected
+        //JOINSOFTWARE
+        //this.loadConfiguration()
+        //this.$store.commit('setConfiguration', this.configuration)
         await this.initForm()
         await this.$http.get(`/${this.resource}/tables`)
             .then(response => {
                 this.document_types = response.data.document_types_note
                 this.currency_types = response.data.currency_types
+                //JOINSOFTWARE
+                //this.$store.commit('setAllSeries', response.data.series)
+                //JOINSOFTWARE
                 this.all_series = response.data.series
                 // this.customers = response.data.customers
                 this.note_credit_types = response.data.note_credit_types
                 this.note_debit_types = response.data.note_debit_types
                 this.operation_types = response.data.operation_types
                 this.user = response.data.user;
+                //JOINSOFTWARE
+                this.authUser = response.data.authUser;
 
                 this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
                 this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
@@ -418,6 +436,7 @@ export default {
 
                 this.changeDocumentType()
                 this.changeDateOfIssue()
+                //JOINSOFTWARE
                 this.setDefaultDocumentType();
             })
         await this.getPercentageIgv();
@@ -430,9 +449,14 @@ export default {
 
     },
     computed: {
+        //JOINSOFTWARE
+        /*
         ...mapState([
             'config',
+            'series',
+            'all_series',
         ]),
+        */
         isCreditNoteAndType13: function () {
             return (this.form.document_type_id === '07' && this.form.note_credit_or_debit_type_id === '13')
         },
@@ -595,6 +619,12 @@ export default {
             }
 
         },
+        //JOINSOFTWARE
+        /*
+        ...mapActions([
+            'loadConfiguration',
+        ]),
+        */
         async initFormCreditNoteAndType13() {
 
             this.errors = {}
@@ -791,6 +821,8 @@ export default {
                 })
 
         },
+        //JOINSOFTWARE
+        
         setDefaultSerieByDocument()
         {
             if(this.authUser.multiple_default_document_types)
@@ -805,12 +837,16 @@ export default {
             }
 
         },
+        
+        //JOINSOFTWARE
         // #307 Ajuste para seleccionar automaticamente el tipo de comprobante y serie
+        
         setDefaultDocumentType(from_function) {
+
             if(this.authUser.multiple_default_document_types) return
 
-            this.default_series_type = this.config.user.serie;
-            this.default_document_type = this.config.user.document_id;
+            this.default_series_type = this.document.user.serie;
+            this.default_document_type = this.document.user.document_id;
             // if (this.default_document_type === undefined) this.default_document_type = null;
             // if (this.default_series_type === undefined) this.default_series_type = null;
 
@@ -824,6 +860,7 @@ export default {
                 }
             }
         },
+        
         changeDocumentType() {
             this.form.note_credit_or_debit_type_id = null
             this.form.series_id = null
@@ -844,8 +881,8 @@ export default {
 
             this.initData()
             this.validateHasDiscounts()
+            //JOINSOFTWARE
             this.setDefaultSerieByDocument()
-
         },
         changeDateOfIssue() {
             this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
@@ -992,7 +1029,9 @@ export default {
                     }
                 })
                 .then(() => {
-                    this.loading_submit = false
+                    this.loading_submit = false;
+                    //JOINSOFTWARE
+                    this.setDefaultDocumentType();
                 })
         },
         getCustomer() {

@@ -79,6 +79,7 @@ class Client extends Model
         'smtp_user',
         'smtp_password',
         'smtp_encryption',
+
         'rimpe_emp',
         'rimpe_np',
         'rise',
@@ -86,7 +87,8 @@ class Client extends Model
         'contribuyente_especial',
         'agente_retencion',
         'agente_retencion_num',
-        'contribuyente_especial_num',
+        'contribuyente_especial_num'
+        
     ];
 
     /**
@@ -94,7 +96,10 @@ class Client extends Model
      */
     public function getSmtpHost()
     {
+        //JOINSOFTWARE ENVIO DE CORREOS//
+
         return empty($this->smtp_host)?Config::get('mail.host'):$this->smtp_host;
+        
     }
 
     /**
@@ -113,8 +118,11 @@ class Client extends Model
      */
     public function getSmtpPort()
     {
+        //JOINSOFTWARE ENVIO DE CORREOS//
+      
         if($this->smtp_port == 0)$this->smtp_port = null;
         return empty($this->smtp_port)?Config::get('mail.port'):$this->smtp_port;
+        
     }
 
     /**
@@ -133,6 +141,7 @@ class Client extends Model
      */
     public function getSmtpUser()
     {
+        //JOINSOFTWARE ENVIO DE CORREOS//
         return empty($this->smtp_user)?Config::get('mail.username'):$this->smtp_user;
     }
 
@@ -152,7 +161,9 @@ class Client extends Model
      */
     public function getSmtpPassword()
     {
+        //JOINSOFTWARE ENVIO DE CORREOS//
         return empty($this->smtp_password)?Config::get('mail.password'):$this->smtp_password;
+        
     }
 
     /**
@@ -171,7 +182,9 @@ class Client extends Model
      */
     public function getSmtpEncryption()
     {
+
         return empty($this->smtp_encryption)?Config::get('mail.encryption'):$this->smtp_encryption;
+    
     }
 
     /**

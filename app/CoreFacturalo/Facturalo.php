@@ -55,10 +55,12 @@ class Facturalo
     const REGISTERED = '01';
     const SENT = '03';
     const ACCEPTED = '05';
+    const NOACCEPTED = '09';
     const OBSERVED = '07';
-    const REJECTED = '09';
+    const REJECTED = '31';
     const CANCELING = '13';
     const VOIDED = '11';
+    const RETURNED = '30';
 
     protected $configuration;
     protected $company;
@@ -167,6 +169,7 @@ class Facturalo
                     $document->documents()->create($row);
                 }
                 $this->document = Voided::find($document->id);
+                //Log::error('voided: '.json_encode($this->document));
                 break;
             case 'retention':
                 $document = Retention::create($inputs);
@@ -270,10 +273,10 @@ class Facturalo
             $serie = str_pad(substr($this->document->series,2,2), '3', '0', STR_PAD_LEFT);
         }
 
-        //Log::info('INFO ADICIONAL :'.$this->document->additional_information[0]);
-
+        //Log::info('ID ESTABLECIMIENTO :'.$this->document->user->establishment->code);
+        $estID = $this->document->user->establishment->code;
         $establecimeinto = Establishment::find($this->document->establishment_id);
-        $this->clave = "" . date('dmY', strtotime($this->document->date_of_issue)) . "" .$this->doc_type. "" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".$establecimeinto->code."".$serie. str_pad($this->document->number , '9', '0', STR_PAD_LEFT) . "" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
+        $this->clave = "" . date('dmY', strtotime($this->document->date_of_issue)) . "" .$this->doc_type. "" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".substr($estID,0,3)."".$serie. str_pad($this->document->number , '9', '0', STR_PAD_LEFT) . "" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
         $this->digito_verificador_clave = $this->validar_clave($this->clave);
         $this->clave_acceso = $this->clave . "" . $this->digito_verificador_clave . "";
         $this->document->clave_SRI = $this->clave_acceso;
@@ -421,7 +424,9 @@ class Facturalo
 
         $qrCode = new QrCodeGenerate();
         $qr = $qrCode->displayPNGBase64($text);
-        return $qr;
+        //JOINSOFTWARE
+        $barcode = $qrCode->generarCodigoBarras($this->document->clave_SRI);
+        return $barcode;
     }
 
     public function createPdf($document = null, $type = null, $format = null, $output = 'pdf') {
@@ -831,14 +836,14 @@ class Facturalo
                 $documento = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['comprobante'];
 
                 $this->uploadFile($documento, 'autorizado');
-                $tipodoc = 'invoice';
-                if($this->document->documnet_type_id === '01'){
+                $tipodoc = '';
+                if($this->document->document_type_id === '01'){
                     $tipodoc = 'invoice';
                     $this->doc_type = '01';
 
-                }else if($this->document->documnet_type_id === '07'){
+                }else if($this->document->document_type_id === '07'){
             
-                    $tipodoc = 'credit';
+                    $tipodoc = 'note';
                     $this->doc_type = '07';
                 }
                 $this->actions['format_pdf'] = 'blank';
@@ -852,19 +857,26 @@ class Facturalo
                 Log::info('ESTADO: '.$estado);
 
                 $this->document->update([
-                    'state_type_id' => self::REJECTED
+                    'state_type_id' => self::NOACCEPTED
                 ]);
-                $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje'][0]['identificador'];
-                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje'][0]['mensaje']; 
+                $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
+                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje']; 
 
             }else{
 
                 $this->document->update([
                     'state_type_id' => self::OBSERVED
                 ]);
-                $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
-                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje'];
-            
+                if($authSRI['RespuestaAutorizacionComprobante']['numeroComprobantes'] > 0){
+                    $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
+                    $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje'];
+                }else{
+
+                    $code = 500;
+                    $mensaje = 'NO SE ENCONTRO EL DOCUMENTO EN EL SISTEMA DEL SRI';
+
+                }
+                
             }
 
             $this->response = [
@@ -991,12 +1003,12 @@ class Facturalo
                 $estado = $responseSRI['RespuestaRecepcionComprobante']['estado'];
 
                 if($estado == 'DEVUELTA'){
-
+                    $this->updateState(self::RETURNED);
                     $code = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['identificador'];
                     $mensaje = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['mensaje'];
 
                 }elseif($estado == 'RECIBIDA'){
-
+                    $this->updateState(self::OBSERVED);
                     $code = 200;
                     $mensaje = "DOCUMENTO RECIBIDO POR EL SRI";
 
@@ -1006,7 +1018,7 @@ class Facturalo
                     $mensaje = 'NO SE RECUPERO UNA RESPUESTA DEL SRI';
 
                 }
-                $this->updateState(self::OBSERVED);
+                
                 $this->response = [
                     'sent' => false,
                     'code' => $code,
@@ -1144,6 +1156,7 @@ class Facturalo
     public function senderXmlSignedSummary()
     {
         $res = $this->senderXmlSigned();
+        
         if($res->isSuccess()) {
             $ticket = $res->getTicket();
             $this->updateTicket($ticket);
@@ -1476,6 +1489,7 @@ class Facturalo
         // dd($inputs);
         switch ($this->type) {
             case 'invoice':
+                $this->doc_type = '01';
                 $document = Document::find($id);
                 // si cambia la serie
                 if($inputs['series'] !== $document->series){

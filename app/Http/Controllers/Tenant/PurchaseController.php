@@ -131,8 +131,8 @@
             $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
             $currency_types = CurrencyType::whereActive()->get();
             $document_types_invoice = DocumentType::DocumentsActiveToPurchase()->get();
-            $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-            $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
+            $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->whereActive()->get();
+            $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->whereActive()->get();
             $company = Company::active();
             $payment_method_types = PaymentMethodType::getPaymentMethodTypes();
             // $payment_method_types = PaymentMethodType::all();

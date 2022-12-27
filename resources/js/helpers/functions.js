@@ -365,17 +365,19 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     row.total_taxes_without_rounding = total_taxes
     row.total_without_rounding = total
 
-
-    if (row.affectation_igv_type.free) {
-        row.price_type_id = '02'
-        row.unit_value = 0
-        // row.total_value = 0
-        // row.total = 0
-        row.total = 0 + total_plastic_bag_taxes
-
-        //valor sin redondeo
-        row.total_without_rounding = 0
+    if(row.affectation_igv_type){
+        if (row.affectation_igv_type.free) {
+            row.price_type_id = '02'
+            row.unit_value = 0
+            // row.total_value = 0
+            // row.total = 0
+            row.total = 0 + total_plastic_bag_taxes
+    
+            //valor sin redondeo
+            row.total_without_rounding = 0
+        }
     }
+ 
 
     //impuesto bolsa
     // if (row_old.has_plastic_bag_taxes) {
