@@ -289,7 +289,7 @@
                                                 <span style="font-size:16px;">&#9998;</span>
                                             </button>
                                             ({{ item.unit_type_id }})
-                                            {{ item.currency_type_symbol }}
+                                            {{ item.currency_type_id }}
                                             {{ item.sale_unit_price }}
                                         </h5>
                                     </template>
@@ -609,13 +609,9 @@
                                     class="btn btn-sm btn-default w-100"
                                     @click="selectCurrencyType"
                                 >
-                                    <template
-                                        v-if="form.currency_type_id == 'PEN'"
-                                    >
-                                        <strong>S/</strong>
-                                    </template>
-                                    <template v-else>
-                                        <strong>$</strong>
+                                    
+                                    <template>
+                                        <strong>{{ currency_type.symbol }}</strong>
                                     </template>
                                     <!-- <i class="fa fa-usd" aria-hidden="true"></i> -->
                                 </a>
@@ -2432,9 +2428,13 @@ export default {
             });
         },
         selectCurrencyType() {
-            this.form.currency_type_id =
-                this.form.currency_type_id === "PEN" ? "USD" : "PEN";
-            this.changeCurrencyType();
+            if(this.currency_types.length > 1){
+                this.form.currency_type_id =
+                    this.form.currency_type_id === "PEN" ? "USD" : "PEN";
+                this.changeCurrencyType();
+            }else{
+                console.log('no tienes mas de una moneda configurada');
+            } 
         },
         async changeCurrencyType() {
             // console.log(this.form.currency_type_id)
