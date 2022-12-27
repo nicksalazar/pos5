@@ -108,11 +108,14 @@
                                 <th>Estado</th>
                                 <th class="">Moneda</th>
                                 <!-- <th>Total Exonerado</th>
-                                <th>Total Inafecto</th>
+                                <th>Subtotal 0%</th>
                                  <th>Total Gratutio</th> -->
-                                <th>Total Gravado</th>
-                               
-                                <th>Total IGV</th>
+                                <!-- JOINSOFTWARE -->
+                                <!-- Total Gravado -> Subtotal 12% -->
+                                <th>Subtotal 12%</th>
+                                <!-- JOINSOFTWARE -->
+                                <!-- Total IGV -> Total IVA -->
+                                <th>Total IVA</th>
                                 <th>Total</th>
                             </tr>
                         </thead>

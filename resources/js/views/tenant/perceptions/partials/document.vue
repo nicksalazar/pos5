@@ -187,7 +187,8 @@
                     exchange_rate_sale: 0,
                     exchange_rate: {
                         currency_type_id_source: null,
-                        currency_type_id_target: 'PEN',
+                        // JOINSOFTWARE currency_type_id: 'PEN',
+                        currency_type_id_target: this.config.currency_type_id,
                         factor: 1,
                         date_of_exchange_rate: null,
                     },

@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid p-0">
-        <div class="row page-header pr-0 no-gutters" style="height:auto">
+        <div class="row page-header pr-0 no-gutters" style="height:auto;">
             <Keypress
                 key-event="keyup"
                 :key-code="112"
@@ -15,7 +15,7 @@
       </div> -->
             <div class="col-md-5">
                 <!-- <h2 class="text-sm">POS</h2> -->
-                <h2>
+                <h2 style="width: 45%">
                     <el-switch
                         v-model="search_item_by_barcode"
                         active-text="Buscar con escáner de código de barras"
@@ -28,7 +28,7 @@
                     </template> -->
                 </h2>
                 
-                <div class="row" v-if="search_item_by_barcode">
+                <div class="row" v-if="search_item_by_barcode" style="width: 42;">
                     <div class="col-md-12">
                         <el-checkbox class="mt-1 font-weight-bold" v-model="search_item_by_barcode_presentation">Por presentación</el-checkbox>
                     </div>
@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <h2>
+                <h2 style="padding-left: 0; padding-right: 0;">
                     <el-tooltip
                         class="item"
                         effect="dark"
@@ -72,7 +72,7 @@
                         </button>
                     </el-tooltip>
                 </h2>
-                <h2>
+                <h2 style="padding-right: 0;">
                     <el-tooltip
                         class="item"
                         effect="dark"
@@ -89,7 +89,7 @@
                         </button>
                     </el-tooltip>
                 </h2>
-                <h2>
+                <h2 style="padding-right: 0;">
                     <el-tooltip
                         class="item"
                         effect="dark"
@@ -106,7 +106,7 @@
                         </button>
                     </el-tooltip>
                 </h2>
-                <h2>
+                <h2 style="padding-right: 0;">
                     <el-tooltip
                         class="item"
                         effect="dark"
@@ -920,6 +920,7 @@
         </item-unit-types>
     </div>
 </template>
+
 <style>
 .el-select-dropdown__item.hover {
     /* background-color: red; */
@@ -991,13 +992,13 @@
         padding-top: 175px;
     }
 }
+
 @media (max-width: 767px)
 {
     .page-header {
         margin: 0px 0px 5px 0px;
     }
 }
-
 </style>
 
 <script>

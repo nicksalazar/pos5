@@ -92,8 +92,12 @@
                                 <th class="" >T.Exonerado</th>
                                 <th class="" >T.Inafecta</th>
                                 <th class="" >T.Gratuito</th>
-                                <th>Total Gravado</th>
-                                <th>Total IGV</th>
+                                <!-- JOINSOFTWARE -->
+                                <!-- Total Gravado -> Subtotal 12% -->
+                                <th>Subtotal 12%</th>
+                                <!-- JOINSOFTWARE -->
+                                <!-- Total IGV -> Total IVA -->
+                                <th>Total IVA</th>
                                 <th>Total</th>
                             </tr>
                         </thead>

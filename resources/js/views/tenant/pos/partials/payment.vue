@@ -171,13 +171,18 @@
         <div class="col-lg-8 col-md-6 px-4 pt-3 hyo">
             <div class="row d-flex justify-content-center pt-2">
                 <div class="col-lg-6 col-md-6 ">
-
+                    <!-- JOINSOFTWARE
                     <el-radio-group v-model="form.document_type_id"
                                     size="small"
                                     @change="filterSeries">
                         <el-radio-button label="01">FACTURA</el-radio-button>
                         <el-radio-button label="03">BOLETA</el-radio-button>
                         <el-radio-button label="80">N. VENTA</el-radio-button>
+                    </el-radio-group>
+                    -->
+                    <!-- JOINSOFTWARE -->
+                    <el-radio-group v-model="form.document_type_id = '01'" size="small" @change="filterSeries">
+                        <el-radio-button label="01">FACTURA</el-radio-button>
                     </el-radio-group>
                 </div>
 

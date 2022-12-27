@@ -119,7 +119,7 @@
         <div class="main">
             <div class="fdiv">
                 <img alt="logo" src="{{ asset('logo/logo2.png') }}" width="70%" height="100%">
-                 </div>
+            </div>
             <div class="fdiv">
                 <h3 id="title">{{ $company->name }}</h3>
                 <h3 id="title">Has recibido un Documento Electrónico de</h3>
@@ -132,7 +132,7 @@
                 <img alt="logo" src="{{ asset('logo/logo.jpg') }}" width="50px" height="50px">
                 @endif
                 <hr class="solid">
-                <h3>FAC {{ $document_number }}</h3>
+                <h3>{{ $document->document_type->description }} {{ $document_number }}</h3>
             </div>
             <div class="sdiv">
                 <h6 id="value1">Fecha Emisión: {{$document->date_of_issue->format('m-d-Y')}}</h6>

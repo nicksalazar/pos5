@@ -53,6 +53,15 @@ class CompanyResource extends JsonResource
             'client_id_pse' => $this->client_id_pse,
             'app_logo' => $this->app_logo,
 
+            //JOINSOFTWARE
+            'rimpe_emp' => (bool)$this->rimpe_emp,
+            'rimpe_np' => (bool)$this->rimpe_np,
+            'rise' => (bool)$this->rise,
+            'contribuyente_especial' => (bool)$this->contribuyente_especial,
+            'obligado_contabilidad' => (bool)$this->obligado_contabilidad,
+            'agente_retencion' => (bool)$this->agente_retencion,
+            'agente_retencion_num' => $this->agente_retencion_num,
+            'contribuyente_especial_num' => $this->contribuyente_especial_num,
         ];
     }
 }
