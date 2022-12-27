@@ -19,6 +19,7 @@ class Voided extends ModelTenant
     protected $fillable = [
         'user_id',
         'external_id',
+        'clave_SRI',
         'soap_type_id',
         'state_type_id',
         'ubl_version',

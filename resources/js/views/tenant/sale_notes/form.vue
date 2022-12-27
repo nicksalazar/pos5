@@ -425,10 +425,10 @@
                             <div class="col-md-12">
 
                                 <!-- descuentos -->
-                                <div class="row mt-1 mb-2"  v-if="form.total > 0">
+                                <div class="row mt-1 mb-2"  v-if="form.total_discount > 0">
                                     <div class="col-lg-10 float-right">
                                         <label class="float-right control-label">
-
+                                            
                                             <el-tooltip class="item"
                                                 :content="global_discount_type.description"
                                                 effect="dark"
@@ -441,7 +441,7 @@
                                             :
                                         </label>
                                     </div>
-
+                                    
                                     <div class="col-lg-2 float-right">
                                         <el-input-number v-model="total_global_discount"
                                                             :min="0"
@@ -1120,10 +1120,17 @@
             let total_igv_free = 0
 
             this.form.items.forEach((row) => {
+
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
 
                 if (row.affectation_igv_type_id === '10') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '11') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '12') {
                     total_taxed += parseFloat(row.total_value)
                 }
                 if (row.affectation_igv_type_id === '20'  // 20,Exonerado - Operación Onerosa
@@ -1146,13 +1153,13 @@
                 if (row.affectation_igv_type_id === '40') {
                     total_exportation += parseFloat(row.total_value)
                 }
-                if (['10',
+                if (['10','11', '12',
                     '20', '21',
                     '30', '31', '32', '33', '34', '35', '36',
                     '40'].indexOf(row.affectation_igv_type_id) < 0) {
                     total_free += parseFloat(row.total_value)
                 }
-                if (['10',
+                if (['10','11', '12',
                     '20', '21',
                     '30', '31', '32', '33', '34', '35', '36',
                     '40'].indexOf(row.affectation_igv_type_id) > -1) {
@@ -1161,7 +1168,7 @@
                 }
 
 
-                if (['11', '12', '13', '14', '15', '16'].includes(row.affectation_igv_type_id)) {
+                if ([ '13', '14', '15', '16'].includes(row.affectation_igv_type_id)) {
 
                     let unit_value = row.total_value / row.quantity
                     let total_value_partial = unit_value * row.quantity
@@ -1281,6 +1288,7 @@
         setConfigGlobalDiscountType()
         {
             this.global_discount_type = _.find(this.global_discount_types, { id : this.config.global_discount_type_id})
+            console.log('Discount: ',this.global_discount_type);
         },
         setGlobalDiscount(factor, amount, base)
         {
