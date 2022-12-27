@@ -274,7 +274,9 @@
 
     //$path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
     $document_base = $document->note;
+    //JOINSOFTWARE
     $establishment2 = $document_base->affected_document->establishment->code;
+    //JOINSOFTWARE
     $document_number = $document->establishment->code.substr($document->series, 1).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
     $document_type_description_array = [
         '01' => 'FACTURA',
@@ -291,7 +293,7 @@
     $accounts = \App\Models\Tenant\BankAccount::where('show_in_documents', true)->get();
 
     if($document_base) {
-
+        //JOINSOFTWARE
         $affected_document_number = ($document_base->affected_document) ? $establishment2.substr($document_base->affected_document->series, 1).''.str_pad($document_base->affected_document->number, 9, '0', STR_PAD_LEFT) : $document_base->data_affected_document->series.'-'.str_pad($document_base->data_affected_document->number, 8, '0', STR_PAD_LEFT);
 
     } else {
@@ -1182,7 +1184,7 @@
                                 <td style="text-transform: uppercase; background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-bottom: 60px; padding-top: 15px;">
                                     <strong>Emisor: </strong>{{ $company->name }}<br></br>
                                     <strong>RUC: </strong>{{ $company->number }}<br></br>
-                                    <strong>Matriz: </strong> <h7 style="text-transform: uppercase;">{{ ($establishment->address !== '-')? $establishment->address : '' }}<!-- JOINSOFTWARE {{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}-->{{ ($establishment->province_id !== '-')? /* JOINSOFTWARE ', '.*/$establishment->province->description : '' }}{{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}</h7><br></br>
+                                    <strong>Matriz: </strong> <h7 style="text-transform: uppercase;">{{ ($establishment->address !== '-')? $establishment->address : ', ' }}<!-- JOINSOFTWARE {{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}-->{{ ($establishment->province_id !== '-')? /* JOINSOFTWARE ', '.*/$establishment->province->description : '' }}{{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}</h7><br></br>
                                     <strong>Correo: </strong>{{ ($establishment->email !== '-')? ''.$establishment->email : '' }}<br></br>
                                     <strong>Teléfono: </strong>{{ ($establishment->telephone !== '-')? ''.$establishment->telephone : '' }}<br></br>
                                     @if($company->obligado_contabilidad)
@@ -1295,7 +1297,7 @@
                         {{ $document_base->affected_document->date_of_issue->format('m-d-Y') }}
                     </td>
                 </tr>
-                <!--
+                <!-- JOINSOFTWARE
                 <tr>
                     <td>
                         <strong>TIPO DE NOTA: </strong>
