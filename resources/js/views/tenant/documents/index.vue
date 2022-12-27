@@ -308,12 +308,14 @@
                                     @click.prevent="clickDownload(row.download_pdf)"
                                     v-if="row.has_pdf">PDF
                             </button>
+                            <!-- JOINSOFTWARE
                             <button type="button"
                                     style="min-width: 41px"
                                     class="btn waves-effect waves-light btn-xs btn-info m-1__2"
                                     @click.prevent="clickDownload(row.download_cdr)"
                                     v-if="row.has_cdr">CDR
                             </button>
+                            -->
                         </td>
 
                         <td class="text-right"

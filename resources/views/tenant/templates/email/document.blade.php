@@ -132,7 +132,7 @@
                 <img alt="logo" src="{{ asset('logo/logo.jpg') }}" width="50px" height="50px">
                 @endif
                 <hr class="solid">
-                <h3>DOC {{ $document_number }}</h3>
+                <h3>{{ $document->document_type->description }} {{ $document_number }}</h3>
             </div>
             <div class="sdiv">
                 <h6 id="value1">Fecha Emisión: {{$document->date_of_issue->format('m-d-Y')}}</h6>
