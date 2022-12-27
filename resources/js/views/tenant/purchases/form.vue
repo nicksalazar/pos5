@@ -513,7 +513,7 @@
 
                             <!-- descuentos -->
 
-                            <div class="row mt-1 mb-2"  v-if="form.total > 0">
+                            <div class="row mt-1 mb-2"  v-if="form.total_discount > 0">
 
                                 <div class="col-lg-10 float-right">
                                     <label class="float-right control-label">
@@ -1264,6 +1264,12 @@ export default {
                 if (row.affectation_igv_type_id === '10') {
                     total_taxed += parseFloat(row.total_value)
                 }
+                if (row.affectation_igv_type_id === '11') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '12') {
+                    total_taxed += parseFloat(row.total_value)
+                }
                 if (row.affectation_igv_type_id === '20') {
                     total_exonerated += parseFloat(row.total_value)
                 }
@@ -1273,7 +1279,7 @@ export default {
                 if (row.affectation_igv_type_id === '40') {
                     total_exportation += parseFloat(row.total_value)
                 }
-                if (['10', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
+                if (['10','11','12', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
                     total_free += parseFloat(row.total_value)
                 }
 

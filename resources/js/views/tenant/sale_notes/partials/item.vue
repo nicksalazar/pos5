@@ -1294,7 +1294,7 @@ export default {
 
             this.row.IdLoteSelected = IdLoteSelected
             this.row.document_item_id = document_item_id
-
+            console.log('datos a cargar: ',this.row );
             this.$emit('add', this.row);
 
             if (this.search_item_by_barcode) {

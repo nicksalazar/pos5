@@ -66,13 +66,13 @@ class TenantCatalogsTable extends Migration
 
         DB::table('cat_document_types')->insert([
             ['id' => '01', 'active' => true,  'short' => 'FT', 'description' => 'FACTURA ELECTRÓNICA'],
-            ['id' => '03', 'active' => true,  'short' => 'BV', 'description' => 'BOLETA DE VENTA ELECTRÓNICA'],
+            ['id' => '03', 'active' => false,  'short' => 'BV', 'description' => 'BOLETA DE VENTA ELECTRÓNICA'],
             ['id' => '07', 'active' => true,  'short' => 'NC', 'description' => 'NOTA DE CRÉDITO'],
-            ['id' => '08', 'active' => true,  'short' => 'ND', 'description' => 'NOTA DE DÉBITO'],
-            ['id' => '09', 'active' => true,  'short' => null, 'description' => 'GUIA DE REMISIÓN REMITENTE'],
-            ['id' => '20', 'active' => true,  'short' => null, 'description' => 'COMPROBANTE DE RETENCIÓN ELECTRÓNICA'],
-            ['id' => '31', 'active' => true,  'short' => null, 'description' => 'Guía de remisión transportista'],
-            ['id' => '40', 'active' => true,  'short' => null, 'description' => 'COMPROBANTE DE PERCEPCIÓN ELECTRÓNICA'],
+            ['id' => '08', 'active' => false,  'short' => 'ND', 'description' => 'NOTA DE DÉBITO'],
+            ['id' => '09', 'active' => false,  'short' => null, 'description' => 'GUIA DE REMISIÓN REMITENTE'],
+            ['id' => '20', 'active' => false,  'short' => null, 'description' => 'COMPROBANTE DE RETENCIÓN ELECTRÓNICA'],
+            ['id' => '31', 'active' => false,  'short' => null, 'description' => 'Guía de remisión transportista'],
+            ['id' => '40', 'active' => false,  'short' => null, 'description' => 'COMPROBANTE DE PERCEPCIÓN ELECTRÓNICA'],
             ['id' => '71', 'active' => false, 'short' => null, 'description' => 'Guia de remisión remitente complementaria'],
             ['id' => '72', 'active' => false, 'short' => null, 'description' => 'Guia de remisión transportista complementaria'],
         ]);

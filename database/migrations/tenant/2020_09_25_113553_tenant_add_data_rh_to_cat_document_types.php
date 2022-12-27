@@ -15,7 +15,7 @@ class TenantAddDataRhToCatDocumentTypes extends Migration
     public function up()
     {
         DB::table('cat_document_types')->insert([ 
-            ['id'=> '02', 'active' => true, 'description' => 'RECIBO POR HONORARIOS']
+            ['id'=> '02', 'active' => false, 'description' => 'RECIBO POR HONORARIOS']
         ]);
     }
 

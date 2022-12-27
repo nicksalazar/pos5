@@ -14,7 +14,7 @@ class TenantAddDataPublicServicesToCatDocumentTypes extends Migration
     public function up()
     {
         DB::table('cat_document_types')->insert([ 
-            ['id'=> '14', 'active' => true, 'description' => 'SERVICIOS PÚBLICOS']
+            ['id'=> '14', 'active' => false, 'description' => 'SERVICIOS PÚBLICOS']
         ]);
     }
 
