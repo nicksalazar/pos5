@@ -43,7 +43,7 @@
     <div class="text-center company_logo_box pt-5">
         <img src="data:{{mime_content_type(public_path("storage/uploads/logos/{$company->logo}"))}};base64, {{base64_encode(file_get_contents(public_path("storage/uploads/logos/{$company->logo}")))}}" alt="{{$company->name}}" class="company_logo_ticket contain">
     </div>
-{{-- @else
+{{-- JOINSOFTWARE @else
     <div class="text-center company_logo_box pt-5">
         <img src="{{ asset('logo/logo.jpg') }}" class="company_logo_ticket contain">
     </div> --}}
@@ -210,9 +210,10 @@
                 <td class="text-right font-bold desc">{{ number_format($document->total_free, 2) }}</td>
             </tr>
         @endif
+        <!-- JOINSOFTWARE -->
         @if($document->total_unaffected > 0)
             <tr>
-                <td colspan="4" class="text-right font-bold desc">OP. INAFECTAS: {{ $document->currency_type->symbol }}</td>
+                <td colspan="4" class="text-right font-bold desc">SUBTOTAL 0%: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold desc">{{ number_format($document->total_unaffected, 2) }}</td>
             </tr>
         @endif
@@ -289,7 +290,7 @@
             @endif
         </td>
     </tr>
-    <!-- JOINSOFTWARE -->
+    <!-- JOINSOFTWARE
     <tr>
         <td class="text-center desc"style="text-transform: uppercase;">
             Clave de Acceso/AutorizaciÓn:
@@ -298,10 +299,10 @@
     <tr>
         <td class="text-center pt-5"><img class="qr_code" src="data:image/png;base64, {{ $document->qr }}" /></td>
     </tr>
-    <!-- JOINSOFTWARE -->
     <tr>
         <td class="text-center desc">{{ $document->clave_SRI }}</td>
     </tr>
+    -->
     <tr>
         <td class="text-center desc pt-5">Para consultar el comprobante ingresar a {!! url('/buscar') !!}</td>
     </tr>

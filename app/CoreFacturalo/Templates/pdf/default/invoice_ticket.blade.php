@@ -513,9 +513,10 @@
                 <td class="text-right font-bold desc">{{ number_format($document->total_free, 2) }}</td>
             </tr>
         @endif
+        <!-- JOINSOFTWARE -->
         @if($document->total_unaffected > 0)
             <tr>
-                <td colspan="4" class="text-right font-bold desc">OP. INAFECTAS: {{ $document->currency_type->symbol }}</td>
+                <td colspan="4" class="text-right font-bold desc">SUBTOTAL 0%: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold desc">{{ number_format($document->total_unaffected, 2) }}</td>
             </tr>
         @endif
@@ -526,16 +527,17 @@
             </tr>
         @endif
 
+        <!-- JOINSOFTWARE -->
         @if ($document->document_type_id === '07')
             @if($document->total_taxed >= 0)
             <tr>
-                <td colspan="4" class="text-right font-bold desc">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
+                <td colspan="4" class="text-right font-bold desc">SUBTOTAL 12%: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold desc">{{ number_format($document->total_taxed, 2) }}</td>
             </tr>
             @endif
         @elseif($document->total_taxed > 0)
             <tr>
-                <td colspan="4" class="text-right font-bold desc">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
+                <td colspan="4" class="text-right font-bold desc">SUBTOTAL 12%: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold desc">{{ number_format($document->total_taxed, 2) }}</td>
             </tr>
         @endif
@@ -546,8 +548,9 @@
                 <td class="text-right font-bold desc">{{ number_format($document->total_plastic_bag_taxes, 2) }}</td>
             </tr>
         @endif
+        <!-- JOINSOFTWARE -->
         <tr>
-            <td colspan="4" class="text-right font-bold desc">IGV: {{ $document->currency_type->symbol }}</td>
+            <td colspan="4" class="text-right font-bold desc">IVA: {{ $document->currency_type->symbol }}</td>
             <td class="text-right font-bold desc">{{ number_format($document->total_igv, 2) }}</td>
         </tr>
 
@@ -668,13 +671,32 @@
             @endif
         </td>
     </tr>
+    <!-- JOINSOFTWARE -->
+    <tr>
+        <td class="text-center desc" style="text-transform: uppercase;">
+            @if($company->rimpe_emp || $company->rimpe_np)
+            CONTRIBUYENTE RÉGIMEN RIMPE
+            @endif
+        </td>
+    </tr>
+    <!-- JOINSOFTWARE -->
+    <tr>
+        <td class="text-center desc" style="text-transform: uppercase;">
+            @if($company->obligado_contabilidad)
+            Obligado a llevar contabilidad: SI
+            @else
+            Obligado a llevar contabilidad: NO
+            @endif
+        </td>
+    </tr>
+    <!-- JOINSOFTWARE
     <tr>
         <td class="text-center pt-3"><img class="qr_code" src="data:image/png;base64, {{ $document->qr }}" /></td>
     </tr>
     <tr>
         <td class="text-center desc">Código Hash: {{ $document->hash }}</td>
     </tr>
-
+    -->
     @if ($customer->department_id == 16)
         <tr>
             <td class="text-center desc pt-5">

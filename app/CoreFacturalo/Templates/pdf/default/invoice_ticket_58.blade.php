@@ -385,9 +385,10 @@
                 <td class="text-right font-bold desc">{{ number_format($document->total_free, 2) }}</td>
             </tr>
         @endif
+        <!-- JOINSOFTWARE -->
         @if($document->total_unaffected > 0)
             <tr>
-                <td colspan="4" class="text-right font-bold desc">OP. INAFECTAS: {{ $document->currency_type->symbol }}</td>
+                <td colspan="4" class="text-right font-bold desc">SUBTOTAL 0%: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold desc">{{ number_format($document->total_unaffected, 2) }}</td>
             </tr>
         @endif
@@ -538,7 +539,7 @@
             @endif
         </td>
     </tr>
-    <!-- JOINSOFTWARE -->
+    <!-- JOINSOFTWARE
     <tr>
         <td class="text-center desc"style="text-transform: uppercase;">
             Clave de Acceso/AutorizaciÓn:
@@ -547,10 +548,10 @@
     <tr>
         <td class="text-center pt-3"><img class="qr_code" src="data:image/png;base64, {{ $document->qr }}" /></td>
     </tr>
-    <!-- JOINSOFTWARE -->
     <tr>
         <td class="text-center desc">{{ $document->clave_SRI }}</td>
     </tr>
+    -->
     @if ($document->payment_condition_id === '01')
         @if($document->payment_method_type_id)
         <tr>
