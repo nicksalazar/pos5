@@ -13,9 +13,10 @@ class TenantAddDataToDocumentTypes extends Migration
      */
     public function up()
     {
+        //JOINSOFTWARE MODIFICACION DOCUMENTOS POR DEFECTO//
         DB::table('cat_document_types')->insert([ 
-            ['id' => 'GU75', 'active' => true,  'short' => null, 'description' => 'GUÍA'],
-            ['id' => 'NE76', 'active' => true,  'short' => null, 'description' => 'NOTA DE ENTRADA'], 
+            ['id' => 'GU75', 'active' => false,  'short' => null, 'description' => 'GUÍA'],
+            ['id' => 'NE76', 'active' => false,  'short' => null, 'description' => 'NOTA DE ENTRADA'], 
         ]);
     }
 

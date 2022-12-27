@@ -1331,6 +1331,7 @@ export default {
                 if (error.response.status === 422) {
                     this.errors = error.response.data;
                 } else {
+                    console.log('Error pago: ',error.response);
                     this.$message.error(error.response.data.message);
                 }
             }).then(() => {
