@@ -154,7 +154,9 @@
                     <div class="col-md-5">
                         <div :class="{'has-danger': errors.affectation_igv_type_id}"
                              class="form-group">
-                            <label class="control-label">Afectación Igv</label>
+                             <!-- JOINSOFTWARE -->
+                            <!-- Afectación Igv -> Tipo de Impuesto -->
+                            <label class="control-label">Tipo de Impuesto</label>
                             <el-select v-model="form.affectation_igv_type_id"
                                        :disabled="!change_affectation_igv_type_id"
                                        filterable>

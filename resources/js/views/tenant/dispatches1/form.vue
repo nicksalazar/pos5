@@ -482,10 +482,10 @@
                     },
                     document_type_id: '09',
                     delivery: {
-                        country_id: 'PE'
+                        country_id: 'EC'
                     },
                     origin: {
-                        country_id: 'PE'
+                        country_id: 'EC'
                     },
                     number: '#',
                     items: [],
