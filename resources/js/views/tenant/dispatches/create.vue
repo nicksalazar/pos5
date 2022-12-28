@@ -891,12 +891,12 @@ export default {
                 packages_number: null,
                 container_number: null,
                 delivery: {
-                    country_id: 'PE',
+                    country_id: 'EC',
                     location_id: [],
                     address: null,
                 },
                 origin: {
-                    country_id: 'PE',
+                    country_id: 'EC',
                     location_id: [],
                     address: null,
                 },
@@ -1332,12 +1332,12 @@ export default {
                     license: null,
                 },
                 delivery: {
-                    country_id: 'PE',
+                    country_id: 'EC',
                     location_id: [],
                     address: null,
                 },
                 origin: {
-                    country_id: 'PE',
+                    country_id: 'EC',
                     location_id: [],
                     address: null,
                 },
@@ -1629,10 +1629,10 @@ export default {
                 },
                 document_type_id: '09',
                 delivery: {
-                    country_id: 'PE'
+                    country_id: 'EC'
                 },
                 origin: {
-                    country_id: 'PE'
+                    country_id: 'EC'
                 },
                 number: '#',
                 items: [],
