@@ -18,19 +18,26 @@ class SearchRequest extends FormRequest
             'document_type_id' => [
                 'required',
             ],
+            /* JOINSOFTWARE
             'series' => [
                 'required',
             ],
             'number' => [
                 'required',
             ],
+            */
             'date_of_issue' => [
                 'required',
             ],
             'customer_number' => [
                 'required',
             ],
+            /* JOINSOFTWARE
             'total' => [
+                'required',
+            ],
+            */
+            'clave_SRI' => [
                 'required',
             ],
         ];

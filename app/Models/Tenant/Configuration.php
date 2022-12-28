@@ -562,6 +562,7 @@
                 'default_document_type_80' => $this->default_document_type_80,
                 'search_item_by_barcode' => $this->search_item_by_barcode,
                 'igv_retention_percentage' => $this->igv_retention_percentage,
+                //JOINSOFTWARE
                 'currency_type_id' => $this->getCurrencyTypeId(),
                 'currency_types' => $currency,
                 'affectation_igv_types_exonerated_unaffected' => Item::AffectationIgvTypesExoneratedUnaffected(),
@@ -674,7 +675,8 @@
          */
         public function getCurrencyTypeId(): ?string
         {
-            return empty($this->currency_type_id) ? 'PEN' : $this->currency_type_id;
+            //JOINSOFTWARE PEN->USD
+            return empty($this->currency_type_id) ? 'USD' : $this->currency_type_id;
         }
 
         /**
@@ -957,9 +959,11 @@
         /**
          * @param string|null $currency_type_id
          */
-        public function setCurrencyTypeId(?string $currency_type_id = 'PEN'): Configuration
+        //JOINSOFTWARE PEN->USD
+        public function setCurrencyTypeId(?string $currency_type_id = 'USD'): Configuration
         {
-            $this->currency_type_id = empty($currency_type_id) ? 'PEN' : $currency_type_id;
+            //JOINSOFTWARE PEN->USD
+            $this->currency_type_id = empty($currency_type_id) ? 'USD' : $currency_type_id;
             return $this;
         }
 

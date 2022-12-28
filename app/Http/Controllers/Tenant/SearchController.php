@@ -18,7 +18,9 @@ class SearchController extends Controller
 
     public function tables()
     {
-        $document_types = DocumentType::whereIn('id', ['01', '03', '07', '08'])->get();
+        //JOINSOFTWARE
+        //$document_types = DocumentType::whereIn('id', ['01', '03', '07', '08'])->get();
+        $document_types = DocumentType::whereIn('id', ['01', '07'])->get();
 
         return compact('document_types');
     }
@@ -34,9 +36,11 @@ class SearchController extends Controller
 
         $document = Document::where('date_of_issue', $request->input('date_of_issue'))
                             ->where('document_type_id', $request->input('document_type_id'))
-                            ->where('series', strtoupper($request->input('series')))
-                            ->where('number', (int) $request->input('number'))
-                            ->where('total', $request->input('total'))
+                            //JOINSOFTWARE
+                            //->where('series', strtoupper($request->input('series')))
+                            //->where('number', (int) $request->input('number'))
+                            //->where('total', $request->input('total'))
+                            ->where('clave_SRI', $request->input('clave_SRI'))
                             ->where('customer_id', $customer->id)
                             ->first();
         if ($document) {

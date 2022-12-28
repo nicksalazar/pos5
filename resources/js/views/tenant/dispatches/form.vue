@@ -844,12 +844,12 @@ export default {
                     license: null,
                 },
                 delivery: {
-                    country_id: 'PE',
+                    country_id: 'EC',
                     location_id: [],
                     address: null,
                 },
                 origin: {
-                    country_id: 'PE',
+                    country_id: 'EC',
                     location_id: [],
                     address: null,
                 },
