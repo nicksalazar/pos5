@@ -25,7 +25,7 @@ class PaymentMethodTypeRequest extends FormRequest
             ],
             'active' => [
                 'required',
-            ],
+            ]
         ];
     }
 }

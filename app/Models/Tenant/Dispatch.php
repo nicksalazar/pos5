@@ -73,6 +73,7 @@
         protected $fillable = [
             'user_id',
             'external_id',
+            'clave_SRI',
             'establishment_id',
             'establishment',
             'soap_type_id',

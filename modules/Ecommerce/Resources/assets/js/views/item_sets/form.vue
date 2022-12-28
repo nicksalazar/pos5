@@ -76,7 +76,7 @@
                         <el-button type="primary" icon="el-icon-plus" @click.prevent="showDialogAddItem = true">Agregar productos</el-button>
                     </div>
 
-                    <div class="col-md-12 mt-2" v-if="form.individual_items.length > 0">
+                    <div class="col-md-12 mt-2" v-if="form.individual_items">
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
