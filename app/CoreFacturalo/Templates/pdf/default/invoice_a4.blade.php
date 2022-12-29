@@ -1233,6 +1233,7 @@
             </tbody>
         </table>
     </div>
+
     <table class="full-width">
         <tbody>
             <tr>
@@ -1260,11 +1261,25 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            @if($document->payment_condition_id === '01' )
+                            @foreach($document->payments as $pago)
                                 <tr style="background: #f7f7f5;">
-                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Otros con Utilización del Sistema Financiero</td>
-                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">{{ $document->currency_type->symbol }}{{ number_format($document->total, 2) }}</td>
+                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">{{ $pago->sridesc }}</td>
+                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">{{ $document->currency_type->symbol }}{{ number_format($pago->payment, 2) }}</td>
                                     <td style="text-align: start; padding-left: 15px; padding-right: 15px;">0 días</td>
                                 </tr>
+    
+                            @endforeach
+                            @endif
+                            @if($document->payment_condition_id === '02')
+                            @foreach($document->fee as $pago)
+                                <tr style="background: #f7f7f5;">
+                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">{{ $pago->sridesc }}</td>
+                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">{{ $document->currency_type->symbol }}{{ number_format($pago->amount, 2) }}</td>
+                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">{{ date_diff($document->date_of_issue, $pago->date)->format('%a') - 1}} días</td>
+                                </tr>
+                            @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </div>

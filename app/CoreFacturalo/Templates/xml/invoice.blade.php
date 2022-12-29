@@ -2,12 +2,12 @@
     $invoice = $document->invoice;
     $establishment = $document->establishment;
     $customer = $document->customer;
-
+    $payments = $document->payments;
     $document_xml_service = new Modules\Document\Services\DocumentXmlService;
     
     // Cargos globales que no afectan la base imponible del IGV/IVAP
     $tot_charges = $document_xml_service->getGlobalChargesNoBase($document);
-   
+    $fecha = new DateTime();
     //descuento global - item que no afectan la base imponible
     $total_discount_no_base = $document_xml_service->getGlobalDiscountsNoBase($document) + $document_xml_service->getItemsDiscountsNoBase($document);
     $total_IVA12 = 0;
@@ -110,12 +110,31 @@
         <importeTotal>{{ $document->total }}</importeTotal>
         <moneda>DOLAR</moneda>
         <pagos>
+        @if($document->payment_condition_id == '01')
+        @foreach($payments as $pago)
             <pago>
-                <formaPago>01</formaPago>
-                <total>{{ $document->total }}</total>
-                <plazo>30</plazo>
+                <formaPago>{{ $pago->payment_method_type->pago_sri }}</formaPago>
+                <total>{{ $pago->payment }}</total>
+                @if($pago->payment_method_type_id == '10')
+                <plazo>0</plazo>
+                @endif
+                @if($pago->payment_method_type_id != '10')
+                <plazo>{{ $pago->payment_method_type_id->number_days }}</plazo>
+                @endif
                 <unidadTiempo>Dias</unidadTiempo>
             </pago>
+        @endforeach
+        @endif
+        @if($document->payment_condition_id === '02')
+            @foreach($document->fee as $pago)
+            <pago>
+                <formaPago>01</formaPago>
+                <total>{{ $pago->amount }}</total>
+                <plazo>{{ date_diff($document->date_of_issue, $pago->date)->format('%a') - 1 }}</plazo>
+                <unidadTiempo>Dias</unidadTiempo>
+            </pago>
+            @endforeach
+        @endif
         </pagos>
     </infoFactura>
     <detalles>

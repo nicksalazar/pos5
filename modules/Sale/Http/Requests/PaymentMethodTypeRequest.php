@@ -14,6 +14,7 @@ class PaymentMethodTypeRequest extends FormRequest
 
     public function rules()
     {
+        //JOINSOFTWARE ANADIR COD DEL SRI EN METODOS DE PAGO//
         $id = $this->input('id');
         return [
             'id' => [
@@ -23,6 +24,9 @@ class PaymentMethodTypeRequest extends FormRequest
             'description' => [
                 'required',
             ], 
+            'pago_sri' => [
+                'required',
+            ],
         ];
     }
 }

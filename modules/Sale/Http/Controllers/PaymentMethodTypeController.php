@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Sale\Http\Resources\PaymentMethodTypeCollection;
 use App\Models\Tenant\PaymentMethodType;
+use App\Models\Tenant\SriFormasPagos;
 use Exception;
 use Modules\Sale\Http\Requests\PaymentMethodTypeRequest;
 
@@ -24,7 +25,8 @@ class PaymentMethodTypeController extends Controller
     public function record($id)
     {
         $record = PaymentMethodType::findOrFail($id);
-
+        $sri = SriFormasPagos::get();
+        $record['pago_sri_list'] = $sri;
         return $record;
     }
 

@@ -378,7 +378,7 @@
                         <div class="col-lg-4">
                             <div :class="{'has-danger': errors['dispatcher.number']}" class="form-group">
                                 <label class="control-label">Número<span class="text-danger"> *</span></label>
-                                <el-input v-model="form.dispatcher.number" :maxlength="11"
+                                <el-input v-model="form.dispatcher.number" :maxlength="13"
 
                                           placeholder="Número..."></el-input>
                                 <small v-if="errors['dispatcher.number']" class="form-control-feedback"
@@ -439,7 +439,7 @@
                                 <label class="control-label">Número
                                     <!-- <span class="text-danger"> *</span> -->
                                 </label>
-                                <el-input v-model="form.driver.number" :maxlength="11"
+                                <el-input v-model="form.driver.number" :maxlength="13"
 
                                           placeholder="Número..."></el-input>
                                 <small v-if="errors['driver.number']" class="form-control-feedback"
