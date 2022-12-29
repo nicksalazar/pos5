@@ -425,6 +425,7 @@ export default {
             this.loadingPdf = (format === 'pdf');
             this.loadingXlsx = (format === 'xlsx');
             this.errors = {};
+            console.log(`/${this.resource}/export`);
             await this.$http({
                 url: `/${this.resource}/export`,
                 method: 'POST',
@@ -438,6 +439,7 @@ export default {
             })
                 .then(response => {
                     let res = response.data;
+                    console.log(response.data);
                     if (res.success) {
                         this.$message.success(res.message);
                     } else {

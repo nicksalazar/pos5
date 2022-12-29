@@ -3,6 +3,7 @@
 namespace App\Models\Tenant;
 
 use App\Models\Tenant\Catalogs\CurrencyType;
+use App\Models\Tenant\SriFormasPagos;
 
 /**
  * Class DocumentFee
@@ -13,7 +14,7 @@ class DocumentFee extends ModelTenant
 {
     public $timestamps = false;
     protected $table = 'document_fee';
-
+    protected $with = ['sri_formas_pago'];
     protected $fillable = [
         'document_id',
         'date',
@@ -81,5 +82,15 @@ class DocumentFee extends ModelTenant
             $return =  $payment_method_type->getDescription();
         }
         return $return;
+    }
+
+    public function associated_record_payment()
+    {
+        return $this->belongsTo(Document::class, 'document_id');
+    }
+
+    public function sri_formas_pago()
+    {
+        return $this->belongsTo(SriFormasPagos::class);
     }
 }

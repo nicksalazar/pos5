@@ -609,8 +609,7 @@
                     date_of_issue: moment().format('YYYY-MM-DD'),
                     time_of_issue: moment().format('HH:mm:ss'),
                     customer_id: null,
-                    // JOINSOFTWARE
-                    currency_type_id: null,
+                    currency_type_id: this.configuration.currency_type_id,
                     purchase_order: null,
                     exchange_rate_sale: 0,
                     total_prepayment: 0,
@@ -639,7 +638,7 @@
                     discounts: [],
                     attributes: [],
                     guides: [],
-                    payment_method_type_id:'10',
+                    payment_method_type_id:'01',
                     customer_address_id:null,
                     additional_information:null,
                     shipping_address:null,
