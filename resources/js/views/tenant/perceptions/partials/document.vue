@@ -178,7 +178,8 @@
                     series: null,
                     number: null,
                     date_of_issue: moment().format('YYYY-MM-DD'),
-                    currency_type_id: null,
+                    // JOINSOFTWARE
+                    currency_type_id: this.config.currency_type_id,
                     total_document: 0,
                     date_of_perception: moment().format('YYYY-MM-DD'),
                     total_perception: 0,

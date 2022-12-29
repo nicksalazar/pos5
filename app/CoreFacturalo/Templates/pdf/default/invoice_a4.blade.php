@@ -1286,19 +1286,6 @@
                 </td>
                 <td width="40%">
                     <table class="full-width" style="border-spacing: 0px 5px; border-collapse: separate;">
-                    @if ($document->document_type_id === '07')
-                        @if($document->total_taxed >= 0)
-                        <tr>
-                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">OP. GRAVADAS:</td>
-                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($document->total_taxed, 2) }}</td>
-                        </tr>
-                        @endif
-                    @elseif($document->total_taxed > 0)
-                        <tr>
-                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal Sin Impuestos:</td>
-                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total0+$total12+$total14+$total8, 2) }}</td>
-                        </tr>
-                    @endif
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 12%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total12, 2) }}</td>
@@ -1313,6 +1300,19 @@
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 0%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total0, 2) }}</td>
                         </tr>
+                        @if ($document->document_type_id === '07')
+                            @if($document->total_taxed >= 0)
+                            <tr>
+                                <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">OP. GRAVADAS:</td>
+                                <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($document->total_taxed, 2) }}</td>
+                            </tr>
+                            @endif
+                        @elseif($document->total_taxed > 0)
+                            <tr>
+                                <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal Sin Impuestos:</td>
+                                <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total0+$total12+$total14+$total8, 2) }}</td>
+                            </tr>
+                        @endif
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Descuentos:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($document->total_discount, 2) }}</td>
