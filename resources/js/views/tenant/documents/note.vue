@@ -690,6 +690,7 @@ export default {
                 date_of_issue: moment().format('YYYY-MM-DD'),
                 time_of_issue: moment().format('HH:mm:ss'),
                 customer_id: this.document.customer_id,
+                // JOINSOFTWARE
                 currency_type_id: this.document.currency_type_id,
                 purchase_order: null,
                 exchange_rate_sale: 0,

@@ -699,6 +699,7 @@ export default {
                 date_of_issue: moment().format('YYYY-MM-DD'),
                 time_of_issue: moment().format('HH:mm:ss'),
                 customer_id: null,
+                // JOINSOFTWARE
                 currency_type_id: null,
                 customer_address_id: null,
                 purchase_order: null,

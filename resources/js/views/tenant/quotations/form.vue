@@ -400,6 +400,7 @@
         async created() {
             this.loadConfiguration()
             this.$store.commit('setConfiguration', this.configuration)
+            //console.log("Config: ", this.configuration);
             await this.initForm()
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
@@ -608,6 +609,7 @@
                     date_of_issue: moment().format('YYYY-MM-DD'),
                     time_of_issue: moment().format('HH:mm:ss'),
                     customer_id: null,
+                    // JOINSOFTWARE
                     currency_type_id: null,
                     purchase_order: null,
                     exchange_rate_sale: 0,
