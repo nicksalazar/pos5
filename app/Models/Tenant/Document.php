@@ -160,7 +160,7 @@ class Document extends ModelTenant
         'invoice',
         'note',
         'payments',
-        'fee'
+        'fee',
     ];
     protected $fillable = [
         'user_id',

@@ -4,6 +4,8 @@ namespace App\Models\Tenant;
 
 use Modules\Finance\Models\GlobalPayment;
 use Modules\Finance\Models\PaymentFile;
+
+
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
 use Modules\Payment\Models\PaymentLink;
