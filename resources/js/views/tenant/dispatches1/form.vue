@@ -170,7 +170,9 @@
                         </div>
                         <div class="col-lg-2">
                             <div class="form-group" :class="{'has-danger': errors.origin}">
-                                <label class="control-label">Cantón</label>
+                                <!-- JOINSOFTWARE -->
+                                <!-- Cantón -> Parroquia -->
+                                <label class="control-label">Parroquia</label>
                                 <el-select v-model="form.origin.location_id" filterable>
                                     <el-option v-for="option in districtsOrigin" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                 </el-select>
@@ -216,7 +218,9 @@
                         </div>
                         <div class="col-lg-2">
                             <div class="form-group" :class="{'has-danger': errors.delivery}">
-                                <label class="control-label">Cantón</label>
+                                <!-- JOINSOFTWARE -->
+                                <!-- Cantón -> Parroquia -->
+                                <label class="control-label">Parroquia</label>
                                 <el-select v-model="form.delivery.location_id" filterable>
                                     <el-option v-for="option in districtsDelivery" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                 </el-select>
@@ -482,10 +486,10 @@
                     },
                     document_type_id: '09',
                     delivery: {
-                        country_id: 'PE'
+                        country_id: 'EC'
                     },
                     origin: {
-                        country_id: 'PE'
+                        country_id: 'EC'
                     },
                     number: '#',
                     items: [],

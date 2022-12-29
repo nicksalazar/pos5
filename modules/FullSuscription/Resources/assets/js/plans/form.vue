@@ -197,9 +197,11 @@
                                        class="text-right">
                                         SUBTOTAL 12%: {{ currency_type.symbol }} {{ fakeForm.total_taxed }}
                                     </p>
+                                    <!-- JOINSOFTWARE -->
+                                    <!-- IGV -> IVA -->
                                     <p v-if="fakeForm.total_igv > 0"
                                        class="text-right">
-                                        IGV: {{ currency_type.symbol }} {{ fakeForm.total_igv }}
+                                        IVA: {{ currency_type.symbol }} {{ fakeForm.total_igv }}
                                     </p>
                                     <h3 v-if="fakeForm.total > 0"
                                         class="text-right">

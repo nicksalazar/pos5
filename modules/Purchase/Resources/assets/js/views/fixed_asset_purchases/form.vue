@@ -163,7 +163,9 @@
                                 {{ currency_type.symbol }} {{ form.total_exonerated }}</p>
                             <p class="text-right" v-if="form.total_taxed > 0">SUBTOTAL 12%: {{ currency_type.symbol }}
                                 {{ form.total_taxed }}</p>
-                            <p class="text-right" v-if="form.total_igv > 0">IGV: {{ currency_type.symbol }}
+                            <!-- JOINSOFTWARE -->
+                            <!-- IGV -> IVA -->
+                            <p class="text-right" v-if="form.total_igv > 0">IVA: {{ currency_type.symbol }}
                                 {{ form.total_igv }}</p>
                             <h3 class="text-right" v-if="form.total > 0"><b>TOTAL COMPRAS: </b>{{
                                     currency_type.symbol

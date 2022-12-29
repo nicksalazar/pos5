@@ -26,6 +26,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- JOINSOFTWARE
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" :class="{'has-danger': errors.series}">
@@ -42,6 +43,7 @@
                             </div>
                         </div>
                     </div>
+                    -->
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" :class="{'has-danger': errors.customer_number}">
@@ -50,11 +52,21 @@
                                 <small class="form-control-feedback" v-if="errors.customer_number" v-text="errors.customer_number[0]"></small>
                             </div>
                         </div>
+                        <!-- JOINSOFTWARE
                         <div class="col-md-6">
                             <div class="form-group" :class="{'has-danger': errors.total}">
-                                <label class="control-label mt-2">Monto total<span class="text-danger"> *</span></label>
+                                <label class="control-label mt-2">Clave de acceso<span class="text-danger"> *</span></label>
                                 <el-input v-model="form.total"></el-input>
                                 <small class="form-control-feedback" v-if="errors.total" v-text="errors.total[0]"></small>
+                            </div>
+                        </div>
+                        -->
+                        <!-- JOINSOFTWARE -->
+                        <div class="col-md-6">
+                            <div class="form-group" :class="{'has-danger': errors.clave_SRI}">
+                                <label class="control-label mt-2">Clave de acceso<span class="text-danger"> *</span></label>
+                                <el-input v-model="form.clave_SRI"></el-input>
+                                <small class="form-control-feedback" v-if="errors.clave_SRI" v-text="errors.clave_SRI[0]"></small>
                             </div>
                         </div>
                     </div>
@@ -80,9 +92,13 @@
                         <td>{{ record.number }}</td>
                         <td class="text-right">{{ record.total }}</td>
                         <td class="text-right">
+                            <!-- JOINSOFTWARE
                             <a :href="record.download_xml">XML</a>
+                            -->
                             <a :href="record.download_pdf">PDF</a>
+                            <!-- JOINSOFTWARE
                             <a :href="record.download_cdr">CDR</a>
+                            -->
                             <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>-->
                             <!--<button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>-->
                         </td>
@@ -120,9 +136,12 @@
                     id: null,
                     document_type_id: '01',
                     customer_number: null,
-                    series: null,
-                    number: null,
-                    total: null,
+                    //JOINSOFTWARE
+                    //series: null,
+                    //number: null,
+                    //total: null,
+                    //JOINSOFTWARE
+                    clave_SRI: null,
                     date_of_issue: moment().format('YYYY-MM-DD'),
                 }
             },

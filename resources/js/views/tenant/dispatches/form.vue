@@ -267,7 +267,7 @@
                         </div>
                         <div class="col-lg-2">
                         <div class="form-group" :class="{'has-danger': errors.origin}">
-                        <label class="control-label">Cantón</label>
+                        <label class="control-label">Parroquia</label>
                         <el-select v-model="form.origin.location_id" filterable>
                         <el-option v-for="option in districtsOrigin" :key="option.id" :value="option.id" :label="option.description"></el-option>
                         </el-select>
@@ -320,7 +320,7 @@
                         </div>
                         <div class="col-lg-2">
                         <div class="form-group" :class="{'has-danger': errors.delivery}">
-                        <label class="control-label">Cantón<span class="text-danger"> *</span></label>
+                        <label class="control-label">Parroquia<span class="text-danger"> *</span></label>
                         <el-select v-model="form.delivery.location_id" filterable>
                         <el-option v-for="option in districtsDelivery" :key="option.id" :value="option.id" :label="option.description"></el-option>
                         </el-select>
@@ -844,12 +844,12 @@ export default {
                     license: null,
                 },
                 delivery: {
-                    country_id: 'PE',
+                    country_id: 'EC',
                     location_id: [],
                     address: null,
                 },
                 origin: {
-                    country_id: 'PE',
+                    country_id: 'EC',
                     location_id: [],
                     address: null,
                 },
