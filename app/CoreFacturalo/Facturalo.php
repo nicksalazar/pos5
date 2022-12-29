@@ -13,6 +13,8 @@ use App\Models\Tenant\DocumentItem;
 use App\Models\Tenant\Invoice;
 use App\Models\Tenant\Summary;
 use App\Models\Tenant\Establishment;
+use App\Models\Tenant\SriFormasPagos;
+use App\Models\Tenant\PaymentMethodType;
 use Mpdf\Config\FontVariables;
 use App\Models\Tenant\Dispatch;
 use App\Models\Tenant\Document;
@@ -156,6 +158,7 @@ class Facturalo
                 $this->document = Document::find($document->id);
                 $this->doc_type = '01';
                 break;
+
             case 'summary':
                 $document = Summary::create($inputs);
                 foreach ($inputs['documents'] as $row) {
@@ -428,8 +431,62 @@ class Facturalo
         $barcode = $qrCode->generarCodigoBarras($this->document->clave_SRI);
         return $barcode;
     }
+    //JOINSOFTWARE FORMAS DE PAGO SRI//
+    public function changePaymentSRI(){
+        //Log::error(json_encode($this->document));
+        if($this->document->fee){
+            foreach($this->document->fee as $pagoCred){
+
+                if($pagoCred->payment_method_type_id){
+                    Log::error($pagoCred->payment_method_type_id);
+                    $paymentMethod = PaymentMethodType::find($pagoCred->payment_method_type_id);
+                    Log::error(json_encode($paymentMethod));
+                    $PagoSri = SriFormasPagos::where('code',$paymentMethod->pago_sri)->get();
+    
+                    Log::error(json_encode($PagoSri));
+                    $pagoCred->sridesc = $PagoSri[0]->description;
+                    Log::error('metodo de pago: '.$PagoSri[0]->description);
+                }else{
+                    $pagoCred->sridesc = 'SIN UTILIZACION DEL SISTEMA FINANCIERO';
+                    Log::error('SIN MEDOTO DE PAGO DEFINIDO');
+                }
+                
+            }
+        }
+        if($this->document->payments){
+            foreach($this->document->payments as $pago){
+                Log::error($pago->payment_method_type_id);
+                $paymentMethod = PaymentMethodType::find($pago->payment_method_type_id);
+                Log::error(json_encode($paymentMethod));
+                $PagoSri = SriFormasPagos::where('code',$paymentMethod->pago_sri)->get();
+
+                Log::error(json_encode($PagoSri));
+                $pago->sridesc = $PagoSri[0]->description;
+                Log::error('metodo de pago: '.$PagoSri[0]->description);
+            }
+        }
+        foreach($this->document->fee as $pagoCred){
+
+            if($pagoCred->payment_method_type_id){
+                Log::error($pagoCred->payment_method_type_id);
+                $paymentMethod = PaymentMethodType::find($pagoCred->payment_method_type_id);
+                Log::error(json_encode($paymentMethod));
+                $PagoSri = SriFormasPagos::where('code',$paymentMethod->pago_sri)->get();
+
+                Log::error(json_encode($PagoSri));
+                $pagoCred->sridesc = $PagoSri[0]->description;
+                Log::error('metodo de pago: '.$PagoSri[0]->description);
+            }else{
+                $pagoCred->sridesc = 'SIN UTILIZACION DEL SISTEMA FINANCIERO';
+                Log::error('SIN MEDOTO DE PAGO DEFINIDO');
+            }
+            
+        }
+    }
 
     public function createPdf($document = null, $type = null, $format = null, $output = 'pdf') {
+
+        
 
         ini_set("pcre.backtrack_limit", "5000000");
         $template = new Template();
@@ -440,6 +497,8 @@ class Facturalo
         $this->document = ($document != null) ? $document : $this->document;
         $format_pdf = ($format != null) ? $format : $format_pdf;
         $this->type = ($type != null) ? $type : $this->type;
+
+        $this->changePaymentSRI();
 
         // dd($this->document);
         $base_pdf_template = Establishment::find($this->document->establishment_id)->template_pdf;

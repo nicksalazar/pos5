@@ -101,7 +101,7 @@
                         <el-button type="primary" icon="el-icon-plus" @click.prevent="showDialogAddItem = true">Agregar productos</el-button>
                     </div>
 
-                    <div class="col-md-12 mt-2" v-if="form.individual_items.length > 0">
+                    <div class="col-md-12 mt-2" v-if="form.individual_items != ''">
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -456,7 +456,9 @@ import ItemSetFormItem from './partials/item.vue'
                 // this.form.sale_unit_price_set = acum_sale_unit_price
 
             },
+            
             initForm() {
+                //console.log('currency type',this.config);
                 this.loading_submit = false,
                 this.errors = {}
                 this.form = {
@@ -470,7 +472,7 @@ import ItemSetFormItem from './partials/item.vue'
                     second_name: null,
                     unit_type_id: 'NIU',
                     // JOINSOFTWARE currency_type_id: 'PEN',
-                    currency_type_id: this.config.currency_type_id,
+                    currency_type_id: null,
                     sale_unit_price: 0,
                     purchase_unit_price: 0,
                     has_isc: false,

@@ -73,6 +73,7 @@
             'number_days',
             'is_credit',
             'is_cash',
+            'pago_sri',
         ];
 
         public const CASH_PAYMENT_ID = '01';
@@ -109,6 +110,7 @@
                     $row->is_cash = (bool)$row->is_cash;
                     $row->charge = (float)$row->charge;
                     $row->description = (string)$row->description;
+                    $row->pago_sri = (string)$row->pago_sri;
                     return $row;
                 });
         }

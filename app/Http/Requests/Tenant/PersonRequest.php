@@ -14,6 +14,7 @@ class PersonRequest extends FormRequest
 
     public function rules()
     {
+        //JOINSOFTWARE AJUSTES CAMPOS OBLOGATORIOS CLIENTES//
         $id = $this->input('id');
         $type = $this->input('type');
         return [
@@ -41,20 +42,22 @@ class PersonRequest extends FormRequest
             //     'required_if:type,"customers"',
             // ],
             'department_id' => [
-                'required_if:identity_document_type_id,"066"',
+                'required',
             ],
             'province_id' => [
-                'required_if:identity_document_type_id,"066"',
+                'required',
             ],
             'district_id' => [
-                'required_if:identity_document_type_id,"066"',
+                'required',
             ],
             'address' => [
-                'required_if:identity_document_type_id,"066"',
+                'required',
             ],
             'email' => [
-                'nullable',
-                'email',
+                'required',
+            ],
+            'telephone' => [
+                'required',
             ],
             'internal_code' => 'max:100'
         ];
