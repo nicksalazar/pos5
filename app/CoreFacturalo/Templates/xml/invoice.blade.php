@@ -115,12 +115,7 @@
             <pago>
                 <formaPago>{{ $pago->payment_method_type->pago_sri }}</formaPago>
                 <total>{{ $pago->payment }}</total>
-                @if($pago->payment_method_type_id == '10')
                 <plazo>0</plazo>
-                @endif
-                @if($pago->payment_method_type_id != '10')
-                <plazo>{{ $pago->payment_method_type_id->number_days }}</plazo>
-                @endif
                 <unidadTiempo>Dias</unidadTiempo>
             </pago>
         @endforeach
