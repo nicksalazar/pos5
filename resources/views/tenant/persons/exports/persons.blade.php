@@ -30,7 +30,9 @@
                                 <th>Ubigeo</th>
                                 <th>Provincia</th>
                                 <th>Ciudad</th>
-                                <th>Cantón</th>
+                                <!-- JOINSOFTWARE -->
+                                <!-- Cantón -> Parroquia -->
+                                <th>Parroquia</th>
                                 <th>Zona</th>
                                 <th>Vendedor</th>
                                 <th>Observacion</th>

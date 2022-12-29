@@ -29,7 +29,9 @@
                                 <th>Zona</th>
                                 <th>Tipo de cliente</th>
                                 <th>Provincia</th>
-                                <th>Cantón</th>
+                                <!-- JOINSOFTWARE -->
+                                <!-- Cantón -> Parroquia -->
+                                <th>Parroquia</th>
                                 <th class="">Total Factura</th>
 
                                 @for ($i = 1; $i <= $payment_count; $i++)

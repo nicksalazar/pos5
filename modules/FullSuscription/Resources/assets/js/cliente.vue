@@ -303,11 +303,11 @@
                                            v-text="errors.province_id[0]"></small>
                                 </div>
                             </div>
-                            <!-- Cantón -->
+                            <!-- Cantón -> Parroquia -->
                             <div class="col-md-3">
                                 <div :class="{'has-danger': errors.province_id}"
                                      class="form-group">
-                                    <label class="control-label">Cantón</label>
+                                    <label class="control-label">Parroquia</label>
                                     <el-select v-model="form.district_id"
                                                dusk="district_id"
                                                filterable

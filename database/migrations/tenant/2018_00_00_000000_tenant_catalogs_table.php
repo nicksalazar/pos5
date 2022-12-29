@@ -135,7 +135,7 @@ class TenantCatalogsTable extends Migration
         DB::table('cat_identity_document_types')->insert([
             ['id' => '0', 'active' => false,  'description' => 'CONSUMIDOR FINAL'],
             ['id' => '1', 'active' => true,  'description' => 'CÉDULA'],
-            ['id' => '4', 'active' => false,  'description' => 'CE'],
+            ['id' => '4', 'active' => true,  'description' => 'CE'],
             ['id' => '6', 'active' => true,  'description' => 'RUC'],
             ['id' => '7', 'active' => true,  'description' => 'Pasaporte'],
             ['id' => 'A', 'active' => false, 'description' => 'Ced. Diplomática de identidad'],
