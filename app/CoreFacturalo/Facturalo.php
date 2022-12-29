@@ -465,23 +465,6 @@ class Facturalo
                 Log::error('metodo de pago: '.$PagoSri[0]->description);
             }
         }
-        foreach($this->document->fee as $pagoCred){
-
-            if($pagoCred->payment_method_type_id){
-                Log::error($pagoCred->payment_method_type_id);
-                $paymentMethod = PaymentMethodType::find($pagoCred->payment_method_type_id);
-                Log::error(json_encode($paymentMethod));
-                $PagoSri = SriFormasPagos::where('code',$paymentMethod->pago_sri)->get();
-
-                Log::error(json_encode($PagoSri));
-                $pagoCred->sridesc = $PagoSri[0]->description;
-                Log::error('metodo de pago: '.$PagoSri[0]->description);
-            }else{
-                $pagoCred->sridesc = 'SIN UTILIZACION DEL SISTEMA FINANCIERO';
-                Log::error('SIN MEDOTO DE PAGO DEFINIDO');
-            }
-            
-        }
     }
 
     public function createPdf($document = null, $type = null, $format = null, $output = 'pdf') {
