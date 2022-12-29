@@ -286,9 +286,10 @@
                 <td class="text-right font-bold">{{ number_format($document->total_exonerated, 2) }}</td>
             </tr>
         @endif
+        <!-- JOINSOFTWARE -->
         @if($document->total_taxed > 0)
             <tr>
-                <td colspan="7" class="text-right font-bold">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
+                <td colspan="7" class="text-right font-bold">SUBTOTAL 12%: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold">{{ number_format($document->total_taxed, 2) }}</td>
             </tr>
         @endif
@@ -298,8 +299,9 @@
                 <td class="text-right font-bold">{{ number_format($document->total_discount, 2) }}</td>
             </tr>
         @endif
+        <!-- JOINSOFTWARE -->
         <tr>
-            <td colspan="7" class="text-right font-bold">IGV: {{ $document->currency_type->symbol }}</td>
+            <td colspan="7" class="text-right font-bold">IVA: {{ $document->currency_type->symbol }}</td>
             <td class="text-right font-bold">{{ number_format($document->total_igv, 2) }}</td>
         </tr>
         <tr>

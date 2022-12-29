@@ -400,6 +400,7 @@
         async created() {
             this.loadConfiguration()
             this.$store.commit('setConfiguration', this.configuration)
+            //console.log("Config: ", this.configuration);
             await this.initForm()
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
