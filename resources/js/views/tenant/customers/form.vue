@@ -122,7 +122,9 @@
                     <div class="col-md-4">
                         <div :class="{'has-danger': errors.province_id}"
                              class="form-group">
-                            <label class="control-label">Cantón</label>
+                             <!-- JOINSOFTWARE -->
+                            <!-- Cantón -> Parroquia -->
+                            <label class="control-label">Parroquia</label>
                             <el-select v-model="form.district_id"
                                        filterable>
                                 <el-option v-for="option in districts"

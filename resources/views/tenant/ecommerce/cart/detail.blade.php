@@ -170,7 +170,7 @@
 
                     <form>
                         <div class="form-group">
-                            <label class="control-label">Tipo Doc. Identidad <span class="text-danger">*</span></label>
+                            <label class="control-label">Tipo Doc. Identidad<span class="text-danger">*</span></label>
                             <select class="form-control" :disabled="formIdentity.identity_document_type_id == '6'"
                                 v-model="formIdentity.identity_document_type_id">
                                 <option v-for="option in identity_document_types" :value="option.id"

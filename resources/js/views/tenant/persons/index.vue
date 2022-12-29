@@ -53,7 +53,9 @@
                         <th v-if="columns.telephone.visible === true" class="text-center">Telefono</th>
                         <th v-if="columns.department.visible === true" class="text-center">Provincia</th>
                         <th v-if="columns.province.visible === true" class="text-center">Ciudad</th>
-                        <th v-if="columns.district.visible === true" class="text-center">Cantón</th>
+                        <!-- JOINSOFTWARE -->
+                        <!-- Cantón -> Parroquia -->
+                        <th v-if="columns.district.visible === true" class="text-center">Parroquia</th>
 
                         <th class="text-center" v-if="showAccumulatedPoints">Puntos acumulados</th>
 
