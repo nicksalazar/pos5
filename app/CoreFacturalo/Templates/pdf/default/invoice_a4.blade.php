@@ -46,19 +46,19 @@
     foreach($document->items as $item){
 
         if($item->affectation_igv_type_id === '10'){
-            $total12=$total12 = $item->total_value;
+            $total12=$total12 + $item->total_value;
             $totalIVA12= $totalIVA12 + $item->total_taxes;
         }
         if($item->affectation_igv_type_id === '11'){
-            $total8=$total8 = $item->total_value;
+            $total8=$total8 + $item->total_value;
             $totalIVA8= $totalIVA8 + $item->total_taxes;
         }
         if($item->affectation_igv_type_id === '12'){
-            $total14=$total14 = $item->total_value;
+            $total14=$total14 + $item->total_value;
             $totalIVA14= $totalIVA14 + $item->total_taxes;
         }
         if($item->affectation_igv_type_id === '30'){
-            $total0=$total0 = $item->total_value;
+            $total0=$total0 + $item->total_value;
             $totalIVA0= $totalIVA0 + $item->total_taxes;
         }
     }
