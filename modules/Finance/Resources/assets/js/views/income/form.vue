@@ -44,6 +44,7 @@
                                 <small class="form-control-feedback" v-if="errors.date_of_issue" v-text="errors.date_of_issue[0]"></small>
                             </div>
                         </div>
+                        <!-- JOINSOFTWARE
                          <div class="col-lg-2">
                             <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
                                 <label class="control-label">Tipo de cambio
@@ -55,6 +56,7 @@
                                 <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
                         </div>
+                         -->
                         <div class="col-lg-2">
                             <div class="form-group" :class="{'has-danger': errors.income_reason_id}">
                                 <label class="control-label">Motivo</label>

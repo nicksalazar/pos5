@@ -120,6 +120,7 @@
                                        v-text="errors.purchase_order[0]"></small>
                             </div>
                         </div>
+                        <!-- JOINSOFTWARE
                         <div class="col-md-2">
                             <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
                                 <label class="control-label">Tipo de cambio
@@ -132,7 +133,7 @@
                                 <small class="form-control-feedback" v-if="errors.exchange_rate_sale"
                                        v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col-md-4 custom-mt-button" v-if="isCreditNote && hasDiscounts">
                             <div class="form-group">
                                 <el-popover

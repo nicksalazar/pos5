@@ -80,6 +80,7 @@
             getData() {
                 this.$http.get(`/${this.resource}/records`)
                     .then(response => {
+                        //console.log("Data: ", response.data);
                         this.records = response.data.data
                     })
             },

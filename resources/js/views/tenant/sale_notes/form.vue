@@ -118,6 +118,7 @@
                                            v-text="errors.due_date[0]"></small>
                                 </div>
                             </div>
+                            <!-- JOINSOFTWARE
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
                                     <label class="control-label">Tipo de cambio
@@ -132,7 +133,7 @@
                                            v-text="errors.exchange_rate_sale[0]"></small>
                                 </div>
                             </div>
-
+                             -->
                             <div class="col-lg-2 col-md-2">
                                 <div class="form-group">
                                     <label class="control-label">

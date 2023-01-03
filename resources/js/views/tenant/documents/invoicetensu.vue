@@ -111,6 +111,7 @@
                                     <small class="form-control-feedback" v-if="errors.date_of_due" v-text="errors.date_of_due[0]"></small>
                                 </div>
                             </div>
+                            <!-- JOINSOFTWARE
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
                                     <label class="control-label">Tipo de cambio
@@ -121,7 +122,7 @@
                                     <el-input v-model="form.exchange_rate_sale"></el-input>
                                     <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-lg-2 mt-2 mb-2">
                                 <div class="form-group" > 
                                     <el-checkbox v-model="is_receivable" v-if="form.document_type_id=='03'" class=" font-weight-bold">¿Es venta por cobrar?</el-checkbox>
