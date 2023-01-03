@@ -217,7 +217,7 @@
                         // JOINSOFTWARE currency_type_id: 'PEN',
                         currency_type_id_target: this.config.currency_type_id,
                         factor: 1,
-                        date_of_exchange_rate: null,
+                        date_of_exchange_rate: moment().subtract(1, 'days').format('YYYY-MM-DD'),
                     },
                     payments: [],
                 }
