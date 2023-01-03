@@ -270,20 +270,24 @@ class Facturalo
     {
         $serie = null;
 
-        if($this->doc_type == 01){
+        if($this->doc_type == 01 || $this->doc_type == 04 ){
+
             $serie = str_pad(substr($this->document->series,1,3), '3', '0', STR_PAD_LEFT);
+            $estID = $this->document->user->establishment->code;
+            $establecimeinto = Establishment::find($this->document->establishment_id);
+            $this->clave = "" . date('dmY', strtotime($this->document->date_of_issue)) . "" .$this->doc_type. "" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".substr($estID,0,3)."".$serie. str_pad($this->document->number , '9', '0', STR_PAD_LEFT) . "" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
+            $this->digito_verificador_clave = $this->validar_clave($this->clave);
+            $this->clave_acceso = $this->clave . "" . $this->digito_verificador_clave . "";
+            $this->document->clave_SRI = $this->clave_acceso;
+            $this->document->update();
+
         }else{
-            $serie = str_pad(substr($this->document->series,2,2), '3', '0', STR_PAD_LEFT);
+            //$serie = str_pad(substr($this->document->series,2,2), '3', '0', STR_PAD_LEFT);
+            
         }
 
         //Log::info('ID ESTABLECIMIENTO :'.$this->document->user->establishment->code);
-        $estID = $this->document->user->establishment->code;
-        $establecimeinto = Establishment::find($this->document->establishment_id);
-        $this->clave = "" . date('dmY', strtotime($this->document->date_of_issue)) . "" .$this->doc_type. "" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".substr($estID,0,3)."".$serie. str_pad($this->document->number , '9', '0', STR_PAD_LEFT) . "" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
-        $this->digito_verificador_clave = $this->validar_clave($this->clave);
-        $this->clave_acceso = $this->clave . "" . $this->digito_verificador_clave . "";
-        $this->document->clave_SRI = $this->clave_acceso;
-        $this->document->update();
+       
         $template = new Template();
         $this->xmlUnsigned = XmlFormat::format($template->xml($this->type, $this->company, $this->document, $this->clave_acceso));
         $this->uploadFile($this->xmlUnsigned, 'unsigned');
