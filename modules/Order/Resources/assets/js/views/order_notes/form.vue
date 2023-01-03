@@ -122,7 +122,7 @@
                                            v-text="errors.currency_type_id[0]"></small>
                                 </div>
                             </div>
-                            <div class="col-lg-2">
+                            <!-- JOINSOFTWARE <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
                                     <label class="control-label">Tipo de cambio
                                         <el-tooltip class="item" effect="dark"
@@ -135,7 +135,7 @@
                                     <small class="form-control-feedback" v-if="errors.exchange_rate_sale"
                                            v-text="errors.exchange_rate_sale[0]"></small>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="col-lg-6">
                                 <div class="form-group" :class="{'has-danger': errors.observation}">

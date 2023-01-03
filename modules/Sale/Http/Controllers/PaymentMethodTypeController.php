@@ -24,10 +24,17 @@ class PaymentMethodTypeController extends Controller
 
     public function record($id)
     {
-        $record = PaymentMethodType::findOrFail($id);
-        $sri = SriFormasPagos::get();
-        $record['pago_sri_list'] = $sri;
-        return $record;
+        //JOINSOFTWARE
+        if ($id != 'join6v') {
+            $record = PaymentMethodType::findOrFail($id);
+            $sri = SriFormasPagos::get();
+            $record['pago_sri_list'] = $sri;
+            return $record;
+        } else {
+            $sri = SriFormasPagos::get();
+            $record['pago_sri_list'] = $sri;
+            return $record;
+        }
     }
 
     public function store(PaymentMethodTypeRequest $request)

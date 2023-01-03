@@ -127,6 +127,11 @@
                             this.form = response.data,
                             this.pago_sri_list = response.data.pago_sri_list
                         })
+                } else {
+                    this.$http.get(`/${this.resource}/record/join6v`)
+                        .then(response => {
+                            this.pago_sri_list = response.data.pago_sri_list
+                        })
                 }
             },
             submit() {
