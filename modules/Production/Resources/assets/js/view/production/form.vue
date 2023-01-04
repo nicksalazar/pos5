@@ -484,6 +484,9 @@
                             <tr>
                                 <th>Nombre</th>
                                 <th>Cantidad</th>
+                                <th>Unidad de medida</th>
+                                <th>Cantidad a descargar</th>
+                                <th>Unidad de medida</th>
                                 <th class="text-center">Almacen</th>
                             </tr>
                             </thead>
@@ -494,6 +497,12 @@
                                     <!-- {{ row.quantity }} -->
                                     <el-input-number v-model="row.quantity" :min="0.01" :step="1"></el-input-number>
                                 </th>
+                                <th>{{ row.individual_item.unit_type.description }}</th>
+                                <th>
+                                    <!-- {{ row.quantity }} -->
+                                    <el-input-number v-model="row.quantity" :min="0.01" :step="1"></el-input-number>
+                                </th>
+                                <th>{{ row.individual_item.unit_type.description }}</th>
                                 <th>
 
                                     <el-select v-model="row.warehouse_id"
@@ -579,6 +588,7 @@ export default {
         getTable() {
             this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
+                    console.log("Data: ", response.data);
                     let data = response.data
                     this.warehouses = data.warehouses
                     this.items = data.items
