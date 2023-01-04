@@ -142,6 +142,8 @@
                                 <th>Mez. F. de Fin</th>
                                 <th>Colaborador de mezcla</th>
                                 <th>Comentario</th>
+                                <th>Fecha de registro</th>
+                                <th>Estado</th>
                             </tr>
                             </thead>
                             <tbody>
