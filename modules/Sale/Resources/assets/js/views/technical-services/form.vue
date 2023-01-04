@@ -120,7 +120,8 @@
                                 </div>
                             </div>
                             -- >
-                            <div class="col-md-3 align-self-end">
+                            
+                            {{-- JOINSOFTWARE <div class="col-md-3 align-self-end">
                                 <div :class="{'has-danger': errors.exchange_rate_sale}"
                                      class="form-group">
                                     <label class="control-label">Tipo de cambio
@@ -136,7 +137,7 @@
                                            class="form-control-feedback"
                                            v-text="errors.exchange_rate_sale[0]"></small>
                                 </div>
-                            </div>
+                            </div> --}}
                             <! -- <div class="col-md-6">
                                 <div class="form-group" :class="{'has-danger': errors.prepayment}">
                                     <label class="control-label">Pago adelantado </label>
