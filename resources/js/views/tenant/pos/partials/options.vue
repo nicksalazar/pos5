@@ -170,7 +170,7 @@
                     return this.$message.error('El número es obligatorio')
                 }
 
-                window.open(`https://wa.me/51${this.form.customer_telephone}?text=${this.form.message_text}`, '_blank');
+                window.open(`https://wa.me/593${this.form.customer_telephone}?text=${this.form.message_text}`, '_blank');
 
             },
             someMethod(response){

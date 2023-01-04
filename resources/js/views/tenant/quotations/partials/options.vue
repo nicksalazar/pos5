@@ -595,7 +595,7 @@ export default {
             if (!this.form.customer_telephone) {
                 return this.$message.error('El número es obligatorio')
             }
-            window.open(`https://wa.me/51${this.form.customer_telephone}?text=${this.form.message_text}`, '_blank');
+            window.open(`https://wa.me/593${this.form.customer_telephone}?text=${this.form.message_text}`, '_blank');
         },
 
         validateCustomerRetention(identity_document_type_id) {

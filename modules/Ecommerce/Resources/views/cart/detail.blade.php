@@ -765,7 +765,7 @@
             },
             clickSendWhatsapp(order_id) {
 
-                window.open(`https://wa.me/51${this.phone_whatsapp}?text=Se ha generado un nuevo pedido con código nro. ${order_id}`, '_blank');
+                window.open(`https://wa.me/593${this.phone_whatsapp}?text=Se ha generado un nuevo pedido con código nro. ${order_id}`, '_blank');
 
             }
         }
