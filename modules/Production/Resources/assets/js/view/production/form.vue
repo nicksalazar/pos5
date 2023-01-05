@@ -62,6 +62,9 @@
                             <div :class="{'has-danger': errors.quantity}"
                                  class="form-group">
                                 <label class="control-label">Cantidad</label>
+                                <!-- JOINSOFTWARE
+                                    @change="handleChange($event)"
+                                -->
                                 <el-input-number
                                     v-model="form.quantity"
                                     :controls="false"
@@ -500,7 +503,12 @@
                                 <th>{{ row.individual_item.unit_type.description }}</th>
                                 <th>
                                     <!-- {{ row.quantity }} -->
-                                    <el-input-number v-model="row.quantity" :min="0.01" :step="1"></el-input-number>
+                                    <el-input-number v-if="form.quantity != 0" v-model="row.quantity * form.quantity" :step="1"></el-input-number>
+                                    <el-input-number v-else v-model="row.quantity" :step="1"></el-input-number>
+                                    
+                                    <!-- JOINSOFTWARE
+                                    <el-input-number v-model="quantityD" :step="1"></el-input-number>
+                                    -->
                                 </th>
                                 <th>{{ row.individual_item.unit_type.description }}</th>
                                 <th>
@@ -557,6 +565,8 @@ export default {
             precision: 2,
             items: [],
             machines: [],
+            // JOINSOFTWARE
+            //quantityD: 0,
         }
     },
     created() {
@@ -572,7 +582,7 @@ export default {
                 warehouse_id: null,
                 quantity: 0,
                 informative:false,
-
+                
 
                 agreed:0,
                 imperfect:0,
@@ -588,7 +598,7 @@ export default {
         getTable() {
             this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
-                    console.log("Data: ", response.data);
+                    //console.log("Data: ", response.data);
                     let data = response.data
                     this.warehouses = data.warehouses
                     this.items = data.items
@@ -596,6 +606,18 @@ export default {
                 })
 
         },
+        /* JOINSOFTWARE
+        handleChange(value) {
+            //console.log(value);
+            if (value != 0) {
+                let item = _.find(this.items, {'id': this.form.item_id})
+                this.supplies = item.supplies
+                this.quantityD = value * this.supplies.quantity
+            } else {
+                this.quantityD = this.supplies.quantity
+            }
+        },
+        */
         async searchRemoteItems(search) {
             this.loading_search = true;
             this.items = [];
