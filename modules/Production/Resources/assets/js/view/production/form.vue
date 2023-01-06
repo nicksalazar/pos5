@@ -62,14 +62,12 @@
                             <div :class="{'has-danger': errors.quantity}"
                                  class="form-group">
                                 <label class="control-label">Cantidad</label>
-                                <!-- JOINSOFTWARE
-                                    @change="handleChange($event)"
-                                -->
                                 <el-input-number
                                     v-model="form.quantity"
                                     :controls="false"
                                     :min="0"
                                     :precision="precision"
+                                    @change="handleChange($event)"
                                 ></el-input-number>
                                 <small
                                     v-if="errors.quantity"
@@ -486,9 +484,9 @@
                             <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <th>Cantidad</th>
-                                <th>Unidad de medida</th>
                                 <th>Cantidad a descargar</th>
+                                <th>Unidad de medida</th>
+                                <th>Cantidad</th>
                                 <th>Unidad de medida</th>
                                 <th class="text-center">Almacen</th>
                             </tr>
@@ -498,17 +496,17 @@
                                 <th>{{ row.individual_item.description }}</th>
                                 <th>
                                     <!-- {{ row.quantity }} -->
-                                    <el-input-number v-model="row.quantity" :min="0.01" :step="1"></el-input-number>
-                                </th>
-                                <th>{{ row.individual_item.unit_type.description }}</th>
-                                <th>
-                                    <!-- {{ row.quantity }} -->
-                                    <el-input-number v-if="form.quantity != 0" v-model="row.quantity * form.quantity" :step="1"></el-input-number>
-                                    <el-input-number v-else v-model="row.quantity" :step="1"></el-input-number>
+                                    <el-input-number v-if="form.quantity != 0 && form.quantity != null" v-model="row.quantity * form.quantity"></el-input-number>
+                                    <el-input-number v-else v-model="row.quantity"></el-input-number>
                                     
                                     <!-- JOINSOFTWARE
                                     <el-input-number v-model="quantityD" :step="1"></el-input-number>
                                     -->
+                                </th>
+                                <th>{{ row.individual_item.unit_type.description }}</th>
+                                <th>
+                                    <!-- {{ row.quantity }} -->
+                                    <el-input-number v-model="row.quantity" :min="0.01" :step="1"></el-input-number>
                                 </th>
                                 <th>{{ row.individual_item.unit_type.description }}</th>
                                 <th>
@@ -566,11 +564,10 @@ export default {
             items: [],
             machines: [],
             // JOINSOFTWARE
-            //quantityD: 0,
+            quantityD: 0,
         }
     },
     created() {
-
         this.getTable();
         this.initForm()
     },
@@ -582,7 +579,7 @@ export default {
                 warehouse_id: null,
                 quantity: 0,
                 informative:false,
-                
+
 
                 agreed:0,
                 imperfect:0,
@@ -596,9 +593,9 @@ export default {
 
         },
         getTable() {
+            //event.target.reset();
             this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
-                    //console.log("Data: ", response.data);
                     let data = response.data
                     this.warehouses = data.warehouses
                     this.items = data.items
@@ -606,18 +603,15 @@ export default {
                 })
 
         },
-        /* JOINSOFTWARE
+        //JOINSOFTWARE
         handleChange(value) {
             //console.log(value);
-            if (value != 0) {
-                let item = _.find(this.items, {'id': this.form.item_id})
-                this.supplies = item.supplies
-                this.quantityD = value * this.supplies.quantity
+            if (value > 0) {
+                this.quantityD = value
             } else {
-                this.quantityD = this.supplies.quantity
+                return this.$message.error('La cantidad debe ser mayor a 0');
             }
         },
-        */
         async searchRemoteItems(search) {
             this.loading_search = true;
             this.items = [];
@@ -628,7 +622,6 @@ export default {
             this.loading_search = false;
         },
         async submit() {
-
             if (this.form.quantity < 1) {
                 return this.$message.error('La cantidad debe ser mayor a 0');
             }
@@ -636,6 +629,11 @@ export default {
             this.loading_submit = true
 
             this.form.supplies = this.supplies
+            for (let i = 0; i < this.supplies.length; i++) {
+                this.supplies[i].quantity = this.form.supplies[i].quantity * this.quantityD
+            }
+            this.form.quantity = 1
+            //console.log("Supplies: ", this.supplies)
             await this.$http.post(`/${this.resource}/create`, this.form)
                 .then(response => {
                     if (response.data.success) {
@@ -664,7 +662,7 @@ export default {
             this.form.item_extra_data.color = null
             this.item = item
             this.supplies = item.supplies
-
+            console.log("Supplies2: ", this.supplies)
         },
 
 

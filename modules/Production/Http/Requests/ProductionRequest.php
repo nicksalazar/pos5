@@ -24,12 +24,15 @@
                     'required',
                 ],
                 'warehouse_id' => [ 'required', ],
-                'name' => [ 'required', ],
+                //'name' => [ 'required', ],
                 'date_start' => [ 'required', ],
                 'time_start' => [ 'required', ],
                 'date_end' => [ 'required', ],
                 'time_end' => [ 'required', ],
-                'machine_id' => [ 'required', ],
+                //'machine_id' => [ 'required', ],
+
+
+
                 // 'user_id',
                 // 'production_order',
 
