@@ -122,7 +122,7 @@
                                            v-text="errors.currency_type_id[0]"></small>
                                 </div>
                             </div>
-                            <div class="col-lg-2">
+                            <!-- JOINSOFTWARE <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
                                     <label class="control-label">Tipo de cambio
                                         <el-tooltip class="item" effect="dark"
@@ -135,7 +135,7 @@
                                     <small class="form-control-feedback" v-if="errors.exchange_rate_sale"
                                            v-text="errors.exchange_rate_sale[0]"></small>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="col-lg-6">
                                 <div class="form-group" :class="{'has-danger': errors.observation}">
@@ -237,7 +237,9 @@
                                     {{ currency_type.symbol }} {{ form.total_exonerated }}</p>
                                 <p class="text-right" v-if="form.total_taxed > 0">SUBTOTAL 12%: {{ currency_type.symbol }}
                                     {{ form.total_taxed }}</p>
-                                <p class="text-right" v-if="form.total_igv > 0">IGV: {{ currency_type.symbol }}
+                                <!-- JOINSOFTWARE -->
+                                <!-- IGV -> IVA -->
+                                <p class="text-right" v-if="form.total_igv > 0">IVA: {{ currency_type.symbol }}
                                     {{ form.total_igv }}</p>
                                 <h3 class="text-right" v-if="form.total > 0"><b>TOTAL A
                                     PAGAR: </b>{{ currency_type.symbol }} {{ form.total }}</h3>
@@ -517,7 +519,8 @@ export default {
                 date_of_issue: moment().format('YYYY-MM-DD'),
                 time_of_issue: moment().format('HH:mm:ss'),
                 customer_id: null,
-                currency_type_id: null,
+                // JOINSOFTWARE
+                currency_type_id: this.config.currency_type_id,
                 purchase_order: null,
                 exchange_rate_sale: 0,
                 total_prepayment: 0,

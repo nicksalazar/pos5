@@ -25,7 +25,8 @@
 <body>
 
 @if($company->logo)
-    <div class="text-center company_logo_box pt-5">
+{{-- JOINSOFTWARE -> pt-5 --}}
+    <div class="text-center company_logo_box">
         <img src="data:{{mime_content_type(public_path("storage/uploads/logos/{$company->logo}"))}};base64, {{base64_encode(file_get_contents(public_path("storage/uploads/logos/{$company->logo}")))}}" alt="{{$company->name}}" class="company_logo_ticket contain">
     </div>
 {{--@else--}}
@@ -33,7 +34,7 @@
         {{--<img src="{{ asset('logo/logo.jpg') }}" class="company_logo_ticket contain">--}}
     {{--</div>--}}
 @endif
-<table class="full-width">
+<table class="full-width mx-2">
     <tr>
         <td class="text-center"><h4>{{ $company->name }}</h4></td>
     </tr>
@@ -77,10 +78,10 @@
         <td class="text-center pt-3 border-top"><h5>{{ $document->document_type->description }}</h5></td>
     </tr>
     <tr>
-        <td class="text-center pb-3 border-bottom"><h5>{{ $document_number }}</h5></td>
+        <td class="text-center pb-3 border-bottom"><h5>No.{{ $document_number }}</h5></td>
     </tr>
 </table>
-<table class="full-width">
+<table class="full-width mx-2">
     <tr>
         <td width="" class="pt-3"><p class="desc-9">C. Acceso:</p></td>
         <td width="" class="pt-3 "><p class="desc-9">{{ $document->clave_SRI }}</p></td>
@@ -254,7 +255,7 @@
 
 @if ($document->guides)
 {{--<strong>Guías:</strong>--}}
-<table>
+<table class="full-width mx-2">
     @foreach($document->guides as $guide)
         <tr>
             @if(isset($guide->document_type_description))
@@ -271,8 +272,8 @@
 
 @if (count($document->reference_guides) > 0)
 <br/>
-<strong>Guias de remisión</strong>
-<table>
+<strong class="mx-2">Guias de remisión</strong>
+<table class="full-width mx-2">
     @foreach($document->reference_guides as $guide)
         <tr>
             <td>{{ $guide->series }}</td>
@@ -284,7 +285,7 @@
 @endif
 
 @if(!is_null($document_base))
-<table>
+<table class="full-width mx-2">
     <tr>
         <td class="desc">Documento Afectado:</td>
         <td class="desc">{{ $affected_document_number }}</td>
@@ -300,7 +301,7 @@
 </table>
 @endif
 
-<table class="full-width mt-10 mb-10">
+<table class="full-width mt-10 mb-10 mx-2">
     <thead class="">
     <tr>
         <th class="border-top-bottom desc-9 text-left">CANT.</th>
@@ -385,9 +386,10 @@
                 <td class="text-right font-bold desc">{{ number_format($document->total_free, 2) }}</td>
             </tr>
         @endif
+        <!-- JOINSOFTWARE -->
         @if($document->total_unaffected > 0)
             <tr>
-                <td colspan="4" class="text-right font-bold desc">OP. INAFECTAS: {{ $document->currency_type->symbol }}</td>
+                <td colspan="4" class="text-right font-bold desc">SUBTOTAL 0%: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold desc">{{ number_format($document->total_unaffected, 2) }}</td>
             </tr>
         @endif
@@ -397,9 +399,10 @@
                 <td class="text-right font-bold desc">{{ number_format($document->total_exonerated, 2) }}</td>
             </tr>
         @endif
+        <!-- JOINSOFTWARE -->
         @if($document->total_taxed > 0)
             <tr>
-                <td colspan="4" class="text-right font-bold desc">OP. GRAVADAS: {{ $document->currency_type->symbol }}</td>
+                <td colspan="4" class="text-right font-bold desc">SUBTOTAL 12%: {{ $document->currency_type->symbol }}</td>
                 <td class="text-right font-bold desc">{{ number_format($document->total_taxed, 2) }}</td>
             </tr>
         @endif
@@ -409,8 +412,9 @@
                 <td class="text-right font-bold desc">{{ number_format($document->total_plastic_bag_taxes, 2) }}</td>
             </tr>
         @endif
+        <!-- JOINSOFTWARE -->
         <tr>
-            <td colspan="4" class="text-right font-bold desc">IGV: {{ $document->currency_type->symbol }}</td>
+            <td colspan="4" class="text-right font-bold desc">IVA: {{ $document->currency_type->symbol }}</td>
             <td class="text-right font-bold desc">{{ number_format($document->total_igv, 2) }}</td>
         </tr>
         
@@ -475,7 +479,7 @@
         @endif
     </tbody>
 </table>
-<table class="full-width">
+<table class="full-width mx-2">
     <tr>
 
         @foreach(array_reverse((array) $document->legends) as $row)
@@ -518,12 +522,37 @@
 
         </td>
     </tr>
+    <!-- JOINSOFTWARE -->
+    <tr>
+        <td class="text-center desc" style="text-transform: uppercase;">
+            @if($company->rimpe_emp || $company->rimpe_np)
+            CONTRIBUYENTE RÉGIMEN RIMPE
+            @endif
+        </td>
+    </tr>
+    <!-- JOINSOFTWARE -->
+    <tr>
+        <td class="text-center desc" style="text-transform: uppercase;">
+            @if($company->obligado_contabilidad)
+            Obligado a llevar contabilidad: SI
+            @else
+            Obligado a llevar contabilidad: NO
+            @endif
+        </td>
+    </tr>
+    <!-- JOINSOFTWARE
+    <tr>
+        <td class="text-center desc"style="text-transform: uppercase;">
+            Clave de Acceso/AutorizaciÓn:
+        </td>
+    </tr>
     <tr>
         <td class="text-center pt-3"><img class="qr_code" src="data:image/png;base64, {{ $document->qr }}" /></td>
     </tr>
     <tr>
-        <td class="text-center desc">Código Hash: {{ $document->hash }}</td>
+        <td class="text-center desc">{{ $document->clave_SRI }}</td>
     </tr>
+    -->
     @if ($document->payment_condition_id === '01')
         @if($document->payment_method_type_id)
         <tr>
@@ -574,6 +603,20 @@
             <td class="desc">{{ $document->user->name }}</td>
         @endif
     </tr>
+    <!-- JOINSOFTWARE
+    <tr>
+        <td class="align-top">
+            <strong>Tlfs:</strong>
+        </td>
+    </tr>
+    <tr>
+        @if ($document->seller)
+            <td class="desc">{{ $document->seller->number }}</td>
+        @else
+            <td class="desc">{{ $document->user->number }}</td>
+        @endif
+    </tr>
+    -->
     @if ($document->terms_condition)
         <tr>
             <td class="desc">

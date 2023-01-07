@@ -15,7 +15,7 @@ class AddCurrencyToConfiguration extends Migration
     {
         Schema::table('configurations', function (Blueprint $table) {
             //
-            $table->string('currency_type_id')->default('PEN')->nullable()
+            $table->string('currency_type_id')->default('USD')->nullable()
                 ->comment('Id de cat_currency_types_id');
         });
     }

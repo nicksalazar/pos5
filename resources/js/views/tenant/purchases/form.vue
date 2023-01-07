@@ -134,6 +134,7 @@
                                        v-text="errors.currency_type_id[0]"></small>
                             </div>
                         </div>
+                        <!-- JOINSOFTWARE
                         <div class="col-lg-2">
                             <div :class="{'has-danger': errors.exchange_rate_sale}"
                                  class="form-group">
@@ -150,7 +151,7 @@
                                        class="form-control-feedback"
                                        v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="col-lg-2"
                              v-if="purchase_order_id === null">
@@ -513,7 +514,7 @@
 
                             <!-- descuentos -->
 
-                            <div class="row mt-1 mb-2"  v-if="form.total > 0">
+                            <div class="row mt-1 mb-2"  v-if="form.total_discount > 0">
 
                                 <div class="col-lg-10 float-right">
                                     <label class="float-right control-label">
@@ -1130,7 +1131,7 @@ export default {
                 time_of_issue: moment().format('HH:mm:ss'),
                 supplier_id: null,
                 payment_method_type_id: '01',
-                currency_type_id: null,
+                currency_type_id: this.config.currency_type_id,
                 purchase_order: null,
                 exchange_rate_sale: 0,
                 total_prepayment: 0,
@@ -1264,6 +1265,12 @@ export default {
                 if (row.affectation_igv_type_id === '10') {
                     total_taxed += parseFloat(row.total_value)
                 }
+                if (row.affectation_igv_type_id === '11') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '12') {
+                    total_taxed += parseFloat(row.total_value)
+                }
                 if (row.affectation_igv_type_id === '20') {
                     total_exonerated += parseFloat(row.total_value)
                 }
@@ -1273,7 +1280,7 @@ export default {
                 if (row.affectation_igv_type_id === '40') {
                     total_exportation += parseFloat(row.total_value)
                 }
-                if (['10', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
+                if (['10','11','12', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
                     total_free += parseFloat(row.total_value)
                 }
 

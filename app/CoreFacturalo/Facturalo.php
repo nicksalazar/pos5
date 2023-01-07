@@ -13,6 +13,8 @@ use App\Models\Tenant\DocumentItem;
 use App\Models\Tenant\Invoice;
 use App\Models\Tenant\Summary;
 use App\Models\Tenant\Establishment;
+use App\Models\Tenant\SriFormasPagos;
+use App\Models\Tenant\PaymentMethodType;
 use Mpdf\Config\FontVariables;
 use App\Models\Tenant\Dispatch;
 use App\Models\Tenant\Document;
@@ -156,6 +158,7 @@ class Facturalo
                 $this->document = Document::find($document->id);
                 $this->doc_type = '01';
                 break;
+
             case 'summary':
                 $document = Summary::create($inputs);
                 foreach ($inputs['documents'] as $row) {
@@ -169,6 +172,7 @@ class Facturalo
                     $document->documents()->create($row);
                 }
                 $this->document = Voided::find($document->id);
+                //Log::error('voided: '.json_encode($this->document));
                 break;
             case 'retention':
                 $document = Retention::create($inputs);
@@ -272,10 +276,10 @@ class Facturalo
             $serie = str_pad(substr($this->document->series,2,2), '3', '0', STR_PAD_LEFT);
         }
 
-        //Log::info('INFO ADICIONAL :'.$this->document->additional_information[0]);
-
+        //Log::info('ID ESTABLECIMIENTO :'.$this->document->user->establishment->code);
+        $estID = $this->document->user->establishment->code;
         $establecimeinto = Establishment::find($this->document->establishment_id);
-        $this->clave = "" . date('dmY', strtotime($this->document->date_of_issue)) . "" .$this->doc_type. "" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".$establecimeinto->code."".$serie. str_pad($this->document->number , '9', '0', STR_PAD_LEFT) . "" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
+        $this->clave = "" . date('dmY', strtotime($this->document->date_of_issue)) . "" .$this->doc_type. "" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".substr($estID,0,3)."".$serie. str_pad($this->document->number , '9', '0', STR_PAD_LEFT) . "" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
         $this->digito_verificador_clave = $this->validar_clave($this->clave);
         $this->clave_acceso = $this->clave . "" . $this->digito_verificador_clave . "";
         $this->document->clave_SRI = $this->clave_acceso;
@@ -427,8 +431,45 @@ class Facturalo
         $barcode = $qrCode->generarCodigoBarras($this->document->clave_SRI);
         return $barcode;
     }
+    //JOINSOFTWARE FORMAS DE PAGO SRI//
+    public function changePaymentSRI(){
+        //Log::error(json_encode($this->document));
+        if($this->document->fee){
+            foreach($this->document->fee as $pagoCred){
+
+                if($pagoCred->payment_method_type_id){
+                    Log::error($pagoCred->payment_method_type_id);
+                    $paymentMethod = PaymentMethodType::find($pagoCred->payment_method_type_id);
+                    Log::error(json_encode($paymentMethod));
+                    $PagoSri = SriFormasPagos::where('code',$paymentMethod->pago_sri)->get();
+    
+                    Log::error(json_encode($PagoSri));
+                    $pagoCred->sridesc = $PagoSri[0]->description;
+                    Log::error('metodo de pago: '.$PagoSri[0]->description);
+                }else{
+                    $pagoCred->sridesc = 'SIN UTILIZACION DEL SISTEMA FINANCIERO';
+                    Log::error('SIN MEDOTO DE PAGO DEFINIDO');
+                }
+                
+            }
+        }
+        if($this->document->payments){
+            foreach($this->document->payments as $pago){
+                Log::error($pago->payment_method_type_id);
+                $paymentMethod = PaymentMethodType::find($pago->payment_method_type_id);
+                Log::error(json_encode($paymentMethod));
+                $PagoSri = SriFormasPagos::where('code',$paymentMethod->pago_sri)->get();
+
+                Log::error(json_encode($PagoSri));
+                $pago->sridesc = $PagoSri[0]->description;
+                Log::error('metodo de pago: '.$PagoSri[0]->description);
+            }
+        }
+    }
 
     public function createPdf($document = null, $type = null, $format = null, $output = 'pdf') {
+
+        
 
         ini_set("pcre.backtrack_limit", "5000000");
         $template = new Template();
@@ -439,6 +480,8 @@ class Facturalo
         $this->document = ($document != null) ? $document : $this->document;
         $format_pdf = ($format != null) ? $format : $format_pdf;
         $this->type = ($type != null) ? $type : $this->type;
+
+        $this->changePaymentSRI();
 
         // dd($this->document);
         $base_pdf_template = Establishment::find($this->document->establishment_id)->template_pdf;
@@ -1155,6 +1198,7 @@ class Facturalo
     public function senderXmlSignedSummary()
     {
         $res = $this->senderXmlSigned();
+        
         if($res->isSuccess()) {
             $ticket = $res->getTicket();
             $this->updateTicket($ticket);

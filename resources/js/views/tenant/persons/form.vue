@@ -17,7 +17,7 @@
                             <div class="col-md-6">
                                 <div :class="{'has-danger': errors.identity_document_type_id}"
                                      class="form-group">
-                                    <label class="control-label">Tipo Doc. Identidad <span class="text-danger">*</span></label>
+                                    <label class="control-label">Tipo Doc. Identidad<span class="text-danger">*</span></label>
                                     <el-select v-model="form.identity_document_type_id"
                                                dusk="identity_document_type_id"
                                                filterable
@@ -356,11 +356,11 @@
                                            v-text="errors.province_id[0]"></small>
                                 </div>
                             </div>
-                            <!-- Distrito -> Cantón -->
+                            <!-- Distrito -> Cantón -> Parroquia -->
                             <div class="col-md-3">
                                 <div :class="{'has-danger': errors.province_id}"
                                      class="form-group">
-                                    <label class="control-label">Cantón</label>
+                                    <label class="control-label">Parroquia</label>
                                     <el-select v-model="form.district_id"
                                                dusk="district_id"
                                                filterable

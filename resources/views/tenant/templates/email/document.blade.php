@@ -121,7 +121,11 @@
                 <img alt="logo" src="{{ asset('logo/logo2.png') }}" width="70%" height="100%">
             </div>
             <div class="fdiv">
-                <h3 id="title">{{ $company->name }}</h3>
+                @if($document->customer)
+                <h3 id="title">{{ $document->customer->name }}</h3>
+                @else
+                <h3 id="title">{{ $document->supplier->name }}</h3>
+                @endif
                 <h3 id="title">Has recibido un Documento Electrónico de</h3>
                 @if($company->logo)
                 <!--<img src="data:{{mime_content_type(public_path("storage/uploads/logos/{$company->logo}"))}};base64, {{base64_encode(file_get_contents(public_path("storage/uploads/logos/{$company->logo}")))}}" alt="{{$company->name}}" class="company_logo" style="max-width: 150px;">
@@ -132,7 +136,7 @@
                 <img alt="logo" src="{{ asset('logo/logo.jpg') }}" width="50px" height="50px">
                 @endif
                 <hr class="solid">
-                <h3>DOC {{ $document_number }}</h3>
+                <h3>{{ $document->document_type->description }} {{ $document_number }}</h3>
             </div>
             <div class="sdiv">
                 <h6 id="value1">Fecha Emisión: {{$document->date_of_issue->format('m-d-Y')}}</h6>

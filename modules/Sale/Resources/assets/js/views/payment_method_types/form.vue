@@ -18,6 +18,30 @@
                         </div>
                     </div>
                     <div class="col-md-3">
+                        <div class="form-group" :class="{'has-danger': errors.pago_sri}">
+                            <label class="control-label">Tipo pago SRI</label>
+
+                            <el-select
+                                v-model="form.pago_sri"
+                                clearable
+                                placeholder=""
+                            >
+                                <el-option
+                                    v-for="of in pago_sri_list"
+                                    :key="of.code"
+                                    :value="of.code"
+                                    :label="of.description"
+                                ></el-option>
+                            </el-select>
+
+                            <small
+                                class="form-control-feedback"
+                                v-if="errors.pago_sri"
+                                v-text="errors.pago_sri[0]"
+                            ></small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.is_credit}">
                             <label class="control-label">Tipo de pago</label>
 
@@ -73,6 +97,7 @@
                         'name': 'Crédito',
                     }
                 ],
+                pago_sri_list:[],
                 resource: 'payment-method-types',
                 errors: {},
                 form: {},
@@ -90,6 +115,7 @@
                     description: null,
                     is_credit: 0,
                     number_days: 0,
+                    pago_sri:null,
                 }
             },
             create() {
@@ -97,7 +123,14 @@
                 if (this.recordId) {
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
-                            this.form = response.data
+                            console.log(response.data)
+                            this.form = response.data,
+                            this.pago_sri_list = response.data.pago_sri_list
+                        })
+                } else {
+                    this.$http.get(`/${this.resource}/record/join6v`)
+                        .then(response => {
+                            this.pago_sri_list = response.data.pago_sri_list
                         })
                 }
             },

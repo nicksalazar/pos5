@@ -231,7 +231,7 @@ $total_array_chunk = count($array_chunk);
                     @endif
                         @if(!empty($establishment_department)) Provincia: {{$establishment_department}}, @endif
                         @if(!empty($establishment_province)) Ciudad: {{$establishment_province}}, @endif
-                        @if(!empty($establishment_district)) Cantón: {{$establishment_district}} @endif
+                        @if(!empty($establishment_district)) Parroquia: {{$establishment_district}} @endif
                     <br>
                     @if(!empty($establishment_urbanization))Urbanización: {{ $establishment_urbanization }},  @endif
                         @if(!empty($establishment_address))Dirección: {{ $establishment_address }} <br> @endif

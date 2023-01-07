@@ -436,12 +436,12 @@
                     packages_number: null,
                     container_number: null,
                     delivery: {
-                        country_id: 'PE',
+                        country_id: 'EC',
                         location_id: [],
                         address: null,
                     },
                     origin: {
-                        country_id: 'PE',
+                        country_id: 'EC',
                         location_id: [],
                         address: null,
                     },

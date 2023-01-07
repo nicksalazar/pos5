@@ -274,7 +274,9 @@
 
     //$path_style = app_path('CoreFacturalo'.DIRECTORY_SEPARATOR.'Templates'.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.'style.css');
     $document_base = $document->note;
+    //JOINSOFTWARE
     $establishment2 = $document_base->affected_document->establishment->code;
+    //JOINSOFTWARE
     $document_number = $document->establishment->code.substr($document->series, 1).''.str_pad($document->number, 9, '0', STR_PAD_LEFT);
     $document_type_description_array = [
         '01' => 'FACTURA',
@@ -291,7 +293,7 @@
     $accounts = \App\Models\Tenant\BankAccount::where('show_in_documents', true)->get();
 
     if($document_base) {
-
+        //JOINSOFTWARE
         $affected_document_number = ($document_base->affected_document) ? $establishment2.substr($document_base->affected_document->series, 1).''.str_pad($document_base->affected_document->number, 9, '0', STR_PAD_LEFT) : $document_base->data_affected_document->series.'-'.str_pad($document_base->data_affected_document->number, 8, '0', STR_PAD_LEFT);
 
     } else {
@@ -328,19 +330,23 @@
     foreach($document->items as $item){
 
         if($item->affectation_igv_type_id === '10'){
-            $total12=$total12 = $item->total_value;
+            //JOINSOFTWARE
+            $total12=$total12 + $item->total_value;
             $totalIVA12= $totalIVA12 + $item->total_taxes;
         }
         if($item->affectation_igv_type_id === '11'){
-            $total8=$total8 = $item->total_value;
+            //JOINSOFTWARE
+            $total8=$total8 + $item->total_value;
             $totalIVA8= $totalIVA8 + $item->total_taxes;
         }
         if($item->affectation_igv_type_id === '12'){
-            $total14=$total14 = $item->total_value;
+            //JOINSOFTWARE
+            $total14=$total14 + $item->total_value;
             $totalIVA14= $totalIVA14 + $item->total_taxes;
         }
         if($item->affectation_igv_type_id === '30'){
-            $total0=$total0 = $item->total_value;
+            //JOINSOFTWARE
+            $total0=$total0 + $item->total_value;
             $totalIVA0= $totalIVA0 + $item->total_taxes;
         }
     }
@@ -1182,7 +1188,7 @@
                                 <td style="text-transform: uppercase; background: #eaeaea; padding-left: 15px; padding-right: 15px; padding-bottom: 60px; padding-top: 15px;">
                                     <strong>Emisor: </strong>{{ $company->name }}<br></br>
                                     <strong>RUC: </strong>{{ $company->number }}<br></br>
-                                    <strong>Matriz: </strong> <h7 style="text-transform: uppercase;">{{ ($establishment->address !== '-')? $establishment->address : '' }}<!-- JOINSOFTWARE {{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}-->{{ ($establishment->province_id !== '-')? /* JOINSOFTWARE ', '.*/$establishment->province->description : '' }}{{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}</h7><br></br>
+                                    <strong>Matriz: </strong> <h7 style="text-transform: uppercase;">{{ ($establishment->address !== '-')? $establishment->address : ', ' }}<!-- JOINSOFTWARE {{ ($establishment->district_id !== '-')? ', '.$establishment->district->description : '' }}-->{{ ($establishment->province_id !== '-')? ', '.$establishment->province->description : '' }}{{ ($establishment->department_id !== '-')? '- '.$establishment->department->description : '' }}</h7><br></br>
                                     <strong>Correo: </strong>{{ ($establishment->email !== '-')? ''.$establishment->email : '' }}<br></br>
                                     <strong>Teléfono: </strong>{{ ($establishment->telephone !== '-')? ''.$establishment->telephone : '' }}<br></br>
                                     @if($company->obligado_contabilidad)
@@ -1295,7 +1301,7 @@
                         {{ $document_base->affected_document->date_of_issue->format('m-d-Y') }}
                     </td>
                 </tr>
-                <!--
+                <!-- JOINSOFTWARE
                 <tr>
                     <td>
                         <strong>TIPO DE NOTA: </strong>
@@ -1324,7 +1330,7 @@
                 <th class="text-center py-2 pl-4" width="10%">CANT.</th>
                 <th class="text-center py-2" width="8%">UNIDAD</th>
                 <th class="text-left py-2">DESCRIPCIÓN</th>
-                <th class="text-left py-2">MODELO</th>
+                <th class="text-left py-2">MODELO/REF</th>
                 <th class="text-center py-2" width="8%">LOTE</th>
                 <th class="text-center py-2" width="8%">SERIE</th>
                 <th class="text-right py-2" width="12%">P.UNIT</th>
@@ -1407,13 +1413,15 @@
                         @endisset
 
                     </td>
-
+                    <!-- JOINSOFTWARE -->
+                    <td class="text-right align-top">{{ number_format($row->unit_value, 2) }}</td>
+                    <!-- JOINSOFTWARE
                     @if ($configuration_decimal_quantity->change_decimal_quantity_unit_price_pdf)
                         <td class="text-right align-top">{{ $row->generalApplyNumberFormat($row->unit_price, $configuration_decimal_quantity->decimal_quantity_unit_price_pdf) }}</td>
                     @else
                         <td class="text-right align-top">{{ number_format($row->unit_price, 2) }}</td>
                     @endif
-                    
+                    -->
                     <td class="text-right align-top">
                         @if($row->discounts)
                             @php
@@ -1427,7 +1435,7 @@
                         0
                         @endif
                     </td>
-                    <td class="text-right align-top pr-4">{{ number_format($row->total, 2) }}</td>
+                    <td class="text-right align-top pr-4">{{ number_format($row->total_value, 2) }}</td>
                 </tr>
                 <tr style="background: #f7f7f5;">
                     <td colspan="9"></td>
@@ -1569,7 +1577,6 @@
                             </thead>
                             <tbody>
                                 <tr style="background: #f7f7f5;">
-                                    <td style="text-align: start; padding-left: 15px; padding-right: 15px;">Descripción</td>
                                     @if($document->additional_information[0])
                                     <td style="text-align: start; padding-left: 15px; padding-right: 15px;">{{ $document->additional_information[0]}}</td>
                                     @endif
@@ -1598,14 +1605,10 @@
                 </td>
                 <td width="40%">
                     <table class="full-width" style="border-spacing: 0px 5px; border-collapse: separate;">
-                    @if ($document->document_type_id === '07')
-                        @if($document->total_taxed >= 0)
                         <tr>
-                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal Sin Impuestos:</td>
-                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total0+$total12+$total14+$total8, 2) }}</td>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 0%:</td>
+                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total0, 2) }}</td>
                         </tr>
-                        @endif
-                    @endif
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 12%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total12, 2) }}</td>
@@ -1616,16 +1619,21 @@
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total14, 2) }}</td>
                         </tr>
                         -->
-                        <tr>
-                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal 0%:</td>
-                            <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total0, 2) }}</td>
-                        </tr>
+                        @if ($document->document_type_id === '07')
+                            @if($document->total_taxed >= 0)
+                            <tr>
+                                <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Subtotal Sin Impuestos:</td>
+                                <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($total0+$total12+$total14+$total8, 2) }}</td>
+                            </tr>
+                            @endif
+                        @endif
                         <tr>
                             <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">Descuentos:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}{{ number_format($document->total_discount, 2) }}</td>
                         </tr>
+                        <!-- JOINSOFTWARE -->
                         <tr>
-                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">ICE:</td>
+                            <td style="padding-left: 15px; padding-right: 15px; background: #f7f7f5;">IVA 0%:</td>
                             <td class="text-right" style="padding-left: 15px; padding-right: 15px; background: #eaeaea;">{{ $document->currency_type->symbol }}0.00</td>
                         </tr>
                         <tr>

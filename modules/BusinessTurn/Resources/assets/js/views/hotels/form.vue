@@ -24,7 +24,7 @@
 
                     <div class="col-md-6">
                         <div class="form-group" :class="{'has-danger': errors.identity_document_type_id}">
-                            <label class="control-label">Tipo Doc. Identidad <span class="text-danger">*</span></label>
+                            <label class="control-label">Tipo Doc. Identidad<span class="text-danger">*</span></label>
                             <el-select v-model="identity_document_type_id" filterable  popper-class="el-select-identity_document_type" dusk="identity_document_type_id" >
                                 <el-option v-for="option in identity_document_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
                             </el-select>

@@ -47,13 +47,14 @@
                             <small class="form-control-feedback" v-if="errors.currency_type_id" v-text="errors.currency_type_id[0]"></small>
                         </div>
                     </div>
+                    <!-- JOINSOFTWARE
                     <div class="col-lg-3">
                         <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
                             <label class="control-label">Tipo de cambio</label>
                             <el-input v-model="form.exchange_rate_sale" @input="changeExchangeRateSale"></el-input>
                             <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-lg-3">
                         <div class="form-group" :class="{'has-danger': errors.total_document}">
                             <label class="control-label">Total comprobante</label>
@@ -205,7 +206,8 @@
                     series: null,
                     number: null,
                     date_of_issue: moment().subtract(1, 'days').format('YYYY-MM-DD'),
-                    currency_type_id: null,
+                    // JOINSOFTWARE
+                    currency_type_id: this.config.currency_type_id,
                     total_document: 0,
                     date_of_retention: moment().subtract(1, 'days').format('YYYY-MM-DD'),
                     total_retention: 0,
