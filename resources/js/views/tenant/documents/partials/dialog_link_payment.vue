@@ -341,7 +341,7 @@
 
                 const text = `Su link de pago ha sido generado correctamente, puede revisarlo en: ${this.form.user_payment_link}`
 
-                window.open(`https://wa.me/51${this.form_utilities.customer_telephone}?text=${text}`, '_blank');
+                window.open(`https://wa.me/593${this.form_utilities.customer_telephone}?text=${text}`, '_blank');
 
             },
             showInputEmail(){

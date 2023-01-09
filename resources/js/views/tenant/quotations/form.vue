@@ -111,6 +111,7 @@
                                     <small class="form-control-feedback" v-if="errors.currency_type_id" v-text="errors.currency_type_id[0]"></small>
                                 </div>
                             </div>
+                            <!-- JOINSOFTWARE
                             <div class="col-lg-2">
                                 <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
                                     <label class="control-label">Tipo de cambio
@@ -121,7 +122,7 @@
                                     <el-input v-model="form.exchange_rate_sale"></el-input>
                                     <small class="form-control-feedback" v-if="errors.exchange_rate_sale" v-text="errors.exchange_rate_sale[0]"></small>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-12">
                                 <div class="row">
                                     <div class="form-group col-6 col-md-2">
@@ -400,6 +401,7 @@
         async created() {
             this.loadConfiguration()
             this.$store.commit('setConfiguration', this.configuration)
+            //console.log("Config: ", this.configuration);
             await this.initForm()
             await this.$http.get(`/${this.resource}/tables`)
                 .then(response => {

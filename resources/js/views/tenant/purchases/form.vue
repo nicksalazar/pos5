@@ -134,6 +134,7 @@
                                        v-text="errors.currency_type_id[0]"></small>
                             </div>
                         </div>
+                        <!-- JOINSOFTWARE
                         <div class="col-lg-2">
                             <div :class="{'has-danger': errors.exchange_rate_sale}"
                                  class="form-group">
@@ -150,7 +151,7 @@
                                        class="form-control-feedback"
                                        v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="col-lg-2"
                              v-if="purchase_order_id === null">
@@ -1130,7 +1131,7 @@ export default {
                 time_of_issue: moment().format('HH:mm:ss'),
                 supplier_id: null,
                 payment_method_type_id: '01',
-                currency_type_id: null,
+                currency_type_id: this.config.currency_type_id,
                 purchase_order: null,
                 exchange_rate_sale: 0,
                 total_prepayment: 0,

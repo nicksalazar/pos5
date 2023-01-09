@@ -128,11 +128,9 @@
                             this.form = response.data,
                             this.pago_sri_list = response.data.pago_sri_list
                         })
-                }else{
-                    console.log(`/${this.resource}/records/`)
-                    this.$http.get(`/${this.resource}/records/`)
+                } else {
+                    this.$http.get(`/${this.resource}/record/join6v`)
                         .then(response => {
-                            console.log(response.data)
                             this.pago_sri_list = response.data.pago_sri_list
                         })
                 }
