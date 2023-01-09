@@ -61,8 +61,8 @@
             //'05', // Factura a 30 días
             //'06', // Tarjeta crédito visa
             //'07', // Contado contraentrega
-            '08', // A 30 días
-            '09', // Crédito
+            //'08', // A 30 días
+            //'09', // Crédito
             // '10', // Contado
         ];
         protected $fillable = [
@@ -98,7 +98,8 @@
          */
         public static function getPaymentMethodTypes($exclude_method_types_id = [])
         {
-            $exclude_method_types_id = array_merge(['08', '09'], $exclude_method_types_id);
+            //$exclude_method_types_id = array_merge(['08', '09'], $exclude_method_types_id);
+            $exclude_method_types_id = $exclude_method_types_id;
             return self::whereNotIn('id', $exclude_method_types_id)
                 ->get()
                 ->transform(function ($row) {
