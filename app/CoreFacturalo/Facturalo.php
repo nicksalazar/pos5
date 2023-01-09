@@ -914,7 +914,7 @@ class Facturalo
                     'state_type_id' => self::OBSERVED
                 ]);
                 $code = 300;
-                $mensaje = 'DOCUMENTO EN PROCESO'
+                $mensaje = 'DOCUMENTO EN PROCESO';
 
             }
             else{
