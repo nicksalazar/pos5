@@ -13,8 +13,8 @@ class TenantChangeSriFormasPago05 extends Migration
      */
     public function up()
     {
-        DB::connection('tenant')->table('payment_method_types')->where('description', 'Crédito 30 días')->delete();
-        DB::connection('tenant')->table('payment_method_types')->where('description', 'Factura a 30 días')->update(['description' => 'Crédito 30 días']);
+        DB::connection('tenant')->table('payment_method_types')->where('description', 'Factura a 30 días')->update(['description' => 'Crédito 120 días']);
+        DB::connection('tenant')->table('payment_method_types')->where('description', 'Crédito 120 días')->update(['number_days' => 120]);
     }
 
     /**
