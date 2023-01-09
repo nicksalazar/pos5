@@ -58,7 +58,7 @@ class Firma {
                 $certf = openssl_x509_parse($x509cert);
                 $subject = $certf['subject']['CN'];
                 $aux = null;
-
+                
                 if (array_key_exists('O', $certf['subject'])) {
                     $certificante = $certf['subject']['O'];
 
@@ -87,9 +87,6 @@ class Firma {
                         $this->certificate = $x509cert;
                         $this->certData = $certf;
                     } else {
-
-
-
 
                         $this->certificate = $x509cert;
                         $this->certData = $certf;

@@ -155,7 +155,7 @@
                 </div>
                 <div class="row m-0 p-0 h-25 d-flex align-items-center bg-white">
                     <div class="col-lg-6">
-                        <button :disabled="button_payment && payment_method_type_id != '09'"
+                        <button :disabled="button_payment"
                                 class="btn btn-block btn-primary"
                                 @click="clickPayment">PAGAR
                         </button>
@@ -240,10 +240,10 @@
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <div :class="{'has-danger': difference < 0}"
+                                    <div :class="{'has-danger': difference < 0 || difference > 0}"
                                          class="form-group">
                                         <label class="control-label"
-                                               v-text="(difference <0) ? 'Faltante' :'Vuelto'"></label>
+                                               v-text="(difference < 0) ? 'Faltante' :'Vuelto'"></label>
                                         <!-- <el-input v-model="difference" :disabled="true">
                                             <template slot="prepend">{{currencyTypeActive.symbol}}</template>
                                         </el-input> -->
@@ -600,7 +600,7 @@ export default {
             amount: 0,
             enter_amount: 0,
             difference: 0,
-            button_payment: false,
+            button_payment: true,
             input_item: '',
             form_payment: {},
             series: [],
@@ -1087,11 +1087,13 @@ export default {
             if (isNaN(this.difference)) {
                 this.button_payment = true
                 this.difference = "-"
-            } else if (this.difference >= 0) {
-                this.button_payment = false
+            } else if (this.difference > 0 || this.difference < 0) {
+                //JOINSOFTWARE
+                console.log('la diferencia de pago es de : ',this.difference)
+                this.button_payment = true
                 this.difference = this.amount - this.form.total
             } else {
-                this.button_payment = true
+                this.button_payment = false
             }
             this.difference = _.round(this.difference, 2)
 
@@ -1118,16 +1120,17 @@ export default {
 
             this.difference = this.amount - this.form.total
             if(this.payment_method_type_id == '09') {
-                this.button_payment = false
+                this.button_payment = true
             }
             else if (isNaN(this.difference)) {
                 this.button_payment = true
                 this.difference = "-"
-            } else if (this.difference >= 0) {
-                this.button_payment = false
+            } else if (this.difference > 0 || this.difference < 0) {
+                console.log('la diferencia de pago es de input: ',this.difference)
+                this.button_payment = true
                 this.difference = this.amount - this.form.total
             } else {
-                this.button_payment = true
+                this.button_payment = false
             }
             this.difference = _.round(this.difference, 2)
             // this.form_payment.payment = this.amount
