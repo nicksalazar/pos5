@@ -187,6 +187,7 @@
                 this.document_types = response.data.document_types
                 this.currency_types = response.data.currency_types
                 this.retention_types = response.data.retention_types
+                this.config = response.data.config
             })
         },
         methods: {
@@ -200,6 +201,7 @@
             },
             initForm() {
                 this.errors = {}
+                console.log('DATA: ',this.config)
                 this.form = {
                     document_type_id: null,
                     document_type_description:null,
@@ -217,7 +219,7 @@
                     exchange_rate: {
                         currency_type_id_source: null,
                         // JOINSOFTWARE currency_type_id: 'PEN',
-                        currency_type_id_target: this.config.currency_type_id,
+                        currency_type_id_target: null,
                         factor: 1,
                         date_of_exchange_rate: moment().subtract(1, 'days').format('YYYY-MM-DD'),
                     },
