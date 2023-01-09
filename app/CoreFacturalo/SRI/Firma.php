@@ -58,7 +58,7 @@ class Firma {
                 $certf = openssl_x509_parse($x509cert);
                 $subject = $certf['subject']['CN'];
                 $aux = null;
-                
+
                 if (array_key_exists('O', $certf['subject'])) {
                     $certificante = $certf['subject']['O'];
 
@@ -102,10 +102,10 @@ class Firma {
             } else
                 return array('error' => true, 'mensaje' => "no se puede leer contenido del archivo p12");
 
-            
+
             $this->publicKey = openssl_get_publickey($this->certificate);
 
-      
+
             if ($this->publicKey === null || $this->publicKey === false)
                 return array('error' => true, 'mensaje' => "no se pudo acceder a la clave publica del certificado");
 
@@ -121,7 +121,7 @@ class Firma {
 
             $fecha_actual = strtotime(date("Y-m-d H:i:s", time()));
             $fecha_entrada = strtotime(date("Y-m-d H:i:s", $this->certData['validTo_time_t']));
-      
+
             if ($fecha_actual > $fecha_entrada)
                 return array('error' => true, 'mensaje' => "El certificado con el que intenta firmar el comprobante esta expirado\nfavor actualize su certificado digital con la Autoridad Certificadora");
 
@@ -165,11 +165,11 @@ class Firma {
 
             $aux = 'openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1';
             //ejecutar comando openssl en windows//
-            $salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            //$salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
             //servidor linux ejecutar comando openssl ///
-            //$salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            $salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
 
-            
+
             if (strpos($salida, 'verified OK') !== false) {
 
                 $pemChain = file_get_contents($nombreKey);
@@ -182,7 +182,7 @@ class Firma {
 
                     $this->privateKey = openssl_get_privatekey($pkey);
 
-                    //var_dump($pkey);Die;     
+                    //var_dump($pkey);Die;
                     //$estado = openssl_x509_check_private_key($this->certificate, $this->privateKey);
 
                     if (openssl_x509_check_private_key($this->certificate, $this->privateKey)) {
