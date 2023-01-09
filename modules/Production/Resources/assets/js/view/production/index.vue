@@ -128,6 +128,7 @@
                                 <th>Cód. Interno</th>
                                 <th>Tipo de proceso</th>
                                 <th>Prod. F. de inicio</th>
+                                <th>Estado</th>
                                 <th>Prod. F. de Fin</th>
                                 <th>Colaborador de producción</th>
                                 <th>Cantidad</th>
@@ -143,7 +144,6 @@
                                 <th>Colaborador de mezcla</th>
                                 <th>Comentario</th>
                                 <th>Fecha de registro</th>
-                                <th>Estado</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -153,6 +153,7 @@
                                 <td>000{{ row.id }}</td>
                                 <td>{{ row.proccess_type }}</td>
                                 <td>{{ row.date_start }} - {{ row.time_start }}</td>
+                                <td>State</td>
                                 <td>{{ row.date_end }} - {{ row.time_end }}</td>
                                 <td>{{ row.production_collaborator }}</td>
                                 <td>{{ row.quantity }}</td>
@@ -171,6 +172,7 @@
                                 <td>{{ row.mix_date_end }} - {{ row.mix_time_end }}</td>
                                 <td>{{ row.mix_collaborator }}</td>
                                 <td>{{ row.comment }}</td>
+                                <td>Register</td>
                             </tr>
                             </tbody>
                         </table>

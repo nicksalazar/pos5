@@ -496,8 +496,8 @@
                                 <th>{{ row.individual_item.description }}</th>
                                 <th>
                                     <!-- {{ row.quantity }} -->
-                                    <el-input-number v-if="form.quantity != 0 && form.quantity != null" v-model="row.quantity * form.quantity"></el-input-number>
-                                    <el-input-number v-else v-model="row.quantity"></el-input-number>
+                                    <el-input-number v-if="form.quantity != 0 && form.quantity != null" v-model="row.quantity * form.quantity" :controls="false" disabled="disabled"></el-input-number>
+                                    <el-input-number v-else v-model="row.quantity" :controls="false" disabled="disabled"></el-input-number>
                                     
                                     <!-- JOINSOFTWARE
                                     <el-input-number v-model="quantityD" :step="1"></el-input-number>
@@ -506,7 +506,7 @@
                                 <th>{{ row.individual_item.unit_type.description }}</th>
                                 <th>
                                     <!-- {{ row.quantity }} -->
-                                    <el-input-number v-model="row.quantity" :min="0.01" :step="1"></el-input-number>
+                                    <el-input-number v-model="row.quantity" :controls="false" :min="0.01" :step="1" disabled="disabled"></el-input-number>
                                 </th>
                                 <th>{{ row.individual_item.unit_type.description }}</th>
                                 <th>
@@ -608,6 +608,9 @@ export default {
             //console.log(value);
             if (value > 0) {
                 this.quantityD = value
+                for (let i = 0; i < this.supplies.length; i++) {
+                    this.supplies[i].quantity = this.form.supplies[i].quantity * this.quantityD
+                }
             } else {
                 return this.$message.error('La cantidad debe ser mayor a 0');
             }
@@ -629,10 +632,6 @@ export default {
             this.loading_submit = true
 
             this.form.supplies = this.supplies
-            for (let i = 0; i < this.supplies.length; i++) {
-                this.supplies[i].quantity = this.form.supplies[i].quantity * this.quantityD
-            }
-            this.form.quantity = 1
             //console.log("Supplies: ", this.supplies)
             await this.$http.post(`/${this.resource}/create`, this.form)
                 .then(response => {
