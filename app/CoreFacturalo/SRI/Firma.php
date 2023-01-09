@@ -58,7 +58,7 @@ class Firma {
                 $certf = openssl_x509_parse($x509cert);
                 $subject = $certf['subject']['CN'];
                 $aux = null;
-
+                
                 if (array_key_exists('O', $certf['subject'])) {
                     $certificante = $certf['subject']['O'];
 
@@ -87,9 +87,6 @@ class Firma {
                         $this->certificate = $x509cert;
                         $this->certData = $certf;
                     } else {
-
-
-
 
                         $this->certificate = $x509cert;
                         $this->certData = $certf;
@@ -168,9 +165,9 @@ class Firma {
 
             $aux = 'openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1';
             //ejecutar comando openssl en windows//
-            //$salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            $salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
             //servidor linux ejecutar comando openssl ///
-            $salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            //$salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
 
             
             if (strpos($salida, 'verified OK') !== false) {
