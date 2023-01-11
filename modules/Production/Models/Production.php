@@ -74,6 +74,10 @@
             'imperfect' => 'float'
         ];
 
+        protected $with = [
+            'state_type',
+        ];
+
         protected $fillable = [
             'user_id',
             'item_id',
@@ -84,6 +88,7 @@
             'name',
             'date_start',
             'time_start',
+            'state_type_id',
             'date_end',
             'time_end',
             'comment',
@@ -137,6 +142,8 @@
             $data['quantity'] = $this->quantity;
             $data['item_name'] = $this->item->description;
             $data['created_at'] = $this->created_at->format('Y-m-d H:i:s');
+            $data['state_type_id'] = $this->state_type_id;
+            $data['state_type_description'] = $this->state_type->description;
 
             $item_extra_data = (array)$this->item_extra_data;
             $data['color'] = null;

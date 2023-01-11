@@ -226,6 +226,8 @@
 
         public function getRecords(Request $request)
         {
+            $state_type_id = $request->state_type_id;
+
             $data_of_period = $this->getDatesOfPeriod($request);
 
             $data = Production::query();
@@ -234,6 +236,9 @@
             }
             if (!empty($data_of_period['d_end'])) {
                 $data->where('date_end', '<=', $data_of_period['d_end']);
+            }
+            if ($state_type_id) {
+                $data->where('state_type_id', 'like', '%' . $state_type_id . '%');
             }
             return $data;
         }
