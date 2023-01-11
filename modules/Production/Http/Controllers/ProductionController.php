@@ -20,7 +20,7 @@
     use Modules\Production\Http\Resources\ProductionCollection;
     use Modules\Production\Models\Machine;
     use Modules\Production\Models\Production;
-
+    use Modules\Production\Models\StateTypeProduction;
 
     class ProductionController extends Controller
     {
@@ -170,10 +170,15 @@
             $machines = Machine::query()->get()->transform(function (Machine $row) {
                 return $row->getCollectionData();
             });
+            $state_types_prod = StateTypeProduction::get();
+            $state_type_descr = StateTypeProduction::find('01');
             return [
                 'items' => self::optionsItemProduction(),
                 'warehouses' => $this->optionsWarehouse(),
-                'machines' => $machines
+                'machines' => $machines,
+                'state_types_prod' => $state_types_prod,
+                //'state_types_id' => count($state_types_prod) > 0 ? $state_types_prod->first()->id : null,
+                'state_type_descr' => $state_type_descr->description,
             ];
         }
 

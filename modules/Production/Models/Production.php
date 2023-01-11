@@ -13,7 +13,6 @@
     use Illuminate\Database\Eloquent\Builder;
     use Illuminate\Database\Eloquent\Relations\BelongsTo;
     use App\Models\Tenant\SoapType;
-
     /**
      * Class Production
      *
@@ -32,6 +31,7 @@
      * @property string|null $comment
      * @property Carbon|null $date_start
      * @property Carbon|null $time_start
+     * @property StateTypeProduction $state_type
      * @property Carbon|null $date_end
      * @property Carbon|null $time_end
      * @property Machine $machine
@@ -131,6 +131,24 @@
             return $this->belongsTo(SoapType::class);
         }
 
+        /**
+         * @return BelongsTo
+         */
+        public function state_type()
+        {
+            return $this->belongsTo(StateTypeProduction::class);
+        }
+        
+        /**
+         *
+         * @return string
+         *
+         */
+        public function getVoidedDescription()
+        {
+            return $this->state_type_id === '04' ? 'SI' : 'NO';
+        }
+
         public function getCollectionData()
         {
 
@@ -143,6 +161,8 @@
             $data['item_name'] = $this->item->description;
             $data['created_at'] = $this->created_at->format('Y-m-d H:i:s');
             $data['state_type_id'] = $this->state_type_id;
+            //$state = StateTypeProduction::find($this->state_type_id);
+            //$data['state_type_description'] = $state->description;
             $data['state_type_description'] = $this->state_type->description;
 
             $item_extra_data = (array)$this->item_extra_data;

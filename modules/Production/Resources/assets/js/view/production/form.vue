@@ -593,7 +593,6 @@ export default {
 
         },
         getTable() {
-            //event.target.reset();
             this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     let data = response.data
@@ -605,7 +604,6 @@ export default {
         },
         //JOINSOFTWARE
         handleChange(value) {
-            //console.log(value);
             if (value > 0) {
                 this.quantityD = value
                 for (let i = 0; i < this.supplies.length; i++) {
@@ -632,7 +630,6 @@ export default {
             this.loading_submit = true
 
             this.form.supplies = this.supplies
-            //console.log("Supplies: ", this.supplies)
             await this.$http.post(`/${this.resource}/create`, this.form)
                 .then(response => {
                     if (response.data.success) {
@@ -661,7 +658,6 @@ export default {
             this.form.item_extra_data.color = null
             this.item = item
             this.supplies = item.supplies
-            console.log("Supplies2: ", this.supplies)
         },
 
 
