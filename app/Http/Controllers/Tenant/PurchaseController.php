@@ -18,6 +18,7 @@
     use App\Models\Tenant\Catalogs\DocumentType;
     use App\Models\Tenant\Catalogs\OperationType;
     use App\Models\Tenant\Catalogs\PriceType;
+    use App\Models\Tenant\Catalogs\PurchaseDocumentType;
     use App\Models\Tenant\Catalogs\SystemIscType;
     use App\Models\Tenant\Company;
     use App\Models\Tenant\Configuration;
@@ -131,6 +132,29 @@
             $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
             $currency_types = CurrencyType::whereActive()->get();
             $document_types_invoice = DocumentType::DocumentsActiveToPurchase()->get();
+            $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->whereActive()->get();
+            $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->whereActive()->get();
+            $company = Company::active();
+            $payment_method_types = PaymentMethodType::getPaymentMethodTypes();
+            // $payment_method_types = PaymentMethodType::all();
+            $payment_destinations = $this->getPaymentDestinations();
+            $customers = $this->getPersons('customers');
+            $configuration = Configuration::first();
+            $payment_conditions = GeneralPaymentCondition::get();
+            $warehouses = Warehouse::get();
+            $permissions = auth()->user()->getPermissionsPurchase();
+            $global_discount_types = ChargeDiscountType::whereIn('id', ['02', '03'])->whereActive()->get();
+
+            return compact('suppliers', 'establishment', 'currency_types', 'discount_types', 'configuration', 'payment_conditions',
+                'charge_types', 'document_types_invoice', 'company', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
+        }
+
+        public function tables_purchase()
+        {
+            $suppliers = $this->table('suppliers');
+            $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
+            $currency_types = CurrencyType::whereActive()->get();
+            $document_types_invoice = PurchaseDocumentType::DocumentsActiveToPurchase()->get();
             $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->whereActive()->get();
             $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->whereActive()->get();
             $company = Company::active();

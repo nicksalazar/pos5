@@ -748,7 +748,7 @@ export default {
     },
     async mounted() {
         this.initForm()
-        await this.$http.get(`/${this.resource}/tables`)
+        await this.$http.get(`/${this.resource}/tables_purchase`)
             .then(response => {
                 let data = response.data
                 this.document_types = data.document_types_invoice
