@@ -695,6 +695,7 @@ export default {
             lot_code: null,
             change_affectation_igv_type_id: false,
             prices: {},
+            retention_types: [],
         }
     },
     created() {
@@ -711,6 +712,9 @@ export default {
             this.charge_types = response.data.charge_types
             this.attribute_types = response.data.attribute_types
             this.warehouses = response.data.warehouses
+            this.retention_types = response.data.retention_types
+            this.form.income_retention = this.retention_types[1].percentage
+            this.form.iva_retention = this.retention_types[0].percentage
             this.$store.commit('setConfiguration', response.data.configuration)
             this.initFilterItems()
         });
@@ -814,8 +818,8 @@ export default {
                 system_isc_type_id: null,
                 percentage_isc: 0,
                 suggested_price: 0,
-                income_retention: 12,
-                iva_retention: 10,
+                income_retention: 0,
+                iva_retention: 0,
                 quantity: 1,
                 unit_price: 0,
                 charges: [],

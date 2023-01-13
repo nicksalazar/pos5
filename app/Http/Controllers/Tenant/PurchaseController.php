@@ -19,6 +19,7 @@
     use App\Models\Tenant\Catalogs\OperationType;
     use App\Models\Tenant\Catalogs\PriceType;
     use App\Models\Tenant\Catalogs\PurchaseDocumentType;
+    use App\Models\Tenant\Catalogs\RetentionType;
     use App\Models\Tenant\Catalogs\SystemIscType;
     use App\Models\Tenant\Company;
     use App\Models\Tenant\Configuration;
@@ -287,6 +288,8 @@
             $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
             $warehouses = Warehouse::all();
 
+            $retention_types = RetentionType::get();
+
             $operation_types = OperationType::whereActive()->get();
             $is_client = $this->getIsClient();
             $configuration = Configuration::first();
@@ -304,7 +307,8 @@
                 'warehouses',
                 'operation_types',
                 'is_client',
-                'configuration'
+                'configuration',
+                'retention_types'
             );
         }
 
