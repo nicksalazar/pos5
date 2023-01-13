@@ -30,8 +30,12 @@
                                  class="form-group">
                                 <label class="control-label">Serie <span class="text-danger">*</span></label>
                                 <el-input v-model="form.series"
+                                          :maxlength="4"></el-input>
+                                <!--
+                                <el-input v-model="form.series"
                                           :maxlength="4"
                                           @input="inputSeries"></el-input>
+                                -->
 
                                 <small v-if="errors.series"
                                        class="form-control-feedback"
@@ -751,6 +755,7 @@ export default {
         await this.$http.get(`/${this.resource}/tables_purchase`)
             .then(response => {
                 let data = response.data
+                //console.log("Data: ", data);
                 this.document_types = data.document_types_invoice
                 this.currency_types = data.currency_types
                 this.payment_conditions = data.payment_conditions
@@ -770,7 +775,7 @@ export default {
                 this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
                 this.form.establishment_id = (this.establishment.id) ? this.establishment.id : null
                 this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
-
+                this.form.number = (data.number.length > 0) ? data.number[0].number + 1 : 1
 
             })
             .then(() => {
@@ -872,7 +877,7 @@ export default {
                         if (supp.identity_document_type_id == 6) {
                             this.form.document_type_id = "01"
                         } else if (supp.identity_document_type_id == 1) {
-                            this.form.document_type_id = "03"
+                            this.form.document_type_id = "02"
                         }
 
                         this.form.items = response.data.data.purchase_order.items
@@ -1125,7 +1130,7 @@ export default {
             this.form = {
                 establishment_id: null,
                 document_type_id: null,
-                series: null,
+                series: 'CC',
                 number: null,
                 date_of_issue: moment().format('YYYY-MM-DD'),
                 time_of_issue: moment().format('HH:mm:ss'),

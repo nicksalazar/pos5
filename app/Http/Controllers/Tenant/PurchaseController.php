@@ -59,6 +59,8 @@
         use StorageDocument;
         use OfflineTrait;
 
+        private $id;
+
         public function index()
         {
             return view('tenant.purchases.index');
@@ -154,6 +156,8 @@
             $suppliers = $this->table('suppliers');
             $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
             $currency_types = CurrencyType::whereActive()->get();
+            $purchase_id = Purchase::latest()->first()->id;
+            $number = Purchase::where('id', $purchase_id)->get();
             $document_types_invoice = PurchaseDocumentType::DocumentsActiveToPurchase()->get();
             $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->whereActive()->get();
             $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->whereActive()->get();
@@ -168,7 +172,7 @@
             $permissions = auth()->user()->getPermissionsPurchase();
             $global_discount_types = ChargeDiscountType::whereIn('id', ['02', '03'])->whereActive()->get();
 
-            return compact('suppliers', 'establishment', 'currency_types', 'discount_types', 'configuration', 'payment_conditions',
+            return compact('suppliers', 'establishment', 'currency_types', 'number', 'discount_types', 'configuration', 'payment_conditions',
                 'charge_types', 'document_types_invoice', 'company', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
         }
 
@@ -456,7 +460,6 @@
                 ], 500);
             }
         }
-
 
         private function savePurchaseFee($purchase, $fee)
         {

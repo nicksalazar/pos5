@@ -5,6 +5,7 @@ namespace App\Models\Tenant;
 use App\Models\Tenant\GuideFile;
 use App\Models\Tenant\Catalogs\CurrencyType;
 use App\Models\Tenant\Catalogs\DocumentType;
+use App\Models\Tenant\Catalogs\PurchaseDocumentType;
 use Carbon\Carbon;
 use Modules\Purchase\Models\PurchaseOrder;
 use stdClass;
@@ -278,7 +279,7 @@ class Purchase extends ModelTenant
      */
     public function document_type()
     {
-        return $this->belongsTo(DocumentType::class, 'document_type_id');
+        return $this->belongsTo(PurchaseDocumentType::class, 'document_type_id');
     }
 
     /**
@@ -318,6 +319,11 @@ class Purchase extends ModelTenant
     public function getNumberFullAttribute()
     {
         return $this->series.'-'.$this->number;
+    }
+
+    public function getNumber()
+    {
+        return $this->number;
     }
 
     /**
