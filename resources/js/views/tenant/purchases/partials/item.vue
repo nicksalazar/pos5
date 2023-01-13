@@ -137,6 +137,7 @@
                                           v-model="form.unit_price"
                                           class="input-with-select"
                                           :filterable="false"
+                                          @change="handleChange($event)"
                                 >
                                     <el-select slot="prepend"
                                                v-model="form.item.currency_type_id"
@@ -761,6 +762,10 @@ export default {
                         }
                     }
                 })
+        },
+        handleChange(value) {
+            this.form.income_retention = (this.retention_types[1].percentage / 100) * value
+            this.form.iva_retention = (this.retention_types[0].percentage / 100) * value
         },
         async searchRemoteItems(input) {
 
