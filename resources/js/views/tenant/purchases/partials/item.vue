@@ -91,6 +91,30 @@
                                        class="form-control-feedback"
                                        v-text="errors.affectation_igv_type_id[0]"></small>
                             </div>
+                            <div :class="{'has-danger': errors.income_retention}"
+                                 class="form-group">
+                                 <!-- JOINSOFTWARE -->
+                                <label class="control-label">Retención RENTA</label>
+                                <el-input
+                                    v-model="form.income_retention"
+                                    dusk="income_retention">
+                                </el-input>
+                                <small v-if="errors.income_retention"
+                                       class="form-control-feedback"
+                                       v-text="errors.income_retention[0]"></small>
+                            </div>
+                            <div :class="{'has-danger': errors.iva_retention}"
+                                 class="form-group">
+                                 <!-- JOINSOFTWARE -->
+                                <label class="control-label">Retención IVA</label>
+                                <el-input
+                                    v-model="form.iva_retention"
+                                    dusk="iva_retention">
+                                </el-input>
+                                <small v-if="errors.iva_retention"
+                                       class="form-control-feedback"
+                                       v-text="errors.iva_retention[0]"></small>
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <div :class="{'has-danger': errors.quantity}"
@@ -788,6 +812,8 @@ export default {
                 system_isc_type_id: null,
                 percentage_isc: 0,
                 suggested_price: 0,
+                income_retention: 12,
+                iva_retention: 10,
                 quantity: 1,
                 unit_price: 0,
                 charges: [],
