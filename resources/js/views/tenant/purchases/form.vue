@@ -182,11 +182,45 @@
                         <div class="form-group col-sm-12 col-md-6 col-lg-4 "
                             :class="{ 'has-danger': errors.created_at }"
                             >
-                            <label>
+                            <label class="control-label">
                                 Observaciones
                             </label>
                             <el-input v-model="form.observation"
                                       placeholder="Observaciones"></el-input>
+                        </div>
+                        <!--JOINSOFTWARE-->
+                        <div class="form-group col-sm-12 col-md-6 col-lg-2"
+                            :class="{'has-danger': errors.sequential_number}"
+                            >
+                            <label class="control-label">Secuencial <span class="text-danger">*</span></label>
+
+                            <el-input
+                                v-model="form.sequential_number"
+                                :maxlength="maxLength1"
+                                show-word-limit
+                                dusk="sequential_number">
+                            </el-input>
+
+                            <small v-if="errors.sequential_number"
+                                    class="form-control-feedback"
+                                    v-text="errors.sequential_number[0]"></small>
+                        </div>
+                        <!--JOINSOFTWARE-->
+                        <div class="form-group col-sm-12 col-md-6 col-lg-4"
+                            :class="{'has-danger': errors.auth_number}"
+                            >
+                            <label class="control-label">Número autorización <span class="text-danger">*</span></label>
+
+                            <el-input
+                                v-model="form.auth_number"
+                                :maxlength="maxLength2"
+                                show-word-limit
+                                dusk="auth_number">
+                            </el-input>
+
+                            <small v-if="errors.auth_number"
+                                    class="form-control-feedback"
+                                    v-text="errors.auth_number[0]"></small>
                         </div>
                         <div class="col-12">&nbsp;</div>
 
@@ -244,9 +278,6 @@
 
                             </div>
                         </div>
-
-
-
                     </div>
                     <div class="row">
                         <template v-if="form.has_payment">
@@ -714,6 +745,8 @@ export default {
         return {
             input_person: {},
             resource: 'purchases',
+            maxLength1: 15,
+            maxLength2: 49,
             showDialogAddItem: false,
             readonly_date_of_due: false,
             localHasGlobalIgv: false,
@@ -1132,6 +1165,8 @@ export default {
                 document_type_id: null,
                 series: 'CC',
                 number: null,
+                sequential_number: '',
+                auth_number: '',
                 date_of_issue: moment().format('YYYY-MM-DD'),
                 time_of_issue: moment().format('HH:mm:ss'),
                 supplier_id: null,
@@ -1382,10 +1417,50 @@ export default {
             }
 
         },
+        validateDigits() {
+            const pattern_number = new RegExp('^[0-9]+$', 'i');
+
+            if (this.form.sequential_number.length !== 15) {
+                return {
+                    success: false,
+                    message: `El campo número secuencial debe tener 15 dígitos.`
+                }
+            }
+
+            if (!pattern_number.test(this.form.sequential_number)) {
+                return {
+                    success: false,
+                    message: `El campo número secuencial debe contener solo números`
+                }
+            }
+
+            if (this.form.auth_number.length < 10 && this.form.auth_number.length > 49) {
+                return {
+                    success: false,
+                    message: `El campo número autorización debe entre 10 y 49 dígitos.`
+                }
+            }
+
+            if (!pattern_number.test(this.form.auth_number)) {
+                return {
+                    success: false,
+                    message: `El campo número autorización debe contener solo números`
+                }
+            }
+
+            return {
+                success: true
+            }
+        },
         async submit() {
             let validate_item_series = await this.validationItemSeries()
             if (!validate_item_series.success) {
                 return this.$message.error(validate_item_series.message);
+            }
+
+            let val_digits = await this.validateDigits()
+            if (!val_digits.success) {
+                return this.$message.error(val_digits.message)
             }
 
             let validate = await this.validate_payments()
