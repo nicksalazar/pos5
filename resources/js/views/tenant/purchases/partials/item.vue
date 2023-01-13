@@ -74,7 +74,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div :class="{'has-danger': errors.affectation_igv_type_id}"
-                                 class="form-group">
+                                 class="form-group mb-0">
                                  <!-- JOINSOFTWARE -->
                                 <!-- Afectación Igv -> Tipo de Impuesto -->
                                 <label class="control-label">Tipo de Impuesto</label>
@@ -92,7 +92,7 @@
                                        v-text="errors.affectation_igv_type_id[0]"></small>
                             </div>
                             <div :class="{'has-danger': errors.income_retention}"
-                                 class="form-group">
+                                 class="form-group mb-0">
                                  <!-- JOINSOFTWARE -->
                                 <label class="control-label">Retención RENTA</label>
                                 <el-input
@@ -703,6 +703,7 @@ export default {
         this.activeName = 'first'
         this.initForm()
         this.$http.get(`/${this.resource}/item/tables`).then(response => {
+            //console.log("Data: ", response.data);
             this.all_items = response.data.items
             this.affectation_igv_types = response.data.affectation_igv_types
             this.system_isc_types = response.data.system_isc_types
@@ -715,6 +716,7 @@ export default {
         });
         this.getExtraInfoOfItems();
         this.$eventHub.$on('reloadDataItems', (item_id) => {
+            //console.log("Item id: ", item_id);
             this.reloadDataItems(item_id)
         })
     },
@@ -1015,6 +1017,7 @@ export default {
             if (!item_id) {
 
                 this.$http.get(`/${this.resource}/table/items`).then((response) => {
+                    //console.log("Items: ", response.data);
                     this.items = response.data
                     this.form.item_id = item_id
                 })
