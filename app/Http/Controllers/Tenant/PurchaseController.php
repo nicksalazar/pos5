@@ -51,7 +51,7 @@
     use Symfony\Component\HttpFoundation\StreamedResponse;
     use Throwable;
     use App\Models\Tenant\GeneralPaymentCondition;
-
+use App\Models\Tenant\RetentionTypePurchase;
 
     class PurchaseController extends Controller
     {
@@ -290,6 +290,8 @@
 
             $retention_types = RetentionType::get();
 
+            $retention_types_purch = RetentionTypePurchase::get();
+
             $operation_types = OperationType::whereActive()->get();
             $is_client = $this->getIsClient();
             $configuration = Configuration::first();
@@ -308,7 +310,8 @@
                 'operation_types',
                 'is_client',
                 'configuration',
-                'retention_types'
+                'retention_types',
+                'retention_types_purch'
             );
         }
 

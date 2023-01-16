@@ -74,7 +74,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div :class="{'has-danger': errors.affectation_igv_type_id}"
-                                 class="form-group mb-0">
+                                 class="form-group">
                                  <!-- JOINSOFTWARE -->
                                 <!-- Afectación Igv -> Tipo de Impuesto -->
                                 <label class="control-label">Tipo de Impuesto</label>
@@ -90,30 +90,6 @@
                                 <small v-if="errors.affectation_igv_type_id"
                                        class="form-control-feedback"
                                        v-text="errors.affectation_igv_type_id[0]"></small>
-                            </div>
-                            <div :class="{'has-danger': errors.income_retention}"
-                                 class="form-group mb-0">
-                                 <!-- JOINSOFTWARE -->
-                                <label class="control-label">Retención RENTA</label>
-                                <el-input
-                                    v-model="form.income_retention"
-                                    dusk="income_retention">
-                                </el-input>
-                                <small v-if="errors.income_retention"
-                                       class="form-control-feedback"
-                                       v-text="errors.income_retention[0]"></small>
-                            </div>
-                            <div :class="{'has-danger': errors.iva_retention}"
-                                 class="form-group">
-                                 <!-- JOINSOFTWARE -->
-                                <label class="control-label">Retención IVA</label>
-                                <el-input
-                                    v-model="form.iva_retention"
-                                    dusk="iva_retention">
-                                </el-input>
-                                <small v-if="errors.iva_retention"
-                                       class="form-control-feedback"
-                                       v-text="errors.iva_retention[0]"></small>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -158,6 +134,53 @@
                                          v-model="form.update_date_of_due">Asignar Fecha de vencimiento
                             </el-checkbox>
                         </div>
+                        <div class="col-md-3">
+                            <div :class="{'has-danger': errors.retention_type_id}"
+                                 class="form-group">
+                                 <!-- JOINSOFTWARE -->
+                                <!-- Afectación Igv -> Tipo de Impuesto -->
+                                <label class="control-label">Tipo de retención</label>
+                                <el-select v-model="form.retention_type_id"
+                                           filterable
+                                           @change="changeRetentionType($event)">
+                                    <el-option v-for="option in retention_types"
+                                               :key="option.id"
+                                               :label="option.description"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.retention_type_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.retention_type_id[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div :class="{'has-danger': errors.income_retention}"
+                                 class="form-group"
+                                 v-if="is_income">
+                                 <!-- JOINSOFTWARE -->
+                                <label class="control-label">Retención RENTA</label>
+                                <el-input
+                                    v-model="form.income_retention"
+                                    dusk="income_retention">
+                                </el-input>
+                                <small v-if="errors.income_retention"
+                                       class="form-control-feedback"
+                                       v-text="errors.income_retention[0]"></small>
+                            </div>
+                            <div :class="{'has-danger': errors.iva_retention}"
+                                 class="form-group"
+                                 v-if="is_iva">
+                                 <!-- JOINSOFTWARE -->
+                                <label class="control-label">Retención IVA</label>
+                                <el-input
+                                    v-model="form.iva_retention"
+                                    dusk="iva_retention">
+                                </el-input>
+                                <small v-if="errors.iva_retention"
+                                       class="form-control-feedback"
+                                       v-text="errors.iva_retention[0]"></small>
+                            </div>
+                        </div>
                         <div v-if="form.update_price"
                              class="col-md-2">
                             <div :class="{'has-danger': errors.unit_price}"
@@ -201,7 +224,7 @@
                                        v-text="errors.date_of_due[0]"></small>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-12">
                             <div :class="{'has-danger': errors.warehouse_id}"
                                  class="form-group">
                                 <label class="control-label">Almacén de destino
@@ -672,6 +695,10 @@ export default {
                     return time.getTime() < moment();
                 }
             },
+            is_income: false,
+            income: 0,
+            is_iva: false,
+            iva: 0,
             search_item_by_barcode: false,
             sale_unit_price: 0,
             date_of_due: null,
@@ -714,8 +741,6 @@ export default {
             this.attribute_types = response.data.attribute_types
             this.warehouses = response.data.warehouses
             this.retention_types = response.data.retention_types
-            this.form.income_retention = this.retention_types[1].percentage
-            this.form.iva_retention = this.retention_types[0].percentage
             this.$store.commit('setConfiguration', response.data.configuration)
             this.initFilterItems()
         });
@@ -764,8 +789,8 @@ export default {
                 })
         },
         handleChange(value) {
-            this.form.income_retention = (this.retention_types[1].percentage / 100) * value
-            this.form.iva_retention = (this.retention_types[0].percentage / 100) * value
+            this.income = this.form.quantity * value
+            this.iva = this.form.quantity * value
         },
         async searchRemoteItems(input) {
 
@@ -818,13 +843,14 @@ export default {
                 warehouse_description: null,
                 item: {},
                 affectation_igv_type_id: null,
+                retention_type_id: null,
                 affectation_igv_type: {},
                 has_isc: false,
                 system_isc_type_id: null,
                 percentage_isc: 0,
                 suggested_price: 0,
-                income_retention: 0,
-                iva_retention: 0,
+                income_retention: null,
+                iva_retention: null,
                 quantity: 1,
                 unit_price: 0,
                 charges: [],
@@ -929,6 +955,29 @@ export default {
             this.form.percentage_isc = this.form.item.purchase_percentage_isc
             this.form.system_isc_type_id = this.form.item.purchase_system_isc_type_id
 
+        },
+        changeRetentionType(event) {
+            const val = _.find(this.retention_types, {'id': event});
+            const item = {..._.find(this.items, {'id': this.form.item_id})};
+            if (val.type_id == '01') {
+                this.is_iva = false
+                const str = val.code + ' - ' + val.description
+                this.form.income_retention = str.concat(' ', (val.percentage / 100) * this.income)
+                this.is_income = true
+            } else {
+                this.is_income = false
+                const str = val.code + ' - ' + val.description
+                if (item.sale_affectation_igv_type_id == '10') {
+                    this.form.iva_retention = str.concat(' ', (val.percentage / 100) * (this.iva - (this.iva / 1.12)))
+                } else if (item.sale_affectation_igv_type_id == '11') {
+                    this.form.iva_retention = str.concat(' ', (val.percentage / 100) * (this.iva - (this.iva / 1.08)))
+                } else if (item.sale_affectation_igv_type_id == '12') {
+                    this.form.iva_retention = str.concat(' ', (val.percentage / 100) * (this.iva - (this.iva / 1.14)))
+                } else if (item.sale_affectation_igv_type_id == '30') {
+                    this.form.iva_retention = str.concat(' ', (val.percentage / 100) * this.iva)
+                }
+                this.is_iva = true
+            }
         },
         setGlobalPurchaseCurrencyToItem(){
 
