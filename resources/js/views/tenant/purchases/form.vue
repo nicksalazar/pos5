@@ -788,7 +788,6 @@ export default {
         await this.$http.get(`/${this.resource}/tables_purchase`)
             .then(response => {
                 let data = response.data
-                //console.log("Data: ", data);
                 this.document_types = data.document_types_invoice
                 this.currency_types = data.currency_types
                 this.payment_conditions = data.payment_conditions
@@ -1434,10 +1433,10 @@ export default {
                 }
             }
 
-            if (this.form.auth_number.length < 10 && this.form.auth_number.length > 49) {
+            if (this.form.auth_number.length < 10 || this.form.auth_number.length > 49) {
                 return {
                     success: false,
-                    message: `El campo número autorización debe entre 10 y 49 dígitos.`
+                    message: `El campo número autorización debe contener entre 10 y 49 dígitos.`
                 }
             }
 

@@ -62,6 +62,9 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         charges: row_old.charges,
         discounts: row_old.discounts,
         warehouse_id: warehouse_id,
+        retention_type_id: row_old.retention_type_id,
+        income_retention: row_old.income_retention,
+        iva_retention: row_old.iva_retention,
         name_product_pdf: row_old.name_product_pdf,
         record_id: record_id, // fixed for update sale_note
 

@@ -157,8 +157,12 @@ use App\Models\Tenant\RetentionTypePurchase;
             $suppliers = $this->table('suppliers');
             $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
             $currency_types = CurrencyType::whereActive()->get();
-            $purchase_id = Purchase::latest()->first()->id;
-            $number = Purchase::where('id', $purchase_id)->get();
+            if (!empty(Purchase::latest()->first()->id)) {
+                $purchase_id = Purchase::latest()->first()->id;
+                $number = Purchase::where('id', $purchase_id)->get();
+            } else {
+                $number = [];
+            }
             $document_types_invoice = PurchaseDocumentType::DocumentsActiveToPurchase()->get();
             $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->whereActive()->get();
             $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->whereActive()->get();
@@ -288,7 +292,8 @@ use App\Models\Tenant\RetentionTypePurchase;
             $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
             $warehouses = Warehouse::all();
 
-            $retention_types = RetentionType::get();
+            $retention_types_iva = RetentionType::where('type_id', '02')->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->get();
 
             $retention_types_purch = RetentionTypePurchase::get();
 
@@ -310,7 +315,8 @@ use App\Models\Tenant\RetentionTypePurchase;
                 'operation_types',
                 'is_client',
                 'configuration',
-                'retention_types',
+                'retention_types_iva',
+                'retention_types_income',
                 'retention_types_purch'
             );
         }

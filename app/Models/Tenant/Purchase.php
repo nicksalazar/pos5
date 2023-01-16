@@ -6,6 +6,7 @@ use App\Models\Tenant\GuideFile;
 use App\Models\Tenant\Catalogs\CurrencyType;
 use App\Models\Tenant\Catalogs\DocumentType;
 use App\Models\Tenant\Catalogs\PurchaseDocumentType;
+use App\Models\Tenant\Catalogs\RetentionType;
 use Carbon\Carbon;
 use Modules\Purchase\Models\PurchaseOrder;
 use stdClass;
@@ -63,7 +64,7 @@ class Purchase extends ModelTenant
 {
     // use SoftDeletes;
 
-    protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'purchase_payments'];
+protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'purchase_payments'/*, 'retention_type'*/];
 
     protected $fillable = [
         'user_id',
@@ -117,6 +118,10 @@ class Purchase extends ModelTenant
         'total_canceled',
         'payment_condition_id',
         'observation',
+
+        //'retention_type_id',
+        'sequential_number',
+        'auth_number',
     ];
 
     protected $casts = [
@@ -131,6 +136,14 @@ class Purchase extends ModelTenant
     public function establishment()
     {
         return $this->belongsTo(Establishment::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function retention_type()
+    {
+        return $this->belongsTo(RetentionType::class, 'retention_type_id');
     }
 
     // public function getEstablishmentAttribute($value)
@@ -780,7 +793,7 @@ class Purchase extends ModelTenant
      */  
     public function scopeWhereFilterWithOutRelations($query)
     {
-        return $query->withOut(['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'purchase_payments']);
+        return $query->withOut(['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'purchase_payments'/*, 'retention_type'*/]);
     }
 
 

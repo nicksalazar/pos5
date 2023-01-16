@@ -14,7 +14,7 @@ class TenantAddAuthNumberToPurchases extends Migration
     public function up()
     {
         Schema::table('purchases', function (Blueprint $table) {
-            $table->string('sequential')->nullable();
+            $table->string('sequential_number')->nullable();
             $table->string('auth_number')->nullable();
         });
     }

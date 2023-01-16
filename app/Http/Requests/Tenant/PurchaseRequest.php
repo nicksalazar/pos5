@@ -17,7 +17,6 @@ class PurchaseRequest extends FormRequest
 			'supplier_id' => [
 				'required',
 			],
-			/*
 			'number' => [
 				'required',
 				'numeric'
@@ -25,7 +24,15 @@ class PurchaseRequest extends FormRequest
 			'series' => [
 				'required',
 			],
-			*/
+			'sequential_number' => [
+				'required',
+				'max:15'
+			],
+			'auth_number' => [
+				'required',
+				'min:10',
+				'max:49'
+			],
 			'date_of_issue' => [
 				'required',
 			],

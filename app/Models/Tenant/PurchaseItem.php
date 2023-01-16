@@ -5,6 +5,7 @@ namespace App\Models\Tenant;
 use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\PriceType;
 use App\Models\Tenant\Catalogs\SystemIscType;
+use App\Models\Tenant\Catalogs\RetentionType;
 use App\Traits\AttributePerItems;
 use Modules\Inventory\Models\Warehouse;
 use Modules\Item\Models\ItemLot;
@@ -32,7 +33,7 @@ use Modules\Item\Models\ItemLot;
 class PurchaseItem extends ModelTenant
 {
     use AttributePerItems;
-    protected $with = ['affectation_igv_type', 'system_isc_type', 'price_type', 'lots', 'warehouse'];
+    protected $with = ['affectation_igv_type', 'system_isc_type', 'price_type', 'lots', 'warehouse', 'retention_type'];
     public $timestamps = false;
 
     protected $fillable = [
@@ -70,6 +71,10 @@ class PurchaseItem extends ModelTenant
         'discounts',
         'date_of_due',
         'item_lot_group_id',
+
+        'retention_type_id',
+        'income_retention',
+        'iva_retention',
     ];
 
 
@@ -178,6 +183,14 @@ class PurchaseItem extends ModelTenant
     public function relation_item()
     {
         return $this->belongsTo(Item::class, 'item_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function retention_type()
+    {
+        return $this->belongsTo(RetentionType::class, 'retention_type_id');
     }
 
     public function getCollectionData(Configuration $configuration = null) {

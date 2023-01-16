@@ -139,13 +139,30 @@
                                  class="form-group">
                                  <!-- JOINSOFTWARE -->
                                 <!-- Afectación Igv -> Tipo de Impuesto -->
-                                <label class="control-label">Tipo de retención</label>
+                                <label class="control-label">Tipo de retención IVA</label>
                                 <el-select v-model="form.retention_type_id"
                                            filterable
                                            @change="changeRetentionType($event)">
-                                    <el-option v-for="option in retention_types"
+                                    <el-option v-for="option in retention_types_iva"
                                                :key="option.id"
-                                               :label="option.description"
+                                               :label="str + option.description"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.retention_type_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.retention_type_id[0]"></small>
+                            </div>
+                            <div :class="{'has-danger': errors.retention_type_id}"
+                                 class="form-group">
+                                 <!-- JOINSOFTWARE -->
+                                <!-- Afectación Igv -> Tipo de Impuesto -->
+                                <label class="control-label">Tipo de retención RENTA</label>
+                                <el-select v-model="form.retention_type_id"
+                                           filterable
+                                           @change="changeRetentionType($event)">
+                                    <el-option v-for="option in retention_types_income"
+                                               :key="option.id"
+                                               :label="str + option.description"
                                                :value="option.id"></el-option>
                                 </el-select>
                                 <small v-if="errors.retention_type_id"
@@ -696,6 +713,7 @@ export default {
                 }
             },
             is_income: false,
+            str: '',
             income: 0,
             is_iva: false,
             iva: 0,
@@ -723,7 +741,8 @@ export default {
             lot_code: null,
             change_affectation_igv_type_id: false,
             prices: {},
-            retention_types: [],
+            retention_types_iva: [],
+            retention_types_income: [],
         }
     },
     created() {
@@ -740,7 +759,8 @@ export default {
             this.charge_types = response.data.charge_types
             this.attribute_types = response.data.attribute_types
             this.warehouses = response.data.warehouses
-            this.retention_types = response.data.retention_types
+            this.retention_types_iva = response.data.retention_types_iva
+            this.retention_types_income = response.data.retention_types_income
             this.$store.commit('setConfiguration', response.data.configuration)
             this.initFilterItems()
         });
@@ -961,20 +981,21 @@ export default {
             const item = {..._.find(this.items, {'id': this.form.item_id})};
             if (val.type_id == '01') {
                 this.is_iva = false
-                const str = val.code + ' - ' + val.description
-                this.form.income_retention = str.concat(' ', (val.percentage / 100) * this.income)
+                this.str = val.code + ' - ' + val.description
+                this.form.income_retention = (val.percentage / 100) * this.income
                 this.is_income = true
             } else {
                 this.is_income = false
-                const str = val.code + ' - ' + val.description
+                this.str = val.code + ' - ' + val.description
+                //_.round
                 if (item.sale_affectation_igv_type_id == '10') {
-                    this.form.iva_retention = str.concat(' ', (val.percentage / 100) * (this.iva - (this.iva / 1.12)))
+                    this.form.iva_retention = (val.percentage / 100) * (this.iva - (this.iva / 1.12))
                 } else if (item.sale_affectation_igv_type_id == '11') {
-                    this.form.iva_retention = str.concat(' ', (val.percentage / 100) * (this.iva - (this.iva / 1.08)))
+                    this.form.iva_retention = (val.percentage / 100) * (this.iva - (this.iva / 1.08))
                 } else if (item.sale_affectation_igv_type_id == '12') {
-                    this.form.iva_retention = str.concat(' ', (val.percentage / 100) * (this.iva - (this.iva / 1.14)))
+                    this.form.iva_retention = (val.percentage / 100) * (this.iva - (this.iva / 1.14))
                 } else if (item.sale_affectation_igv_type_id == '30') {
-                    this.form.iva_retention = str.concat(' ', (val.percentage / 100) * this.iva)
+                    this.form.iva_retention = (val.percentage / 100) * this.iva
                 }
                 this.is_iva = true
             }
@@ -1046,6 +1067,9 @@ export default {
 
             this.form.item.unit_price = unit_price
             this.form.item.presentation = this.item_unit_type;
+            this.form.item.retention_type_id = this.form.retention_type_id;
+            this.form.item.income_retention = this.form.income_retention;
+            this.form.item.iva_retention = this.form.iva_retention;
             this.form.affectation_igv_type = _.find(this.affectation_igv_types, {'id': this.form.affectation_igv_type_id})
             this.row = await calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale, this.percentageIgv)
             this.row.lot_code = await this.lot_code
@@ -1058,6 +1082,9 @@ export default {
             this.row = this.changeWarehouse(this.row)
 
             this.row.date_of_due = date_of_due
+            this.row.retention_type_id = this.form.retention_type_id;
+            this.row.income_retention = this.form.income_retention;
+            this.row.iva_retention = this.form.iva_retention;
 
 
             this.initForm()
