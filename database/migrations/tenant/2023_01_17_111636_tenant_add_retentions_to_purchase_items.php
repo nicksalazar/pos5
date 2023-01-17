@@ -14,11 +14,13 @@ class TenantAddRetentionsToPurchaseItems extends Migration
     public function up()
     {
         Schema::table('purchase_items', function (Blueprint $table) {
-            $table->string('retention_type_id')->nullable();
-            $table->string('income_retention')->nullable();
-            $table->string('iva_retention')->nullable();
+            $table->string('retention_type_id_income')->nullable();
+            $table->string('retention_type_id_iva')->nullable();
+            $table->decimal('income_retention', 10, 4)->nullable();
+            $table->decimal('iva_retention', 10, 4)->nullable();
 
-	        $table->foreign('retention_type_id')->references('id')->on('cat_retention_types');
+	        $table->foreign('retention_type_id_income')->references('id')->on('cat_retention_types');
+            $table->foreign('retention_type_id_iva')->references('id')->on('cat_retention_types');
         });
     }
 

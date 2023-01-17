@@ -33,7 +33,7 @@ use Modules\Item\Models\ItemLot;
 class PurchaseItem extends ModelTenant
 {
     use AttributePerItems;
-    protected $with = ['affectation_igv_type', 'system_isc_type', 'price_type', 'lots', 'warehouse', 'retention_type'];
+    protected $with = ['affectation_igv_type', 'system_isc_type', 'price_type', 'lots', 'warehouse', 'retention_type_income', 'retention_type_iva'];
     public $timestamps = false;
 
     protected $fillable = [
@@ -72,7 +72,8 @@ class PurchaseItem extends ModelTenant
         'date_of_due',
         'item_lot_group_id',
 
-        'retention_type_id',
+        'retention_type_id_income',
+        'retention_type_id_iva',
         'income_retention',
         'iva_retention',
     ];
@@ -188,9 +189,17 @@ class PurchaseItem extends ModelTenant
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function retention_type()
+    public function retention_type_income()
     {
-        return $this->belongsTo(RetentionType::class, 'retention_type_id');
+        return $this->belongsTo(RetentionType::class, 'retention_type_id_income');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function retention_type_iva()
+    {
+        return $this->belongsTo(RetentionType::class, 'retention_type_id_iva');
     }
 
     public function getCollectionData(Configuration $configuration = null) {
