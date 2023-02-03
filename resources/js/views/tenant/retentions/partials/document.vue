@@ -234,10 +234,9 @@
                 }else{
                     this.form.total_retention = 0
                 }
-                
             },
             async changeDocumentType(){
-                let doc_type = await _.find(this.document_types,{'id':this.form.document_type_id}) 
+                let doc_type = await _.find(this.document_types,{'id':this.form.document_type_id})
                 this.form.document_type_description = doc_type.description
             },
             create() {
@@ -292,7 +291,7 @@
 
                 if(this.form.total_document<=0 || this.form.total_retention<=0 || this.form.total_to_pay<=0 || this.form.total_payment<=0 )
                     return { success:false, message:'Los totales deben ser mayores a cero' }
-                     
+
                 let sum_total_payment = _.sumBy(this.form.payments, (o) => { return parseFloat(o.total_payment); });
 
                 if(sum_total_payment > this.form.total_document)

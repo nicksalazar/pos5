@@ -50,7 +50,6 @@
     use Throwable;
     use App\Models\Tenant\GeneralPaymentCondition;
 
-
     class PurchaseController extends Controller
     {
 
@@ -84,13 +83,11 @@
         {
 
             $records = $this->getRecords($request);
-
             return new PurchaseCollection($records->paginate(config('tenant.items_per_page')));
-        }
 
+        }
         public function getRecords($request)
         {
-
             switch ($request->column) {
                 case 'name':
 
@@ -670,9 +667,9 @@
 
         }
 
-        
+
         /**
-         * 
+         *
          * Crear lote
          *
          * @param  string $lot_code
@@ -691,9 +688,9 @@
                 ]);
         }
 
-        
+
         /**
-         * 
+         *
          * Proceso para actualizar lotes en la compra
          *
          * @param  array $row
@@ -704,27 +701,27 @@
         {
             $lot_code = $row['lot_code'] ?? null;
             $date_of_due = $row['date_of_due'] ?? null;
-            
+
             // factor de lista de precios
             $presentation_quantity = (isset($purchase_item->item->presentation->quantity_unit)) ? $purchase_item->item->presentation->quantity_unit : 1;
             $quantity = $row['quantity'] * $presentation_quantity;
 
             if($lot_code && $date_of_due)
             {
-                $item_lots_group = $this->createItemLotsGroup($lot_code, $quantity, $date_of_due, $row['item_id']); 
+                $item_lots_group = $this->createItemLotsGroup($lot_code, $quantity, $date_of_due, $row['item_id']);
                 $purchase_item->item_lot_group_id = $item_lots_group->id;
                 $purchase_item->update();
             }
             else
             {
                 $data_item_lot_group = $row['data_item_lot_group'] ?? null;
-                
+
                 if($data_item_lot_group)
                 {
                     $new_date_of_due = $data_item_lot_group['date_of_due'];
                     $new_lot_code = $data_item_lot_group['lot_code'];
 
-                    $item_lots_group = $this->createItemLotsGroup($new_lot_code, $quantity, $new_date_of_due, $row['item_id']); 
+                    $item_lots_group = $this->createItemLotsGroup($new_lot_code, $quantity, $new_date_of_due, $row['item_id']);
 
                     $purchase_item->lot_code = $new_lot_code;
                     $purchase_item->date_of_due = $new_date_of_due;
@@ -861,9 +858,9 @@
             ];
         }
 
-        
+
         /**
-         * 
+         *
          * Anular lote ingresado por compra
          *
          * @param  PurchaseItem $purchase_item
@@ -906,7 +903,7 @@
                 }
                 if ($lot_enabled) {
 
-                    if ($element->item->lots_enabled && $element->lot_code) 
+                    if ($element->item->lots_enabled && $element->lot_code)
                     {
                         /*
                         $lot_group = ItemLotsGroup::where('code', $element->lot_code)->first();
@@ -937,11 +934,11 @@
 
         }
 
-        
+
         /**
          *
          * buscar lote por id o codigo
-         * 
+         *
          * @param  PurchaseItem $purchase_item
          * @return ItemLotsGroup
          */
