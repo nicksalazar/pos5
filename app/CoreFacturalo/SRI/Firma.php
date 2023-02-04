@@ -86,6 +86,10 @@ class Firma {
 
                         $this->certificate = $x509cert;
                         $this->certData = $certf;
+                    } else if ($certificante === "UANATACA S.A.") {
+
+                        $this->certificate = $x509cert;
+                        $this->certData = $certf;
                     } else {
 
                         $this->certificate = $x509cert;
