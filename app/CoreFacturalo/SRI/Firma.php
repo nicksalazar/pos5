@@ -409,7 +409,10 @@ class Firma {
         $reversed = array_reverse($this->certData['issuer']);
         $certIssuer = array();
         foreach ($reversed as $item => $value) {
-            $certIssuer[] = $item . '=' . $value;
+            if($item == 'CN' || $item == 'OU' || $item == 'O' || $item == 'C'){
+                $certIssuer[] = $item . '=' . $value;
+            }
+
         }
         return $certIssuer = implode(',', $certIssuer);
     }
