@@ -35,7 +35,7 @@ class CertificateController extends Controller
                 $pfx = file_get_contents($file);
                 $pem = GenerateCertificate::typePEM($pfx, $password);
                 //$name = 'certificate_'.'admin_master'.'.pem';
-                $name = 'certificate_'.'admin_master'.'.p12';
+                $name = 'certificate_' . $request->input('number') . '.p12';
                 if(!file_exists(storage_path('app'.DIRECTORY_SEPARATOR.'certificates'))) {
                     mkdir(storage_path('app'.DIRECTORY_SEPARATOR.'certificates'));
                 }

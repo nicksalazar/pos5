@@ -7,7 +7,7 @@
  */
 
 namespace App\CoreFacturalo\SRI;
-
+use Illuminate\Support\Facades\Log;
 use DOMDocument;
 use Exception;
 
@@ -52,11 +52,11 @@ class Firma {
             $pathFirma = $this->config['file'];
 
             if (openssl_pkcs12_read(file_get_contents($pathFirma, FILE_USE_INCLUDE_PATH), $certs, $this->config['pass'])) {
-
                 $x509cert = openssl_x509_read($certs['cert']);
 
                 $certf = openssl_x509_parse($x509cert);
                 $subject = $certf['subject']['CN'];
+                Log::info("Certificado: ".json_encode($certf));
                 $aux = null;
 
                 if (array_key_exists('O', $certf['subject'])) {
@@ -169,10 +169,10 @@ class Firma {
 
             $aux = 'openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1';
             //ejecutar comando openssl en windows//
-            //$salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            $salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
             //servidor linux ejecutar comando openssl ///
-            $salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
-
+            //$salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            Log::info($aux);
 
             if (strpos($salida, 'verified OK') !== false) {
 
@@ -385,7 +385,7 @@ class Firma {
                 elseif ($this->tipoComprobante === '04')
                     $xml = str_replace('</notaCredito>', $sig . '</notaCredito>', $xml);
 
-                $xmlSigned = '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . $xml;
+                $xmlSigned = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' . "\n" . $xml;
 
                 // guardar documento firmado
                 /*try {
@@ -412,11 +412,17 @@ class Firma {
     public function getIssuer() {
         $reversed = array_reverse($this->certData['issuer']);
         $certIssuer = array();
+
         foreach ($reversed as $item => $value) {
-            $certIssuer[] = $item . '=' . $value;
+            if($item == 'organizationIdentifier' && $value == 'VATES-A66721499'){
+                $certIssuer[] = '2.5.4.97' . '=' . '#0c0f56415445532d413636373231343939';
+            }else{
+                $certIssuer[] = $item . '=' . $value;
+            }
 
         }
         return $certIssuer = implode(',', $certIssuer);
+        //return "2.5.4.97=#0c0f56415445532d413636373231343939,CN=UANATACA CA2 2016,OU=TSP-UANATACA,O=UANATACA S.A.,L=Barcelona (see current address at www.uanataca.com/address),C=ES";
     }
 
     public function getSerial() {
