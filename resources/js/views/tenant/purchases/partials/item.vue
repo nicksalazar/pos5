@@ -875,8 +875,8 @@ export default {
                 system_isc_type_id: null,
                 percentage_isc: 0,
                 suggested_price: 0,
-                income_retention: null,
-                iva_retention: null,
+                income_retention: 0,
+                iva_retention: 0,
                 quantity: 1,
                 unit_price: 0,
                 charges: [],
@@ -986,23 +986,55 @@ export default {
             const val = _.find(this.retention_types_iva, {'id': event});
             const item = {..._.find(this.items, {'id': this.form.item_id})};
             if (val.type_id == '02') {
-                //_.round
-                if (item.sale_affectation_igv_type_id == '10') {
-                    this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.12)), 3)
-                } else if (item.sale_affectation_igv_type_id == '11') {
-                    this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.08)), 3)
-                } else if (item.sale_affectation_igv_type_id == '12') {
-                    this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.14)), 3)
-                } else if (item.sale_affectation_igv_type_id == '30') {
-                    this.form.iva_retention = _.round((val.percentage / 100) * this.iva, 3)
+                if(item.has_igv){
+                    if (item.sale_affectation_igv_type_id == '10') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.12)), 3)
+                    } else if (item.sale_affectation_igv_type_id == '11') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.08)), 3)
+                    } else if (item.sale_affectation_igv_type_id == '12') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.14)), 3)
+                    } else if (item.sale_affectation_igv_type_id == '30') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * this.iva, 3)
+                    }
+                }else{
+
+                    if (item.sale_affectation_igv_type_id == '10') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * ((this.iva * 1.12) - this.iva), 3)
+                    } else if (item.sale_affectation_igv_type_id == '11') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * ((this.iva * 1.08) - this.iva), 3)
+                    } else if (item.sale_affectation_igv_type_id == '12') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * ((this.iva * 1.14) - this.iva), 3)
+                    } else if (item.sale_affectation_igv_type_id == '30') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * this.iva, 3)
+                    }
                 }
+                //_.round
+
                 this.is_iva = true
             }
         },
         changeRetentionTypeIncome(event) {
             const val = _.find(this.retention_types_income, {'id': event});
+            const item = {..._.find(this.items, {'id': this.form.item_id})};
+
             if (val.type_id == '01') {
-                this.form.income_retention = _.round((val.percentage / 100) * this.income, 3)
+                if(item.has_igv){
+                    if (item.sale_affectation_igv_type_id == '10') {
+                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.12), 3)
+                    } else if (item.sale_affectation_igv_type_id == '11') {
+                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.08), 3)
+                    } else if (item.sale_affectation_igv_type_id == '12') {
+                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.14), 3)
+                    } else if (item.sale_affectation_igv_type_id == '30') {
+
+                        this.form.income_retention = _.round((val.percentage / 100) * this.income, 3)
+                    }
+
+                }else{
+
+                    this.form.income_retention = _.round((val.percentage / 100) * this.income, 3)
+                }
+
                 this.is_income = true
             }
         },

@@ -176,9 +176,12 @@ use App\Models\Tenant\RetentionTypePurchase;
             $warehouses = Warehouse::get();
             $permissions = auth()->user()->getPermissionsPurchase();
             $global_discount_types = ChargeDiscountType::whereIn('id', ['02', '03'])->whereActive()->get();
+            $retention_types_iva = RetentionType::where('type_id', '02')->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->get();
+
 
             return compact('suppliers', 'establishment', 'currency_types', 'number', 'discount_types', 'configuration', 'payment_conditions',
-                'charge_types', 'document_types_invoice', 'company', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
+                'charge_types', 'document_types_invoice', 'company','retention_types_income','retention_types_iva', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
         }
 
         public function table($table)
@@ -710,9 +713,9 @@ use App\Models\Tenant\RetentionTypePurchase;
 
         }
 
-        
+
         /**
-         * 
+         *
          * Crear lote
          *
          * @param  string $lot_code
@@ -731,9 +734,9 @@ use App\Models\Tenant\RetentionTypePurchase;
                 ]);
         }
 
-        
+
         /**
-         * 
+         *
          * Proceso para actualizar lotes en la compra
          *
          * @param  array $row
@@ -744,27 +747,27 @@ use App\Models\Tenant\RetentionTypePurchase;
         {
             $lot_code = $row['lot_code'] ?? null;
             $date_of_due = $row['date_of_due'] ?? null;
-            
+
             // factor de lista de precios
             $presentation_quantity = (isset($purchase_item->item->presentation->quantity_unit)) ? $purchase_item->item->presentation->quantity_unit : 1;
             $quantity = $row['quantity'] * $presentation_quantity;
 
             if($lot_code && $date_of_due)
             {
-                $item_lots_group = $this->createItemLotsGroup($lot_code, $quantity, $date_of_due, $row['item_id']); 
+                $item_lots_group = $this->createItemLotsGroup($lot_code, $quantity, $date_of_due, $row['item_id']);
                 $purchase_item->item_lot_group_id = $item_lots_group->id;
                 $purchase_item->update();
             }
             else
             {
                 $data_item_lot_group = $row['data_item_lot_group'] ?? null;
-                
+
                 if($data_item_lot_group)
                 {
                     $new_date_of_due = $data_item_lot_group['date_of_due'];
                     $new_lot_code = $data_item_lot_group['lot_code'];
 
-                    $item_lots_group = $this->createItemLotsGroup($new_lot_code, $quantity, $new_date_of_due, $row['item_id']); 
+                    $item_lots_group = $this->createItemLotsGroup($new_lot_code, $quantity, $new_date_of_due, $row['item_id']);
 
                     $purchase_item->lot_code = $new_lot_code;
                     $purchase_item->date_of_due = $new_date_of_due;
@@ -901,9 +904,9 @@ use App\Models\Tenant\RetentionTypePurchase;
             ];
         }
 
-        
+
         /**
-         * 
+         *
          * Anular lote ingresado por compra
          *
          * @param  PurchaseItem $purchase_item
@@ -946,7 +949,7 @@ use App\Models\Tenant\RetentionTypePurchase;
                 }
                 if ($lot_enabled) {
 
-                    if ($element->item->lots_enabled && $element->lot_code) 
+                    if ($element->item->lots_enabled && $element->lot_code)
                     {
                         /*
                         $lot_group = ItemLotsGroup::where('code', $element->lot_code)->first();
@@ -977,11 +980,11 @@ use App\Models\Tenant\RetentionTypePurchase;
 
         }
 
-        
+
         /**
          *
          * buscar lote por id o codigo
-         * 
+         *
          * @param  PurchaseItem $purchase_item
          * @return ItemLotsGroup
          */
