@@ -445,6 +445,8 @@ Vue.component('tenant-remember-change-password', require('./views/tenant/users/p
 Vue.component('system-report-login-lockout-index', require('@viewsModuleReport/system/report_login_lockout/index.vue'));
 Vue.component('system-user-not-change-password-index', require('@viewsModuleReport/system/user_not_change_password/index.vue'));
 
+//Asientos contables
+Vue.component('tenant-accountgroups-index', require('./views/tenant/account_groups/index.vue'));
 
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)

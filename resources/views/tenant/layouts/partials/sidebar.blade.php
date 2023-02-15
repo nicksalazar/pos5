@@ -949,6 +949,22 @@
                                         Libro Mayor
                                     </a>
                                 </li>
+                                 @if(in_array('advanced_order_forms', $vc_module_levels))
+                                <li class="nav-parent
+                                {{ ($firstLevel === 'order-forms')?'nav-active nav-expanded':'' }}
+                                    {{ ($firstLevel === 'drivers')?'nav-active nav-expanded':'' }}
+                                    {{ ($firstLevel === 'dispatchers')?'nav-active nav-expanded':'' }}
+                                        ">
+                                        <a class="nav-link"
+                                           href="#">Asientos Contables</a>
+                                        <ul class="nav nav-children">
+                                            <li class="{{ ($firstLevel === 'order-forms')?'nav-active':'' }}">
+                                                <a class="nav-link"
+                                                   href="{{route('tenant.accountgroups.index')}}">Cuentas Grupos</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif
