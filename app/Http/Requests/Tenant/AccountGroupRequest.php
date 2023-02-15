@@ -19,9 +19,11 @@ class AccountGroupRequest extends FormRequest
             'code' => [
                 'required',
                 Rule::unique('tenant.account_groups')->ignore($id),
+                'max:50',
             ],
             'description' => [
                 'required',
+                'max:50',
             ],
             'type' => [
                 'required',

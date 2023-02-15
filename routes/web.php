@@ -246,12 +246,22 @@ if ($hostname) {
             //Asientos contables
             //cuentas grupos
             Route::prefix('accounts-groups')->group(function () {
-                Route::get('', 'Tenant\AccountGroupController@index')->name('tenant.accountgroups.index')->middleware(['redirect.level', 'tenant.internal.mode']);
+                Route::get('', 'Tenant\AccountGroupController@index')->name('tenant.accountsgroups.index')->middleware(['redirect.level', 'tenant.internal.mode']);
                 Route::get('/columns', 'Tenant\AccountGroupController@columns');
                 Route::get('/records', 'Tenant\AccountGroupController@records');
                 Route::get('/record/{person}', 'Tenant\AccountGroupController@record');
                 Route::post('', 'Tenant\AccountGroupController@store');
                 Route::delete('/{person}', 'Tenant\AccountGroupController@destroy');
+            });
+
+            //cuentas movimientos
+            Route::prefix('accounts-movements')->group(function () {
+                Route::get('', 'Tenant\AccountMovementController@index')->name('tenant.accountsmovements.index')->middleware(['redirect.level', 'tenant.internal.mode']);
+                Route::get('/columns', 'Tenant\AccountMovementController@columns');
+                Route::get('/records', 'Tenant\AccountMovementController@records');
+                Route::get('/record/{id}', 'Tenant\AccountMovementController@record');
+                Route::post('', 'Tenant\AccountMovementController@store');
+                Route::delete('/{id}', 'Tenant\AccountMovementController@destroy');
             });
 
             //Documents

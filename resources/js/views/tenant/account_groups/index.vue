@@ -17,7 +17,7 @@
                 <data-table :resource="resource">
                     <tr slot="heading">
                         <th>#</th>
-                        <th>Código</th>
+                        <th>Código Cuenta</th>
                         <th>Descripción</th>
                         <th>Tipo</th>
                         <th>Fecha registro</th>

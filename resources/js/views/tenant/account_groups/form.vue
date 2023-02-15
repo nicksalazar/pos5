@@ -43,6 +43,7 @@
             </div>
           </div>
         </div>
+ <div class="row">
         <div class="col-md-6">
           <div :class="{ 'has-danger': errors.type }" class="form-group">
             <label class="control-label">
@@ -63,6 +64,8 @@
             ></small>
           </div>
         </div>
+        </div>
+
       </div>
       <div class="form-actions text-right mt-4">
         <el-button @click.prevent="close()">Cancelar</el-button>
