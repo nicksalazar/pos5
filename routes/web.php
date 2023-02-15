@@ -263,6 +263,15 @@ if ($hostname) {
                 Route::post('', 'Tenant\AccountMovementController@store');
                 Route::delete('/{id}', 'Tenant\AccountMovementController@destroy');
             });
+            //cuentas movimientos
+            Route::prefix('types-accounting-entries')->group(function () {
+                Route::get('', 'Tenant\TypesAccountingEntriesController@index')->name('tenant.typesaccountingentries.index')->middleware(['redirect.level', 'tenant.internal.mode']);
+                Route::get('/columns', 'Tenant\TypesAccountingEntriesController@columns');
+                Route::get('/records', 'Tenant\TypesAccountingEntriesController@records');
+                Route::get('/record/{id}', 'Tenant\TypesAccountingEntriesController@record');
+                Route::post('', 'Tenant\TypesAccountingEntriesController@store');
+                Route::delete('/{id}', 'Tenant\TypesAccountingEntriesController@destroy');
+            });
 
             //Documents
             Route::post('documents/categories', 'Tenant\DocumentController@storeCategories');

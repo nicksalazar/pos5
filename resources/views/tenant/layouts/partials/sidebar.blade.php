@@ -966,6 +966,10 @@
                                                 <a class="nav-link"
                                                    href="{{route('tenant.accountsmovements.index')}}">Cuentas Movimientos</a>
                                             </li>
+                                            <li class="{{ ($firstLevel === 'order-forms')?'nav-active':'' }}">
+                                                <a class="nav-link"
+                                                   href="{{route('tenant.typesaccountingentries.index')}}">Tipos Asientos</a>
+                                            </li>
                                         </ul>
                                     </li>
                                 @endif

@@ -448,6 +448,7 @@ Vue.component('system-user-not-change-password-index', require('@viewsModuleRepo
 //Asientos contables
 Vue.component('tenant-accountgroups-index', require('./views/tenant/account_groups/index.vue'));
 Vue.component('tenant-accountmovements-index', require('./views/tenant/account_movements/index.vue'));
+Vue.component('tenant-typesaccountingentries-index', require('./views/tenant/types_accounting_entries/index.vue'));
 
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
