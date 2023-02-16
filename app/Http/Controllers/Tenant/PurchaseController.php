@@ -51,7 +51,10 @@
     use Symfony\Component\HttpFoundation\StreamedResponse;
     use Throwable;
     use App\Models\Tenant\GeneralPaymentCondition;
-use App\Models\Tenant\RetentionTypePurchase;
+    use App\Models\Tenant\RetentionTypePurchase;
+    use App\Models\Tenant\RetentionsDetailEC;
+    use App\Models\Tenant\RetentionsEC;
+use Illuminate\Support\Facades\Log;
 
     class PurchaseController extends Controller
     {
@@ -340,10 +343,39 @@ use App\Models\Tenant\RetentionTypePurchase;
 
         public function store(PurchaseRequest $request)
         {
+            //Log::info("REQUEST: ".json_encode($request));
+            Log::info(json_encode($request->ret));
             $data = self::convert($request);
+            Log::info(json_encode($data));
             try {
                 $purchase = DB::connection('tenant')->transaction(function () use ($data) {
                     $doc = Purchase::create($data);
+
+                    $ret = new RetentionsEC();
+                    $ret->idRetencion = 'R'.$doc->number;
+                    $ret->idDocumento = $doc->id;
+                    $ret->fechaFizcal = '01/2023';
+                    $ret->idProveedor = $doc->supplier_id;
+                    $ret->establecimiento = $doc->establishment_id;
+                    $ret->ptoEmision = '001';
+                    $ret->secuencial = $doc->sequential_number;
+                    $ret->codSustento = $doc->document_type_id;
+                    $ret->codDocSustento = '100';
+                    $ret->numAuthSustento = $doc->auth_number;
+                    $ret->save();
+
+                    foreach($data['ret'] as $retDet){
+                        Log::info(json_encode($retDet));
+                        $detRet = new RetentionsDetailEC();
+                        $detRet->idRetencion = $ret->idRetencion;
+                        $detRet->codRetencion = $retDet['code'];
+                        $detRet->baseRet = $retDet['base'];
+                        $detRet->porcentajeRet = $retDet['porcentajeRet'];
+                        $detRet->valorRet = $retDet['valor'];
+                        $detRet->save();
+
+                    }
+
                     foreach ($data['items'] as $row) {
                         $p_item = new PurchaseItem();
                         $p_item->fill($row);
@@ -486,6 +518,8 @@ use App\Models\Tenant\RetentionTypePurchase;
 
         public static function convert($inputs)
         {
+            Log::info(json_encode($inputs));
+
             $company = Company::active();
             $values = [
                 'user_id' => auth()->id(),

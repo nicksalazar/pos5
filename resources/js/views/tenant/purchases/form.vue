@@ -554,15 +554,17 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Tipo</th>
+                                            <th>Código</th>
                                             <th>Descripción</th>
                                             <th>Valor</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(row, index) in retentions.ret"
+                                        <tr v-for="(row, index) in form.ret"
                                             :key="index">
                                             <td>{{ index + 1 }}</td>
                                             <td>{{ row.tipo}}</td>
+                                            <td>{{ row.code}}</td>
                                             <td>{{ row.desciption}}</td>
                                             <td>{{ row.valor}}</td>
                                         </tr>
@@ -787,7 +789,8 @@ export default {
             is_perception_agent: false,
             errors: {},
             form: {
-                items:[]
+                items:[],
+                ret:[]
             },
             aux_supplier_id: null,
             total_amount: 0,
@@ -811,9 +814,6 @@ export default {
             loading_search: false,
             purchaseNewId: null,
             showDialogLots: false,
-            retentions : {
-                ret:[]
-            },
             retention_types_income: [],
             retention_types_iva: [],
         }
@@ -1242,12 +1242,12 @@ export default {
                 has_payment: false,
                 payment_condition_id: '01',
                 fee: [],
+                ret:[],
 
             }
 
             // this.clickAddPayment()
 
-            this.retentions.ret = [];
             this.initInputPerson()
 
             this.readonly_date_of_due = false
@@ -1340,85 +1340,103 @@ export default {
             let retention_renta = 0
             let toal_retenido = 0
 
-
-            this.retentions.ret = []
-
+            this.form.ret = []
+            //console.log('TOTAL ITEMS: '+this.form.items.length)
             this.form.items.forEach((row) => {
 
-                console.log('data ROW', row)
+                console.log('Rows: ',row)
+                if(row.iva_retention > 0 || row.income_retention > 0){
+                    if(this.form.ret.length > 0){
+                        let nuevaRet = true
 
-                if(this.retentions.ret.length > 0){
-                    const addnew = false
+                        this.form.ret.forEach((data) => {
+                            if(row.iva_retention > 0 ){
+                                const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
+                                if(data.tipo == 'IVA' && data.desciption == retIvaDesc.description){
+                                    data.valor += parseFloat(row.iva_retention)
+                                    dato.base += row.total_taxes
+                                    nuevaRet = false
+                                }
+                            }
+                            if(row.income_retention > 0 ){
+                                const retIncomeDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
+                                if(data.tipo == 'RENTA' && data.desciption == retIncomeDesc.description){
+                                    data.valor += parseFloat(row.income_retention)
+                                    dato.base += row.unit_value
+                                    nuevaRet = false
+                                }
+                            }
 
-                    this.retentions.ret.forEach((data) => {
 
-                        const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
-                        if(data.tipo == 'IVA' && data.desciption == retIvaDesc.description){
-                            data.valor =+ parseFloat(row.iva_retention)
-                            addnew = true
+                        });
+
+                        if(nuevaRet){
+                            console.log('Nueva Retencion')
+
+                            if(row.iva_retention > 0 ){
+                                let retencionLocal = {}
+                                retencionLocal.tipo = 'IVA'
+                                retencionLocal.valor  = parseFloat(row.iva_retention)
+                                const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
+                                console.log('Tipo retencion IVA: '+retIvaDesc.description)
+                                retencionLocal.desciption  = retIvaDesc.description
+                                retencionLocal.code  = retIvaDesc.code
+                                retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                                retencionLocal.base  = row.total_taxes
+                                this.form.ret.push(retencionLocal)
+                            }
+                            if(row.income_retention > 0 ){
+                                let retencionLocal = {}
+                                retencionLocal.tipo = 'RENTA'
+                                retencionLocal.valor  = parseFloat(row.income_retention)
+                                const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
+                                console.log('Tipo retencion RENTA: '+retIvaDesc.description)
+                                retencionLocal.desciption  = retIvaDesc.description
+                                retencionLocal.code  = retIvaDesc.code
+                                retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                                retencionLocal.base  = row.unit_value
+                                this.form.ret.push(retencionLocal)
+                            }
                         }
-                        const retIncomeDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
-                        if(data.tipo == 'RENTA' && data.desciption == retIncomeDesc.description){
-                            data.valor =+ parseFloat(row.income_retention)
-                            addnew = true
-                        }
 
-                    });
-
-                    if(addnew == false){
-                        if(parseFloat(row.iva_retention) > 0 ){
-                            let retencionLocal = []
+                    }else{
+                        console.log('Retencion Inicial')
+                        if(row.iva_retention > 0 ){
+                            let retencionLocal = {}
                             retencionLocal.tipo = 'IVA'
                             retencionLocal.valor  = parseFloat(row.iva_retention)
                             const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
                             //console.log('Tipo retencion : '+retIvaDesc.description)
                             retencionLocal.desciption  = retIvaDesc.description
                             retencionLocal.code  = retIvaDesc.code
-                            this.retentions.ret.push(retencionLocal)
+                            retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                            retencionLocal.base  = row.total_taxes
+                            this.form.ret.push(retencionLocal)
                         }
-                        if(parseFloat(row.income_retention) > 0 ){
-                            let retencionLocal = []
+                        if(row.income_retention > 0 ){
+                            let retencionLocal = {}
                             retencionLocal.tipo = 'RENTA'
                             retencionLocal.valor  = parseFloat(row.income_retention)
                             const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
                             //console.log('Tipo retencion : '+retIvaDesc.description)
                             retencionLocal.desciption  = retIvaDesc.description
                             retencionLocal.code  = retIvaDesc.code
-                            this.retentions.ret.push(retencionLocal)
+                            retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                            retencionLocal.base  = row.unit_value
+                            this.form.ret.push(retencionLocal)
                         }
-                    }
 
-                }else{
-                    if(parseFloat(row.iva_retention) > 0 ){
-                        let retencionLocal = []
-                        retencionLocal.tipo = 'IVA'
-                        retencionLocal.valor  = parseFloat(row.iva_retention)
-                        const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
-                        //console.log('Tipo retencion : '+retIvaDesc.description)
-                        retencionLocal.desciption  = retIvaDesc.description
-                        retencionLocal.code  = retIvaDesc.code
-                        this.retentions.ret.push(retencionLocal)
                     }
-                    if(parseFloat(row.income_retention) > 0 ){
-                        let retencionLocal = []
-                        retencionLocal.tipo = 'RENTA'
-                        retencionLocal.valor  = parseFloat(row.income_retention)
-                        const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
-                        //console.log('Tipo retencion : '+retIvaDesc.description)
-                        retencionLocal.desciption  = retIvaDesc.description
-                        retencionLocal.code  = retIvaDesc.code
-                        this.retentions.ret.push(retencionLocal)
-                    }
-
                 }
+
 
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
 
-                retention_iva += parseFloat(row.iva_retention)
-                retention_renta += parseFloat(row.income_retention)
+                retention_iva = parseFloat(row.iva_retention)
+                retention_renta = parseFloat(row.income_retention)
 
-                toal_retenido += (parseFloat(row.iva_retention) + parseFloat(row.income_retention))
+                toal_retenido += (retention_iva + retention_renta)
 
                 if (row.affectation_igv_type_id === '10') {
                     total_taxed += parseFloat(row.total_value)
@@ -1451,6 +1469,8 @@ export default {
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
 
+                //console.log('total: '+ total)
+                //console.log('retenido : '+ toal_retenido)
             });
 
             // isc
@@ -1595,11 +1615,10 @@ export default {
 
             this.loading_submit = true
             // await this.changePaymentMethodType(false)
+            console.log('Enviando Datos: ',this.form)
             await this.$http.post(`/${this.resource}`, this.form)
                 .then(response => {
-
                     if (response.data.success) {
-
                         if (this.purchase_order_id) {
 
                             this.$message({
