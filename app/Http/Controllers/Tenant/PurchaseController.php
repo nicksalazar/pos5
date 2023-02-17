@@ -18,6 +18,8 @@
     use App\Models\Tenant\Catalogs\DocumentType;
     use App\Models\Tenant\Catalogs\OperationType;
     use App\Models\Tenant\Catalogs\PriceType;
+    use App\Models\Tenant\Catalogs\PurchaseDocumentType;
+    use App\Models\Tenant\Catalogs\RetentionType;
     use App\Models\Tenant\Catalogs\SystemIscType;
     use App\Models\Tenant\Company;
     use App\Models\Tenant\Configuration;
@@ -49,7 +51,10 @@
     use Symfony\Component\HttpFoundation\StreamedResponse;
     use Throwable;
     use App\Models\Tenant\GeneralPaymentCondition;
-
+    use App\Models\Tenant\RetentionTypePurchase;
+    use App\Models\Tenant\RetentionsDetailEC;
+    use App\Models\Tenant\RetentionsEC;
+use Illuminate\Support\Facades\Log;
 
     class PurchaseController extends Controller
     {
@@ -57,6 +62,8 @@
         use FinanceTrait;
         use StorageDocument;
         use OfflineTrait;
+
+        private $id;
 
         public function index()
         {
@@ -84,7 +91,7 @@
         {
 
             $records = $this->getRecords($request);
-
+            
             return new PurchaseCollection($records->paginate(config('tenant.items_per_page')));
         }
 
@@ -121,6 +128,7 @@
                     break;
             }
 
+
             return $records;
 
         }
@@ -146,6 +154,38 @@
 
             return compact('suppliers', 'establishment', 'currency_types', 'discount_types', 'configuration', 'payment_conditions',
                 'charge_types', 'document_types_invoice', 'company', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
+        }
+
+        public function tables_purchase()
+        {
+            $suppliers = $this->table('suppliers');
+            $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
+            $currency_types = CurrencyType::whereActive()->get();
+            if (!empty(Purchase::latest()->first()->id)) {
+                $purchase_id = Purchase::latest()->first()->id;
+                $number = Purchase::where('id', $purchase_id)->get();
+            } else {
+                $number = [];
+            }
+            $document_types_invoice = PurchaseDocumentType::DocumentsActiveToPurchase()->get();
+            $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->whereActive()->get();
+            $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->whereActive()->get();
+            $company = Company::active();
+            $payment_method_types = PaymentMethodType::getPaymentMethodTypes();
+            // $payment_method_types = PaymentMethodType::all();
+            $payment_destinations = $this->getPaymentDestinations();
+            $customers = $this->getPersons('customers');
+            $configuration = Configuration::first();
+            $payment_conditions = GeneralPaymentCondition::get();
+            $warehouses = Warehouse::get();
+            $permissions = auth()->user()->getPermissionsPurchase();
+            $global_discount_types = ChargeDiscountType::whereIn('id', ['02', '03'])->whereActive()->get();
+            $retention_types_iva = RetentionType::where('type_id', '02')->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->get();
+
+
+            return compact('suppliers', 'establishment', 'currency_types', 'number', 'discount_types', 'configuration', 'payment_conditions',
+                'charge_types', 'document_types_invoice', 'company','retention_types_income','retention_types_iva', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
         }
 
         public function table($table)
@@ -259,6 +299,11 @@
             $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
             $warehouses = Warehouse::all();
 
+            $retention_types_iva = RetentionType::where('type_id', '02')->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->get();
+
+            $retention_types_purch = RetentionTypePurchase::get();
+
             $operation_types = OperationType::whereActive()->get();
             $is_client = $this->getIsClient();
             $configuration = Configuration::first();
@@ -276,7 +321,10 @@
                 'warehouses',
                 'operation_types',
                 'is_client',
-                'configuration'
+                'configuration',
+                'retention_types_iva',
+                'retention_types_income',
+                'retention_types_purch'
             );
         }
 
@@ -296,10 +344,39 @@
 
         public function store(PurchaseRequest $request)
         {
+            //Log::info("REQUEST: ".json_encode($request));
+            Log::info(json_encode($request->ret));
             $data = self::convert($request);
+            Log::info(json_encode($data));
             try {
                 $purchase = DB::connection('tenant')->transaction(function () use ($data) {
                     $doc = Purchase::create($data);
+
+                    $ret = new RetentionsEC();
+                    $ret->idRetencion = 'R'.$doc->number;
+                    $ret->idDocumento = $doc->id;
+                    $ret->fechaFizcal = '01/2023';
+                    $ret->idProveedor = $doc->supplier_id;
+                    $ret->establecimiento = $doc->establishment_id;
+                    $ret->ptoEmision = '001';
+                    $ret->secuencial = $doc->sequential_number;
+                    $ret->codSustento = $doc->document_type_id;
+                    $ret->codDocSustento = '100';
+                    $ret->numAuthSustento = $doc->auth_number;
+                    $ret->save();
+
+                    foreach($data['ret'] as $retDet){
+                        Log::info(json_encode($retDet));
+                        $detRet = new RetentionsDetailEC();
+                        $detRet->idRetencion = $ret->idRetencion;
+                        $detRet->codRetencion = $retDet['code'];
+                        $detRet->baseRet = $retDet['base'];
+                        $detRet->porcentajeRet = $retDet['porcentajeRet'];
+                        $detRet->valorRet = $retDet['valor'];
+                        $detRet->save();
+
+                    }
+
                     foreach ($data['items'] as $row) {
                         $p_item = new PurchaseItem();
                         $p_item->fill($row);
@@ -433,7 +510,6 @@
             }
         }
 
-
         private function savePurchaseFee($purchase, $fee)
         {
             foreach ($fee as $row) {
@@ -443,6 +519,8 @@
 
         public static function convert($inputs)
         {
+            Log::info(json_encode($inputs));
+
             $company = Company::active();
             $values = [
                 'user_id' => auth()->id(),
@@ -670,9 +748,9 @@
 
         }
 
-        
+
         /**
-         * 
+         *
          * Crear lote
          *
          * @param  string $lot_code
@@ -691,9 +769,9 @@
                 ]);
         }
 
-        
+
         /**
-         * 
+         *
          * Proceso para actualizar lotes en la compra
          *
          * @param  array $row
@@ -704,27 +782,27 @@
         {
             $lot_code = $row['lot_code'] ?? null;
             $date_of_due = $row['date_of_due'] ?? null;
-            
+
             // factor de lista de precios
             $presentation_quantity = (isset($purchase_item->item->presentation->quantity_unit)) ? $purchase_item->item->presentation->quantity_unit : 1;
             $quantity = $row['quantity'] * $presentation_quantity;
 
             if($lot_code && $date_of_due)
             {
-                $item_lots_group = $this->createItemLotsGroup($lot_code, $quantity, $date_of_due, $row['item_id']); 
+                $item_lots_group = $this->createItemLotsGroup($lot_code, $quantity, $date_of_due, $row['item_id']);
                 $purchase_item->item_lot_group_id = $item_lots_group->id;
                 $purchase_item->update();
             }
             else
             {
                 $data_item_lot_group = $row['data_item_lot_group'] ?? null;
-                
+
                 if($data_item_lot_group)
                 {
                     $new_date_of_due = $data_item_lot_group['date_of_due'];
                     $new_lot_code = $data_item_lot_group['lot_code'];
 
-                    $item_lots_group = $this->createItemLotsGroup($new_lot_code, $quantity, $new_date_of_due, $row['item_id']); 
+                    $item_lots_group = $this->createItemLotsGroup($new_lot_code, $quantity, $new_date_of_due, $row['item_id']);
 
                     $purchase_item->lot_code = $new_lot_code;
                     $purchase_item->date_of_due = $new_date_of_due;
@@ -861,9 +939,9 @@
             ];
         }
 
-        
+
         /**
-         * 
+         *
          * Anular lote ingresado por compra
          *
          * @param  PurchaseItem $purchase_item
@@ -906,7 +984,7 @@
                 }
                 if ($lot_enabled) {
 
-                    if ($element->item->lots_enabled && $element->lot_code) 
+                    if ($element->item->lots_enabled && $element->lot_code)
                     {
                         /*
                         $lot_group = ItemLotsGroup::where('code', $element->lot_code)->first();
@@ -937,11 +1015,11 @@
 
         }
 
-        
+
         /**
          *
          * buscar lote por id o codigo
-         * 
+         *
          * @param  PurchaseItem $purchase_item
          * @return ItemLotsGroup
          */

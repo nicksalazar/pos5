@@ -128,6 +128,7 @@
                                 <th>Cód. Interno</th>
                                 <th>Tipo de proceso</th>
                                 <th>Prod. F. de inicio</th>
+                                <th>Estado</th>
                                 <th>Prod. F. de Fin</th>
                                 <th>Colaborador de producción</th>
                                 <th>Cantidad</th>
@@ -142,6 +143,7 @@
                                 <th>Mez. F. de Fin</th>
                                 <th>Colaborador de mezcla</th>
                                 <th>Comentario</th>
+                                <th>Fecha de registro</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -151,6 +153,42 @@
                                 <td>000{{ row.id }}</td>
                                 <td>{{ row.proccess_type }}</td>
                                 <td>{{ row.date_start }} - {{ row.time_start }}</td>
+                                <td>
+                                    <!--
+                                        <el-tooltip v-if="tooltip(row, false)"
+                                                class="item"
+                                                effect="dark"
+                                                placement="bottom">
+                                        <div slot="content">{{ tooltip(row) }}</div>
+                                        <span class="badge bg-secondary text-white"
+                                            :class="{'bg-danger': (row.state_type_id === '11'), 'bg-warning': (row.state_type_id === '13'), 'bg-secondary': (row.state_type_id === '01'), 'bg-info': (row.state_type_id === '03'), 'bg-success': (row.state_type_id === '05'), 'bg-secondary': (row.state_type_id === '07'), 'bg-dark': (row.state_type_id === '09')}">
+                                            {{ row.state_type_description }}
+                                        </span>
+                                    </el-tooltip>
+                                    <span v-else
+                                        class="badge bg-secondary text-white"
+                                        :class="{'bg-danger': (row.state_type_id === '11'), 'bg-warning': (row.state_type_id === '13'), 'bg-secondary': (row.state_type_id === '01'), 'bg-info': (row.state_type_id === '03'), 'bg-success': (row.state_type_id === '05'), 'bg-secondary': (row.state_type_id === '07'), 'bg-dark': (row.state_type_id === '09')}">
+                                        {{ row.state_type_description }}
+                                    </span>
+                                    <template v-if="row.regularize_shipping && row.state_type_id === '01'">
+                                        <el-tooltip class="item"
+                                                    effect="dark"
+                                                    :content="row.message_regularize_shipping"
+                                                    placement="top-start">
+                                            <i class="fas fa-exclamation-triangle fa-lg"
+                                            style="color: #D2322D !important"></i>
+                                        </el-tooltip>
+                                    </template>
+                                    -->
+                                    <el-tooltip class="item"
+                                                effect="dark"
+                                                placement="bottom">
+                                        <span class="badge bg-secondary text-white"
+                                            :class="{'bg-danger': (row.state_type_id === '04'), 'bg-secondary': (row.state_type_id === '01'), 'bg-info': (row.state_type_id === '02'), 'bg-success': (row.state_type_id === '03')}">
+                                            {{ row.state_type_description }}
+                                        </span>
+                                    </el-tooltip>
+                                </td>
                                 <td>{{ row.date_end }} - {{ row.time_end }}</td>
                                 <td>{{ row.production_collaborator }}</td>
                                 <td>{{ row.quantity }}</td>
@@ -169,6 +207,7 @@
                                 <td>{{ row.mix_date_end }} - {{ row.mix_time_end }}</td>
                                 <td>{{ row.mix_collaborator }}</td>
                                 <td>{{ row.comment }}</td>
+                                <td>{{ row.created_at }}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -356,6 +395,21 @@ export default {
         clickDownloadExcel2() {
             window.open(`/${this.resource}/excel2?${this.getQueryParameters()}`, '_blank');
         },
+        /*
+        tooltip(row, message = true) {
+            if (message) {
+                if (row.shipping_status) return row.shipping_status.message;
+
+                if (row.sunat_shipping_status) return row.sunat_shipping_status.message;
+
+                if (row.query_status) return row.query_status.message;
+            }
+
+            if ((row.shipping_status) || (row.sunat_shipping_status) || (row.query_status)) return true;
+
+            return false;
+        },
+        */
 
         async getRecordsByFilter() {
             /*

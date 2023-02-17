@@ -198,7 +198,6 @@
             this.initForm()
             this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
- 
                     this.suppliers = response.data.suppliers 
                     this.establishments = response.data.establishments
                     this.all_series = response.data.series

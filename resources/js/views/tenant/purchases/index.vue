@@ -35,6 +35,7 @@
                         <th>Estado de pago</th>
                         <th>Número</th>
                         <th>Productos</th>
+                        <th>Retenciones</th>
                         <th>Pagos</th>
                         <!-- <th>F. Pago</th> -->
                         <!-- <th>Estado</th> -->
@@ -63,7 +64,6 @@
                             <small v-text="row.document_type_description"></small><br/>
                         </td>
                         <td>
-
                             <el-popover
                                 placement="right"
                                 width="400"
@@ -74,6 +74,21 @@
                                     <el-table-column width="90" property="quantity" label="Cantidad"></el-table-column>
                                 </el-table>
                                 <el-button slot="reference"> <i class="fa fa-eye"></i></el-button>
+                            </el-popover>
+
+                        </td>
+                        <td>
+                            <el-popover
+                                placement="right"
+                                width="400"
+                                trigger="click">
+                                <el-table :data="row.retenciones">
+                                    <el-table-column width="80" property="key" label="#"></el-table-column>
+                                    <el-table-column width="90" property="type" label="Tipo"></el-table-column>
+                                    <el-table-column width="220" property="description" label="Descripcion"></el-table-column>
+                                    <el-table-column width="90" property="valorRet" label="Valor"></el-table-column>
+                                </el-table>
+                                <el-button slot="reference"> <i class="fa fa-list"></i></el-button>
                             </el-popover>
 
                         </td>
@@ -121,7 +136,7 @@
                             <template v-if="permissions.delete_purchase&&row.state_type_id=='11'">
                                 <button v-if="row.state_type_id == '11'" type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
                             </template>
-                            
+
                             <button  type="button" class="btn waves-effect waves-light btn-xs btn-primary" @click.prevent="clickOptions(row.id)">Opciones</button>
                             <button
                                 type="button"

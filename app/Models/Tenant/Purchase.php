@@ -5,10 +5,16 @@ namespace App\Models\Tenant;
 use App\Models\Tenant\GuideFile;
 use App\Models\Tenant\Catalogs\CurrencyType;
 use App\Models\Tenant\Catalogs\DocumentType;
+use App\Models\Tenant\Catalogs\PurchaseDocumentType;
+use App\Models\Tenant\Catalogs\RetentionType;
 use Carbon\Carbon;
 use Modules\Purchase\Models\PurchaseOrder;
 use stdClass;
 use Illuminate\Database\Eloquent\Collection;
+
+use App\Models\Tenant\RetentionsDetailEC;
+use App\Models\Tenant\RetentionsEC;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class Purchase
@@ -62,7 +68,7 @@ class Purchase extends ModelTenant
 {
     // use SoftDeletes;
 
-    protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'purchase_payments'];
+protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items','purchase_payments'/*, 'retention_type'*/];
 
     protected $fillable = [
         'user_id',
@@ -116,6 +122,10 @@ class Purchase extends ModelTenant
         'total_canceled',
         'payment_condition_id',
         'observation',
+
+        //'retention_type_id',
+        'sequential_number',
+        'auth_number',
     ];
 
     protected $casts = [
@@ -130,6 +140,14 @@ class Purchase extends ModelTenant
     public function establishment()
     {
         return $this->belongsTo(Establishment::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function retention_type()
+    {
+        return $this->belongsTo(RetentionType::class, 'retention_type_id');
     }
 
     // public function getEstablishmentAttribute($value)
@@ -278,7 +296,7 @@ class Purchase extends ModelTenant
      */
     public function document_type()
     {
-        return $this->belongsTo(DocumentType::class, 'document_type_id');
+        return $this->belongsTo(PurchaseDocumentType::class, 'document_type_id');
     }
 
     /**
@@ -318,6 +336,11 @@ class Purchase extends ModelTenant
     public function getNumberFullAttribute()
     {
         return $this->series.'-'.$this->number;
+    }
+
+    public function getNumber()
+    {
+        return $this->number;
     }
 
     /**
@@ -381,7 +404,7 @@ class Purchase extends ModelTenant
                 $user = new User();
             }
         }
-        else { 
+        else {
             $user = auth()->user();
         }
         return ($user->type === 'seller') ? $query->where('user_id', $user->id) : null;
@@ -517,6 +540,30 @@ class Purchase extends ModelTenant
                             // --    utility_item
 
         $guides = (array)$this->guides;
+
+        $retencionesID = RetentionsEC::where('idDocumento',$this->id)->get();
+        $retencoinesArray = [];
+        if($retencionesID){
+            //Log::info(json_encode($retencionesID));
+            $retencoinesArray =  RetentionsDetailEC::where('idRetencion',$retencionesID[0]->idRetencion)->get();
+        }
+        $retMejora = null;
+        foreach($retencoinesArray as $key => $retencionLocal){
+
+            $catType = RetentionType::where('code',$retencionLocal->codRetencion)->get();
+            Log::info("RETENCIONES: ".json_encode($catType));
+            $tipo = 'RENTA';
+            if($catType[0]->type_id == '01'){
+                $tipo = 'IVA';
+            }
+            $retMejora[] = [
+                'key' => $key + 1,
+                'type' => $tipo,
+                'description' => $catType[0]->description,
+                'value' => round($retencionLocal->valorRet,2)
+            ];
+        }
+
         return [
             'id'                             => $this->id,
             'customer_number'                             => $customer_number,
@@ -567,6 +614,7 @@ class Purchase extends ModelTenant
                     'quantity'    => round($row->quantity, 2)
                 ];
             }),
+            'retenciones' => $retMejora,
             'print_a4'                       => url('')."/purchases/print/{$this->external_id}/a4",
             'filename'                         => $this->filename,
         ];
@@ -622,7 +670,7 @@ class Purchase extends ModelTenant
     {
         return $this->hasMany(GuideFile::class);
     }
-    
+
     /**
      * Validar si es compra en dolares
      *
@@ -639,7 +687,7 @@ class Purchase extends ModelTenant
     }
 
     /**
-     * 
+     *
      * Obtener total y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -650,7 +698,7 @@ class Purchase extends ModelTenant
     }
 
     /**
-     * 
+     *
      * Obtener total isc y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -659,9 +707,9 @@ class Purchase extends ModelTenant
     {
         return $this->convertValueToPen($this->total_isc);
     }
-    
+
     /**
-     * 
+     *
      * Obtener total igv y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -671,7 +719,7 @@ class Purchase extends ModelTenant
         return $this->convertValueToPen($this->total_igv);
     }
     /**
-     * 
+     *
      * Obtener total base y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -680,9 +728,9 @@ class Purchase extends ModelTenant
     {
         return $this->convertValueToPen($this->total_taxed);
     }
-    
+
     /**
-     * 
+     *
      * Obtener total exonerado y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -693,7 +741,7 @@ class Purchase extends ModelTenant
     }
 
     /**
-     * 
+     *
      * Obtener Subtotal 0% y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -704,7 +752,7 @@ class Purchase extends ModelTenant
     }
 
     /**
-     * 
+     *
      * Obtener total gratuito y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -713,9 +761,9 @@ class Purchase extends ModelTenant
     {
         return $this->convertValueToPen($this->total_free);
     }
-    
+
     /**
-     * 
+     *
      * Obtener total exportacion y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -727,7 +775,7 @@ class Purchase extends ModelTenant
 
 
     /**
-     * 
+     *
      * Obtener pagos en efectivo
      *
      * @return Collection
@@ -739,11 +787,11 @@ class Purchase extends ModelTenant
         }});
     }
 
-    
+
     /**
-     * 
+     *
      * Validar si el registro esta rechazado o anulado
-     * 
+     *
      * @return bool
      */
     public function isVoidedOrRejected()
@@ -751,9 +799,9 @@ class Purchase extends ModelTenant
         return in_array($this->state_type_id, self::VOIDED_REJECTED_IDS);
     }
 
-        
+
     /**
-     * 
+     *
      * Obtener url para impresión
      *
      * @param  string $format
@@ -763,23 +811,23 @@ class Purchase extends ModelTenant
     {
         return url("purchases/print/{$this->external_id}/{$format}");
     }
-        
+
 
     /**
-     * 
+     *
      * Filtro para no incluir relaciones en consulta
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
-     */  
+     */
     public function scopeWhereFilterWithOutRelations($query)
     {
-        return $query->withOut(['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'purchase_payments']);
+        return $query->withOut(['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'purchase_payments'/*, 'retention_type'*/]);
     }
 
 
     /**
-     * 
+     *
      * Obtener relaciones necesarias o aplicar filtros para reporte pagos - finanzas
      *
      * @param  Builder $query
@@ -791,9 +839,9 @@ class Purchase extends ModelTenant
                     ->with([
                         'document_type'=> function($q){
                             $q->select('id', 'description');
-                        }, 
+                        },
                     ]);
     }
-    
+
 
 }
