@@ -10,4 +10,11 @@ class RetentionType extends ModelCatalog
 
     protected $table = "cat_retention_types";
     public $incrementing = false;
+    public $fillable = [
+        'active',
+        'percentage',
+        'description',
+        'code',
+        'type_id'
+    ];
 }

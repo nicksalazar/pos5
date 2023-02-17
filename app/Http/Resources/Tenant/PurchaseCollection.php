@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources\Tenant;
 
+use App\Models\Tenant\Catalogs\RetentionType;
+use App\Models\Tenant\RetentionsDetailEC;
+use App\Models\Tenant\RetentionsEC;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Collection;
 
@@ -30,6 +33,14 @@ class PurchaseCollection extends ResourceCollection
             {
                 $total += round($row->total_perception, 2);
             }
+
+            $retencionesID = RetentionsEC::where('idDocumento',$this->id)->get();
+            $retencoinesArray = [];
+            if($retencionesID){
+                //Log::info(json_encode($retencionesID));
+                $retencoinesArray =  RetentionsDetailEC::where('idRetencion',$retencionesID->idRetencion)->get();
+            }
+
             return [
                 'id' => $row->id,
                 'document_type_description' => $row->document_type->description,
@@ -70,6 +81,19 @@ class PurchaseCollection extends ResourceCollection
                         'id' => $row->id,
                         'description' => $row->item->description,
                         'quantity' => round($row->quantity,2)
+                    ];
+                }),
+                'retenciones' => $retencoinesArray->each(function($row, $key) {
+                    $catType = RetentionType::where('code',$row->code)->get();
+                    $tipo = 'RENTA';
+                    if($catType->type_id == '01'){
+                        $tipo = 'IVA';
+                    }
+                    return [
+                        'key' => $key + 1,
+                        'type' => $tipo,
+                        'description' => $catType->description,
+                        'value' => round($row->valorRet,2)
                     ];
                 }),
                 'print_a4' => url('')."/purchases/print/{$row->external_id}/a4",
