@@ -270,20 +270,24 @@ class Facturalo
     {
         $serie = null;
 
-        if($this->doc_type == 01){
+        if($this->doc_type == 01 || $this->doc_type == 04 ){
+
             $serie = str_pad(substr($this->document->series,1,3), '3', '0', STR_PAD_LEFT);
+            $estID = $this->document->user->establishment->code;
+            $establecimeinto = Establishment::find($this->document->establishment_id);
+            $this->clave = "" . date('dmY', strtotime($this->document->date_of_issue)) . "" .$this->doc_type. "" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".substr($estID,0,3)."".$serie. str_pad($this->document->number , '9', '0', STR_PAD_LEFT) . "" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
+            $this->digito_verificador_clave = $this->validar_clave($this->clave);
+            $this->clave_acceso = $this->clave . "" . $this->digito_verificador_clave . "";
+            $this->document->clave_SRI = $this->clave_acceso;
+            $this->document->update();
+
         }else{
-            $serie = str_pad(substr($this->document->series,2,2), '3', '0', STR_PAD_LEFT);
+            //$serie = str_pad(substr($this->document->series,2,2), '3', '0', STR_PAD_LEFT);
+
         }
 
         //Log::info('ID ESTABLECIMIENTO :'.$this->document->user->establishment->code);
-        $estID = $this->document->user->establishment->code;
-        $establecimeinto = Establishment::find($this->document->establishment_id);
-        $this->clave = "" . date('dmY', strtotime($this->document->date_of_issue)) . "" .$this->doc_type. "" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".substr($estID,0,3)."".$serie. str_pad($this->document->number , '9', '0', STR_PAD_LEFT) . "" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
-        $this->digito_verificador_clave = $this->validar_clave($this->clave);
-        $this->clave_acceso = $this->clave . "" . $this->digito_verificador_clave . "";
-        $this->document->clave_SRI = $this->clave_acceso;
-        $this->document->update();
+
         $template = new Template();
         $this->xmlUnsigned = XmlFormat::format($template->xml($this->type, $this->company, $this->document, $this->clave_acceso));
         $this->uploadFile($this->xmlUnsigned, 'unsigned');
@@ -341,7 +345,7 @@ class Facturalo
             //$this->signer->setCertificateFromFile($this->pathCertificate);
             //$this->xmlSigned = $this->signer->signXml($this->xmlUnsigned);
             $firma = new FirmarSri();
-            $this->xmlSigned = $firma->Firma_SRI($this->clave_acceso, $this->pathCertificate,$this->company->certificate_pass,$this->xmlUnsigned);  
+            $this->xmlSigned = $firma->Firma_SRI($this->clave_acceso, $this->pathCertificate,$this->company->certificate_pass,$this->xmlUnsigned);
             //Log::info('resultado Frima: '.json_encode($this->xmlSigned));
         }
 
@@ -442,7 +446,7 @@ class Facturalo
                     $paymentMethod = PaymentMethodType::find($pagoCred->payment_method_type_id);
                     Log::error(json_encode($paymentMethod));
                     $PagoSri = SriFormasPagos::where('code',$paymentMethod->pago_sri)->get();
-    
+
                     Log::error(json_encode($PagoSri));
                     $pagoCred->sridesc = $PagoSri[0]->description;
                     Log::error('metodo de pago: '.$PagoSri[0]->description);
@@ -450,7 +454,7 @@ class Facturalo
                     $pagoCred->sridesc = 'SIN UTILIZACION DEL SISTEMA FINANCIERO';
                     Log::error('SIN MEDOTO DE PAGO DEFINIDO');
                 }
-                
+
             }
         }
         if($this->document->payments){
@@ -469,7 +473,7 @@ class Facturalo
 
     public function createPdf($document = null, $type = null, $format = null, $output = 'pdf') {
 
-        
+
 
         ini_set("pcre.backtrack_limit", "5000000");
         $template = new Template();
@@ -837,17 +841,15 @@ class Facturalo
 
             $url = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl";
         }
-        
+
         $request = new AuthSri();
         $authSRI = $request->send($url,$this->document->clave_SRI);
-        
+
         if($authSRI != ''){
 
             $mensaje = null;
             $code = null;
             $estado = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['estado'];
-
-           
 
             if($estado == 'RECHAZADA'){
 
@@ -857,18 +859,18 @@ class Facturalo
                 ]);
                 $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
                 $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje'];
-            
+
             }elseif($estado == 'AUTORIZADO'){
 
                 $fechaAutorizado = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['fechaAutorizacion'];
                 $fechaArray = explode('T',$fechaAutorizado);
-                Log::info('gettype: '.$fechaArray[0].' -- '.substr($fechaArray[1],0,8));
+                //Log::info('gettype: '.$fechaArray[0].' -- '.substr($fechaArray[1],0,8));
 
-                
+
                 $this->document->update([
                     'state_type_id' => self::ACCEPTED
                 ]);
-                
+
                 $this->document->date_authorization = $fechaArray[0];
                 $this->document->time_authorization = substr($fechaArray[1],0,8);
                 $this->document->update();
@@ -884,7 +886,7 @@ class Facturalo
                     $this->doc_type = '01';
 
                 }else if($this->document->document_type_id === '07'){
-            
+
                     $tipodoc = 'note';
                     $this->doc_type = '07';
                 }
@@ -893,18 +895,29 @@ class Facturalo
                 $temp = tempnam(sys_get_temp_dir(), 'pdf');
                 file_put_contents($temp, $this->getStorage($this->document->filename, 'pdf'));
                 $this->sendEmail2();
-            
+
             }elseif($estado == 'NO AUTORIZADO'){
 
-                Log::info('ESTADO: '.$estado);
+                //Log::info('ESTADO: '.$estado);
 
                 $this->document->update([
                     'state_type_id' => self::NOACCEPTED
                 ]);
                 $code = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['identificador'];
-                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje']; 
+                $mensaje = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']['mensaje']['mensaje'];
 
-            }else{
+            }elseif($estado == 'EN PROCESO'){
+
+                //Log::info('ESTADO: '.$estado);
+
+                $this->document->update([
+                    'state_type_id' => self::OBSERVED
+                ]);
+                $code = 300;
+                $mensaje = 'DOCUMENTO EN PROCESO';
+
+            }
+            else{
 
                 $this->document->update([
                     'state_type_id' => self::OBSERVED
@@ -918,7 +931,7 @@ class Facturalo
                     $mensaje = 'NO SE ENCONTRO EL DOCUMENTO EN EL SISTEMA DEL SRI';
 
                 }
-                
+
             }
 
             $this->response = [
@@ -1039,7 +1052,7 @@ class Facturalo
             $estado = NULL;
             $code = NULL;
             $mensaje = NULL;
-            
+
             try{
 
                 $estado = $responseSRI['RespuestaRecepcionComprobante']['estado'];
@@ -1060,7 +1073,7 @@ class Facturalo
                     $mensaje = 'NO SE RECUPERO UNA RESPUESTA DEL SRI';
 
                 }
-                
+
                 $this->response = [
                     'sent' => false,
                     'code' => $code,
@@ -1075,11 +1088,11 @@ class Facturalo
                         'description' => $mensaje
                     ]
                 ]);
-                
-                
+
+
             }catch(Exception $ex){
 
-                
+
 
                 try {
 
@@ -1105,7 +1118,7 @@ class Facturalo
                         'notes' => $estado
                     ];
                 }
-                
+
 
                 $this->updateRegularizeShipping($code, $mensaje);
 
@@ -1120,7 +1133,7 @@ class Facturalo
                 'code' => $code,
                 'description' => $message
             ];
-            
+
             $this->updateRegularizeShipping($code, $message);
         }
     }
@@ -1198,7 +1211,7 @@ class Facturalo
     public function senderXmlSignedSummary()
     {
         $res = $this->senderXmlSigned();
-        
+
         if($res->isSuccess()) {
             $ticket = $res->getTicket();
             $this->updateTicket($ticket);
@@ -1270,7 +1283,7 @@ class Facturalo
                 }
 
             } else {
-                
+
                 //enviar cdr a pse
                 $this->sendCdrToPse($res->getCdrZip(), $this->document);
                 //enviar cdr a pse
@@ -1337,8 +1350,8 @@ class Facturalo
             $this->wsClient->setCredentials($this->soapUsername, $this->soapPassword);
             $this->wsClient->setService($this->endpoint);
         }
-        
-        
+
+
     }
 
     private function setPathCertificate()
@@ -1347,9 +1360,9 @@ class Facturalo
             $this->pathCertificate = storage_path('app'.DIRECTORY_SEPARATOR.
                 'certificates'.DIRECTORY_SEPARATOR.$this->company->certificate);
         }else if($this->isSRI){
-            
+
             $this->pathCertificate = storage_path('app'.DIRECTORY_SEPARATOR.'certificates'.DIRECTORY_SEPARATOR.$this->company->certificate);
-            
+
 
         }else {
             if($this->isDemo) {
@@ -1376,13 +1389,13 @@ class Facturalo
             //            dd($this->soapPassword);
 
         }else{
-            
+
             if($this->isSRI){
                 if($this->isDemo){
                     $this->urlSri = 'https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl';
                 }else{
                     $this->urlSri = 'https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl';
-                }  
+                }
             }else{
                 if($this->isDemo) {
                     $this->soapUsername = $this->company->number.'MODDATOS';
@@ -1393,7 +1406,7 @@ class Facturalo
                 }
             }
 
-            
+
 
         }
 
@@ -1402,7 +1415,7 @@ class Facturalo
         // $this->soapPassword = ($this->isDemo)?'moddatos':$this->company->soap_password;
 
         if($this->isOse) {
-            
+
 
         }else {
             switch ($this->type) {
