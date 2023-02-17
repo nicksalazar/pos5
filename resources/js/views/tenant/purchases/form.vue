@@ -179,6 +179,16 @@
                                 </el-select>
                             </div>
                         </div>
+                        <div class="col-lg-2"
+                             v-if="purchase_order_id === null">
+                            <div class="form-group">
+                                <label>
+                                    Còdigo tributario
+                                </label>
+                                <el-input v-model="form.codSustento"
+                                      placeholder="Código Sustento"></el-input>
+                            </div>
+                        </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-4 "
                             :class="{ 'has-danger': errors.created_at }"
                             >

@@ -91,7 +91,7 @@ use Illuminate\Support\Facades\Log;
         {
 
             $records = $this->getRecords($request);
-
+            
             return new PurchaseCollection($records->paginate(config('tenant.items_per_page')));
         }
 
@@ -127,6 +127,7 @@ use Illuminate\Support\Facades\Log;
 
                     break;
             }
+
 
             return $records;
 

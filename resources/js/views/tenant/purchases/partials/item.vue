@@ -139,7 +139,7 @@
                                  class="form-group">
                                  <!-- JOINSOFTWARE -->
                                 <!-- Afectación Igv -> Tipo de Impuesto -->
-                                <label class="control-label">Tipo de retención IVA</label>
+                                <label class="control-label">Tipo retención IVA</label>
                                 <el-select v-model="form.retention_type_id_iva"
                                            filterable
                                            @change="changeRetentionTypeIva($event)">
@@ -156,7 +156,7 @@
                                  class="form-group">
                                  <!-- JOINSOFTWARE -->
                                 <!-- Afectación Igv -> Tipo de Impuesto -->
-                                <label class="control-label">Tipo de retención RENTA</label>
+                                <label class="control-label">Tipo retención RENTA</label>
                                 <el-select v-model="form.retention_type_id_income"
                                            filterable
                                            @change="changeRetentionTypeIncome($event)">
@@ -1014,7 +1014,7 @@ export default {
             }
         },
         changeRetentionTypeIncome(event) {
-            
+
             const val = _.find(this.retention_types_income, {'id': event});
             const item = {..._.find(this.items, {'id': this.form.item_id})};
 

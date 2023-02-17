@@ -41,9 +41,12 @@ class PurchaseRequest extends FormRequest
                 'array',
             ],
             'ret' => [
-                'required',
                 'array',
             ],
+            'codSustento' => [
+				'required',
+			],
+
 		];
 	}
 }
