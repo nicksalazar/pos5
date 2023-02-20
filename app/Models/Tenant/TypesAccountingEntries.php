@@ -17,6 +17,7 @@ class TypesAccountingEntries extends ModelTenant
 
     protected $table="types_accounting_entries";
     protected $fillable = [
+        'id',
         'name',
 
     ];

@@ -960,6 +960,10 @@
                                         <ul class="nav nav-children">
                                             <li class="{{ ($firstLevel === 'order-forms')?'nav-active':'' }}">
                                                 <a class="nav-link"
+                                                   href="{{route('tenant.accountingentries.index')}}">Listado Asientos Contables</a>
+                                            </li>
+                                            <li class="{{ ($firstLevel === 'order-forms')?'nav-active':'' }}">
+                                                <a class="nav-link"
                                                    href="{{route('tenant.accountsgroups.index')}}">Cuentas Grupos</a>
                                             </li>
                                             <li class="{{ ($firstLevel === 'order-forms')?'nav-active':'' }}">
