@@ -21,8 +21,8 @@ class TenantCreateRetentionsTable extends Migration
             $table->integer('idProveedor')->unsigned();
             $table->string('fechaFizcal',50);
             $table->string('establecimiento',3);
-            $table->string('ptoEmision',3);
-            $table->string('secuencial',9)->unique();
+            $table->string('ptoEmision',4);
+            $table->string('secuencial',20)->unique();
             $table->string('codSustento',2);
             $table->string('codDocSustento',5);
             $table->string('numAuthSustento',49);
