@@ -181,7 +181,7 @@
                         </div>
                         <div class="col-lg-2"
                             :class="{ 'has-danger': errors.codSustento }"
-                            v-if="purchase_order_id === null">
+                             v-if="purchase_order_id === null">
                             <div class="form-group">
                                 <label>
                                     Código tributario
@@ -580,7 +580,7 @@
                                             <td>{{ row.tipo}}</td>
                                             <td>{{ row.code}}</td>
                                             <td>{{ row.desciption}}</td>
-                                            <td>{{ row.value}}</td>
+                                            <td>{{ row.valor}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
