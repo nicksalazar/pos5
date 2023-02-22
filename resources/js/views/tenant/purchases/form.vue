@@ -180,13 +180,17 @@
                             </div>
                         </div>
                         <div class="col-lg-2"
-                             v-if="purchase_order_id === null">
+                            :class="{ 'has-danger': errors.codSustento }"
+                            v-if="purchase_order_id === null">
                             <div class="form-group">
                                 <label>
-                                    Còdigo tributario
+                                    Código tributario
                                 </label>
                                 <el-input v-model="form.codSustento"
                                       placeholder="Código Sustento"></el-input>
+                                <small v-if="errors.codSustento"
+                                    class="form-control-feedback"
+                                    v-text="errors.codSustento[0]"></small>
                             </div>
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-4 "
@@ -576,7 +580,7 @@
                                             <td>{{ row.tipo}}</td>
                                             <td>{{ row.code}}</td>
                                             <td>{{ row.desciption}}</td>
-                                            <td>{{ row.valor}}</td>
+                                            <td>{{ row.value}}</td>
                                         </tr>
                                     </tbody>
                                 </table>

@@ -54,6 +54,8 @@
     use App\Models\Tenant\RetentionTypePurchase;
     use App\Models\Tenant\RetentionsDetailEC;
     use App\Models\Tenant\RetentionsEC;
+use App\Models\Tenant\Series;
+use App\Models\Tenant\UserDefaultDocumentType;
 use Illuminate\Support\Facades\Log;
 
     class PurchaseController extends Controller
@@ -91,7 +93,7 @@ use Illuminate\Support\Facades\Log;
         {
 
             $records = $this->getRecords($request);
-            
+
             return new PurchaseCollection($records->paginate(config('tenant.items_per_page')));
         }
 
@@ -345,36 +347,43 @@ use Illuminate\Support\Facades\Log;
         public function store(PurchaseRequest $request)
         {
             //Log::info("REQUEST: ".json_encode($request));
-            Log::info(json_encode($request->ret));
+            //Log::info(json_encode($request->ret));
             $data = self::convert($request);
-            Log::info(json_encode($data));
+            //Log::info(json_encode($data));
             try {
                 $purchase = DB::connection('tenant')->transaction(function () use ($data) {
                     $doc = Purchase::create($data);
 
-                    $ret = new RetentionsEC();
-                    $ret->idRetencion = 'R'.$doc->number;
-                    $ret->idDocumento = $doc->id;
-                    $ret->fechaFizcal = '01/2023';
-                    $ret->idProveedor = $doc->supplier_id;
-                    $ret->establecimiento = $doc->establishment_id;
-                    $ret->ptoEmision = '001';
-                    $ret->secuencial = $doc->sequential_number;
-                    $ret->codSustento = $doc->document_type_id;
-                    $ret->codDocSustento = '100';
-                    $ret->numAuthSustento = $doc->auth_number;
-                    $ret->save();
+                    if(is_array($data['ret']) && empty($data['ret']) == false){
+                        $serie = UserDefaultDocumentType::where('user_id',$doc->user_id)->get();
+                        $tipoSerie = Series::find($serie[0]->series_id);
+                        $establecimiento = Establishment::find($doc->establishment_id);
+                        $secuelcialRet = RetentionsEC::where('establecimiento',$establecimiento->code)->where('ptoEmision',$tipoSerie->number)->count();
 
-                    foreach($data['ret'] as $retDet){
-                        Log::info(json_encode($retDet));
-                        $detRet = new RetentionsDetailEC();
-                        $detRet->idRetencion = $ret->idRetencion;
-                        $detRet->codRetencion = $retDet['code'];
-                        $detRet->baseRet = $retDet['base'];
-                        $detRet->porcentajeRet = $retDet['porcentajeRet'];
-                        $detRet->valorRet = $retDet['valor'];
-                        $detRet->save();
+                        $ret = new RetentionsEC();
+                        $ret->idRetencion = 'R'.$establecimiento->code.substr($tipoSerie->number,1,3).str_pad($secuelcialRet+1, 9, 0, STR_PAD_LEFT);
+                        $ret->idDocumento = $doc->id;
+                        $ret->fechaFizcal = $doc->date_of_issue->format('m/Y');
+                        $ret->idProveedor = $doc->supplier_id;
+                        $ret->establecimiento = $establecimiento->code;
+                        $ret->ptoEmision = $tipoSerie->number;
+                        $ret->secuencial = $doc->sequential_number;
+                        $ret->codSustento = $doc->document_type_id;
+                        $ret->codDocSustento = $doc->codSustento;
+                        $ret->numAuthSustento = $doc->auth_number;
+                        $ret->save();
 
+                        foreach($data['ret'] as $retDet){
+                            Log::info(json_encode($retDet));
+                            $detRet = new RetentionsDetailEC();
+                            $detRet->idRetencion = $ret->idRetencion;
+                            $detRet->codRetencion = $retDet['code'];
+                            $detRet->baseRet = $retDet['base'];
+                            $detRet->porcentajeRet = $retDet['porcentajeRet'];
+                            $detRet->valorRet = $retDet['valor'];
+                            $detRet->save();
+
+                        }
                     }
 
                     foreach ($data['items'] as $row) {

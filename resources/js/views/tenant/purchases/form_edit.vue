@@ -113,6 +113,82 @@
                                        v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
                         </div> -->
+                        <div class="col-lg-2"
+                             v-if="purchase_order_id === null">
+                            <div class="form-group">
+                                <label>
+                                    Orden de compra
+                                </label>
+                                <el-select v-model="form.purchase_order_id"
+                                           :loading="loading_search"
+                                           clearable
+                                           filterable
+                                           placeholder="Número de documento"
+                                           >
+                                    <!--
+                                    :remote-method="searchPurchaseOrder"
+                                    remote-->
+                                    <el-option v-for="option in purchase_order_data"
+                                               :key="option.id"
+                                               :label="option.description"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2"
+                             v-if="purchase_order_id === null">
+                            <div class="form-group">
+                                <label>
+                                    Código tributario
+                                </label>
+                                <el-input v-model="form.codSustento"
+                                      placeholder="Código Sustento"></el-input>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6 col-lg-4 "
+                            :class="{ 'has-danger': errors.created_at }"
+                            >
+                            <label class="control-label">
+                                Observaciones
+                            </label>
+                            <el-input v-model="form.observation"
+                                      placeholder="Observaciones"></el-input>
+                        </div>
+                        <!--JOINSOFTWARE-->
+                        <div class="form-group col-sm-12 col-md-6 col-lg-2"
+                            :class="{'has-danger': errors.sequential_number}"
+                            >
+                            <label class="control-label">Secuencial <span class="text-danger">*</span></label>
+
+                            <el-input
+                                v-model="form.sequential_number"
+                                :maxlength="maxLength1"
+                                show-word-limit
+                                dusk="sequential_number">
+                            </el-input>
+
+                            <small v-if="errors.sequential_number"
+                                    class="form-control-feedback"
+                                    v-text="errors.sequential_number[0]"></small>
+                        </div>
+                        <!--JOINSOFTWARE-->
+                        <div class="form-group col-sm-12 col-md-6 col-lg-4"
+                            :class="{'has-danger': errors.auth_number}"
+                            >
+                            <label class="control-label">Número autorización <span class="text-danger">*</span></label>
+
+                            <el-input
+                                v-model="form.auth_number"
+                                :maxlength="maxLength2"
+                                show-word-limit
+                                dusk="auth_number">
+                            </el-input>
+
+                            <small v-if="errors.auth_number"
+                                    class="form-control-feedback"
+                                    v-text="errors.auth_number[0]"></small>
+                        </div>
+                        <div class="col-12">&nbsp;</div>
 
                         <div class="col-md-8 mt-4">
                             <div class="form-group">

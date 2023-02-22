@@ -126,6 +126,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
         //'retention_type_id',
         'sequential_number',
         'auth_number',
+        'codSustento',
     ];
 
     protected $casts = [
@@ -548,20 +549,24 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
             $retencoinesArray =  RetentionsDetailEC::where('idRetencion',$retencionesID[0]->idRetencion)->get();
         }
         $retMejora = null;
+        Log::info("RETENCIONES: ".json_encode($retencoinesArray));
         foreach($retencoinesArray as $key => $retencionLocal){
 
             $catType = RetentionType::where('code',$retencionLocal->codRetencion)->get();
-            Log::info("RETENCIONES: ".json_encode($catType));
-            $tipo = 'RENTA';
-            if($catType[0]->type_id == '01'){
-                $tipo = 'IVA';
+            //Log::info("RETENCIONES: ".json_encode($catType));
+            if($catType &&  $catType->count() > 0 ){
+                $tipo = 'RENTA';
+                if($catType[0]->type_id == '01'){
+                    $tipo = 'IVA';
+                }
+                $retMejora[] = [
+                    'key' => $key + 1,
+                    'type' => $tipo,
+                    'serie' => $retencionLocal->idRetencion,
+                    'description' => $catType[0]->description,
+                    'value' => round($retencionLocal->valorRet,2)
+                ];
             }
-            $retMejora[] = [
-                'key' => $key + 1,
-                'type' => $tipo,
-                'description' => $catType[0]->description,
-                'value' => round($retencionLocal->valorRet,2)
-            ];
         }
 
         return [
