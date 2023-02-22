@@ -354,19 +354,28 @@ use Illuminate\Support\Facades\Log;
                 $purchase = DB::connection('tenant')->transaction(function () use ($data) {
                     $doc = Purchase::create($data);
 
-                    if(is_array($data['ret']) && empty($data['ret']) == false){
+                    if(count($data['ret']) > 0){
                         $serie = UserDefaultDocumentType::where('user_id',$doc->user_id)->get();
-                        $tipoSerie = Series::find($serie[0]->series_id);
+                        $tipoSerie = null;
+                        $tiposerieText = '';
+                        if($serie->count() > 0 ){
+                            $tipoSerie = Series::find($serie[0]->series_id);
+                            $tiposerieText = $tipoSerie->number;
+                        }else{
+                            $tipoSerie = Series::where('document_type_id','20')->get();
+                            $tiposerieText = $tipoSerie[0]->number;
+                        }
+
                         $establecimiento = Establishment::find($doc->establishment_id);
-                        $secuelcialRet = RetentionsEC::where('establecimiento',$establecimiento->code)->where('ptoEmision',$tipoSerie->number)->count();
+                        $secuelcialRet = RetentionsEC::where('establecimiento',$establecimiento->code)->where('ptoEmision',$tiposerieText)->count();
 
                         $ret = new RetentionsEC();
-                        $ret->idRetencion = 'R'.$establecimiento->code.substr($tipoSerie->number,1,3).str_pad($secuelcialRet+1, 9, 0, STR_PAD_LEFT);
+                        $ret->idRetencion = 'R'.$establecimiento->code.substr($tiposerieText,1,3).str_pad($secuelcialRet+1, 9, 0, STR_PAD_LEFT);
                         $ret->idDocumento = $doc->id;
                         $ret->fechaFizcal = $doc->date_of_issue->format('m/Y');
                         $ret->idProveedor = $doc->supplier_id;
                         $ret->establecimiento = $establecimiento->code;
-                        $ret->ptoEmision = $tipoSerie->number;
+                        $ret->ptoEmision = $tiposerieText;
                         $ret->secuencial = $doc->sequential_number;
                         $ret->codSustento = $doc->document_type_id;
                         $ret->codDocSustento = $doc->codSustento;
