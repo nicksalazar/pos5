@@ -97,7 +97,8 @@
                                  class="form-group">
                                 <label class="control-label">Cantidad</label>
                                 <el-input-number v-model="form.quantity"
-                                                 :min="0.01"></el-input-number>
+                                                 :min="0.01"
+                                                 @change="cambioCantidad()"></el-input-number>
                                 <small v-if="errors.quantity"
                                        class="form-control-feedback"
                                        v-text="errors.quantity[0]"></small>
@@ -982,6 +983,11 @@ export default {
             this.form.system_isc_type_id = this.form.item.purchase_system_isc_type_id
 
         },
+        cambioCantidad(){
+            this.changeRetentionTypeIva(this.form.retention_type_id_iva)
+            this.changeRetentionTypeIncome(this.form.retention_type_id_income)
+
+        },
         changeRetentionTypeIva(event) {
             const val = _.find(this.retention_types_iva, {'id': event});
             const item = {..._.find(this.items, {'id': this.form.item_id})};
@@ -1033,7 +1039,7 @@ export default {
 
                 }else{
 
-                    this.form.income_retention = _.round((val.percentage / 100) * this.income, 3)
+                    this.form.income_retention = _.round((val.percentage / 100) * this.income, 3) * this.form.quantity
                 }
 
                 this.is_income = true
