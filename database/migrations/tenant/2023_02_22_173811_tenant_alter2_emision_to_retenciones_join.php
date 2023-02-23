@@ -18,10 +18,15 @@ class TenantAlter2EmisionToRetencionesJoin extends Migration
 
             Schema::dropIfExists('ptoEmision');
 
+        });
+
+        Schema::table('retenciones_join', function (Blueprint $table) {
+
             $table->string('ptoEmision',5)->nullable();
-            
 
         });
+
+        
     }
 
     /**
