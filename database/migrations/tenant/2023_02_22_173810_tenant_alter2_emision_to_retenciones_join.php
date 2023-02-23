@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Grammars\ChangeColumn;
 
-class TenantAlter2SecuencialToRetencionesJoin extends Migration
+class TenantAlter2EmisionToRetencionesJoin extends Migration
 {
     /**
      * Run the migrations.
@@ -16,9 +16,9 @@ class TenantAlter2SecuencialToRetencionesJoin extends Migration
     {
         Schema::table('retenciones_join', function (Blueprint $table) {
 
-            Schema::dropIfExists('secuencial');
+            Schema::dropIfExists('ptoEmision');
 
-            $table->string('secuencial',20)->nullable();
+            $table->string('ptoEmision',5)->nullable();
             
 
         });
@@ -33,7 +33,7 @@ class TenantAlter2SecuencialToRetencionesJoin extends Migration
     {
         Schema::table('retenciones_join', function (Blueprint $table) {
             //
-            Schema::dropIfExists('secuencial');
+            Schema::dropIfExists('ptoEmision');
         });
     }
 }
