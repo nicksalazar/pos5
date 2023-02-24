@@ -544,7 +544,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
 
         $retencionesID = RetentionsEC::where('idDocumento',$this->id)->get();
         $retencoinesArray = [];
-        if($retencionesID){
+        if($retencionesID && $retencionesID->count() > 0){
             //Log::info(json_encode($retencionesID));
             $retencoinesArray =  RetentionsDetailEC::where('idRetencion',$retencionesID[0]->idRetencion)->get();
         }
