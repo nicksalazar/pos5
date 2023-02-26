@@ -6,6 +6,7 @@ use App\Http\Requests\Tenant\AccountMovementsRequest;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Resources\Tenant\AccountMovementsCollection;
+use App\Models\Tenant\AccountGroup;
 use App\Models\Tenant\AccountMovement;
 
 class AccountMovementController extends Controller
@@ -21,6 +22,7 @@ class AccountMovementController extends Controller
         return [
             'code' => 'Código Cuenta',
             'description' => 'Descripción',
+            'group'=>'Grupo',
             'cost_center' => 'Centro Costo',
             'type' => 'Tipo',
         ];
@@ -36,7 +38,7 @@ class AccountMovementController extends Controller
 
     public function record($id)
     {
-        $record = AccountMovement::findOrFail($id);
+        $record = AccountMovement::with('account_group')->findOrFail($id);
 
         return $record;
     }
@@ -74,6 +76,14 @@ class AccountMovementController extends Controller
 
         }
         
+    }
+
+    public function tables()
+    {
+      
+        $account_groups = AccountGroup::select('id','description')->get();
+        return compact('account_groups');
+
     }
   
 

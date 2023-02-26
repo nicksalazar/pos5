@@ -253,7 +253,7 @@ if ($hostname) {
                 Route::post('', 'Tenant\AccountingEntriesController@store');
                 Route::delete('/{person}', 'Tenant\AccountingEntriesController@destroy');
                 Route::get('/tables', 'Tenant\AccountingEntriesController@tables');
-
+                Route::get('/item/tables', 'Tenant\AccountingEntriesController@item_tables');
                 /*Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index')->middleware('redirect.level');
                 Route::get('quotations/columns', 'Tenant\QuotationController@columns');
                 Route::get('quotations/records', 'Tenant\QuotationController@records');
@@ -301,6 +301,7 @@ if ($hostname) {
                 Route::get('/record/{id}', 'Tenant\AccountMovementController@record');
                 Route::post('', 'Tenant\AccountMovementController@store');
                 Route::delete('/{id}', 'Tenant\AccountMovementController@destroy');
+                Route::get('/tables', 'Tenant\AccountMovementController@tables');
             });
             //cuentas movimientos
             Route::prefix('types-accounting-entries')->group(function () {

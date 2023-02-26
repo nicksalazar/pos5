@@ -951,18 +951,18 @@
                                 </li>
                                  @if(in_array('advanced_order_forms', $vc_module_levels))
                                 <li class="nav-parent
-                                {{ ($firstLevel === 'order-forms')?'nav-active nav-expanded':'' }}
+                                {{ ($firstLevel === 'accounting-entries')?'nav-active nav-expanded':'' }}
                                     {{ ($firstLevel === 'drivers')?'nav-active nav-expanded':'' }}
                                     {{ ($firstLevel === 'dispatchers')?'nav-active nav-expanded':'' }}
                                         ">
                                         <a class="nav-link"
                                            href="#">Asientos Contables</a>
                                         <ul class="nav nav-children">
-                                            <li class="{{ ($firstLevel === 'order-forms')?'nav-active':'' }}">
+                                            <li class="{{ ($firstLevel === 'accounting-entries')?'nav-active':'' }}">
                                                 <a class="nav-link"
                                                    href="{{route('tenant.accountingentries.index')}}">Listado Asientos Contables</a>
                                             </li>
-                                            <li class="{{ ($firstLevel === 'order-forms')?'nav-active':'' }}">
+                                            <li class="{{ ($firstLevel === 'accounts-groups')?'nav-active':'' }}">
                                                 <a class="nav-link"
                                                    href="{{route('tenant.accountsgroups.index')}}">Cuentas Grupos</a>
                                             </li>

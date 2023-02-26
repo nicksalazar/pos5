@@ -21,6 +21,10 @@ class AccountGroup extends ModelTenant
 
     ];
 
+    public function account_movements()
+    {
+        return $this->hasMany(AccountGroup::class);
+    }
     
 
 }

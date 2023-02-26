@@ -9,24 +9,17 @@ use App\Models\Tenant\Configuration;
 use App\CoreFacturalo\Helpers\Storage\StorageDocument;
 use App\CoreFacturalo\Requests\Inputs\Common\EstablishmentInput;
 use App\CoreFacturalo\Requests\Inputs\Common\PersonInput;
-use App\CoreFacturalo\Template;
 use App\Models\Tenant\TypesAccountingEntries;
 use App\Http\Controllers\SearchItemController;
+use App\Http\Requests\Tenant\AccountEntriesRequest;
 use App\Http\Requests\Tenant\QuotationRequest;
 use App\Http\Resources\Tenant\QuotationCollection;
 use App\Http\Resources\Tenant\QuotationResource;
-use App\Mail\Tenant\QuotationEmail;
-use App\Models\Tenant\Catalogs\AffectationIgvType;
-use App\Models\Tenant\Catalogs\AttributeType;
-use App\Models\Tenant\Catalogs\ChargeDiscountType;
-use App\Models\Tenant\Catalogs\CurrencyType;
 use App\Models\Tenant\Catalogs\DocumentType;
-use App\Models\Tenant\Catalogs\OperationType;
-use App\Models\Tenant\Catalogs\PriceType;
-use App\Models\Tenant\Catalogs\SystemIscType;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\AccountingEntries;
+use App\Models\Tenant\AccountMovement;
 use App\Models\Tenant\PaymentMethodType;
 use App\Models\Tenant\Person;
 use App\Models\Tenant\Quotation;
@@ -36,14 +29,10 @@ use App\Models\Tenant\User;
 use App\Models\Tenant\Warehouse;
 use App\Traits\OfflineTrait;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 use Modules\Finance\Traits\FinanceTrait;
-use Mpdf\Config\ConfigVariables;
-use Mpdf\Config\FontVariables;
-use Mpdf\HTMLParserMode;
-use Mpdf\Mpdf;
-use Modules\Inventory\Models\Warehouse as ModuleWarehouse;
+
 
 class AccountingEntriesController extends Controller
 {
@@ -193,18 +182,13 @@ class AccountingEntriesController extends Controller
         }
         
         $user=[
-            'user_id'=>auth()->user()->id,
+            'id'=>auth()->user()->id,
             'seat'=>$seat,
             'seat_general'=>$seat_general,
         ];
 
-        $establishments = Establishment::where('id', auth()->user()->establishment_id)->get();
-        $currency_types = CurrencyType::whereActive()->get();
         $types_seat = TypesAccountingEntries::select('id','name')->get();
-        $payment_destinations = $this->getPaymentDestinations();
-        $configuration = Configuration::select('destination_sale')->first();
-
-        return compact('user','establishments', 'currency_types','configuration','payment_destinations','types_seat');
+        return compact('user','types_seat');
 
     }
 
@@ -225,29 +209,19 @@ class AccountingEntriesController extends Controller
 
     public function item_tables()
     {
-        // $items = $this->table('items');
-        $items = SearchItemController::getItemsToQuotation();
-        $categories = [];
-        $affectation_igv_types = AffectationIgvType::whereActive()->get();
-        $system_isc_types = SystemIscType::whereActive()->get();
-        $price_types = PriceType::whereActive()->get();
-        $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->get();
-        $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->get();
-        $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
-        $is_client = $this->getIsClient();
-        $operation_types = OperationType::whereActive()->get();
-
+        $account_movement=AccountMovement::with('account_group')->get();
         return compact(
-            'items',
-            'categories',
-            'operation_types',
-            'affectation_igv_types',
-            'system_isc_types',
-            'price_types',
-            'discount_types',
-            'charge_types',
-            'attribute_types',
-            'is_client'
+            'account_movement'
+        );
+    }
+
+    public function last_account()
+    {
+        $account_movement=AccountMovement::get();
+        $is_client = $this->getIsClient();
+        return compact(
+            'is_client',
+            'account_movement'
         );
     }
 
@@ -278,9 +252,62 @@ class AccountingEntriesController extends Controller
         return $desc;
     }
 
-    public function store(QuotationRequest $request)
+    public function store(AccountEntriesRequest $request)
     {
-        DB::connection('tenant')->transaction(function () use ($request) {
+        $validator = Validator::make($request->all(), [
+            'items.*.account_movement_id' => [
+                'required',
+                ],
+            'items.*.types_accounting_entrie_id' => [
+                'required',
+                ],
+            ],[
+        
+            'firstname.required' => ' The first name field is required.',
+            'firstname.min' => ' The first name must be at least 4 characters.',
+            'firstname.max' => ' The first name may not be greater than 25 characters.',
+            'lastname.required' => ' The last name field is required.',
+            'lastname.min' => ' The last name must be at least 4 characters.',
+            'lastname.max' => ' The last name may not be greater than 25 characters.',
+        
+            ]);
+          //$validator->validate();
+        $idauth=auth()->user()->id;
+        $lista=AccountingEntries::where('user_id','=',$idauth)->latest('id')->first();
+        $ultimo=AccountingEntries::latest('id')->first();
+        //$request->validated();
+        if(empty($lista)){
+            $seat=1;
+            
+        }else{
+            
+            $seat=$lista->seat+1;
+        }
+
+        if(empty($ultimo)){
+            $seat_general=1;
+            
+        }else{
+            $seat_general=$ultimo->seat_general+1;
+        }
+
+        foreach ($request['items'] as $row) {
+            $row['seat']=$seat;
+            $row['seat_general']=$seat_general;
+            AccountingEntries::create($row);
+            // $row['document_id']=  $document->id;
+            // $item = new DocumentItem($row);
+            // $item->push();
+        }
+        //dd($request);
+        return [
+            'success' => true,
+            'data' => [
+                
+                $seat
+            ],
+        ];
+        /*DB::connection('tenant')->transaction(function () use ($request) {
 
             $data = $this->mergeData($request);
             $data['terms_condition'] = $this->getTermsCondition();
@@ -293,7 +320,7 @@ class AccountingEntriesController extends Controller
 
             $this->savePayments($this->quotation, $data['payments']);
 
-            $this->setFilename();
+            
             $this->createPdf($this->quotation, "a4", $this->quotation->filename);
 
         });
@@ -304,7 +331,7 @@ class AccountingEntriesController extends Controller
                 'id' => $this->quotation->id,
                 'number_full' => $this->quotation->number_full,
             ],
-        ];
+        ];*/
     }
 
     public function update(QuotationRequest $request)
@@ -330,7 +357,7 @@ class AccountingEntriesController extends Controller
 
             $this->savePayments($this->quotation, $request['payments']);
 
-            $this->setFilename();
+            
         });
 
         return [
@@ -356,42 +383,8 @@ class AccountingEntriesController extends Controller
     }
 
 
-    public function duplicate(Request $request)
-    {
-        // return $request->id;
-        $obj = Quotation::find($request->id);
-        $this->quotation = $obj->replicate();
-        $this->quotation->external_id = Str::uuid()->toString();
-        $this->quotation->state_type_id = '01';
-        $this->quotation->save();
+    
 
-        foreach ($obj->items as $row) {
-            $new = $row->replicate();
-            $new->quotation_id = $this->quotation->id;
-            $new->save();
-        }
-
-        $this->setFilename();
-
-        return [
-            'success' => true,
-            'data' => [
-                'id' => $this->quotation->id,
-            ],
-        ];
-
-    }
-
-    public function anular($id)
-    {
-        $obj = Quotation::find($id);
-        $obj->state_type_id = 11;
-        $obj->save();
-        return [
-            'success' => true,
-            'message' => 'Producto anulado con éxito'
-        ];
-    }
 
     public function mergeData($inputs)
     {
@@ -412,15 +405,6 @@ class AccountingEntriesController extends Controller
         return $inputs->all();
     }
 
-
-    private function setFilename()
-    {
-
-        $name = [$this->quotation->prefix, $this->quotation->id, date('Ymd')];
-        $this->quotation->filename = join('-', $name);
-        $this->quotation->save();
-
-    }
 
 
     public function table($table)
@@ -482,62 +466,6 @@ class AccountingEntriesController extends Controller
 
     }
 
-    /**
-     * Normaliza la salida de la colección de items para su consumo en las funciones.
-     *
-     */
-    public function ReturnItem(&$item)
-    {
-        $configuration = Configuration::first();
-        $establishment_id = auth()->user()->establishment_id;
-        $warehouse = \Modules\Inventory\Models\Warehouse::where('establishment_id', $establishment_id)->first();
-
-        $item->transform(function ($row) use ($configuration, $warehouse) {
-            /** @var \App\Models\Tenant\Item $row */
-            return $row->getDataToItemModal($warehouse, false, true);
-            /** Se ha movido al modelo*/
-            $full_description = $this->getFullDescription($row);
-            return [
-                'id' => $row->id,
-                'full_description' => $full_description,
-                'description' => $row->description,
-                'currency_type_id' => $row->currency_type_id,
-                'model' => $row->model,
-                'brand' => $row->brand,
-                'currency_type_symbol' => $row->currency_type->symbol,
-                'sale_unit_price' => $row->sale_unit_price,
-                'purchase_unit_price' => $row->purchase_unit_price,
-                'unit_type_id' => $row->unit_type_id,
-                'sale_affectation_igv_type_id' => $row->sale_affectation_igv_type_id,
-                'purchase_affectation_igv_type_id' => $row->purchase_affectation_igv_type_id,
-                'is_set' => (bool)$row->is_set,
-                'has_igv' => (bool)$row->has_igv,
-                'calculate_quantity' => (bool)$row->calculate_quantity,
-                'item_unit_types' => collect($row->item_unit_types)->transform(function ($row) {
-                    return [
-                        'id' => $row->id,
-                        'description' => "{$row->description}",
-                        'item_id' => $row->item_id,
-                        'unit_type_id' => $row->unit_type_id,
-                        'quantity_unit' => $row->quantity_unit,
-                        'price1' => $row->price1,
-                        'price2' => $row->price2,
-                        'price3' => $row->price3,
-                        'price_default' => $row->price_default,
-                    ];
-                }),
-                'warehouses' => collect($row->warehouses)->transform(function ($row) {
-                    return [
-                        'warehouse_id' => $row->warehouse->id,
-                        'warehouse_description' => $row->warehouse->description,
-                        'stock' => $row->stock,
-
-                    ];
-                }),
-
-            ];
-        });
-    }
 
     public function searchItemById($id)
     {
@@ -554,316 +482,7 @@ class AccountingEntriesController extends Controller
 
     }
 
-    public function download($external_id, $format)
-    {
-        $quotation = Quotation::where('external_id', $external_id)->first();
-
-        if (!$quotation) throw new Exception("El código {$external_id} es inválido, no se encontro la cotización relacionada");
-
-        $this->reloadPDF($quotation, $format, $quotation->filename);
-
-        return $this->downloadStorage($quotation->filename, 'quotation');
-    }
-
-    public function toPrint($external_id, $format)
-    {
-        $quotation = Quotation::where('external_id', $external_id)->first();
-
-        if (!$quotation) throw new Exception("El código {$external_id} es inválido, no se encontro la cotización relacionada");
-
-        $this->reloadPDF($quotation, $format, $quotation->filename);
-        $temp = tempnam(sys_get_temp_dir(), 'quotation');
-
-        file_put_contents($temp, $this->getStorage($quotation->filename, 'quotation'));
-
-        /*
-        $headers = [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="'.$quotation->filename.'"'
-        ];
-        */
-
-        return response()->file($temp, $this->generalPdfResponseFileHeaders($quotation->filename));
-    }
-
-    private function reloadPDF($quotation, $format, $filename)
-    {
-        $this->createPdf($quotation, $format, $filename);
-    }
-
-    public function createPdf($quotation = null, $format_pdf = null, $filename = null)
-    {
-        ini_set("pcre.backtrack_limit", "5000000");
-        $template = new Template();
-        $pdf = new Mpdf();
-
-        $document = ($quotation != null) ? $quotation : $this->quotation;
-        $company = ($this->company != null) ? $this->company : Company::active();
-        $filename = ($filename != null) ? $filename : $this->quotation->filename;
-
-        $configuration = Configuration::first();
-
-        $base_template = Establishment::find($document->establishment_id)->template_pdf;
-
-        $html = $template->pdf($base_template, "quotation", $company, $document, $format_pdf);
-
-        if ($format_pdf === 'ticket' or $format_pdf === 'ticket_80') {
-
-            $width = 78;
-            if (config('tenant.enabled_template_ticket_80')) $width = 76;
-
-            $company_name = (strlen($company->name) / 20) * 10;
-            $company_address = (strlen($document->establishment->address) / 30) * 10;
-            $company_number = $document->establishment->telephone != '' ? '10' : '0';
-            $customer_name = strlen($document->customer->name) > '25' ? '10' : '0';
-            $customer_address = (strlen($document->customer->address) / 200) * 10;
-            $p_order = $document->purchase_order != '' ? '10' : '0';
-
-            $total_exportation = $document->total_exportation != '' ? '10' : '0';
-            $total_free = $document->total_free != '' ? '10' : '0';
-            $total_unaffected = $document->total_unaffected != '' ? '10' : '0';
-            $total_exonerated = $document->total_exonerated != '' ? '10' : '0';
-            $total_taxed = $document->total_taxed != '' ? '10' : '0';
-            $quantity_rows = count($document->items);
-            $payments = $document->payments()->count() * 5;
-            $discount_global = 0;
-            $terms_condition = $document->terms_condition ? 15 : 0;
-            $contact = $document->contact ? 15 : 0;
-
-            $document_description = ($document->description) ? count(explode("\n", $document->description)) * 3 : 0;
-
-
-            foreach ($document->items as $it) {
-                if ($it->discounts) {
-                    $discount_global = $discount_global + 1;
-                }
-            }
-            $legends = $document->legends != '' ? '10' : '0';
-
-            $pdf = new Mpdf([
-                'mode' => 'utf-8',
-                'format' => [
-                    $width,
-                    120 +
-                    ($quantity_rows * 8) +
-                    ($discount_global * 3) +
-                    $company_name +
-                    $company_address +
-                    $company_number +
-                    $customer_name +
-                    $customer_address +
-                    $p_order +
-                    $legends +
-                    $total_exportation +
-                    $total_free +
-                    $total_unaffected +
-                    $payments +
-                    $total_exonerated +
-                    $terms_condition +
-                    $contact +
-                    $document_description +
-                    $total_taxed],
-                'margin_top' => 2,
-                'margin_right' => 5,
-                'margin_bottom' => 0,
-                'margin_left' => 5
-            ]);
-        } else if ($format_pdf === 'a5') {
-
-            $company_name = (strlen($company->name) / 20) * 10;
-            $company_address = (strlen($document->establishment->address) / 30) * 10;
-            $company_number = $document->establishment->telephone != '' ? '10' : '0';
-            $customer_name = strlen($document->customer->name) > '25' ? '10' : '0';
-            $customer_address = (strlen($document->customer->address) / 200) * 10;
-            $p_order = $document->purchase_order != '' ? '10' : '0';
-
-            $total_exportation = $document->total_exportation != '' ? '10' : '0';
-            $total_free = $document->total_free != '' ? '10' : '0';
-            $total_unaffected = $document->total_unaffected != '' ? '10' : '0';
-            $total_exonerated = $document->total_exonerated != '' ? '10' : '0';
-            $total_taxed = $document->total_taxed != '' ? '10' : '0';
-            $quantity_rows = count($document->items);
-            $discount_global = 0;
-            foreach ($document->items as $it) {
-                if ($it->discounts) {
-                    $discount_global = $discount_global + 1;
-                }
-            }
-            $legends = $document->legends != '' ? '10' : '0';
-
-
-            $alto = ($quantity_rows * 8) +
-                ($discount_global * 3) +
-                $company_name +
-                $company_address +
-                $company_number +
-                $customer_name +
-                $customer_address +
-                $p_order +
-                $legends +
-                $total_exportation +
-                $total_free +
-                $total_unaffected +
-                $total_exonerated +
-                $total_taxed;
-            $diferencia = 148 - (float)$alto;
-
-            $pdf = new Mpdf([
-                'mode' => 'utf-8',
-                'format' => [
-                    210,
-                    $diferencia + $alto
-                ],
-                'margin_top' => 2,
-                'margin_right' => 5,
-                'margin_bottom' => 0,
-                'margin_left' => 5
-            ]);
-
-
-        } else {
-
-
-            $pdf_font_regular = config('tenant.pdf_name_regular');
-            $pdf_font_bold = config('tenant.pdf_name_bold');
-
-            if ($pdf_font_regular != false) {
-                $defaultConfig = (new ConfigVariables())->getDefaults();
-                $fontDirs = $defaultConfig['fontDir'];
-
-                $defaultFontConfig = (new FontVariables())->getDefaults();
-                $fontData = $defaultFontConfig['fontdata'];
-
-                $default = [
-                    'fontDir' => array_merge($fontDirs, [
-                        app_path('CoreFacturalo' . DIRECTORY_SEPARATOR . 'Templates' .
-                            DIRECTORY_SEPARATOR . 'pdf' .
-                            DIRECTORY_SEPARATOR . $base_template .
-                            DIRECTORY_SEPARATOR . 'font')
-                    ]),
-                    'fontdata' => $fontData + [
-                            'custom_bold' => [
-                                'R' => $pdf_font_bold . '.ttf',
-                            ],
-                            'custom_regular' => [
-                                'R' => $pdf_font_regular . '.ttf',
-                            ],
-                        ]
-                ];
-
-                if ($base_template == 'citec') {
-                    $default = [
-                        'mode' => 'utf-8',
-                        'margin_top' => 2,
-                        'margin_right' => 0,
-                        'margin_bottom' => 0,
-                        'margin_left' => 0,
-                        'fontDir' => array_merge($fontDirs, [
-                            app_path('CoreFacturalo' . DIRECTORY_SEPARATOR . 'Templates' .
-                                DIRECTORY_SEPARATOR . 'pdf' .
-                                DIRECTORY_SEPARATOR . $base_template .
-                                DIRECTORY_SEPARATOR . 'font')
-                        ]),
-                        'fontdata' => $fontData + [
-                                'custom_bold' => [
-                                    'R' => $pdf_font_bold . '.ttf',
-                                ],
-                                'custom_regular' => [
-                                    'R' => $pdf_font_regular . '.ttf',
-                                ],
-                            ]
-                    ];
-
-                }
-
-                $pdf = new Mpdf($default);
-            }
-        }
-
-        $path_css = app_path('CoreFacturalo' . DIRECTORY_SEPARATOR . 'Templates' .
-            DIRECTORY_SEPARATOR . 'pdf' .
-            DIRECTORY_SEPARATOR . $base_template .
-            DIRECTORY_SEPARATOR . 'style.css');
-
-        $stylesheet = file_get_contents($path_css);
-
-        $pdf->WriteHTML($stylesheet, HTMLParserMode::HEADER_CSS);
-        // $pdf->WriteHTML($html, HTMLParserMode::HTML_BODY);
-
-        if ($format_pdf != 'ticket') {
-            if (config('tenant.pdf_template_footer')) {
-
-                $html_footer = $template->pdfFooter($base_template, $this->quotation);
-                $html_footer_term_condition = ($document->terms_condition) ? $template->pdfFooterTermCondition($base_template, $document) : "";
-
-                $html_footer_legend = "";
-                if ($configuration->legend_footer) {
-                    $html_footer_legend = $template->pdfFooterLegend($base_template, $this->quotation);
-                }
-
-                $pdf->setAutoBottomMargin = 'stretch';
-
-                $pdf->SetHTMLFooter($html_footer_term_condition . $html_footer . $html_footer_legend);
-            }
-            //$html_footer = $template->pdfFooter();
-            //$pdf->SetHTMLFooter($html_footer);
-        }
-
-        $pdf->WriteHTML($html, HTMLParserMode::HTML_BODY);
-
-        $this->uploadFile($filename, $pdf->output('', 'S'), 'quotation');
-    }
-
-    public function uploadFile($filename, $file_content, $file_type)
-    {
-        $this->uploadStorage($filename, $file_content, $file_type);
-    }
-
-    public function email(Request $request)
-    {
-
-        $client = Person::find($request->customer_id);
-        $quotation = Quotation::find($request->id);
-        $customer_email = $request->input('customer_email');
-
-        // $this->reloadPDF($quotation, "a4", $quotation->filename);
-
-        $email = $customer_email;
-        $mailable = new QuotationEmail($client, $quotation);
-        $id = (int)$request->id;
-        $sendIt = EmailController::SendMail($email, $mailable, $id, 3);
-        /*
-        Configuration::setConfigSmtpMail();
-        $array_email = explode(',', $customer_email);
-        if (count($array_email) > 1) {
-            foreach ($array_email as $email_to) {
-                $email_to = trim($email_to);
-                if(!empty($email_to)) {
-                    Mail::to($email_to)->send(new QuotationEmail($client, $quotation));
-                }
-            }
-        } else {
-            Mail::to($customer_email)->send(new QuotationEmail($client, $quotation));
-        }
-        */
-        return [
-            'success' => true
-        ];
-    }
-
-
-    public function savePayments($quotation, $payments)
-    {
-
-        foreach ($payments as $payment) {
-
-            $record_payment = $quotation->payments()->create($payment);
-
-            if (isset($payment['payment_destination_id'])) {
-                $this->createGlobalPayment($record_payment, $payment);
-            }
-        }
-    }
+ 
 
     public function changed($id)
     {
@@ -889,23 +508,4 @@ class AccountingEntriesController extends Controller
     }
 
 
-    public function itemWarehouses($item_id)
-    {
-
-        $record = Item::find($item_id);
-        // dd($record->warehouses);
-
-        $establishment_id = auth()->user()->establishment_id;
-        $warehouse = ModuleWarehouse::where('establishment_id', $establishment_id)->first();
-
-        return collect($record->warehouses)->transform(function ($row) use ($warehouse) {
-            return [
-                'warehouse_description' => $row->warehouse->description,
-                'stock' => $row->stock,
-                'warehouse_id' => $row->warehouse_id,
-                'checked' => ($row->warehouse_id == $warehouse->id) ? true : false,
-            ];
-        });
-
-    }
 }

@@ -19,6 +19,7 @@
                         <th>#</th>
                         <th>Código Cuenta</th>
                         <th>Descripción</th>
+                        <th>Grupo</th>
                         <th>Centro Costo</th>
                         <th>Tipo</th>
                         <th>Fecha registro</th>
@@ -28,6 +29,7 @@
                         <td>{{ index }}</td>
                         <td>{{ row.code }}</td>
                         <td>{{ row.description }}</td>
+                        <td>{{ row.group }}</td>
                         <td class="text-center">{{ row.cost_center?'SI':'NO' }}</td>
                         <td>{{ row.type }}</td>
                         <td>{{ row.created_at }}</td>

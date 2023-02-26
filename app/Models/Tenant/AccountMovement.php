@@ -19,9 +19,13 @@ class AccountMovement extends ModelTenant
         'description',
         'cost_center',
         'type',
+        'account_group_id'
 
     ];
 
-    
+    public function account_group()
+    {
+        return $this->belongsTo(AccountGroup::class);
+    }
 
 }

@@ -30,6 +30,9 @@ class AccountMovementsRequest extends FormRequest
             ],
             'type' => [
                 'required',
+            ],
+            'account_group_id' => [
+                'required',
             ]
         ];
     }

@@ -20,8 +20,8 @@ class TenantCreateAccountingEntriesTable extends Migration
             $table->integer('seat_general');
             $table->integer('seat_line')->nullable();
             $table->date('seat_date')->nullable();
-            $table->string('account_code',20)->nullable();
-            $table->unsignedInteger('types_accounting_entries_id');
+            $table->unsignedInteger('account_movement_id');
+            $table->unsignedInteger('types_accounting_entrie_id');
             $table->string('comment',100)->nullable();
             $table->string('serie',20)->nullable();
             $table->integer('number')->default(0);
@@ -39,7 +39,8 @@ class TenantCreateAccountingEntriesTable extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('types_accounting_entries_id')->references('id')->on('types_accounting_entries');
+            $table->foreign('account_movement_id')->references('id')->on('account_movements');
+            $table->foreign('types_accounting_entrie_id')->references('id')->on('types_accounting_entries');
 
         });
     }

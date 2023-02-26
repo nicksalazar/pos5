@@ -44,7 +44,49 @@
           </div>
         </div>
          <div class="row">
-        <div class="col-md-6">
+
+        <div class="col-md-5">
+          <div :class="{ 'has-danger': errors.account_group_id }" class="form-group">
+            <label class="control-label">
+              Grupo
+            </label>
+            <el-select v-model="form.account_group_id" clearable filterable dusk="type">
+              <el-option
+                v-for="option in account_groups"
+                :key="option.id"
+                :label="option.description"
+                :value="option.id"
+              ></el-option>
+            </el-select>
+            <small
+              v-if="errors.account_group_id"
+              class="form-control-feedback"
+              v-text="errors.account_group_id[0]"
+            ></small>
+          </div>
+        </div>
+
+          <div class="col-md-4">
+          <div :class="{ 'has-danger': errors.type }" class="form-group">
+            <label class="control-label">
+              {{ typeDialog }}
+            </label>
+            <el-select v-model="form.type" clearable filterable dusk="type">
+              <el-option
+                v-for="option in tipos"
+                :key="option.value"
+                :label="option.value"
+                :value="option.value"
+              ></el-option>
+            </el-select>
+            <small
+              v-if="errors.type"
+              class="form-control-feedback"
+              v-text="errors.type[0]"
+            ></small>
+          </div>
+        </div>
+        <div class="col-md-3">
           <div :class="{ 'has-danger': errors.cost_center }" class="form-group">
             <label class="control-label">
               Centro Costo
@@ -65,26 +107,7 @@
           </div>
         </div>
 
-        <div class="col-md-6">
-          <div :class="{ 'has-danger': errors.type }" class="form-group">
-            <label class="control-label">
-              {{ typeDialog }}
-            </label>
-            <el-select v-model="form.type" clearable filterable dusk="type">
-              <el-option
-                v-for="option in tipos"
-                :key="option.value"
-                :label="option.value"
-                :value="option.value"
-              ></el-option>
-            </el-select>
-            <small
-              v-if="errors.type"
-              class="form-control-feedback"
-              v-text="errors.type[0]"
-            ></small>
-          </div>
-        </div>
+
 
 
         </div>
@@ -115,6 +138,7 @@ export default {
         { id:0,value: "NO" },
          ],
       form: {},
+      account_groups:[]
     };
   },
   created() {
@@ -127,13 +151,17 @@ export default {
         id: null,
         code: null,
         description: null,
-        cost_center:null,
+        cost_center:0,
         type: null,
+        account_group_id:null
       };
     },
-    create() {
+ async create() {
       this.titleDialog = this.recordId ? "Editar cuenta movimiento" : "Nueva cuenta movimiento";
-
+      await this.$http.get(`/${this.resource}/tables`).then((response) => {
+            const data = response.data;
+            this.account_groups = data.account_groups;
+          });
       if (this.recordId) {
         this.$http
           .get(`/${this.resource}/record/${this.recordId}`)
