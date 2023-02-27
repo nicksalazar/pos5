@@ -254,6 +254,7 @@ if ($hostname) {
                 Route::delete('/{person}', 'Tenant\AccountingEntriesController@destroy');
                 Route::get('/tables', 'Tenant\AccountingEntriesController@tables');
                 Route::get('/item/tables', 'Tenant\AccountingEntriesController@item_tables');
+                //Route::get('/filter', 'Tenant\AccountingEntriesController@filter');
                 /*Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index')->middleware('redirect.level');
                 Route::get('quotations/columns', 'Tenant\QuotationController@columns');
                 Route::get('quotations/records', 'Tenant\QuotationController@records');

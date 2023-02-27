@@ -11,233 +11,97 @@
             </div>
         </div>
         <div class="card mb-0">
-            <div class="data-table-visible-columns">
-                <el-dropdown :hide-on-click="false">
-                    <el-button type="primary">
-                        Mostrar/Ocultar columnas<i class="el-icon-arrow-down el-icon--right"></i>
-                    </el-button>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-for="(column, index) in columns" :key="index">
-                            <el-checkbox v-model="column.visible">{{ column.title }}</el-checkbox>
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
+            <div class="card-header bg-info py-1">
+                <h4 class="my-0">Búsqueda</h4>
             </div>
-            <div class="card-body">
+            <div class="">
                 <data-table :resource="resource">
-                    <tr slot="heading">
-                        <th>#</th>
-                        <th class="text-center">Fecha Emisión</th>
-                        <th class="text-center" v-if="columns.delivery_date.visible">T. Entrega</th>
-                        <th>Registrado por</th>
-                        <th>Vendedor</th>
-                        <th>Cliente</th>
-                        <th>Estado</th>
-                        <th>Cotización</th>
-                        <th>Comprobantes</th>
-                        <th>Notas de venta</th>
-                        <th v-if="columns.order_note.visible">Pedido</th>
-                        <th>Oportunidad Venta</th>
-                        <th v-if="columns.referential_information.visible">Inf.Referencial</th>
-                        <th v-if="columns.contract.visible">Contrato</th>
-                        <!-- <th>Estado</th> -->
-                        <th v-if="columns.exchange_rate_sale.visible">T.C.</th>
-                        <th class="text-center">Moneda</th>
-                        <th class="text-center"></th>
-                        <th class="text-right" v-if="columns.total_exportation.visible">T.Exportación</th>
-                        <th class="text-right" v-if="columns.total_free.visible">T.Gratuito</th>
-                        <th class="text-right" v-if="columns.total_unaffected.visible">T.Inafecta</th>
-                        <th class="text-right" v-if="columns.total_exonerated.visible">T.Exonerado</th>
-                        <th class="text-right">T.Gravado</th>
-                        <th class="text-right">T.Igv</th>
-                        <th class="text-right">Total</th>
-                        <th class="text-center">PDF</th>
-                        <th class="text-right">Acciones</th>
-                    <tr>
-                    <tr slot-scope="{ index, row }" :class="{ anulate_color : row.state_type_id == '11' }">
-                        <td>{{ index }}</td>
-                        <td class="text-center">{{ row.date_of_issue }}</td>
-                        <td class="text-center" v-if="columns.delivery_date.visible">{{ row.delivery_date }}</td>
-                        <td>{{ row.user_name }}</td>
-                        <td>{{ row.seller_name }}</td>
-                        <td>{{ row.customer_name }}<br/><small v-text="row.customer_number"></small></td>
-                        <td>
-                            <template v-if="row.state_type_id == '11'">
-                                {{ row.state_type_description }}
-                            </template>
-                            <template v-else>
-                                <el-select v-model="row.state_type_id" @change="changeStateType(row)"
-                                           style="width:120px !important">
-                                    <el-option v-for="option in state_types" :key="option.id" :value="option.id"
-                                               :label="option.description"></el-option>
-                                </el-select>
-                            </template>
-                        </td>
-                        <td>{{ row.identifier }}
-                        </td>
-                        <td>
-                            <template v-for="(document,i) in row.documents">
-                                <label :key="i" v-text="document.number_full" class="d-block"></label>
-                            </template>
-                        </td>
-                        <td>
-                            <template v-for="(sale_note,i) in row.sale_notes">
-                                <!-- <label :key="i" v-text="sale_note.identifier" class="d-block"></label> -->
-                                <label :key="i" v-text="sale_note.number_full" class="d-block"></label>
-                            </template>
-                        </td>
-                        <td v-if="columns.order_note.visible">
-                            <!-- Pedidos -->
-                            <template v-if="row.order_note !== undefined && row.order_note.full_number !== undefined">
-                                <label class="d-block">{{ row.order_note.full_number }} </label>
-                            </template>
-                        </td>
-                        <td>
-                            <!-- {{ row.sale_opportunity_number_full }} -->
+                    <div slot="heading">
+                    </div>
+                    <div slot-scope="{ index, row }" :class="{ anulate_color : row.state_type_id == '11' }">
 
-                            <el-popover
-                                placement="right"
-                                v-if="row.sale_opportunity"
-                                width="400"
-                                trigger="click">
+                          <div class="card mb-0 mt-3">
+                            <div class="card-body">
+                                <div class="text-right">
+                            <button type="button" data-toggle="tooltip" data-placement="top" title="Editar" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)"><i class="fa fa-edit"></i></button>
+                            <button type="button" data-toggle="tooltip" data-placement="top" title="Generar PDF" class="btn waves-effect waves-light btn-xs btn-warning" @click.prevent="clickCreate(row.id)"><i class="fa fa-file-pdf"></i></button>
+                             <template v-if="typeUser === 'admin'">
+                             <button type="button" data-toggle="tooltip" data-placement="top" title="Eliminar"  class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)"><i class="fa fa-trash"></i></button>
+                             </template>
+                        </div>
 
-                                <div class="col-md-12 mt-4">
-                                    <table>
-                                        <tr>
-                                            <td><strong>O. Venta: </strong></td>
-                                            <td><strong>{{ row.sale_opportunity_number_full }}</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Detalle: </strong></td>
-                                            <td><strong>{{ row.sale_opportunity.detail }}</strong></td>
-                                        </tr>
-                                        <tr class="mt-4 mb-4">
-                                            <td><strong>F. Emisión:</strong></td>
-                                            <td><strong>{{ row.date_of_issue }}</strong></td>
-                                        </tr>
-                                    </table>
-                                    <div class="table-responsive mt-4">
-                                        <table class="table">
-                                            <thead>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr class="table-active">
+                                            <th  colspan="2" class="font-weight-bold text-center">Cuenta</th>
+                                            <th width="13%" class="font-weight-bold text-center">Debe</th>
+                                            <th width="13%" class="font-weight-bold text-center">Haber</th>
+                                            <th width="15%" class="font-weight-bold text-center">Centro de Costo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr>
+                                            <td colspan="2" class="text-center py-0">
+                                                <p class="my-0" >-- {{ row.seat_date | toDate }} --</p>
+                                                <p class="my-0">{{row.seat_general}} </p>
+                                            </td>
+                                            <td  class="text-center"></td>
+                                            <td  class="text-center"></td>
+                                            <td  class="text-center"></td>
+                                            </tr>
+
                                             <tr>
-                                                <th>#</th>
-                                                <th>Descripción</th>
-                                                <th>Cantidad</th>
-                                                <th>Total</th>
+                                           <td colspan="2" >
+                                                <p class="my-0" >
+                                                Prueba
+                                                </p>
+                                            </td>
+                                            <td  class="text-center">$ 440.00</td>
+                                            <td  class="text-center">$ 0.00</td>
+                                            <td  class="text-center"></td>
                                             </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="(row, index) in row.sale_opportunity.items" :key="index">
-                                                <td>{{ index + 1 }}</td>
-                                                <td>{{ row.item.description }}</td>
-                                                <td>{{ row.quantity }}</td>
-                                                <td>{{ row.total }}</td>
+                                            
+                                            <tr>
+                                           <td colspan="2" >
+                                                <p class="ml-5 my-0" >
+                                                Prueba2
+                                                </p>
+                                            </td>
+                                            <td  class="text-center">$ 0.00</td>
+                                            <td  class="text-center">$ 440.00</td>
+                                            <td  class="text-center"></td>
                                             </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <el-button slot="reference"><i class="fa fa-eye"></i></el-button>
-                            </el-popover>
-                        </td>
-                        <!-- <td>{{ row.state_type_description }}</td> -->
-                        <td v-if="columns.referential_information.visible">{{ row.referential_information }}</td>
-                        <td v-if="columns.contract.visible">{{ row.contract_number_full }}</td>
-                        <td v-if="columns.exchange_rate_sale.visible">{{ row.exchange_rate_sale }}</td>
-                        <td class="text-center">{{ row.currency_type_id }}</td>
+                                            
+                                          <tr>
+                                            <td>
+                                                <p class="my-0" >
+                                                <b>Glosa:</b>
+                                                {{row.comment}}
+                                                </p>
+                                            </td>
+                                            <td width="7%" class="font-weight-bold">
+                                                
+                                                <p class="my-0" >TOTAL: </p>
+                                            </td>
+                                            <td  class="text-center">$ 440.00</td>
+                                            <td  class="text-center">$ 440.00</td>
+                                            <td  class="text-center"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                        <td class="text-right">
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickPayment(row.id)">Pagos
-                            </button>
-                        </td>
+                                 </div>
+                            </div>
+                            </div>
 
-                        <td class="text-right" v-if="columns.total_exportation.visible">{{ row.total_exportation }}</td>
-                        <td class="text-right" v-if="columns.total_free.visible">{{ row.total_free }}</td>
-                        <td class="text-right" v-if="columns.total_unaffected.visible">{{ row.total_unaffected }}</td>
-                        <td class="text-right" v-if="columns.total_exonerated.visible">{{ row.total_exonerated }}</td>
-                        <td class="text-right">{{ row.total_taxed }}</td>
-                        <td class="text-right">{{ row.total_igv }}</td>
-                        <td class="text-right">{{ row.total }}</td>
-                        <td class="text-right">
+                        
+             
 
-                            <button type="button" class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickOptionsPdf(row.id)">PDF
-                            </button>
-                        </td>
-
-                        <td class="text-right">
-
-                            <!--                            /*-->
-                            <!--                             #830-->
-                            <!--                             */-->
-                            <button v-if="row.btn_options"
-                                    type="button"
-                                    class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickGenerateDocument(row.id)">
-                                Generar comprobante
-                            </button>
-                            <!--                            /*-->
-                            <!--                             #830-->
-                            <!--                             */-->
-
-                            <button v-if="row.btn_options"
-                                    type="button"
-                                    class="btn waves-effect waves-light btn-xs btn-info"
-                                    @click.prevent="clickOptions(row.id)">
-                                Generar nota de venta
-                            </button>
-
-                            <a v-if="row.documents.length == 0 && row.state_type_id != '11'"
-                               :href="`/${resource}/edit/${row.id}`" type="button"
-                               class="btn waves-effect waves-light btn-xs btn-info">Editar</a>
-                            <button v-if="row.documents.length == 0 && row.state_type_id != '11'" type="button"
-                                    class="btn waves-effect waves-light btn-xs btn-danger"
-                                    @click.prevent="clickAnulate(row.id)">Anular
-                            </button>
-                            <button @click="duplicate(row.id)" type="button"
-                                    class="btn waves-effect waves-light btn-xs btn-info">Duplicar
-                            </button>
-                            <a :href="`/dispatches/create/${row.id}/q`"
-                               class="btn waves-effect waves-light btn-xs btn-warning m-1__2">Guía</a>
-
-                            <template v-if="row.btn_generate_cnt && row.state_type_id != '11'">
-                                <a :href="`/contracts/generate-quotation/${row.id}`"
-                                   class="btn waves-effect waves-light btn-xs btn-primary m-1__2">Generar contrato</a>
-                            </template>
-                            <template v-else>
-                                <button type="button" @click="clickPrintContract(row.external_id_contract)"
-                                        class="btn waves-effect waves-light btn-xs btn-primary m-1__2">Ver contrato
-                                </button>
-                            </template>
-                            <!-- pedidos -->
-                            <button
-                                v-if="canMakeOrderNote(row)"
-                                @click="makeOrder(row.id)"
-                                type="button"
-                                class="btn waves-effect waves-light btn-xs btn-tumblr">
-                                Generar Pedido
-                            </button>
-
-                        </td>
-
-                    </tr>
+                    </div>
                 </data-table>
             </div>
-
-
-            <quotation-options :showDialog.sync="showDialogOptions"
-                               :recordId="recordId"
-                               :showGenerate="true"
-                               :showClose="true"></quotation-options>
-
-            <quotation-options-pdf :showDialog.sync="showDialogOptionsPdf"
-                                   :recordId="recordId"
-                                   :showClose="true"></quotation-options-pdf>
-
-
-            <quotation-payments :showDialog.sync="showDialogPayments"
-                                :recordId="recordId"></quotation-payments>
+  
         </div>
     </div>
 </template>
@@ -248,10 +112,9 @@
 </style>
 <script>
 
-import DataTable from '../../../components/DataTableQuotation.vue'
+import DataTable from '../../../components/DataTableAccountEntries.vue'
 import {deletable} from '../../../mixins/deletable'
 import {mapActions, mapState} from "vuex";
-
 export default {
     props: [
         'typeUser',
@@ -319,7 +182,7 @@ export default {
         }
     },
     async created() {
-        await this.filter()
+        
     },
     mounted() {
         this.loadConfiguration()
@@ -357,12 +220,7 @@ export default {
             )
 
         },
-        filter() {
-            this.$http.get(`/${this.resource}/filter`)
-                .then(response => {
-                    this.state_types = response.data.state_types
-                })
-        },
+
         clickEdit(id) {
             this.recordId = id
             this.showDialogFormEdit = true

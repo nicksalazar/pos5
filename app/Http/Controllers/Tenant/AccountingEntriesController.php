@@ -13,6 +13,7 @@ use App\Models\Tenant\TypesAccountingEntries;
 use App\Http\Controllers\SearchItemController;
 use App\Http\Requests\Tenant\AccountEntriesRequest;
 use App\Http\Requests\Tenant\QuotationRequest;
+use App\Http\Resources\Tenant\AccountingEntriesCollection;
 use App\Http\Resources\Tenant\QuotationCollection;
 use App\Http\Resources\Tenant\QuotationResource;
 use App\Models\Tenant\Catalogs\DocumentType;
@@ -66,38 +67,38 @@ class AccountingEntriesController extends Controller
     public function columns()
     {
         return [
-            'customer' => 'Cliente',
-            'date_of_issue' => 'Fecha de emisión',
-            'delivery_date' => 'Fecha de entrega',
-            'user_name' => 'Registrado por',
-            'seller_name' => 'Vendedor',
-            'referential_information' => 'Inf.Referencial',
-            'number' => 'Número',
+            'user_id' => 'Cliente',
+            //'date_of_issue' => 'Fecha de emisión',
+            //'delivery_date' => 'Fecha de entrega',
+            //'user_name' => 'Registrado por',
+            //'seller_name' => 'Vendedor',
+            //'referential_information' => 'Inf.Referencial',
+            //'number' => 'Número',
         ];
     }
 
-    public function filter()
+   /* public function filter()
     {
         $state_types = StateType::whereIn('id', ['01', '05', '09'])->get();
 
         return compact('state_types');
-    }
+    }*/
 
     public function records(Request $request)
     {
         // dd($request->all());
         $records = $this->getRecords($request);
 
-        return new QuotationCollection($records->paginate(config('tenant.items_per_page')));
+        return new AccountingEntriesCollection($records->paginate(config('tenant.items_per_page')));
     }
 
     private function getRecords($request)
     {
         $column = $request->input('column');
         $value = $request->input('value');
-        $query = Quotation::query();
+        $query = AccountingEntries::query();
 
-        if ($column === 'user_name') {
+       /* if ($column === 'user_name') {
             $query->whereHas('user', function ($q) use ($value) {
                 $q->where('name', 'like', "%{$value}%");
             })
@@ -121,15 +122,16 @@ class AccountingEntriesController extends Controller
         } else {
             $query->where($column, 'like', "%{$value}%")
                 ->whereTypeUser();
-        }
+        }*/
 
         $records = $query->latest();
 
         $form = json_decode($request->form);
+        //dd($records);
 
-        if ($form->date_start && $form->date_end) {
+        /*if ($form->date_start && $form->date_end) {
             $records = $records->whereBetween('date_of_issue', [$form->date_start, $form->date_end]);
-        }
+        }*/
 
         return $records;
     }
@@ -254,24 +256,6 @@ class AccountingEntriesController extends Controller
 
     public function store(AccountEntriesRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'items.*.account_movement_id' => [
-                'required',
-                ],
-            'items.*.types_accounting_entrie_id' => [
-                'required',
-                ],
-            ],[
-        
-            'firstname.required' => ' The first name field is required.',
-            'firstname.min' => ' The first name must be at least 4 characters.',
-            'firstname.max' => ' The first name may not be greater than 25 characters.',
-            'lastname.required' => ' The last name field is required.',
-            'lastname.min' => ' The last name must be at least 4 characters.',
-            'lastname.max' => ' The last name may not be greater than 25 characters.',
-        
-            ]);
-          //$validator->validate();
         $idauth=auth()->user()->id;
         $lista=AccountingEntries::where('user_id','=',$idauth)->latest('id')->first();
         $ultimo=AccountingEntries::latest('id')->first();
@@ -295,11 +279,9 @@ class AccountingEntriesController extends Controller
             $row['seat']=$seat;
             $row['seat_general']=$seat_general;
             AccountingEntries::create($row);
-            // $row['document_id']=  $document->id;
-            // $item = new DocumentItem($row);
-            // $item->push();
+
         }
-        //dd($request);
+
         return [
             'success' => true,
             'data' => [

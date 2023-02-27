@@ -167,7 +167,7 @@
                             :min="0.00"
                             :precision="precision"
                             @input="calculateTotal()"
-                            prefix-icon="el-icon-money"
+                            prefix-icon="feather feather-dollar-sign"
                           ></el-input-number>
                         </td>
                         <td class="text-center">
@@ -177,7 +177,7 @@
                             :min="0.00"
                             :precision="precision"
                             @input="calculateTotal()"
-                            prefix-icon="icon-us-dollar"
+                          prefix-icon="feather feather-dollar-sign"
                           >
                           </el-input-number>
                         </td>
@@ -211,6 +211,7 @@
                             :min="0.00"
                             :disabled="true"
                             :precision="precision"
+                            prefix-icon="\E749"
                           ></el-input-number>
                         </td>
                         <td class="border-top border-dark">
@@ -220,6 +221,7 @@
                             :min="0.00"
                             disabled
                             :precision="precision"
+                            prefix-icon="feather feather-dollar-sign"
                           ></el-input-number>
                         </td>
                         <td></td>

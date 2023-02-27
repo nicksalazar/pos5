@@ -22,7 +22,7 @@ class AccountingEntriesCollection extends ResourceCollection
                 'seat' => $row->seat,
                 'seat_general' => $row->seat_general,
                 'seat_line' => $row->seat_line,
-                'seat_date' => $row->seat_date->format('Y-m-d'),
+                'seat_date' => $row->seat_date,//->format('Y-m-d'),
                 'account_code' => $row->account_code,
                 'types_accounting_entries_id' => $row->types_accounting_entries_id,
                 'comment' => $row->comment,
