@@ -16,11 +16,10 @@ class TenantAlter2PtoemisionToRetencionesJoin extends Migration
     {
         Schema::table('retenciones_join', function (Blueprint $table) {
 
-           
             $table->string('ptoEmision',20)->change();
 
         });
-        
+
     }
 
     /**

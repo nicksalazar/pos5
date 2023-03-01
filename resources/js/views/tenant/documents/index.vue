@@ -195,25 +195,7 @@
                             </template>
                         </td>
                         <td v-if="columns.send_it.visible">
-                            <!--
-                            <el-tooltip
-                                        class="item"
-                                        effect="dark"
-                                        placement="bottom">
-                                <div slot="content">
-                                    <span v-for="(item, i) in row.email_send_it_array"
-                                          :key="i">
-                                        {{ (item.email_send_it === false)?'No enviado':'Enviado' }} - {{ item.email }}  - {{ item.send_date }} <br>
-                                    </span>
-                                </div>
-                                <span class="badge "
-                                      :class="
-                                      {'text-danger': (row.email_send_it === false), 'text-success': (row.email_send_it === true), }">
-                                    <i class="fas fa-lg"
-                                       :class="{ 'fa-times': (row.email_send_it === false), 'fa-check': (row.email_send_it === true), }"
-                                    ></i>
-                                </span>
-                            </el-tooltip>-->
+                           
 
                             <span class="badge "
                                   :class="
