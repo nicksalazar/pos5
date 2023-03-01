@@ -42,9 +42,9 @@
          *
          * @return Response
          */
-        public function create()
+        public function create($id = null)
         {
-            return view('production::production.form');
+            return view('production::production.form', compact('id'));
         }
 
         /**
@@ -55,9 +55,7 @@
          * @return Response
          */
         public function store(ProductionRequest $request)
-        {
-
-
+        {   
             $result = DB::connection('tenant')->transaction(function () use ($request) {
 
                 $item_id = $request->input('item_id');
@@ -83,6 +81,7 @@
                 $production = Production::firstOrNew(['id' => null]);
                 $production->fill($request->all());
                 $production->inventory_id_reference = $inventory->id;
+                $production->state_type_id =  $request->records_id;
                 $production->user_id = auth()->user()->id;
                 $production->soap_type_id = $this->getCompanySoapTypeId();
                 $production->save();
@@ -148,10 +147,55 @@
          *
          * @return Response
          */
-        public function update(Request $request, $id)
+        public function update(ProductionRequest $request, $id)
         {
-            //
+            $result = DB::connection('tenant')->transaction(function () use ($request, $id) {
+                $production = Production::findOrFail($id);
+                $production->fill($request->all());
+                $production->state_type_id =  $request->records_id;
+                $inventory = Inventory::findOrFail($production->inventory_id_reference);
+                $inventory_transaction = InventoryTransaction::findOrFail(19); //debe ser Ingreso de producción
+
+                if (!$request->informative) {
+                    $inventory->type = null;
+                    $inventory->description = $inventory_transaction->name;
+                    $inventory->item_id = $request->input('item_id');
+                    $inventory->warehouse_id = $request->input('warehouse_id');
+                    $inventory->quantity = $request->input('quantity');
+                    $inventory->inventory_transaction_id = $inventory_transaction->id;
+                    $inventory->save();
+                }
+
+                if (!$request->informative) {
+                    $items_supplies = $request->supplies;
+
+                    foreach ($items_supplies as $item) {
+                        $supplyWarehouseId = (int)($item['warehouse_id'] ?? $request->input('warehouse_id'));
+                        $supplyWarehouseId = $supplyWarehouseId !== 0 ? $supplyWarehouseId : $request->input('warehouse_id');
+                        $qty = $item['quantity'] ?? 0;
+
+                        $inventory_transaction_item = InventoryTransaction::findOrFail('101'); //Salida insumos por molino
+                        $inventory_it = Inventory::where('item_id', $item['individual_item_id'])
+                                                ->where('warehouse_id', $supplyWarehouseId)
+                                                ->where('inventory_transaction_id', $inventory_transaction_item->id)
+                                                ->firstOrFail();
+
+                        $inventory_it->quantity = (float)($qty * $request->input('quantity'));
+                        $inventory_it->save();
+                    }
+                }
+
+                $production->save();
+
+                return [
+                    'success' => true,
+                    'message' => 'Actualización realizada correctamente'
+                ];
+            });
+
+            return $result;
         }
+
 
         /**
          * Remove the specified resource from storage.
@@ -182,17 +226,18 @@
             ];
         }
 
-        public static function optionsItemProduction()
+        public static function optionsItemProduction($itemId = null)
         {
-            return Item::ProductEnded()
-                ->get()
+            $query = Item::ProductEnded();
+            if ($itemId !== null) {
+                $query->find($itemId);
+            }
+            return $query->get()
                 ->transform(function (Item $row) {
                     $data = $row->getCollectionData();
-
-
                     return $data;
-
                 });
+
         }
 
         public function searchItems(Request $request)
@@ -229,12 +274,56 @@
 
         }
 
+        public function record($id)
+        {
+            $production = Production::findOrFail($id);
+            $inventory_id_reference = $production->inventory_id_reference;
+            $inventory = Inventory::findOrFail($inventory_id_reference);
+            $warehouse_id = $inventory->warehouse_id;
+            $data = $production->getCollectionData();
+            $data['item_id'] = $production->item_id;
+            $data['warehouse_id'] = $warehouse_id;
+            $data['records_id'] = $production->state_type_id;
+            return $data;
+        }
+
         public function getRecords(Request $request)
+        {
+            $state_type_id = $request->state_type_id;
+            $data_of_period = $this->getDatesOfPeriod($request);
+
+            $data = Production::query();
+            
+            if (!empty($data_of_period['d_start'])) {
+                $data->where(function ($query) use ($data_of_period) {
+                    $query->where('date_start', '>=', $data_of_period['d_start'])
+                        ->orWhere(function ($query) use ($data_of_period) {
+                            $query->whereNull('date_start')
+                                    ->where('created_at', '>=', $data_of_period['d_start']);
+                        });
+                });
+            }
+            
+            if (!empty($data_of_period['d_end'])) {
+                $data->where(function ($query) use ($data_of_period) {
+                    $query->where('date_end', '<=', $data_of_period['d_end'])
+                        ->orWhere(function ($query) use ($data_of_period) {
+                            $query->whereNull('date_end')
+                                    ->where('created_at', '<=', $data_of_period['d_end']);
+                        });
+                });
+            }
+            
+           
+            
+            return $data;
+        }
+
+        public function getRecords2(Request $request)
         {
             $state_type_id = $request->state_type_id;
 
             $data_of_period = $this->getDatesOfPeriod($request);
-
             $data = Production::query();
             if (!empty($data_of_period['d_start'])) {
                 $data->where('date_start', '>=', $data_of_period['d_start']);

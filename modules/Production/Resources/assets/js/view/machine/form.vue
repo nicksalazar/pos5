@@ -178,7 +178,6 @@ export default {
 
         },
         submit() {
-
             this.loading_submit = true
             this.$http.post(`/${this.resource}`, this.form)
                 .then(response => {
