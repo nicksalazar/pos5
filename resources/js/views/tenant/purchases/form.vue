@@ -1386,7 +1386,6 @@ export default {
 
                         if(nuevaRet){
                             console.log('Nueva Retencion')
-
                             if(row.iva_retention > 0 ){
                                 let retencionLocal = {}
                                 retencionLocal.tipo = 'IVA'

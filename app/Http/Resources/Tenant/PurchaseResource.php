@@ -3,6 +3,8 @@
 namespace App\Http\Resources\Tenant;
 
 use App\Models\Tenant\Purchase;
+use App\Models\Tenant\RetentionsDetailEC;
+use App\Models\Tenant\RetentionsEC;
 use Modules\Inventory\Models\Warehouse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,6 +24,16 @@ class PurchaseResource extends JsonResource
         $purchase->items = self::getTransformItems($purchase->items);
         $purchase->customer_number = $purchase->customer_id ? $purchase->customer->number:null;
         $purchase->fee = $purchase->fee;
+
+        $detRet = null;
+        $cabRet = RetentionsEC::where('idDocumento',$purchase->id)->get();
+
+        if(isset($cabRet) && $cabRet->count() > 0 ){
+            $detRet = RetentionsDetailEC::where('idRetencion',$cabRet[0]->idRetencion)->get();
+        }
+
+        $purchase->retentions = $detRet;
+
 
         return [
             'id' => $this->id,
