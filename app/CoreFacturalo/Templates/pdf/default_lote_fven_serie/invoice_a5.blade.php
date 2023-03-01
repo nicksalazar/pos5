@@ -301,7 +301,7 @@
         <th class="border-top-bottom text-center py-2" width="8%">CANT.</th>
         <th class="border-top-bottom text-center py-2" width="8%">UNIDAD</th>
         <th class="border-top-bottom text-left py-2">DESCRIPCIÓN</th>
-        <th class="border-top-bottom text-left py-2">MODELO</th>
+        <th class="border-top-bottom text-left py-2">MODELO/REF</th>
         <th class="border-top-bottom text-center py-2" width="8%">LOTE</th>
         <th class="border-top-bottom text-center py-2" width="8%">SERIE</th>
         <th class="border-top-bottom text-right py-2" width="12%">P.UNIT</th>

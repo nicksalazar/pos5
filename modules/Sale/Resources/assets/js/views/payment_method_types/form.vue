@@ -120,6 +120,7 @@
             },
             create() {
                 this.titleDialog = (this.recordId)? 'Editar método de pago':'Nuevo método de pago'
+
                 if (this.recordId) {
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {

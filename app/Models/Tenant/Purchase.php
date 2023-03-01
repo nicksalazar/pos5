@@ -12,6 +12,10 @@ use Modules\Purchase\Models\PurchaseOrder;
 use stdClass;
 use Illuminate\Database\Eloquent\Collection;
 
+use App\Models\Tenant\RetentionsDetailEC;
+use App\Models\Tenant\RetentionsEC;
+use Illuminate\Support\Facades\Log;
+
 /**
  * Class Purchase
  *
@@ -64,7 +68,7 @@ class Purchase extends ModelTenant
 {
     // use SoftDeletes;
 
-protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'purchase_payments'/*, 'retention_type'*/];
+protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items','purchase_payments'/*, 'retention_type'*/];
 
     protected $fillable = [
         'user_id',
@@ -122,6 +126,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
         //'retention_type_id',
         'sequential_number',
         'auth_number',
+        'codSustento',
     ];
 
     protected $casts = [
@@ -400,7 +405,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
                 $user = new User();
             }
         }
-        else { 
+        else {
             $user = auth()->user();
         }
         return ($user->type === 'seller') ? $query->where('user_id', $user->id) : null;
@@ -536,6 +541,34 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
                             // --    utility_item
 
         $guides = (array)$this->guides;
+
+        $retencionesID = RetentionsEC::where('idDocumento',$this->id)->get();
+        $retencoinesArray = [];
+        if($retencionesID && $retencionesID->count() > 0){
+            //Log::info(json_encode($retencionesID));
+            $retencoinesArray =  RetentionsDetailEC::where('idRetencion',$retencionesID[0]->idRetencion)->get();
+        }
+        $retMejora = null;
+        Log::info("RETENCIONES: ".json_encode($retencoinesArray));
+        foreach($retencoinesArray as $key => $retencionLocal){
+
+            $catType = RetentionType::where('code',$retencionLocal->codRetencion)->get();
+            //Log::info("RETENCIONES: ".json_encode($catType));
+            if($catType &&  $catType->count() > 0 ){
+                $tipo = 'RENTA';
+                if($catType[0]->type_id == '01'){
+                    $tipo = 'IVA';
+                }
+                $retMejora[] = [
+                    'key' => $key + 1,
+                    'type' => $tipo,
+                    'serie' => $retencionLocal->idRetencion,
+                    'description' => $catType[0]->description,
+                    'value' => round($retencionLocal->valorRet,2)
+                ];
+            }
+        }
+
         return [
             'id'                             => $this->id,
             'customer_number'                             => $customer_number,
@@ -586,6 +619,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
                     'quantity'    => round($row->quantity, 2)
                 ];
             }),
+            'retenciones' => $retMejora,
             'print_a4'                       => url('')."/purchases/print/{$this->external_id}/a4",
             'filename'                         => $this->filename,
         ];
@@ -641,7 +675,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
     {
         return $this->hasMany(GuideFile::class);
     }
-    
+
     /**
      * Validar si es compra en dolares
      *
@@ -658,7 +692,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
     }
 
     /**
-     * 
+     *
      * Obtener total y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -669,7 +703,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
     }
 
     /**
-     * 
+     *
      * Obtener total isc y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -678,9 +712,9 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
     {
         return $this->convertValueToPen($this->total_isc);
     }
-    
+
     /**
-     * 
+     *
      * Obtener total igv y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -690,7 +724,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
         return $this->convertValueToPen($this->total_igv);
     }
     /**
-     * 
+     *
      * Obtener total base y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -699,9 +733,9 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
     {
         return $this->convertValueToPen($this->total_taxed);
     }
-    
+
     /**
-     * 
+     *
      * Obtener total exonerado y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -712,7 +746,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
     }
 
     /**
-     * 
+     *
      * Obtener Subtotal 0% y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -723,7 +757,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
     }
 
     /**
-     * 
+     *
      * Obtener total gratuito y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -732,9 +766,9 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
     {
         return $this->convertValueToPen($this->total_free);
     }
-    
+
     /**
-     * 
+     *
      * Obtener total exportacion y realizar conversión a soles de acuerdo al tipo de cambio
      *
      * @return float
@@ -746,7 +780,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
 
 
     /**
-     * 
+     *
      * Obtener pagos en efectivo
      *
      * @return Collection
@@ -758,11 +792,11 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
         }});
     }
 
-    
+
     /**
-     * 
+     *
      * Validar si el registro esta rechazado o anulado
-     * 
+     *
      * @return bool
      */
     public function isVoidedOrRejected()
@@ -770,9 +804,9 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
         return in_array($this->state_type_id, self::VOIDED_REJECTED_IDS);
     }
 
-        
+
     /**
-     * 
+     *
      * Obtener url para impresión
      *
      * @param  string $format
@@ -782,15 +816,15 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
     {
         return url("purchases/print/{$this->external_id}/{$format}");
     }
-        
+
 
     /**
-     * 
+     *
      * Filtro para no incluir relaciones en consulta
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
-     */  
+     */
     public function scopeWhereFilterWithOutRelations($query)
     {
         return $query->withOut(['user', 'soap_type', 'state_type', 'document_type', 'currency_type', 'group', 'items', 'purchase_payments'/*, 'retention_type'*/]);
@@ -798,7 +832,7 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
 
 
     /**
-     * 
+     *
      * Obtener relaciones necesarias o aplicar filtros para reporte pagos - finanzas
      *
      * @param  Builder $query
@@ -810,9 +844,9 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
                     ->with([
                         'document_type'=> function($q){
                             $q->select('id', 'description');
-                        }, 
+                        },
                     ]);
     }
-    
+
 
 }

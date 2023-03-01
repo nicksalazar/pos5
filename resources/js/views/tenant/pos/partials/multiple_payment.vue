@@ -129,6 +129,7 @@
             },
             clickAddPayment(total = 0) {
 
+
                 this.payments.push({
                     id: null,
                     document_id: null,
@@ -139,8 +140,9 @@
                     reference: null,
                     payment: total,
                 });
-
+               
                 this.$emit('add', this.payments);
+                
             },
 
             close() {
@@ -151,7 +153,10 @@
 
             },
             clickCancel(index) {
+                
+               
                 this.payments.splice(index, 1);
+
                 this.$emit('add', this.payments);
             },
             async events() {

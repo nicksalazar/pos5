@@ -97,7 +97,8 @@
                                  class="form-group">
                                 <label class="control-label">Cantidad</label>
                                 <el-input-number v-model="form.quantity"
-                                                 :min="0.01"></el-input-number>
+                                                 :min="0.01"
+                                                 @change="cambioCantidad()"></el-input-number>
                                 <small v-if="errors.quantity"
                                        class="form-control-feedback"
                                        v-text="errors.quantity[0]"></small>
@@ -139,7 +140,7 @@
                                  class="form-group">
                                  <!-- JOINSOFTWARE -->
                                 <!-- Afectación Igv -> Tipo de Impuesto -->
-                                <label class="control-label">Tipo de retención IVA</label>
+                                <label class="control-label">Tipo retención IVA</label>
                                 <el-select v-model="form.retention_type_id_iva"
                                            filterable
                                            @change="changeRetentionTypeIva($event)">
@@ -156,7 +157,7 @@
                                  class="form-group">
                                  <!-- JOINSOFTWARE -->
                                 <!-- Afectación Igv -> Tipo de Impuesto -->
-                                <label class="control-label">Tipo de retención RENTA</label>
+                                <label class="control-label">Tipo retención RENTA</label>
                                 <el-select v-model="form.retention_type_id_income"
                                            filterable
                                            @change="changeRetentionTypeIncome($event)">
@@ -875,8 +876,8 @@ export default {
                 system_isc_type_id: null,
                 percentage_isc: 0,
                 suggested_price: 0,
-                income_retention: null,
-                iva_retention: null,
+                income_retention: 0,
+                iva_retention: 0,
                 quantity: 1,
                 unit_price: 0,
                 charges: [],
@@ -982,27 +983,65 @@ export default {
             this.form.system_isc_type_id = this.form.item.purchase_system_isc_type_id
 
         },
+        cambioCantidad(){
+            this.changeRetentionTypeIva(this.form.retention_type_id_iva)
+            this.changeRetentionTypeIncome(this.form.retention_type_id_income)
+
+        },
         changeRetentionTypeIva(event) {
             const val = _.find(this.retention_types_iva, {'id': event});
             const item = {..._.find(this.items, {'id': this.form.item_id})};
             if (val.type_id == '02') {
-                //_.round
-                if (item.sale_affectation_igv_type_id == '10') {
-                    this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.12)), 3)
-                } else if (item.sale_affectation_igv_type_id == '11') {
-                    this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.08)), 3)
-                } else if (item.sale_affectation_igv_type_id == '12') {
-                    this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.14)), 3)
-                } else if (item.sale_affectation_igv_type_id == '30') {
-                    this.form.iva_retention = _.round((val.percentage / 100) * this.iva, 3)
+                if(item.has_igv){
+                    if (item.sale_affectation_igv_type_id == '10') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.12)), 3) * this.form.quantity
+                    } else if (item.sale_affectation_igv_type_id == '11') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.08)), 3) * this.form.quantity
+                    } else if (item.sale_affectation_igv_type_id == '12') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.14)), 3) * this.form.quantity
+                    } else if (item.sale_affectation_igv_type_id == '30') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * this.iva, 3) * this.form.quantity
+                    }
+                }else{
+
+                    if (item.sale_affectation_igv_type_id == '10') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * ((this.iva * 1.12) - this.iva), 3) * this.form.quantity
+                    } else if (item.sale_affectation_igv_type_id == '11') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * ((this.iva * 1.08) - this.iva), 3) * this.form.quantity
+                    } else if (item.sale_affectation_igv_type_id == '12') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * ((this.iva * 1.14) - this.iva), 3) * this.form.quantity
+                    } else if (item.sale_affectation_igv_type_id == '30') {
+                        this.form.iva_retention = _.round((val.percentage / 100) * this.iva, 3) * this.form.quantity
+                    }
                 }
+                //_.round
+
                 this.is_iva = true
             }
         },
         changeRetentionTypeIncome(event) {
+
             const val = _.find(this.retention_types_income, {'id': event});
+            const item = {..._.find(this.items, {'id': this.form.item_id})};
+
             if (val.type_id == '01') {
-                this.form.income_retention = _.round((val.percentage / 100) * this.income, 3)
+                if(item.has_igv){
+                    if (item.sale_affectation_igv_type_id == '10') {
+                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.12), 3) * this.form.quantity
+                    } else if (item.sale_affectation_igv_type_id == '11') {
+                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.08), 3) * this.form.quantity
+                    } else if (item.sale_affectation_igv_type_id == '12') {
+                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.14), 3) * this.form.quantity
+                    } else if (item.sale_affectation_igv_type_id == '30') {
+
+                        this.form.income_retention = _.round((val.percentage / 100) * this.income, 3) * this.form.quantity
+                    }
+
+                }else{
+
+                    this.form.income_retention = _.round((val.percentage / 100) * this.income, 3) * this.form.quantity
+                }
+
                 this.is_income = true
             }
         },

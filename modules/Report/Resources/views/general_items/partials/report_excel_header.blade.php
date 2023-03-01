@@ -43,7 +43,7 @@
 @endif
 <th> SERIES</th>
 @if($type == 'sale')
-    <th> MODELO</th>
+    <th> MODELO/REF</th>
 @endif
 <th> COSTO UNIDAD</th>
 <th> VALOR UNITARIO</th>

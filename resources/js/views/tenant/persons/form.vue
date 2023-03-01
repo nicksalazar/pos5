@@ -591,6 +591,8 @@
                                            v-text="errors.website[0]"></small>
                                 </div>
                             </div>
+
+
                             <!--Observaciones -->
                             <div class="col-md-6">
                                 <div :class="{'has-danger': errors.observation }"
@@ -603,6 +605,67 @@
                                 </div>
                             </div>
                             <!--ID Días Crédito -->
+                             <!--Adicional proveedores parteRel -->
+                            <div class="col-md-6" v-if="this.type === 'suppliers'">
+                                <div :class="{'has-danger': errors.parteRel }"
+                                     class="form-group">
+                                    <label class="control-label">
+                                        Relacionado
+                                    </label>
+                                    <el-select v-model="form.parteRel"
+                                               clearable>
+                                        <el-option v-for="option in parteRel"
+                                                   :key="option.id"
+                                                   :label="option.name"
+                                                   :value="option.name">{{ option.name }}
+                                        </el-option>
+                                    </el-select>
+                                    <small v-if="errors.parteRel"
+                                           class="form-control-feedback"
+                                           v-text="errors.parteRel[0]"></small>
+                                </div>
+                            </div>
+
+                             <!--Adicional proveedores pagoLocalExt -->
+                             <div class="col-md-6" v-if="this.type === 'suppliers'">
+                                <div :class="{'has-danger': errors.pagoLocExt }"
+                                     class="form-group">
+                                    <label class="control-label">
+                                        Pago local exterior
+                                    </label>
+                                    <el-select v-model="form.pagoLocExt"
+                                               clearable>
+                                        <el-option v-for="option in pagoLocExt"
+                                                   :key="option.id"
+                                                   :label="option.name"
+                                                   :value="option.name">{{ option.name }}
+                                        </el-option>
+                                    </el-select>
+                                    <small v-if="errors.pagoLocExt"
+                                           class="form-control-feedback"
+                                           v-text="errors.pagoLocExt[0]"></small>
+                                </div>
+                            </div>
+                            <!--Adicional proveedores pagoLocalExtDoc -->
+                            <div class="col-md-6" v-if="this.type === 'suppliers' && form.pagoLocExt == 'Exterior'">
+                                <div :class="{'has-danger': errors.pagoLocExtDoc }"
+                                     class="form-group">
+                                    <label class="control-label">
+                                        Tipodocumento(solo extrajeros)
+                                    </label>
+                                    <el-select v-model="form.pagoLocExtDoc"
+                                               clearable>
+                                        <el-option v-for="option in pagoLocExtDoc"
+                                                   :key="option.id"
+                                                   :label="option.name"
+                                                   :value="option.name">{{ option.name }}
+                                        </el-option>
+                                    </el-select>
+                                    <small v-if="errors.pagoLocExtDoc"
+                                           class="form-control-feedback"
+                                           v-text="errors.pagoLocExtDoc[0]"></small>
+                                </div>
+                            </div>
 
                         </div>
                         <div class="row">
@@ -727,6 +790,18 @@ export default {
             countries: [],
             zones: [],
             sellers: [],
+            parteRel:[
+                {'id': 1, 'name':'SI'},
+                {'id': 2, 'name':'NO'},
+            ],
+            pagoLocExt:[
+                {'id': 1, 'name':'Local'},
+                {'id': 2, 'name':'Exterior'},
+            ],
+            pagoLocExtDoc:[
+                {'id': 1, 'name':'Natural'},
+                {'id': 2, 'name':'Sociedad'},
+            ],
             all_departments: [],
             all_provinces: [],
             all_districts: [],
@@ -820,6 +895,8 @@ export default {
                 has_discount: false,
                 discount_type: '01',
                 discount_amount: 0,
+                parteRel:'NO',
+                pagoLocExt:'Local',
 
             }
             this.updateEmail()
