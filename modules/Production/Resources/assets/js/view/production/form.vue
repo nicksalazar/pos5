@@ -533,8 +533,8 @@
                                 <th>    {{ row.individual_item && row.individual_item.description ? row.individual_item.description : "" }}</th>
                                 <th>
                                     <!-- {{ row.quantity }} -->
-                                    <el-input-number v-if="form.quantity != 0 && form.quantity != null" v-model="row.quantity * form.quantity" :controls="false" disabled="disabled"></el-input-number>
-                                    <el-input-number v-else v-model="row.quantity" :controls="false" disabled="disabled"></el-input-number>
+                                    <el-input-number v-if="form.quantity != 0 && form.quantity != null" :value="row.quantity * form.quantity" :controls="false" disabled></el-input-number>
+                                    <el-input-number v-else :value="row.quantity" :controls="false" disabled></el-input-number>
                                     
                                     <!-- JOINSOFTWARE
                                     <el-input-number v-model="quantityD" :step="1"></el-input-number>
@@ -581,7 +581,11 @@ export default {
             required: false,
         },
     },
-    computed: {},
+    computed: {
+        suppliesCalc() {
+            return 0
+        }
+    },
     data() {
         return {
             resource: 'production',
@@ -611,18 +615,18 @@ export default {
             quantityD: 0,
         }
     },
-    created() {
-        this.getTable();
+    async created() {
+        await this.getTable();
         this.initForm()
     },
     methods: {
         onClose() {
             window.location.href = '/production'
         },
-        isUpdate() {
+        async isUpdate() {
             this.title=  "Nuevo producto fabricado";
             if (this.id) {
-                this.$http.get(`/${this.resource}/record/${this.id}`)
+                await this.$http.get(`/${this.resource}/record/${this.id}`)
                     .then(response => {
                         this.title= "Editar producto fabricado";
                         this.form = response.data
@@ -635,7 +639,7 @@ export default {
             }
 
         },
-        initForm() {
+        async  initForm() {
             this.form = {
                 id: this.id,
                 item_id: null,
@@ -652,10 +656,10 @@ export default {
 
             }
             this.supplies = {};
-            this.isUpdate();
+            await this.isUpdate();
         },
-        getTable() {
-            this.$http.get(`/${this.resource}/tables`)
+        async getTable() {
+           await  this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     let data = response.data
                     this.warehouses = data.warehouses
@@ -669,8 +673,10 @@ export default {
         handleChange(value) {
             if (value > 0) {
                 this.quantityD = value
-                for (let i = 0; i < this.supplies.length; i++) {
-                    this.supplies[i].quantity = this.form.supplies[i].quantity * this.quantityD
+                if (this.form.supplies) {
+                    for (let i = 0; i < this.supplies.length; i++) {
+                        this.supplies[i].quantity = this.form.supplies[i].quantity * this.quantityD
+                    }
                 }
             } else {
                 return this.$message.error('La cantidad debe ser mayor a 0');
