@@ -56,6 +56,7 @@ use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Excel;
@@ -71,6 +72,9 @@ use Modules\Document\Helpers\DocumentHelper;
 use Modules\Inventory\Models\{
     InventoryConfiguration
 };
+use Swift_SmtpTransport;
+use Illuminate\Support\Facades\Config;
+use Swift_Mailer;
 
 class DocumentController extends Controller
 {
@@ -691,7 +695,7 @@ class DocumentController extends Controller
             $facturalo->validateDocumentSRI();
             //$facturalo->createPdf();
             return $facturalo;
-            
+
         });
 
         $response = $fact->getResponse();
@@ -884,7 +888,7 @@ class DocumentController extends Controller
 
     public function email(DocumentEmailRequest $request)
     {
-        $company = Company::active();
+        /*$company = Company::active();
         $document = Document::find($request->input('id'));
         $customer_email = $request->input('customer_email');
         $email = $customer_email;
@@ -903,6 +907,34 @@ class DocumentController extends Controller
             Mail::to($customer_email)->send(new DocumentEmail($company, $document));
         }
         */
+        $company = Company::active();
+        $document = Document::find($request->input('id'));
+
+        $email = trim($request->input('customer_email'));
+        $mail = explode(';', str_replace([',', ' '], [';', ''], $email));
+        $mails = [];
+        if (!empty($mail) && count($mail) > 0) {
+            foreach ($mail as $email) {
+                $email = trim($email);
+                if (!empty($email)) {
+                    $mails[] = $email;
+                }
+            }
+            $email= implode(';',$mails);
+        }
+        $email = explode(';',$email);
+        $mailable = new DocumentEmail($company, $document);
+        Configuration::setConfigSmtpMail();
+
+        // Backup your default mailer
+        $backup = Mail::getSwiftMailer();
+        $transport =  new Swift_SmtpTransport(Config::get('mail.host'), Config::get('mail.port'), Config::get('mail.encryption'));
+        $transport->setUsername(Config::get('mail.username'));
+        $transport->setPassword(Config::get('mail.password'));
+        $mailer = new Swift_Mailer($transport);
+        Mail::setSwiftMailer($mailer);
+        Mail::to($email)->send($mailable);
+
         return [
             'success' => true
         ];

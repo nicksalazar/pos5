@@ -30,24 +30,24 @@ class CompanyRequest extends FormRequest
             ],
             //JOINSOFTWARE
             'agente_retencion_num' => [
-                'required',
+                'required_if:agente_retencion,1',
                 Rule::unique('tenant.companies')->ignore($id),
             ],
             //JOINSOFTWARE
             'contribuyente_especial_num' => [
-                'required',
+                'required_if:contribuyente_especial,1',
                 Rule::unique('tenant.companies')->ignore($id),
             ],
             'soap_type_id' => [
                 'nullable'
             ],
             'soap_username' => [
-                'required_if:soap_type_id,"02"',
-                'required_if:soap_send_id,"02"'
+                //'required_if:soap_type_id,"02"',
+                //'required_if:soap_send_id,"02"'
             ],
             'soap_password' => [
-                'required_if:soap_type_id,"02"',
-                'required_if:soap_send_id,"02"'
+                //'required_if:soap_type_id,"02"',
+                //'required_if:soap_send_id,"02"'
             ],
         ];
     }

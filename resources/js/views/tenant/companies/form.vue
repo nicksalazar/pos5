@@ -139,7 +139,7 @@
                                 </div>
                             </div>
 
-                            
+
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="control-label">Logo APP</label>
@@ -395,7 +395,7 @@
                             </div>
                         </template>
 
-                        <template v-if=" form.soap_send_id != '03' || form.soap_type_id == '02' || form.soap_send_id == '02'">
+                        <template v-if=" form.soap_type_id == '02' && form.soap_send_id == '02'">
                             <div class="row">
                                 <div class="col-md-12 mt-2">
                                     <h4 class="border-bottom">Usuario Secundario Sunat/OSE</h4>
@@ -541,7 +541,7 @@ export default {
                 // console.log(2)
 
             })
-        
+
         this.events()
     },
     methods: {
@@ -556,7 +556,7 @@ export default {
 
         },
         async getRecord(){
-            
+
             await this.$http.get(`/${this.resource}/record`)
                     .then(response => {
                         if (response.data !== '') {
