@@ -186,9 +186,12 @@ class DashboardData
                 $sale_note_total_payment_pen += collect($sale_note->payments)->sum('payment');
 
             }else{
-
+                /*
                 $sale_note_total_usd += $sale_note->total * $sale_note->exchange_rate_sale;
                 $sale_note_total_payment_usd += collect($sale_note->payments)->sum('payment') * $sale_note->exchange_rate_sale;
+                */
+                $sale_note_total_usd += $sale_note->total;
+                $sale_note_total_payment_usd += collect($sale_note->payments)->sum('payment');
 
             }
         }
@@ -325,7 +328,8 @@ class DashboardData
                                     ->where('currency_type_id', 'USD');
 
         foreach ($documents_usd as $dusd) {
-            $document_total_usd += $dusd->total * $dusd->exchange_rate_sale;
+            //$document_total_usd += $dusd->total * $dusd->exchange_rate_sale;
+            $document_total_usd += $dusd->total;
         }
 
         //TWO CURRENCY
@@ -346,8 +350,11 @@ class DashboardData
 
                 if(in_array($document->state_type_id,['01','03','05','07','13'])){
 
-                    $document_total_payment_usd += collect($document->payments)->sum('payment') * $document->exchange_rate_sale;
-                    $document_total_note_credit_usd += ($document->document_type_id == '07') ? $document->total * $document->exchange_rate_sale:0; //nota de credito
+                    //$document_total_payment_usd += collect($document->payments)->sum('payment') * $document->exchange_rate_sale;
+                    //$document_total_note_credit_usd += ($document->document_type_id == '07') ? $document->total * $document->exchange_rate_sale:0; //nota de credito
+
+                    $document_total_payment_usd += collect($document->payments)->sum('payment');
+                    $document_total_note_credit_usd += ($document->document_type_id == '07') ? $document->total :0; //nota de credito
 
                 }
 
@@ -893,13 +900,13 @@ class DashboardData
             'general' => $this->totals($establishment_id, $d_start, $d_end, $period, $month_start, $month_end),
         ];
     }
-    
+
 
     /**
-     * 
+     *
      * Método para acceder a los totales (método privado)
      * El gráfico no incluye pedidos
-     * 
+     *
      * Usado en:
      * ReportController - App
      *
@@ -916,7 +923,7 @@ class DashboardData
         $data = $this->totals($establishment_id, $d_start, $d_end, $period, $month_start, $month_end);
 
         $total_order_notes = $this->getTotalsOrderNote($establishment_id, $d_start, $d_end);
-        
+
         $data['totals']['total_order_notes'] = $this->roundNumber($total_order_notes);
         $data['totals']['total'] = $this->roundNumber($total_order_notes + (float) $data['totals']['total']);
 
