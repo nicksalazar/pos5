@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Grammars\ChangeColumn;
 
-class TenantAlterSecuencialToRetencionesJoin extends Migration
+class TenantAlter2SecuencialToRetencionesJoin extends Migration
 {
     /**
      * Run the migrations.
