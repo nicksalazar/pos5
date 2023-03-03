@@ -502,7 +502,6 @@
                                 </table>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <p v-if="form.total_ret > 0"
                                class="text-left" >RETENCIONES</p>
@@ -607,7 +606,6 @@
                                         <div :class="{'has-danger': errors.perception_number}"
                                              class="form-group">
                                             <el-input v-model="form.perception_number"></el-input>
-
                                             <small v-if="errors.perception_number"
                                                    class="form-control-feedback"
                                                    v-text="errors.perception_number[0]"></small>
@@ -627,6 +625,7 @@
                                                             type="date"
                                                             value-format="yyyy-MM-dd"
                                                             @change="changeDateOfIssue"></el-date-picker>
+
                                             <small v-if="errors.perception_date"
                                                    class="form-control-feedback"
                                                    v-text="errors.perception_date[0]"></small>
@@ -652,12 +651,8 @@
                                     </div>
                                 </div>
                                 <h3 v-if="form.total > 0 && !hide_button"
-                                    class="text-right"><b>MONTO TOTAL : </b>{{
-                                        currency_type.symbol
-                                                                                               }} {{ total_amount }}
+                                    class="text-right"><b>MONTO TOTAL : </b>{{ currency_type.symbol }} {{ total_amount }}
                                 </h3>
-
-
                             </template>
                         </div>
 
@@ -689,7 +684,6 @@
                           :showClose="false"></purchase-options>
     </div>
 </template>
-
 <script>
 
 import PurchaseFormItem from './partials/item.vue'
@@ -712,6 +706,8 @@ export default {
             input_person: {},
             type: 'edit',
             resource: 'purchases',
+            maxLength1: 15,
+            maxLength2: 49,
             showDialogAddItem: false,
             showDialogNewPerson: false,
             showDialogOptions: false,
@@ -745,9 +741,9 @@ export default {
             purchaseNewId: null,
             localHasGlobalIgv: false,
             warehouses: [],
-            retenciones: {},
-            maxLength1: 15,
-            maxLength2: 49,
+            retention_types_income: [],
+            retention_types_iva: [],
+            retencionesActuales: [],
         }
     },
     async created() {
@@ -766,6 +762,9 @@ export default {
                 this.configuration = response.data.configuration
                 this.payment_conditions = response.data.payment_conditions
                 this.warehouses = response.data.warehouses
+
+                this.retention_types_iva = response.data.retention_types_iva
+                this.retention_types_income = response.data.retention_types_income
 
                 this.charges_types = response.data.charges_types
                 this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
@@ -1039,6 +1038,7 @@ export default {
                 .then(response => {
                     console.log('PURCHASE DATA: ',response.data.data.purchase)
                     let dato = response.data.data.purchase
+                    console.log('RESPONSE: ',dato)
                     this.form.id = dato.id
                     this.form.document_type_id = dato.document_type_id
                     this.form.series = dato.series
@@ -1060,8 +1060,11 @@ export default {
                     this.form.auth_number = dato.auth_number
                     this.form.sequential_number = dato.sequential_number
                     this.form.observation = dato.observation
-                    this.retenciones = dato.retentions
+
+                    this.retencionesActuales = dato.retenciones
+
                     this.setCurrencyType()
+                    this.changeCurrencyType()
 
                     if (this.form.customer_id) {
                         this.searchRemotePersons(dato.customer_number)
@@ -1079,11 +1082,11 @@ export default {
                     this.changeDocumentType()
                     // this.changePaymentMethodType()
                     this.calculateTotal()
-                    this.addRetentions()
+                    this.addRetenciones()
+                    // this.calculateTotal()
                 })
 
             //await this.getPercentageIgv();
-            //this.addRetentions()
         },
         getPayments(payments) {
 
@@ -1205,10 +1208,11 @@ export default {
                 has_payment: false,
                 payment_condition_id: '01',
                 fee: [],
-                codSustento:'',
-                auth_number:'',
-                sequential_number:'',
-                observation:'',
+                ret:[],
+                codSustento: '',
+                auth_number: '',
+                sequential_number: '',
+                observation: '',
 
             }
 
@@ -1259,6 +1263,7 @@ export default {
                 this.form.exchange_rate_sale = response
             })
             //await this.getPercentageIgv();
+            //await this.getPercentageIgv();
             this.changeCurrencyType();
         },
         changeDocumentType() {
@@ -1281,45 +1286,40 @@ export default {
             this.form.items = items
             this.calculateTotal()
         },
-        addRetentions(){
+        addRetenciones(){
             this.form.ret = []
-            let toal_retenido = 0
+            let total = this.form.total_taxed + this.form.total_unaffected + this.form.total_igv
+            let retenido = 0
+            this.retencionesActuales.forEach((row) =>{
 
-            console.log('RETENCIONES RECUPERADAS: ',this.retenciones)
-            console.log(this.form.total)
-            console.log(this.form.total_taxed)
-            console.log(this.form.total_igv)
-
-            this.retenciones.forEach((row) => {
-                console.log('ROW retentionc: ',row)
                 let retencionLocal = {}
-
                 retencionLocal.valor  = parseFloat(row.valorRet)
-                const retIvaDesc = _.find(this.retention_types_iva, {'code': row.codRetencion})
+                const retIvaDesc = _.find(this.retention_types_income, {'code': row.codRetencion})
                 if(retIvaDesc){
-                    retencionLocal.tipo = 'IVA'
-                    retencionLocal.desciption  = retIvaDesc.description
-                    retencionLocal.code  = retIvaDesc.code
-                    retencionLocal.porcentajeRet  = retIvaDesc.percentage
-                }else{
-                    const retIvaDesc = _.find(this.retention_types_income, {'code': row.codRetencion})
                     retencionLocal.tipo = 'RENTA'
                     retencionLocal.desciption  = retIvaDesc.description
                     retencionLocal.code  = retIvaDesc.code
                     retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                    retenido += parseFloat(row.valorRet)
+                }else{
+                    const retIvaDesc = _.find(this.retention_types_iva, {'code': row.codRetencion})
+                    retencionLocal.tipo = 'IVA'
+                    retencionLocal.desciption  = retIvaDesc.description
+                    retencionLocal.code  = retIvaDesc.code
+                    retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                    retenido += parseFloat(row.valorRet)
                 }
-                //console.log('Tipo retencion : '+retIvaDesc.description)
 
-                retencionLocal.base  = row.baseRet
-                toal_retenido += row.valorRet
-
+                retencionLocal.base  = row.unit_value
                 this.form.ret.push(retencionLocal)
-            });
+            })
 
-            this.form.total_ret =  _.round(toal_retenido, 2)
-            this.form.total = _.round(this.form.total_taxed + this.form.total_igv + this.form.total_unaffected - toal_retenido, 2)
+            this.form.total_ret = retenido
+            console.log('total valor con retencion',total - retenido)
+            this.form.total = _.round(total - retenido, 2)
         },
         calculateTotal() {
+
 
             let total_discount = 0
             let total_charge = 0
@@ -1339,10 +1339,11 @@ export default {
 
             this.form.ret = []
             //console.log('TOTAL ITEMS: '+this.form.items.length)
+            this.form.ret = []
+            //console.log('TOTAL ITEMS: '+this.form.items.length)
             this.form.items.forEach((row) => {
 
                 console.log('Rows: ',row)
-
                 if(row.iva_retention > 0 || row.income_retention > 0){
                     if(this.form.ret.length > 0){
                         let nuevaRet = true
@@ -1370,6 +1371,7 @@ export default {
 
                         if(nuevaRet){
                             console.log('Nueva Retencion')
+
                             if(row.iva_retention > 0 ){
                                 let retencionLocal = {}
                                 retencionLocal.tipo = 'IVA'
@@ -1435,7 +1437,18 @@ export default {
 
                 toal_retenido += (retention_iva + retention_renta)
 
+                retention_iva = parseFloat(row.iva_retention)
+                retention_renta = parseFloat(row.income_retention)
+
+                toal_retenido += (retention_iva + retention_renta)
+
                 if (row.affectation_igv_type_id === '10') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '11') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '12') {
                     total_taxed += parseFloat(row.total_value)
                 }
                 if (row.affectation_igv_type_id === '11') {
@@ -1453,12 +1466,14 @@ export default {
                 if (row.affectation_igv_type_id === '40') {
                     total_exportation += parseFloat(row.total_value)
                 }
+
                 if (['10','11','12', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
                     total_free += parseFloat(row.total_value)
                 }
 
                 total_value += parseFloat(row.total_value)
                 total_igv += parseFloat(row.total_igv)
+
 
                 total += parseFloat(row.total)
 
@@ -1468,9 +1483,12 @@ export default {
 
                 //console.log('total: '+ total)
                 //console.log('retenido : '+ toal_retenido)
+                //console.log('total: '+ total)
+                //console.log('retenido : '+ toal_retenido)
             });
 
             // isc
+
 
             this.form.total_base_isc = _.round(total_base_isc, 2)
             this.form.total_isc = _.round(total_isc, 2)
@@ -1486,16 +1504,18 @@ export default {
             //impuestos (isc + igv)
             this.form.total_taxes = _.round(total_igv + total_isc, 2)
             this.form.total_ret =  _.round(toal_retenido, 2)
+
+            console.log('total ACTUAL '+ total)
+            console.log('total ACTUAL2 '+ toal_retenido)
+
             total = total - toal_retenido
+
             this.form.total =  _.round(total, 2)
 
             this.calculatePerception()
-
-            // this.form.payments[0].payment = this.form.total
-            // this.setTotalDefaultPayment()
             this.calculatePayments()
             this.calculateFee()
-            //this.discountGlobal()
+
 
         },
         calculatePerception() {

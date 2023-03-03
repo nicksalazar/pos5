@@ -1101,7 +1101,7 @@ class Item extends ModelTenant
             $igv = 1;
         }
         $itemSupply = $this->supplies;
-        if(!emptY($itemSupply)){
+        if(!empty($itemSupply)){
             $itemSupply = $itemSupply->transform(function (ItemSupply $row ){
                 return $row-> getCollectionData();
             });
@@ -1114,7 +1114,6 @@ class Item extends ModelTenant
         }
 
         $show_sale_unit_price = "{$currency->symbol} {$this->getFormatSaleUnitPrice()}";
-
         return [
             'name_disa' => $name_disa,
             'laboratory' => $laboratory,
