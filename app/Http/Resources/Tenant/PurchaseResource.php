@@ -5,8 +5,6 @@ namespace App\Http\Resources\Tenant;
 use App\Models\Tenant\Purchase;
 use App\Models\Tenant\RetentionsDetailEC;
 use App\Models\Tenant\RetentionsEC;
-use App\Models\Tenant\RetentionsDetailEC;
-use App\Models\Tenant\RetentionsEC;
 use Modules\Inventory\Models\Warehouse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
