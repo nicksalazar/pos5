@@ -25,15 +25,19 @@ class PurchaseResource extends JsonResource
         $purchase->customer_number = $purchase->customer_id ? $purchase->customer->number:null;
         $purchase->fee = $purchase->fee;
 
-        $detRet = null;
-        $cabRet = RetentionsEC::where('idDocumento',$purchase->id)->get();
-
-        if(isset($cabRet) && $cabRet->count() > 0 ){
-            $detRet = RetentionsDetailEC::where('idRetencion',$cabRet[0]->idRetencion)->get();
+        $cabRetenciones = RetentionsEC::where('idDocumento',$this->id)->get();
+        $detRetenciones = '';
+        if($cabRetenciones && $cabRetenciones->count() > 0){
+            $detRetenciones = RetentionsDetailEC::where('idRetencion',$cabRetenciones[0]->idRetencion)->get();
         }
 
-        $purchase->retentions = $detRet;
+        $purchase->retenciones = $detRetenciones;
 
+        if(isset($purchase->observation) && $purchase->observation != ''){
+
+        }else{
+            $purchase->observation = '';
+        }
 
         return [
             'id' => $this->id,

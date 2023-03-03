@@ -2,7 +2,7 @@
     <div class="card mb-0 pt-2 pt-md-0">
         <div class="card-header bg-info">
             <h3 class="my-0">
-                Producto Fabricado
+                {{ title  }}
             </h3>
         </div>
         <div class="tab-content">
@@ -490,7 +490,7 @@
 
                 </div>
 
-                <div class="form-actions text-right mt-4">
+                <div class="form-actions text-right mt-4" v-if="false">
                     <el-button
                         :loading="loading_submit"
                         native-type="submit"
@@ -498,6 +498,20 @@
                     >Guardar
                     </el-button>
                 </div>
+
+                <div class="form-actions text-right mt-4">
+                    <el-button
+                        @click.prevent="onClose()">
+                        Cancelar
+                    </el-button>
+                    <el-button
+                        :loading="loading_submit"
+                        native-type="(id) ? submit() : update()"
+                        type="primary">
+                        {{ (id) ? 'Actualizar' : 'Guardar' }}
+                    </el-button>
+                </div>
+
                 <div v-if="supplies.length > 0"
                      class="col-12 col-md-12 mt-3">
                     <h3 class="my-0">Lista de materiales</h3>
@@ -516,11 +530,11 @@
                             </thead>
                             <tbody>
                             <tr v-for="row in supplies">
-                                <th>{{ row.individual_item.description }}</th>
+                                <th>    {{ row.individual_item && row.individual_item.description ? row.individual_item.description : "" }}</th>
                                 <th>
                                     <!-- {{ row.quantity }} -->
-                                    <el-input-number v-if="form.quantity != 0 && form.quantity != null" v-model="row.quantity * form.quantity" :controls="false" disabled="disabled"></el-input-number>
-                                    <el-input-number v-else v-model="row.quantity" :controls="false" disabled="disabled"></el-input-number>
+                                    <el-input-number v-if="form.quantity != 0 && form.quantity != null" :value="row.quantity * form.quantity" :controls="false" disabled></el-input-number>
+                                    <el-input-number v-else :value="row.quantity" :controls="false" disabled></el-input-number>
                                     
                                     <!-- JOINSOFTWARE
                                     <el-input-number v-model="quantityD" :step="1"></el-input-number>
@@ -561,13 +575,24 @@
 
 export default {
 
-    prop: ['id'],
-    computed: {},
+    props: {
+        id: {
+            type: Number,
+            required: false,
+        },
+    },
+    computed: {
+        suppliesCalc() {
+            return 0
+        }
+    },
     data() {
         return {
             resource: 'production',
             loading_submit: false,
             errors: {},
+            records: {},
+            title: "Nuevo producto fabricado",
             item: {
 
 
@@ -590,12 +615,31 @@ export default {
             quantityD: 0,
         }
     },
-    created() {
-        this.getTable();
+    async created() {
+        await this.getTable();
         this.initForm()
     },
     methods: {
-        initForm() {
+        onClose() {
+            window.location.href = '/production'
+        },
+        async isUpdate() {
+            this.title=  "Nuevo producto fabricado";
+            if (this.id) {
+                await this.$http.get(`/${this.resource}/record/${this.id}`)
+                    .then(response => {
+                        this.title= "Editar producto fabricado";
+                        this.form = response.data
+                        let item = _.find(this.items, {'id': this.form.item_id})
+                        this.form.item_extra_data= {}
+                        this.form.item_extra_data.color = null
+                        this.item = item
+                        this.supplies = item.supplies
+                    })
+            }
+
+        },
+        async  initForm() {
             this.form = {
                 id: this.id,
                 item_id: null,
@@ -603,8 +647,6 @@ export default {
                 quantity: 0,
                 informative:false,
                 records_id: null,
-
-
                 agreed:0,
                 imperfect:0,
                 lot_code:null,
@@ -614,17 +656,16 @@ export default {
 
             }
             this.supplies = {};
-
+            await this.isUpdate();
         },
-        getTable() {
-            this.$http.get(`/${this.resource}/tables`)
+        async getTable() {
+           await  this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     let data = response.data
                     this.warehouses = data.warehouses
                     this.items = data.items
                     this.machines = data.machines
                     this.records = response.data.state_types_prod;
-                    this.form.records_id = (this.records.length > 0) ? this.records[0].id : null
                 })
 
         },
@@ -632,8 +673,10 @@ export default {
         handleChange(value) {
             if (value > 0) {
                 this.quantityD = value
-                for (let i = 0; i < this.supplies.length; i++) {
-                    this.supplies[i].quantity = this.form.supplies[i].quantity * this.quantityD
+                if (this.form.supplies) {
+                    for (let i = 0; i < this.supplies.length; i++) {
+                        this.supplies[i].quantity = this.form.supplies[i].quantity * this.quantityD
+                    }
                 }
             } else {
                 return this.$message.error('La cantidad debe ser mayor a 0');
@@ -648,36 +691,63 @@ export default {
                 })
             this.loading_search = false;
         },
+
         async submit() {
             if (this.form.quantity < 1) {
                 return this.$message.error('La cantidad debe ser mayor a 0');
             }
 
-            this.loading_submit = true
+            this.loading_submit = true;
 
-            this.form.supplies = this.supplies
-            await this.$http.post(`/${this.resource}/create`, this.form)
-                .then(response => {
-                    if (response.data.success) {
-                        this.$message.success(response.data.message)
-                        this.initForm()
-                        window.location.href = '/production'
+            this.form.supplies = this.supplies;
 
-                    } else {
-                        this.$message.error(response.data.message)
-                    }
-                })
-                .catch(error => {
-                    if (error.response.status === 422) {
-                        this.errors = error.response.data
-                    } else {
-                        console.log(error)
-                    }
-                })
-                .finally(() => {
-                    this.loading_submit = false
-                })
+            // Si no existe un ID, estás creando un nuevo registro
+            if (!this.form.id) {
+                await this.$http.post(`/${this.resource}/create`, this.form)
+                    .then(response => {
+                        if (response.data.success) {
+                            this.$message.success(response.data.message);
+                            this.initForm();
+                            window.location.href = '/production';
+
+                        } else {
+                            this.$message.error(response.data.message);
+                        }
+                    })
+                    .catch(error => {
+                        if (error.response.status === 422) {
+                            this.errors = error.response.data;
+                        } else {
+                            console.log(error);
+                        }
+                    })
+                    .finally(() => {
+                        this.loading_submit = false;
+                    });
+            } else {
+                // Si existe un ID, estás actualizando un registro existente
+                await this.$http.put(`/${this.resource}/update/${this.form.id}`, this.form)
+                    .then(response => {
+                        if (response.data.success) {
+                            this.$message.success(response.data.message);
+                            window.location.href = '/production';
+                        } else {
+                            this.$message.error(response.data.message);
+                        }
+                    })
+                    .catch(error => {
+                        if (error.response.status === 422) {
+                            this.errors = error.response.data;
+                        } else {
+                            console.log(error);
+                        }
+                    })
+                    .finally(() => {
+                        this.loading_submit = false;
+                    });
+            }
         },
+
         changeItem() {
             let item = _.find(this.items, {'id': this.form.item_id})
             this.form.item_extra_data= {}

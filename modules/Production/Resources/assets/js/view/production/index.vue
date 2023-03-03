@@ -144,6 +144,7 @@
                                 <th>Colaborador de mezcla</th>
                                 <th>Comentario</th>
                                 <th>Fecha de registro</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -208,6 +209,14 @@
                                 <td>{{ row.mix_collaborator }}</td>
                                 <td>{{ row.comment }}</td>
                                 <td>{{ row.created_at }}</td>
+                                <td>
+                                    <button
+                                        class="btn waves-effect waves-light btn-xs btn-info"
+                                        type="button"
+                                        @click.prevent="clickCreate(row.id)">Editar
+                                    </button>
+
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -371,9 +380,8 @@ export default {
             this.warehousesDetail = warehouses
             this.showWarehousesDetail = true
         },
-        clickCreate(recordId = null) {
-            window.location.href = `./${this.resource}/create`;
-
+        clickCreate(recordId = '') {
+            window.location.href = `./${this.resource}/create/${recordId}`;
 
             // this.recordId = recordId
             // this.showDialog = true
