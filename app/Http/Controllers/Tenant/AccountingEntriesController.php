@@ -86,9 +86,11 @@ class AccountingEntriesController extends Controller
 
     public function records(Request $request)
     {
-        // dd($request->all());
         $records = $this->getRecords($request);
+        //dd($request->all());
+        //dd($records);
 
+        //return $records->paginate(config('tenant.items_per_page'));
         return new AccountingEntriesCollection($records->paginate(config('tenant.items_per_page')));
     }
 
@@ -124,8 +126,18 @@ class AccountingEntriesController extends Controller
                 ->whereTypeUser();
         }*/
 
-        $records = $query->latest();
-
+    
+        $records = $query->select('seat_general','comment','user_id','seat_date','types_accounting_entrie_id')
+        ->with(['user'=> function ($query) {
+            $query->select('id','name');
+        }])
+        ->with(['type_account'=> function ($query) {
+            $query->select('id','name');
+        }])
+        ->with('detalles')
+        ->distinct();
+    
+    
         $form = json_decode($request->form);
         //dd($records);
 
@@ -188,41 +200,19 @@ class AccountingEntriesController extends Controller
             'seat'=>$seat,
             'seat_general'=>$seat_general,
         ];
-
+        $customers = $this->table('customers');
+        $suppliers = $this->table('suppliers');
         $types_seat = TypesAccountingEntries::select('id','name')->get();
-        return compact('user','types_seat');
+        return compact('user','types_seat','customers','suppliers');
 
     }
 
 
-    public function option_tables()
-    {
-        $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
-        $series = Series::where('establishment_id', $establishment->id)->get();
-        $document_types_invoice = DocumentType::whereIn('id', ['01', '03'])->get();
-        // $payment_method_types = PaymentMethodType::all();
-        $payment_method_types = PaymentMethodType::getPaymentMethodTypes();
-        $payment_destinations = $this->getPaymentDestinations();
-        // $sellers = User::GetSellers(true)->get();
-        $sellers = User::where('establishment_id', auth()->user()->establishment_id)->whereIn('type', ['seller', 'admin'])->orWhere('id', auth()->user()->id)->get();
-
-        return compact('series', 'document_types_invoice', 'payment_method_types', 'payment_destinations', 'sellers');
-    }
 
     public function item_tables()
     {
         $account_movement=AccountMovement::with('account_group')->get();
         return compact(
-            'account_movement'
-        );
-    }
-
-    public function last_account()
-    {
-        $account_movement=AccountMovement::get();
-        $is_client = $this->getIsClient();
-        return compact(
-            'is_client',
             'account_movement'
         );
     }
@@ -412,6 +402,23 @@ class AccountingEntriesController extends Controller
                 return $customers;
 
                 break;
+
+                case 'suppliers':
+
+                    $suppliers = Person::whereType('suppliers')->orderBy('name')->get()->transform(function ($row) {
+                        return [
+                            'id' => $row->id,
+                            'description' => $row->number . ' - ' . $row->name,
+                            'name' => $row->name,
+                            'number' => $row->number,
+                            'perception_agent' => (bool)$row->perception_agent,
+                            'identity_document_type_id' => $row->identity_document_type_id,
+                            'identity_document_type_code' => $row->identity_document_type->code
+                        ];
+                    });
+                    return $suppliers;
+
+                    break;
 
             case 'items':
 

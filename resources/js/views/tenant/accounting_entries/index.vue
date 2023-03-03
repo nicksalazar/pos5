@@ -44,7 +44,7 @@
                                           <tr>
                                             <td colspan="2" class="text-center py-0">
                                                 <p class="my-0" >-- {{ row.seat_date | toDate }} --</p>
-                                                <p class="my-0">{{row.seat_general}} </p>
+                                                <p class="my-0">Asiento N° {{row.seat_general}} -- {{row.type}} </p>
                                             </td>
                                             <td  class="text-center"></td>
                                             <td  class="text-center"></td>
@@ -94,9 +94,6 @@
                                  </div>
                             </div>
                             </div>
-
-                        
-             
 
                     </div>
                 </data-table>
@@ -191,35 +188,6 @@ export default {
         ...mapActions([
             'loadConfiguration',
         ]),
-        canMakeOrderNote(row) {
-
-            let permission = true
-
-            // Si ya tiene Pedidos, no se genera uno nuevo
-            if (row.order_note.full_number) {
-                permission = false
-            } else {
-                if (this.typeUser !== 'admin') {
-                    permission = this.generateOrderNoteFromQuotation
-                }
-            }
-
-            return permission
-        },
-        clickPrintContract(external_id) {
-            window.open(`/contracts/print/${external_id}/a4`, '_blank');
-        },
-        clickPayment(recordId) {
-            this.recordId = recordId;
-            this.showDialogPayments = true;
-        },
-        async changeStateType(row) {
-
-            await this.updateStateType(`/${this.resource}/state-type/${row.state_type_id}/${row.id}`).then(() =>
-                this.$eventHub.$emit('reloadData')
-            )
-
-        },
 
         clickEdit(id) {
             this.recordId = id
@@ -229,39 +197,13 @@ export default {
             this.recordId = recordId
             this.showDialogOptions = true
         },
+
         clickOptionsPdf(recordId = null) {
             this.recordId = recordId
             this.showDialogOptionsPdf = true
         },
-        clickAnulate(id) {
-            this.anular(`/${this.resource}/anular/${id}`).then(() =>
-                this.$eventHub.$emit('reloadData')
-            )
-        },
-        makeOrder(quotation) {
-            let tos = parseInt(quotation);
-            localStorage.setItem('Quotation', tos)
-            localStorage.setItem('FromQuotation', true)
-            window.location.href = "/order-notes/create";
-        },
-        duplicate(id) {
-            this.$http.post(`${this.resource}/duplicate`, {id})
-                .then(response => {
-                    if (response.data.success) {
-                        this.$message.success('Se guardaron los cambios correctamente.')
-                        this.$eventHub.$emit('reloadData')
-                    } else {
-                        this.$message.error('No se guardaron los cambios')
-                    }
-                })
-                .catch(error => {
 
-                })
-            this.$eventHub.$emit('reloadData')
-        },
-        clickGenerateDocument(recordId) {
-            window.location.href = `/documents/create/quotations/${recordId}`;
-        }
+
     }
 }
 </script>

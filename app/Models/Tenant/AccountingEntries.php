@@ -38,7 +38,7 @@ class AccountingEntries extends ModelTenant
         'currency_code',
         'doctype',
         'is_client',
-        'third_code',
+        'person_id',
         'created_at',
         'updated_at',
 
@@ -59,4 +59,34 @@ class AccountingEntries extends ModelTenant
         return ($user->type == 'seller') ? $query->where('user_id', $user->id) : null;
     }
 
+    public function scopeTipo($query,$user)
+    {
+        return $query->where('seat_general',$user);
+    }
+
+    public function usuario($query)
+    {
+        $user = User::find($query->user_id);
+        return $query->where('user_id', $user->id);
+    }
+
+    public function detalles()
+    {
+        return $this->hasMany(AccountingEntries::class,'seat_general', 'seat_general');
+    }
+    public function cuenta()
+    {
+        return $this->belongsTo(AccountingEntries::class, 'seat_general', 'seat_general');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function type_account()
+    {
+        return $this->belongsTo(TypesAccountingEntries::class,'types_accounting_entrie_id','id');
+    }
+    
 }

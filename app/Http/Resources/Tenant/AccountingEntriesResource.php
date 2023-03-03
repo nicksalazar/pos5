@@ -23,7 +23,7 @@ class AccountingEntriesResource extends JsonResource
                 'seat_line' => $this->seat_line,
                 'seat_date' => $this->seat_date->format('Y-m-d'),
                 'account_code' => $this->account_code,
-                'types_accounting_entries_id' => $this->types_accounting_entries_id,
+                'types_accounting_entrie_id' => $this->types_accounting_entrie_id,
                 'comment' => $this->comment,
                 'serie' => $this->serie,
                 'number' => $this->number,
@@ -37,7 +37,7 @@ class AccountingEntriesResource extends JsonResource
                 'currency_code' => $this->currency_code,
                 'doctype' => $this->doctype,
                 'is_client' => $this->is_client,
-                'third_code' => $this->third_code,
+                'person_id' => $this->person_id,
                 'created_at' => $this->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             ];

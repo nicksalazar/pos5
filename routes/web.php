@@ -254,6 +254,7 @@ if ($hostname) {
                 Route::delete('/{person}', 'Tenant\AccountingEntriesController@destroy');
                 Route::get('/tables', 'Tenant\AccountingEntriesController@tables');
                 Route::get('/item/tables', 'Tenant\AccountingEntriesController@item_tables');
+                Route::get('/search/customers', 'Tenant\AccountingEntriesController@searchCustomers');
                 //Route::get('/filter', 'Tenant\AccountingEntriesController@filter');
                 /*Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index')->middleware('redirect.level');
                 Route::get('quotations/columns', 'Tenant\QuotationController@columns');
@@ -271,7 +272,7 @@ if ($hostname) {
                 Route::get('quotations/anular/{id}', 'Tenant\QuotationController@anular');
                 Route::get('quotations/item/tables', 'Tenant\QuotationController@item_tables');
                 Route::get('quotations/option/tables', 'Tenant\QuotationController@option_tables');
-                Route::get('quotations/search/customers', 'Tenant\QuotationController@searchCustomers');
+                
                 Route::get('quotations/search/customer/{id}', 'Tenant\QuotationController@searchCustomerById');
                 Route::get('quotations/download/{external_id}/{format?}', 'Tenant\QuotationController@download');
                 // Route::get('quotations/print/{external_id}/{format?}', 'Tenant\QuotationController@toPrint');

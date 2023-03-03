@@ -35,12 +35,13 @@ class TenantCreateAccountingEntriesTable extends Migration
             $table->integer('currency_code')->default(0);
             $table->integer('doctype')->default(0);
             $table->integer('is_client')->default(0);
-            $table->string('third_code',100)->nullable();
+            $table->unsignedInteger('person_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('account_movement_id')->references('id')->on('account_movements');
             $table->foreign('types_accounting_entrie_id')->references('id')->on('types_accounting_entries');
+            $table->foreign('person_id')->references('id')->on('persons');
 
         });
     }

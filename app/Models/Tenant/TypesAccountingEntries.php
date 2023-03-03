@@ -22,6 +22,9 @@ class TypesAccountingEntries extends ModelTenant
 
     ];
 
-    
+    public function accounting_entries()
+    {
+        return $this->hasMany(AccountingEntries::class,'types_accounting_entrie_id','id');
+    }
 
 }
