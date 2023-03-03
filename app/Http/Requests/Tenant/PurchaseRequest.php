@@ -25,11 +25,11 @@ class PurchaseRequest extends FormRequest
 				'required',
 			],
 			'sequential_number' => [
-				'required',
+				//'required',
 				'max:15'
 			],
 			'auth_number' => [
-				'required',
+				//'required',
 				'min:10',
 				'max:49'
 			],
@@ -44,7 +44,7 @@ class PurchaseRequest extends FormRequest
                 'array',
             ],
             'codSustento' => [
-				'required',
+				//'required',
 			],
 
 		];

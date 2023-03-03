@@ -10,7 +10,6 @@ namespace App\CoreFacturalo\SRI;
 use Illuminate\Support\Facades\Log;
 use DOMDocument;
 use Exception;
-use Illuminate\Support\Facades\Log;
 
 class Firma {
 
