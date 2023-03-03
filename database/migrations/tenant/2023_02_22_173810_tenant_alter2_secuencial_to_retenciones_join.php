@@ -16,7 +16,10 @@ class TenantAlter2SecuencialToRetencionesJoin extends Migration
     {
         Schema::table('retenciones_join', function (Blueprint $table) {
 
+            //Schema::dropIfExists('secuencial');
+
             $table->string('secuencial',20)->change();
+
 
         });
     }
@@ -30,6 +33,7 @@ class TenantAlter2SecuencialToRetencionesJoin extends Migration
     {
         Schema::table('retenciones_join', function (Blueprint $table) {
             //
+            Schema::dropIfExists('secuencial');
         });
     }
 }

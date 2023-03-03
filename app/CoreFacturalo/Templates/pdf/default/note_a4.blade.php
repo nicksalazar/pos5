@@ -92,7 +92,7 @@
         <td>:</td>
         <td>
             {{ $customer->address }}
-            {{ ($customer->district_id !== '-')? ', '.$customer->district->description : '' }}
+            <!--{{ ($customer->district_id !== '-')? ', '.$customer->district->description : '' }}-->
             {{ ($customer->province_id !== '-')? ', '.$customer->province->description : '' }}
             {{ ($customer->department_id !== '-')? '- '.$customer->department->description : '' }}
         </td>

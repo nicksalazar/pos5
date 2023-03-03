@@ -18,7 +18,7 @@
     <div class="col-6 col-md-2">
       <div class="card card-dashboard">
         <div class="card-body border">
-          <div class="card-title">Cantidad <br />CPE Emitidos</div>
+          <div class="card-title">Cantidad <br />Documentos Emitidos</div>
           <span class="font-weight-bold">{{ total_cpe }}</span>
         </div>
       </div>

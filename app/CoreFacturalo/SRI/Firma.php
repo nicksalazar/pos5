@@ -7,7 +7,7 @@
  */
 
 namespace App\CoreFacturalo\SRI;
-
+use Illuminate\Support\Facades\Log;
 use DOMDocument;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -53,11 +53,11 @@ class Firma {
             $pathFirma = $this->config['file'];
 
             if (openssl_pkcs12_read(file_get_contents($pathFirma, FILE_USE_INCLUDE_PATH), $certs, $this->config['pass'])) {
-
                 $x509cert = openssl_x509_read($certs['cert']);
 
                 $certf = openssl_x509_parse($x509cert);
                 $subject = $certf['subject']['CN'];
+                Log::info("Certificado: ".json_encode($certf));
                 $aux = null;
 
                 if (array_key_exists('O', $certf['subject'])) {
@@ -84,6 +84,10 @@ class Firma {
                         $this->certificate = $x509cert;
                         $this->certData = $certf;
                     } else if ($certificante === "SECURITY DATA S.A. 2") {
+
+                        $this->certificate = $x509cert;
+                        $this->certData = $certf;
+                    } else if ($certificante === "UANATACA S.A.") {
 
                         $this->certificate = $x509cert;
                         $this->certData = $certf;
@@ -166,8 +170,13 @@ class Firma {
 
             $aux = 'C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1';
             //ejecutar comando openssl en windows//
-            //$salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            $salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
             //servidor linux ejecutar comando openssl ///
+            //$salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+
+
+            //$salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            //servidor linux ejecutar comando openssl //
             $salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
             Log::info($aux);
 
@@ -383,6 +392,7 @@ class Firma {
                 elseif ($this->tipoComprobante === '04')
                     $xml = str_replace('</notaCredito>', $sig . '</notaCredito>', $xml);
 
+                $xmlSigned = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' . "\n" . $xml;
                 $xmlSigned = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' . "\n" . $xml;
 
                 // guardar documento firmado

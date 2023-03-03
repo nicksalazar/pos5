@@ -161,7 +161,7 @@
 
                             <el-input
                                 v-model="form.sequential_number"
-                                :maxlength="maxLength1"
+                                :maxlength="15"
                                 show-word-limit
                                 dusk="sequential_number">
                             </el-input>
@@ -178,7 +178,7 @@
 
                             <el-input
                                 v-model="form.auth_number"
-                                :maxlength="maxLength2"
+                                :maxlength="49"
                                 show-word-limit
                                 dusk="auth_number">
                             </el-input>
@@ -606,7 +606,6 @@
                                         <div :class="{'has-danger': errors.perception_number}"
                                              class="form-group">
                                             <el-input v-model="form.perception_number"></el-input>
-
                                             <small v-if="errors.perception_number"
                                                    class="form-control-feedback"
                                                    v-text="errors.perception_number[0]"></small>
@@ -626,6 +625,7 @@
                                                             type="date"
                                                             value-format="yyyy-MM-dd"
                                                             @change="changeDateOfIssue"></el-date-picker>
+
                                             <small v-if="errors.perception_date"
                                                    class="form-control-feedback"
                                                    v-text="errors.perception_date[0]"></small>
@@ -655,6 +655,7 @@
                                 </h3>
                             </template>
                         </div>
+
                     </div>
                 </div>
                 <div class="form-actions text-right mt-4">
@@ -770,11 +771,16 @@ export default {
                 this.form.establishment_id = (this.establishment.id) ? this.establishment.id : null
                 this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
 
+                this.retention_types_income = response.data.retention_types_income
+                this.retention_types_iva = response.data.retention_types_iva
+
+
                 this.changeDateOfIssue()
                 this.changeDocumentType()
                 this.changeCurrencyType()
 
-                this.initRecord()
+
+
             })
 
         this.$eventHub.$on('reloadDataPersons', (supplier_id) => {
@@ -789,6 +795,9 @@ export default {
         await this.changeHasPayment()
         await this.changeHasClient()
         this.initGlobalIgv()
+
+        this.initRecord()
+        //this.addRetentions()
     },
     computed: {
         creditPaymentMethod: function () {
@@ -1027,6 +1036,7 @@ export default {
         async initRecord() {
             await this.$http.get(`/${this.resource}/record/${this.resourceId}`)
                 .then(response => {
+                    console.log('PURCHASE DATA: ',response.data.data.purchase)
                     let dato = response.data.data.purchase
                     console.log('RESPONSE: ',dato)
                     this.form.id = dato.id
@@ -1253,6 +1263,7 @@ export default {
                 this.form.exchange_rate_sale = response
             })
             //await this.getPercentageIgv();
+            //await this.getPercentageIgv();
             this.changeCurrencyType();
         },
         changeDocumentType() {
@@ -1309,6 +1320,7 @@ export default {
         },
         calculateTotal() {
 
+
             let total_discount = 0
             let total_charge = 0
             let total_exportation = 0
@@ -1325,6 +1337,8 @@ export default {
             let retention_renta = 0
             let toal_retenido = 0
 
+            this.form.ret = []
+            //console.log('TOTAL ITEMS: '+this.form.items.length)
             this.form.ret = []
             //console.log('TOTAL ITEMS: '+this.form.items.length)
             this.form.items.forEach((row) => {
@@ -1423,7 +1437,18 @@ export default {
 
                 toal_retenido += (retention_iva + retention_renta)
 
+                retention_iva = parseFloat(row.iva_retention)
+                retention_renta = parseFloat(row.income_retention)
+
+                toal_retenido += (retention_iva + retention_renta)
+
                 if (row.affectation_igv_type_id === '10') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '11') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '12') {
                     total_taxed += parseFloat(row.total_value)
                 }
                 if (row.affectation_igv_type_id === '11') {
@@ -1441,12 +1466,14 @@ export default {
                 if (row.affectation_igv_type_id === '40') {
                     total_exportation += parseFloat(row.total_value)
                 }
+
                 if (['10','11','12', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
                     total_free += parseFloat(row.total_value)
                 }
 
                 total_value += parseFloat(row.total_value)
                 total_igv += parseFloat(row.total_igv)
+
 
                 total += parseFloat(row.total)
 
@@ -1456,9 +1483,12 @@ export default {
 
                 //console.log('total: '+ total)
                 //console.log('retenido : '+ toal_retenido)
+                //console.log('total: '+ total)
+                //console.log('retenido : '+ toal_retenido)
             });
 
             // isc
+
 
             this.form.total_base_isc = _.round(total_base_isc, 2)
             this.form.total_isc = _.round(total_isc, 2)
