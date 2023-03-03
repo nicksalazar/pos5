@@ -50,6 +50,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         percentage_other_taxes: 0,
         total_other_taxes: 0,
         total_plastic_bag_taxes: 0,
+        total_service_taxes: 0,
         total_taxes: 0,
         price_type_id: '01',
         unit_price: unit_price,
@@ -102,7 +103,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     }
 
     row.percentage_igv = percentage_igv;
-    
+
     let unit_value = row.unit_price
 
     if (row.affectation_igv_type_id === '10' || row.affectation_igv_type_id === '11' || row.affectation_igv_type_id === '12') {
@@ -136,9 +137,9 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
             let affectation_igv_type_exonerated = ['20', '21', '30', '31', '32', '33', '34', '35', '36', '37']
 
-            if (discount.is_amount) 
+            if (discount.is_amount)
             {
-                if (discount.discount_type.base) 
+                if (discount.discount_type.base)
                 {
                     discount.base = _.round(total_value_partial, 2)
                     //amount and percentage are equals in input
@@ -260,6 +261,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     //impuesto bolsa - icbper
 
     let total_plastic_bag_taxes = 0
+    let total_service_taxes = 0
 
     if (row_old.has_plastic_bag_taxes) {
 
@@ -267,12 +269,16 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         row.total_plastic_bag_taxes = total_plastic_bag_taxes
 
     }
+    if(row_old.has_service_taxes){
+        total_service_taxes = _.round(row.quantity * row.item.amount_service_taxes, 1)
+        row.total_service_taxes = total_service_taxes
+    }
 
     // icbper
 
 
     // let total_taxes = total_igv + total_isc + total_other_taxes
-    let total_taxes = total_igv + total_isc + total_other_taxes + total_plastic_bag_taxes
+    let total_taxes = total_igv + total_isc + total_other_taxes + total_plastic_bag_taxes + total_service_taxes
 
     let total = total_value + total_taxes
 
@@ -301,7 +307,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         row.total_igv = _.round(total_igv, 2)
 
         //asignar nuevo total impuestos, si tiene descuentos se usa total_taxes para calcular el precio unitario
-        total_taxes = total_igv + row.total_isc + total_plastic_bag_taxes
+        total_taxes = total_igv + row.total_isc + total_plastic_bag_taxes + total_service_taxes
         // total_taxes = total_igv + row.total_isc
         row.total_taxes = _.round(total_taxes, 2)
 
@@ -375,13 +381,13 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
             row.unit_value = 0
             // row.total_value = 0
             // row.total = 0
-            row.total = 0 + total_plastic_bag_taxes
-    
+            row.total = 0 + total_plastic_bag_taxes + total_service_taxes
+
             //valor sin redondeo
             row.total_without_rounding = 0
         }
     }
- 
+
 
     //impuesto bolsa
     // if (row_old.has_plastic_bag_taxes) {
@@ -399,7 +405,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 * use_input_amount propiedad para determinar si se toma el valor de discount.amount
 * y no de discount.percentage cuando es descuento por monto
 */
-function getAmountFromInputDiscount(discount) 
+function getAmountFromInputDiscount(discount)
 {
     let value = 0
 
@@ -477,9 +483,9 @@ const filterWords = (input, items) => {
 
 
 /**
- * 
+ *
  * Retorna datos del lote en la edicion de compra
- * 
+ *
  */
 function getDataItemLotGroup(row_old)
 {
