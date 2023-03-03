@@ -26,12 +26,12 @@ class PurchaseRequest extends FormRequest
 			],
 			'sequential_number' => [
 				//'required',
-				'max:15'
+				//'max:15'
 			],
 			'auth_number' => [
 				//'required',
-				'min:10',
-				'max:49'
+				//'min:10',
+				//'max:49'
 			],
 			'date_of_issue' => [
 				'required',
