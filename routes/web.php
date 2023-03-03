@@ -84,7 +84,7 @@ if ($hostname) {
             //configuracion WhatsApp Api
             Route::post('companies/store-whatsapp-api', 'Tenant\CompanyController@storeWhatsAppApi');
             Route::get('companies/record-whatsapp-api', 'Tenant\CompanyController@recordWhatsAppApi');
-            
+
 
             //Card Brands
             Route::get('card_brands/records', 'Tenant\CardBrandController@records');
@@ -104,6 +104,7 @@ if ($hostname) {
             Route::post('configurations', 'Tenant\ConfigurationController@store');
             Route::post('configurations/apiruc', 'Tenant\ConfigurationController@storeApiRuc');
             Route::post('configurations/icbper', 'Tenant\ConfigurationController@icbper');
+            Route::post('configurations/serviceTax', 'Tenant\ConfigurationController@serviceTax');
             Route::post('configurations/changeFormat', 'Tenant\ConfigurationController@changeFormat');
             Route::get('configurations/tables', 'Tenant\ConfigurationController@tables');
             Route::get('configurations/visual_defaults', 'Tenant\ConfigurationController@visualDefaults')->name('visual_defaults');
