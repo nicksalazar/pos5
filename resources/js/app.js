@@ -413,6 +413,7 @@ Vue.component('tenant-workers-index', require('../../modules/Production/Resource
 
 Vue.component('tenant-production-index', require('../../modules/Production/Resources/assets/js/view/production/index.vue'));
 Vue.component('tenant-production-form', require('../../modules/Production/Resources/assets/js/view/production/form.vue'));
+Vue.component('tenant-production-state', require('../../modules/Production/Resources/assets/js/view/production/state.vue'));
 
 Vue.component('tenant-packaging-index', require('../../modules/Production/Resources/assets/js/view/packaging/index.vue'));
 Vue.component('tenant-packaging-form', require('../../modules/Production/Resources/assets/js/view/packaging/form.vue'));

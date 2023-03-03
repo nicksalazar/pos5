@@ -148,6 +148,9 @@ export default {
             return this.$http
                 .get(`/${this.resource}/records?${this.getQueryParameters()}`)
                 .then(response => {
+                    console.log(`/${this.resource}/records?${this.getQueryParameters()}`)
+                    console.log('DATOS PURCHASE: ', response.data.data)
+
                     this.records = response.data.data;
                     this.pagination = response.data.meta;
                     this.pagination.per_page = parseInt(

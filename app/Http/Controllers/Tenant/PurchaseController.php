@@ -18,6 +18,8 @@
     use App\Models\Tenant\Catalogs\DocumentType;
     use App\Models\Tenant\Catalogs\OperationType;
     use App\Models\Tenant\Catalogs\PriceType;
+    use App\Models\Tenant\Catalogs\PurchaseDocumentType;
+    use App\Models\Tenant\Catalogs\RetentionType;
     use App\Models\Tenant\Catalogs\SystemIscType;
     use App\Models\Tenant\Company;
     use App\Models\Tenant\Configuration;
@@ -49,6 +51,12 @@
     use Symfony\Component\HttpFoundation\StreamedResponse;
     use Throwable;
     use App\Models\Tenant\GeneralPaymentCondition;
+    use App\Models\Tenant\RetentionTypePurchase;
+    use App\Models\Tenant\RetentionsDetailEC;
+    use App\Models\Tenant\RetentionsEC;
+use App\Models\Tenant\Series;
+use App\Models\Tenant\UserDefaultDocumentType;
+use Illuminate\Support\Facades\Log;
 
     class PurchaseController extends Controller
     {
@@ -56,6 +64,8 @@
         use FinanceTrait;
         use StorageDocument;
         use OfflineTrait;
+
+        private $id;
 
         public function index()
         {
@@ -83,11 +93,13 @@
         {
 
             $records = $this->getRecords($request);
-            return new PurchaseCollection($records->paginate(config('tenant.items_per_page')));
 
+            return new PurchaseCollection($records->paginate(config('tenant.items_per_page')));
         }
+
         public function getRecords($request)
         {
+
             switch ($request->column) {
                 case 'name':
 
@@ -118,6 +130,7 @@
                     break;
             }
 
+
             return $records;
 
         }
@@ -141,8 +154,46 @@
             $permissions = auth()->user()->getPermissionsPurchase();
             $global_discount_types = ChargeDiscountType::whereIn('id', ['02', '03'])->whereActive()->get();
 
+            $retention_types_iva = RetentionType::where('type_id', '02')->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->get();
+
+            $retention_types_iva = RetentionType::where('type_id', '02')->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->get();
+
             return compact('suppliers', 'establishment', 'currency_types', 'discount_types', 'configuration', 'payment_conditions',
-                'charge_types', 'document_types_invoice', 'company', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
+                'charge_types', 'document_types_invoice', 'company','retention_types_iva','retention_types_income', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
+        }
+
+        public function tables_purchase()
+        {
+            $suppliers = $this->table('suppliers');
+            $establishment = Establishment::where('id', auth()->user()->establishment_id)->first();
+            $currency_types = CurrencyType::whereActive()->get();
+            if (!empty(Purchase::latest()->first()->id)) {
+                $purchase_id = Purchase::latest()->first()->id;
+                $number = Purchase::where('id', $purchase_id)->get();
+            } else {
+                $number = [];
+            }
+            $document_types_invoice = PurchaseDocumentType::DocumentsActiveToPurchase()->get();
+            $discount_types = ChargeDiscountType::whereType('discount')->whereLevel('item')->whereActive()->get();
+            $charge_types = ChargeDiscountType::whereType('charge')->whereLevel('item')->whereActive()->get();
+            $company = Company::active();
+            $payment_method_types = PaymentMethodType::getPaymentMethodTypes();
+            // $payment_method_types = PaymentMethodType::all();
+            $payment_destinations = $this->getPaymentDestinations();
+            $customers = $this->getPersons('customers');
+            $configuration = Configuration::first();
+            $payment_conditions = GeneralPaymentCondition::get();
+            $warehouses = Warehouse::get();
+            $permissions = auth()->user()->getPermissionsPurchase();
+            $global_discount_types = ChargeDiscountType::whereIn('id', ['02', '03'])->whereActive()->get();
+            $retention_types_iva = RetentionType::where('type_id', '02')->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->get();
+
+
+            return compact('suppliers', 'establishment', 'currency_types', 'number', 'discount_types', 'configuration', 'payment_conditions',
+                'charge_types', 'document_types_invoice', 'company','retention_types_income','retention_types_iva', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
         }
 
         public function table($table)
@@ -256,6 +307,11 @@
             $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
             $warehouses = Warehouse::all();
 
+            $retention_types_iva = RetentionType::where('type_id', '02')->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->get();
+
+            $retention_types_purch = RetentionTypePurchase::get();
+
             $operation_types = OperationType::whereActive()->get();
             $is_client = $this->getIsClient();
             $configuration = Configuration::first();
@@ -273,7 +329,10 @@
                 'warehouses',
                 'operation_types',
                 'is_client',
-                'configuration'
+                'configuration',
+                'retention_types_iva',
+                'retention_types_income',
+                'retention_types_purch'
             );
         }
 
@@ -293,10 +352,55 @@
 
         public function store(PurchaseRequest $request)
         {
+            //Log::info("REQUEST: ".json_encode($request));
+            //Log::info(json_encode($request->ret));
             $data = self::convert($request);
+            //Log::info(json_encode($data));
             try {
                 $purchase = DB::connection('tenant')->transaction(function () use ($data) {
                     $doc = Purchase::create($data);
+
+                    if(count($data['ret']) > 0){
+                        $serie = UserDefaultDocumentType::where('user_id',$doc->user_id)->get();
+                        $tipoSerie = null;
+                        $tiposerieText = '';
+                        if($serie->count() > 0 ){
+                            $tipoSerie = Series::find($serie[0]->series_id);
+                            $tiposerieText = $tipoSerie->number;
+                        }else{
+                            $tipoSerie = Series::where('document_type_id','20')->get();
+                            $tiposerieText = $tipoSerie[0]->number;
+                        }
+
+                        $establecimiento = Establishment::find($doc->establishment_id);
+                        $secuelcialRet = RetentionsEC::where('establecimiento',$establecimiento->code)->where('ptoEmision',$tiposerieText)->count();
+
+                        $ret = new RetentionsEC();
+                        $ret->idRetencion = 'R'.$establecimiento->code.substr($tiposerieText,1,3).str_pad($secuelcialRet+1, 9, 0, STR_PAD_LEFT);
+                        $ret->idDocumento = $doc->id;
+                        $ret->fechaFizcal = $doc->date_of_issue->format('m/Y');
+                        $ret->idProveedor = $doc->supplier_id;
+                        $ret->establecimiento = $establecimiento->code;
+                        $ret->ptoEmision = $tiposerieText;
+                        $ret->secuencial = $doc->sequential_number;
+                        $ret->codSustento = $doc->document_type_id;
+                        $ret->codDocSustento = $doc->codSustento;
+                        $ret->numAuthSustento = $doc->auth_number;
+                        $ret->save();
+
+                        foreach($data['ret'] as $retDet){
+                            Log::info(json_encode($retDet));
+                            $detRet = new RetentionsDetailEC();
+                            $detRet->idRetencion = $ret->idRetencion;
+                            $detRet->codRetencion = $retDet['code'];
+                            $detRet->baseRet = $retDet['base'];
+                            $detRet->porcentajeRet = $retDet['porcentajeRet'];
+                            $detRet->valorRet = $retDet['valor'];
+                            $detRet->save();
+
+                        }
+                    }
+
                     foreach ($data['items'] as $row) {
                         $p_item = new PurchaseItem();
                         $p_item->fill($row);
@@ -430,7 +534,6 @@
             }
         }
 
-
         private function savePurchaseFee($purchase, $fee)
         {
             foreach ($fee as $row) {
@@ -440,6 +543,8 @@
 
         public static function convert($inputs)
         {
+            Log::info(json_encode($inputs));
+
             $company = Company::active();
             $values = [
                 'user_id' => auth()->id(),

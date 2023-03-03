@@ -102,9 +102,12 @@
                 Route::prefix('production')->group(function () {
                     Route::get('', 'ProductionController@index')->name('tenant.production.index'); // ->middleware('redirect.level');
                     Route::get('create', 'ProductionController@create')->name('tenant.production.new');
+                    Route::get('/create/{id?}', 'ProductionController@create');
                     Route::post('create', 'ProductionController@store');
+                    Route::put('/update/{id}', 'ProductionController@update');
                     Route::post('search_items', 'ProductionController@searchItems');
                     Route::get('/records', 'ProductionController@records');
+                    Route::get('/record/{item}', 'ProductionController@record');
                     Route::get('/tables', 'ProductionController@tables');
                     Route::get('/excel', 'ProductionController@excel');
                     Route::get('/excel2', 'ProductionController@excel2');

@@ -84,7 +84,7 @@ if ($hostname) {
             //configuracion WhatsApp Api
             Route::post('companies/store-whatsapp-api', 'Tenant\CompanyController@storeWhatsAppApi');
             Route::get('companies/record-whatsapp-api', 'Tenant\CompanyController@recordWhatsAppApi');
-            
+
 
             //Card Brands
             Route::get('card_brands/records', 'Tenant\CardBrandController@records');
@@ -104,6 +104,7 @@ if ($hostname) {
             Route::post('configurations', 'Tenant\ConfigurationController@store');
             Route::post('configurations/apiruc', 'Tenant\ConfigurationController@storeApiRuc');
             Route::post('configurations/icbper', 'Tenant\ConfigurationController@icbper');
+            Route::post('configurations/serviceTax', 'Tenant\ConfigurationController@serviceTax');
             Route::post('configurations/changeFormat', 'Tenant\ConfigurationController@changeFormat');
             Route::get('configurations/tables', 'Tenant\ConfigurationController@tables');
             Route::get('configurations/visual_defaults', 'Tenant\ConfigurationController@visualDefaults')->name('visual_defaults');
@@ -472,6 +473,7 @@ if ($hostname) {
             Route::get('purchases/records', 'Tenant\PurchaseController@records');
             Route::get('purchases/create/{purchase_order_id?}', 'Tenant\PurchaseController@create')->name('tenant.purchases.create');
             Route::get('purchases/tables', 'Tenant\PurchaseController@tables');
+            Route::get('purchases/tables_purchase', 'Tenant\PurchaseController@tables_purchase');
             Route::get('purchases/table/{table}', 'Tenant\PurchaseController@table');
             Route::post('purchases', 'Tenant\PurchaseController@store');
             Route::post('purchases/update', 'Tenant\PurchaseController@update');

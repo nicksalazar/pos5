@@ -59,6 +59,15 @@ class PersonRequest extends FormRequest
             'telephone' => [
                 'required',
             ],
+            'parteRel' => [
+                'required_if:type,"suppliers"',
+            ],
+            'pagoLocExt' => [
+                'required_if:type,"suppliers"',
+            ],
+            'pagoLocExtDoc' => [
+                'required_if:pagoLocExt,"Exterior"',
+            ],
             'internal_code' => 'max:100'
         ];
     }

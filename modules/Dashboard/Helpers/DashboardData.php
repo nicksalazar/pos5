@@ -125,8 +125,8 @@ class DashboardData
 
             }else{
 
-                $sale_note_total_usd += $sale_note->total * $sale_note->exchange_rate_sale;
-                $sale_note_total_payment_usd += collect($sale_note->payments)->sum('payment') * $sale_note->exchange_rate_sale;
+                $sale_note_total_usd += $sale_note->total;
+                $sale_note_total_payment_usd += collect($sale_note->payments)->sum('payment') ;
 
             }
         }
@@ -241,7 +241,7 @@ class DashboardData
                                     ->where('currency_type_id', 'USD');
 
         foreach ($documents_usd as $dusd) {
-            $document_total_usd += $dusd->total * $dusd->exchange_rate_sale;
+            $document_total_usd += $dusd->total;
         }
 
         //TWO CURRENCY
@@ -262,8 +262,12 @@ class DashboardData
 
                 if(in_array($document->state_type_id,['01','03','05','07','13'])){
 
+                    /*
                     $document_total_payment_usd += collect($document->payments)->sum('payment') * $document->exchange_rate_sale;
                     $document_total_note_credit_usd += ($document->document_type_id == '07') ? $document->total * $document->exchange_rate_sale:0; //nota de credito
+                    */
+                    $document_total_payment_usd += collect($document->payments)->sum('payment');
+                    $document_total_note_credit_usd += ($document->document_type_id == '07') ? $document->total:0; //nota de credito
 
                 }
 
@@ -421,7 +425,7 @@ class DashboardData
                                     ->where('currency_type_id', 'USD');
 
         foreach ($documents_usd as $dusd) {
-            $document_total_usd += $dusd->total * $dusd->exchange_rate_sale;
+            $document_total_usd += $dusd->total;
         }
 
         //TWO CURRENCY
@@ -434,7 +438,8 @@ class DashboardData
                 if($document->currency_type_id == 'PEN'){
                     $document_total_note_credit_pen += ($document->document_type_id == '07') ? $document->total:0; //nota de credito
                 }else{
-                    $document_total_note_credit_usd += ($document->document_type_id == '07') ? $document->total * $document->exchange_rate_sale:0; //nota de credito
+                    //$document_total_note_credit_usd += ($document->document_type_id == '07') ? $document->total * $document->exchange_rate_sale:0; //nota de credito
+                    $document_total_note_credit_pen += ($document->document_type_id == '07') ? $document->total:0; //nota de credito
                 }
             }
 
@@ -463,7 +468,8 @@ class DashboardData
         foreach ($sale_notes as $sale_note)
         {
             if($sale_note->currency_type_id == 'USD'){
-                $sale_note_total_usd += $sale_note->total * $sale_note->exchange_rate_sale;
+                //$sale_note_total_usd += $sale_note->total * $sale_note->exchange_rate_sale;
+                $sale_note_total_usd += $sale_note->total;
             }
         }
 
@@ -826,7 +832,6 @@ class DashboardData
                 'total_payment_purchase' => number_format($total_payment_purchase,2),
                 'total_expense' => number_format($total_expense,2),
                 'total_payment_expense' => number_format($total_payment_expense,2),
-
                 'all_totals' => number_format($all_totals,2),
                 'all_totals_payment' => number_format($all_totals_payment,2),
             ],

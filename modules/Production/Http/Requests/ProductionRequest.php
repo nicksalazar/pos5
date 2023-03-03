@@ -14,54 +14,31 @@
 
         public function rules()
         {
-
-            return [
-
+            $rules = [
+                'records_id' => 'required|in:01,02,03,04',
                 'item_id' => [
-                    'required',
+                    'required'
                 ],
                 'quantity' => [
-                    'required',
+                    'required'
                 ],
-                'warehouse_id' => [ 'required', ],
-                'name' => [ 'required', ],
-                'date_start' => [ 'required', ],
-                'time_start' => [ 'required', ],
-                'date_end' => [ 'required', ],
-                'time_end' => [ 'required', ],
-                'machine_id' => [ 'required', ],
-                // 'user_id',
-                // 'production_order',
-
-                /*
-                'name' => [
-                'required',
-                ],
-                'date_start' => [
-                'required',
-                ],
-                'time_start' => [
-                'required',
-                ],
-                'date_end' => [
-                'required',
-                ],
-                'time_end' => [
-                'required',
-                ],
-                'items' => [
-                'required',
-                ],
-                'expense_reason_id' => [
-                'required',
-                ],
-                'number' => [
-                // 'required_if:expense_type_id,"1", "2", "3"',
-                'nullable',
-                ],
-                'date_of_issue' => [
-                'required',
-                ],*/
+                'warehouse_id' => [ 'required'],
+                'name' => [ 'required'],
+                'machine_id' => [ 'required'],
             ];
+        
+            $state = $this->get('records_id');
+        
+            if ($state === '02') {
+                $rules['date_start'] = 'required';
+                $rules['time_start'] = 'required';
+            }
+        
+            if ($state === '03') {
+                $rules['date_end'] = 'required';
+                $rules['time_end'] = 'required';
+            }
+        
+            return $rules;
         }
     }
