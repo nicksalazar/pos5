@@ -854,6 +854,8 @@ export default {
         },
         getTables() {
             this.$http.get(`/${this.resource}/item/tables`).then(response => {
+                console.log(`/${this.resource}/item/tables`)
+                console.log("DATA ITEMS: ",data.items)
                 let data = response.data
                 this.all_items = data.items
                 this.operation_types = data.operation_types
