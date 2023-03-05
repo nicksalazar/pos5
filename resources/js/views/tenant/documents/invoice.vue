@@ -1653,7 +1653,7 @@ export default {
             this.btnText = 'Actualizar';
             this.loading_submit = true;
             await this.$http.get(`/documents/${this.documentId}/show`).then(response => {
-                
+
                 this.onSetFormData(response.data.data);
             }).finally(() => this.loading_submit = false);
         }
@@ -2903,7 +2903,7 @@ export default {
             this.form.date_of_due = this.form.date_of_issue
             // if (! this.isUpdate) {
                 /*JOINSOFTWARE CONVERSION */
-                
+
             this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
                 this.form.exchange_rate_sale = response
             });
@@ -2941,7 +2941,7 @@ export default {
 
                 if (this.form.document_type_id === '01') {
                     this.customers = _.filter(this.all_customers, {'identity_document_type_id': '6'})
-                    
+
                 } else {
                     if (this.document_type_03_filter) {
                         this.customers = _.filter(this.all_customers, (c) => {
@@ -3205,7 +3205,7 @@ export default {
         },
         chargeGlobal() {
 
-            let base = parseFloat(this.form.total)
+            let base = parseFloat(this.form.total_taxed + this.form.total_unaffected)
 
             if (this.config.active_allowance_charge) {
                 let percentage_allowance_charge = parseFloat(this.config.percentage_allowance_charge)

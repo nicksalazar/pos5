@@ -1966,8 +1966,8 @@ export default {
         {
             if(tip)
             {
-                this.form.worker_full_name_tips = tip.worker_full_name_tips 
-                this.form.total_tips = tip.total_tips 
+                this.form.worker_full_name_tips = tip.worker_full_name_tips
+                this.form.total_tips = tip.total_tips
             }
         },
         onSuccessUploadVoucher(response, file, fileList, index)
@@ -2062,7 +2062,7 @@ export default {
                 has_retention: false,
                 retention: {},
                 quotation_id: null,
-                
+
                 worker_full_name_tips: null, //propinas
                 total_tips: 0, //propinas
             }
@@ -3325,7 +3325,7 @@ export default {
                     }
                     //JOINSOFTWARE//
                     this.customers = _.filter(this.all_customers, {'identity_document_type_id': ['6','1']})
-                    //this.customers = this.all_customers              
+                    //this.customers = this.all_customers
                 } else {
                     if (this.document_type_03_filter) {
                         this.customers = _.filter(this.all_customers, (c) => {
@@ -3600,7 +3600,7 @@ export default {
         },
         chargeGlobal() {
 
-            let base = parseFloat(this.form.total)
+            let base = parseFloat(this.form.total_taxed + this.form.total_unaffected)
 
             if (this.config.active_allowance_charge) {
                 let percentage_allowance_charge = parseFloat(this.config.percentage_allowance_charge)
