@@ -210,7 +210,13 @@ export default {
             return items.reduce((acc, ele) => {
             return acc + ele.haber;
             }, 0)
-        }
+        },
+
+        clickDelete(id) {
+                this.destroy(`/${this.resource}/${id}`).then(() =>
+                    this.$eventHub.$emit('reloadData')
+                )
+            }
 
 
     }

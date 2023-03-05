@@ -7,25 +7,18 @@ use Illuminate\Http\Request;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\CoreFacturalo\Helpers\Storage\StorageDocument;
-use App\CoreFacturalo\Requests\Inputs\Common\EstablishmentInput;
 use App\CoreFacturalo\Requests\Inputs\Common\PersonInput;
 use App\Models\Tenant\TypesAccountingEntries;
 use App\Http\Controllers\SearchItemController;
 use App\Http\Requests\Tenant\AccountEntriesRequest;
 use App\Http\Requests\Tenant\QuotationRequest;
 use App\Http\Resources\Tenant\AccountingEntriesCollection;
-use App\Http\Resources\Tenant\QuotationCollection;
 use App\Http\Resources\Tenant\QuotationResource;
-use App\Models\Tenant\Catalogs\DocumentType;
-use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\AccountingEntries;
 use App\Models\Tenant\AccountMovement;
-use App\Models\Tenant\PaymentMethodType;
 use App\Models\Tenant\Person;
 use App\Models\Tenant\Quotation;
-use App\Models\Tenant\Series;
-use App\Models\Tenant\StateType;
 use App\Models\Tenant\User;
 use App\Models\Tenant\Warehouse;
 use App\Traits\OfflineTrait;
@@ -255,7 +248,7 @@ class AccountingEntriesController extends Controller
     }
 
 
-    public function getFullDescription($row)
+    /*public function getFullDescription($row)
     {
 
         $desc = ($row->internal_id) ? $row->internal_id . ' - ' . $row->description : $row->description;
@@ -265,7 +258,7 @@ class AccountingEntriesController extends Controller
         $desc = "{$desc} {$category} {$brand}";
 
         return $desc;
-    }
+    }*/
 
     public function store(AccountEntriesRequest $request)
     {
@@ -305,7 +298,7 @@ class AccountingEntriesController extends Controller
         /*DB::connection('tenant')->transaction(function () use ($request) {
 
             $data = $this->mergeData($request);
-            $data['terms_condition'] = $this->getTermsCondition();
+            //$data['terms_condition'] = $this->getTermsCondition();
 
             $this->quotation = Quotation::create($data);
 
@@ -336,7 +329,7 @@ class AccountingEntriesController extends Controller
             // $data = $this->mergeData($request);
             // return $request['id'];
             $configuration = Configuration::select('terms_condition')->first();
-            $request['terms_condition'] = $this->getTermsCondition();
+//            $request['terms_condition'] = $this->getTermsCondition();
 
             $this->quotation = Quotation::firstOrNew(['id' => $request['id']]);
             $this->quotation->fill($request->all());
@@ -364,7 +357,7 @@ class AccountingEntriesController extends Controller
 
     }
 
-    public function getTermsCondition()
+  /*  public function getTermsCondition()
     {
 
         $configuration = Configuration::select('terms_condition')->first();
@@ -375,13 +368,13 @@ class AccountingEntriesController extends Controller
 
         return null;
 
-    }
+    }*/
 
 
     
 
 
-    public function mergeData($inputs)
+    /*public function mergeData($inputs)
     {
 
         $this->company = Company::active();
@@ -398,7 +391,7 @@ class AccountingEntriesController extends Controller
         $inputs->merge($values);
 
         return $inputs->all();
-    }
+    }*/
 
 
 
@@ -488,15 +481,15 @@ class AccountingEntriesController extends Controller
     }
 
 
-    public function searchCustomerById($id)
+   /* public function searchCustomerById($id)
     {
         return $this->searchClientById($id);
 
-    }
+    }*/
 
  
 
-    public function changed($id)
+    /*public function changed($id)
     {
         $record = Quotation::find($id);
         $record->changed = true;
@@ -505,9 +498,9 @@ class AccountingEntriesController extends Controller
         return [
             'success' => true
         ];
-    }
+    }*/
 
-    public function updateStateType($state_type_id, $id)
+  /*  public function updateStateType($state_type_id, $id)
     {
         $record = Quotation::find($id);
         $record->state_type_id = $state_type_id;
@@ -517,7 +510,28 @@ class AccountingEntriesController extends Controller
             'success' => true,
             'message' => 'Estado actualizado correctamente'
         ];
+    }*/
+
+
+    public function destroy($id)
+    {
+        
+        try {            
+            
+            $person_type = AccountingEntries::where('seat_general','=',$id);
+            $person_type_type = 'Asiento Contable';
+            $person_type->delete(); 
+
+            return [
+                'success' => true,
+                'message' => $person_type_type.' eliminado con éxito'
+            ];
+
+        } catch (Exception $e) {
+
+            return ($e->getCode() == '23000') ? ['success' => false,'message' => "El {$person_type_type} esta siendo usado por otros registros, no puede eliminar"] : ['success' => false,'message' => "Error inesperado, no se pudo eliminar el {$person_type_type}"];
+
+        }
+        
     }
-
-
 }
