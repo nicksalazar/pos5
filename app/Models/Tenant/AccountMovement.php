@@ -27,5 +27,9 @@ class AccountMovement extends ModelTenant
     {
         return $this->belongsTo(AccountGroup::class);
     }
+    public function account_entries()
+    {
+        return $this->hasMany(AccountingEntries::class);
+    }
 
 }

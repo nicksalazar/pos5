@@ -20,6 +20,7 @@ class AccountingEntriesCollection extends ResourceCollection
                 'id' => $row->detalles[0]->id,
                 'user_id' => $row->user_id,
                 'type' => $row->type_account->name,
+                'user' => $row->user->name,
                 'seat' => $row->seat,
                 'seat_general' => $row->seat_general,
                 'seat_line' => $row->seat_line,

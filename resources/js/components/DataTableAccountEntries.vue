@@ -11,11 +11,17 @@
                                 Cuenta:
                             </label>
                             <div class="col-lg-8 col-md-8 col-sm-8 pb-2">
-                                <el-input placeholder="Buscar"
-                                    v-model="search.value"
-                                    style="width: 100%;"
-                                    @input="getRecords">
-                                </el-input>
+                                  <el-select
+                                v-model="account_movement_id"
+                                filterable
+                                >
+                              <el-option
+                                v-for="option in accounts"
+                                :key="option.id"
+                                :value="option.id"
+                                :label="option.description"
+                              ></el-option>
+                            </el-select>
                             </div>
                         </div>
                     </div>
@@ -94,10 +100,16 @@
                                 Tipo:
                             </label>
                             <div class="col-lg-8 col-md-8 col-sm-8 pb-2">
-                               <el-select v-model="form.period" @change="changePeriod">
-                                <el-option key="month" value="month" label="Por mes"></el-option>
-                                <el-option key="week" value="week" label="Por semana"></el-option>
-                                <el-option key="between_dates" value="between_dates" label="Entre fechas"></el-option>
+                              <el-select
+                                v-model="types_accounting_entrie_id"
+                                filterable
+                                >
+                              <el-option
+                                v-for="option in types_seat"
+                                :key="option.id"
+                                :value="option.id"
+                                :label="option.name"
+                              ></el-option>
                             </el-select>
                             </div>
                         </div>
@@ -155,6 +167,10 @@ export default {
   },
   data() {
     return {
+      types_accounting_entrie_id: null,
+      account_movement_id: null,
+      types_seat: [],
+      accounts: [],
       search: {
         column: null,
         form: null,
@@ -179,11 +195,18 @@ export default {
     };
   },
   computed: {},
-  created() {
+  async created() {
     this.initForm();
     this.$eventHub.$on("reloadData", () => {
       this.getRecords();
     });
+     this.$http
+        .get(`/${this.resource}/item/tables`)
+        .then((response) => {
+          let data = response.data;
+          this.accounts = data.account_movement2;
+          this.types_seat = data.types_seat;
+        });
   },
   async mounted() {
     let column_resource = _.split(this.resource, "/");

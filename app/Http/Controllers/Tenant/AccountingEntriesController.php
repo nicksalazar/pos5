@@ -127,19 +127,38 @@ class AccountingEntriesController extends Controller
         }*/
 
     
-        $records = $query->select('seat_general','comment','user_id','seat_date','types_accounting_entrie_id')
+       /* $records = $query->select('seat_general','comment','user_id','seat_date','types_accounting_entrie_id')
         ->with(['user'=> function ($query) {
             $query->select('id','name');
         }])
         ->with(['type_account'=> function ($query) {
             $query->select('id','name');
         }])
+        ->with(['account_movement'=> function ($query) {
+            $query->select('id','code','description');
+        }])
         ->with('detalles')
-        ->distinct();
-    
-    
-        $form = json_decode($request->form);
-        //dd($records);
+        ->distinct();*/
+       
+        $records = $query ->select('seat_general','comment','user_id','seat_date','types_accounting_entrie_id')
+        ->with(['user'=> function ($query) {
+            $query->select('id','name');
+        }])
+        ->with(['type_account'=> function ($query) {
+            $query->select('id','name');
+        }])
+        ->with(['account_movement'=> function ($query) {
+            $query->select('id','code','description');
+        }])
+        ->with(['detalles'=>function($query){
+            $query->with(['account_movement'=>function($query){
+                $query->select('id','code','description');
+            }
+            ]);
+        }])
+       ->groupBy('seat_general','comment','user_id','seat_date','types_accounting_entrie_id');
+
+//        dd($records->get());
 
         /*if ($form->date_start && $form->date_end) {
             $records = $records->whereBetween('date_of_issue', [$form->date_start, $form->date_end]);
@@ -212,8 +231,12 @@ class AccountingEntriesController extends Controller
     public function item_tables()
     {
         $account_movement=AccountMovement::with('account_group')->get();
+        $account_movement2=AccountMovement::select('id','description')->get();
+        $types_seat = TypesAccountingEntries::select('id','name')->get();
         return compact(
-            'account_movement'
+            'account_movement',
+            'account_movement2',
+            'types_seat'
         );
     }
 

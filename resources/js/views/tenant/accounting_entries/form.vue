@@ -603,13 +603,13 @@ export default {
         return item;
       });
       this.loading_submit = true;
-      console.log("res ", this.form);
       await this.$http
         .post(`/${this.resource}`, this.form)
         .then((response) => {
           if (response.data.success) {
             this.resetForm();
             this.quotationNewId = response.data.data.id;
+            this.close();
           } else {
             this.$message.error(response.data.message);
           }

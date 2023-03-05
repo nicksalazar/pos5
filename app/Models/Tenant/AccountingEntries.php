@@ -88,5 +88,11 @@ class AccountingEntries extends ModelTenant
     {
         return $this->belongsTo(TypesAccountingEntries::class,'types_accounting_entrie_id','id');
     }
+
+    public function account_movement()
+    {
+        return $this->belongsTo(AccountMovement::class);
+    }
+
     
 }

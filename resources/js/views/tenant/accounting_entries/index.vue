@@ -22,12 +22,18 @@
 
                           <div class="card mb-0 mt-3">
                             <div class="card-body">
-                                <div class="text-right">
-                            <button type="button" data-toggle="tooltip" data-placement="top" title="Editar" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)"><i class="fa fa-edit"></i></button>
-                            <button type="button" data-toggle="tooltip" data-placement="top" title="Generar PDF" class="btn waves-effect waves-light btn-xs btn-warning" @click.prevent="clickCreate(row.id)"><i class="fa fa-file-pdf"></i></button>
+                            <div class="row">
+                            <div class="col-md-6">
+                                <b>Creado por: {{row.user}} </b>
+                                <p class="m-0">Fecha de creación {{ row.created_at | toDate }} </p>
+                            </div>
+                            <div class="col-md-6 text-right my-auto">
+                            <button type="button" data-toggle="tooltip" data-placement="top" title="Editar" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)"><i class="fa fa-edit"></i> Editar</button>
+                            <button type="button" data-toggle="tooltip" data-placement="top" title="Generar PDF" class="btn waves-effect waves-light btn-xs btn-warning" @click.prevent="clickCreate(row.id)"><i class="fa fa-file-pdf"></i> PDF</button>
                              <template v-if="typeUser === 'admin'">
-                             <button type="button" data-toggle="tooltip" data-placement="top" title="Eliminar"  class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)"><i class="fa fa-trash"></i></button>
+                             <button type="button" data-toggle="tooltip" data-placement="top" title="Eliminar"  class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)"><i class="fa fa-trash"></i> Eliminar</button>
                              </template>
+                        </div>
                         </div>
 
                                 <div class="table-responsive">
@@ -51,26 +57,19 @@
                                             <td  class="text-center"></td>
                                             </tr>
 
-                                            <tr>
-                                           <td colspan="2" >
-                                                <p class="my-0" >
-                                                Prueba
+                                          <tr v-for="(det, index) in row.detalles" :key="`detalle-${index}`">
+                                            <td colspan="2">
+                                                <p class="ml-5 my-0" v-if="det.haber > 0" >
+                                                {{det.account_movement.code }}   {{det.account_movement.description}}
+                                                </p>
+                                                <p class="my-0" v-else>
+                                                {{det.account_movement.code }}   {{det.account_movement.description}}
                                                 </p>
                                             </td>
-                                            <td  class="text-center">$ 440.00</td>
-                                            <td  class="text-center">$ 0.00</td>
-                                            <td  class="text-center"></td>
-                                            </tr>
-                                            
-                                            <tr>
-                                           <td colspan="2" >
-                                                <p class="ml-5 my-0" >
-                                                Prueba2
-                                                </p>
-                                            </td>
-                                            <td  class="text-center">$ 0.00</td>
-                                            <td  class="text-center">$ 440.00</td>
-                                            <td  class="text-center"></td>
+
+                                            <td  class="text-right">$ {{ det.debe | toDecimals }}  </td>
+                                            <td  class="text-right">$ {{ det.haber | toDecimals }} </td>
+                                            <td  class="text-center"> {{ det.seat_cost}} </td>
                                             </tr>
                                             
                                           <tr>
@@ -84,8 +83,8 @@
                                                 
                                                 <p class="my-0" >TOTAL: </p>
                                             </td>
-                                            <td  class="text-center">$ 440.00</td>
-                                            <td  class="text-center">$ 440.00</td>
+                                            <td  class="text-right">$ {{subTotalDebe(row.detalles)| toDecimals }} </td>
+                                            <td  class="text-right">$ {{subTotalHaber(row.detalles)| toDecimals }} </td>
                                             <td  class="text-center"></td>
                                             </tr>
                                         </tbody>
@@ -202,6 +201,16 @@ export default {
             this.recordId = recordId
             this.showDialogOptionsPdf = true
         },
+        subTotalDebe(items) {
+            return items.reduce((acc, ele) => {
+            return acc + ele.debe;
+            }, 0)
+        },
+        subTotalHaber(items) {
+            return items.reduce((acc, ele) => {
+            return acc + ele.haber;
+            }, 0)
+        }
 
 
     }
