@@ -40,7 +40,9 @@
             'machine_type_id',
             'brand',
             'model',
-            'closing_force'
+            'maximum_force',
+            'minimum_force',
+            'unit_type_id'
         ];
 
         public function machine_type()
