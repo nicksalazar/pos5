@@ -22,17 +22,21 @@
                 'quantity' => [
                     'required'
                 ],
-                'warehouse_id' => [ 'required'],
                 'name' => [ 'required'],
                 'machine_id' => [ 'required'],
             ];
         
             $state = $this->get('records_id');
+
+            if($state !== '01') {
+               $rules['warehouse_id'] = 'required';
+            }
         
             if ($state === '02') {
                 $rules['date_start'] = 'required';
                 $rules['time_start'] = 'required';
             }
+
         
             if ($state === '03') {
                 $rules['date_end'] = 'required';
