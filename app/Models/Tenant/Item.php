@@ -167,6 +167,8 @@ class Item extends ModelTenant
         'purchase_has_igv',
         'web_platform_id',
         'has_plastic_bag_taxes',
+        'has_service_taxes',
+        'amount_service_taxes',
         'barcode',
         'sanitary',
         'cod_digemid',
@@ -949,7 +951,9 @@ class Item extends ModelTenant
             'purchase_affectation_igv_type_id' => $this->purchase_affectation_igv_type_id,
             'calculate_quantity'               => (bool)$this->calculate_quantity,
             'has_plastic_bag_taxes'            => (bool)$this->has_plastic_bag_taxes,
+            'has_service_taxes'                => (bool)$this->has_service_taxes,
             'amount_plastic_bag_taxes'         => $this->amount_plastic_bag_taxes,
+            'amount_service_taxes'             => $this->amount_service_taxes,
             'colors' => $currentColors,
             'CatItemUnitsPerPackage' => $ItemUnitsPerPackage,
             'CatItemMoldProperty' => $ItemMoldProperty,
@@ -1017,7 +1021,7 @@ class Item extends ModelTenant
             'exchanged_for_points' => false, //para determinar si desea canjear el producto
             'used_points_for_exchange' => null, //total de puntos
             'factory_code' => $this->factory_code,
-            
+
         ];
 
         // El nombre de producto, por defecto, sera la misma descripcion.
@@ -1276,12 +1280,13 @@ class Item extends ModelTenant
             ->setInArray('is_set',false)
             ->setInArray('purchase_has_igv',true)
             ->setInArray('amount_plastic_bag_taxes',0.1)
+            ->setInArray('amount_service_taxes',0.1)
             ->setInArray('purchase_unit_price',0)
             ->setInArray('percentage_isc',0)
             ->setInArray('suggested_price',0)
             ->setInArray('has_plastic_bag_taxes',false)
             ->setInArray('has_isc',false)
-            ->setInArray('has_plastic_bag_taxes',false)
+            ->setInArray('has_service_taxes',false)
             ->setInArray('warehouse_id',$warehouse)
             ->setInArray('image','imagen-no-disponible.jpg')
             ->setInArray('image_medium','imagen-no-disponible.jpg')
@@ -2488,9 +2493,9 @@ class Item extends ModelTenant
         return $query;
     }
 
-    
+
     /**
-     * 
+     *
      * Obtener stock del almacen asociado al usuario
      *
      * @param  Warehouse $warehouse
@@ -2507,7 +2512,7 @@ class Item extends ModelTenant
             if($warehouse)
             {
                 $item_warehouse =  ItemWarehouse::select('stock')->where([['item_id', $this->id],['warehouse_id', $warehouse->id]])->first();
-                
+
                 if($item_warehouse) $stock = $item_warehouse->stock;
             }
         }
@@ -2515,7 +2520,7 @@ class Item extends ModelTenant
         return (float) $stock;
     }
 
-    
+
     /**
      *
      * Filtro para no incluir todas las relaciones en consulta
@@ -2588,7 +2593,7 @@ class Item extends ModelTenant
         ];
     }
 
-    
+
     /**
      * Stock de variantes para revision inventario
      *
@@ -2620,10 +2625,10 @@ class Item extends ModelTenant
 
         return $query;
     }
-    
+
 
     /**
-     * 
+     *
      * Filtro por coincidencia para X campo
      *
      * @param  Builder $query
@@ -2638,7 +2643,7 @@ class Item extends ModelTenant
 
 
     /**
-     * 
+     *
      * Filtro por coincidencia para X campo de una tabla relacionada
      *
      * @param  Builder $query
@@ -2656,7 +2661,7 @@ class Item extends ModelTenant
 
 
     /**
-     * 
+     *
      * Filtro para reporte ajuste stock - inventario
      *
      * @param  Builder $query
@@ -2666,7 +2671,7 @@ class Item extends ModelTenant
      */
     public function scopeFilterRecordsStockReport($query, $column, $input)
     {
-        switch($column) 
+        switch($column)
         {
             case 'description':
             case 'internal_id':
@@ -2683,7 +2688,7 @@ class Item extends ModelTenant
         return $query;
     }
 
-    
+
     /**
      * @return bool
      */
@@ -2692,7 +2697,7 @@ class Item extends ModelTenant
         return $this->unit_type_id !== self::SERVICE_UNIT_TYPE;
     }
 
-    
+
     /**
      * @return bool
      */
@@ -2701,6 +2706,6 @@ class Item extends ModelTenant
         return $this->is_set;
     }
 
-    
+
 }
 

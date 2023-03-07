@@ -4,7 +4,7 @@
     $customer = $document->customer;
     $payments = $document->payments;
     $document_xml_service = new Modules\Document\Services\DocumentXmlService;
-    
+
     // Cargos globales que no afectan la base imponible del IGV/IVAP
     $tot_charges = $document_xml_service->getGlobalChargesNoBase($document);
     $fecha = new DateTime();
@@ -36,7 +36,7 @@
     }
 
 @endphp
-{!!  '<'.'?xml version="1.0" encoding="UTF-8"?'.'>'  !!}
+{!!  '<'.'?xml version="1.0" encoding="UTF-8" standalone="no"?'.'>'  !!}
 <factura id="comprobante" version="1.1.0">
     <infoTributaria>
         <ambiente>{{ substr($company->soap_type_id,1,1) }}</ambiente>
@@ -106,7 +106,7 @@
             </totalImpuesto>
             @endif
         </totalConImpuestos>
-        <propina>0.00</propina> 
+        <propina>0.00</propina>
         <importeTotal>{{ $document->total }}</importeTotal>
         <moneda>DOLAR</moneda>
         <pagos>

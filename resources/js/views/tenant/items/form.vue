@@ -58,6 +58,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-6">
                             <div :class="{'has-danger': errors.description}"
                                  class="form-group">
@@ -516,6 +517,20 @@
                                 <small v-if="errors.subject_to_detraction"
                                        class="form-control-feedback"
                                        v-text="errors.subject_to_detraction[0]"></small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="">
+                                <div :class="{'has-danger': errors.has_service_taxes}"
+                                     class="form-group">
+                                    <el-checkbox v-model="form.has_service_taxes">Impuesto por servicio
+                                    </el-checkbox>
+                                    <br>
+                                    <small v-if="errors.has_service_taxes"
+                                           class="form-control-feedback"
+                                           v-text="errors.has_service_taxes[0]"></small>
+                                </div>
                             </div>
                         </div>
 

@@ -154,8 +154,14 @@ use Illuminate\Support\Facades\Log;
             $permissions = auth()->user()->getPermissionsPurchase();
             $global_discount_types = ChargeDiscountType::whereIn('id', ['02', '03'])->whereActive()->get();
 
+            $retention_types_iva = RetentionType::where('type_id', '02')->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->get();
+
+            $retention_types_iva = RetentionType::where('type_id', '02')->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->get();
+
             return compact('suppliers', 'establishment', 'currency_types', 'discount_types', 'configuration', 'payment_conditions',
-                'charge_types', 'document_types_invoice', 'company', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
+                'charge_types', 'document_types_invoice', 'company','retention_types_iva','retention_types_income', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
         }
 
         public function tables_purchase()

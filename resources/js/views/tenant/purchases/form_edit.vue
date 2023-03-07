@@ -135,8 +135,7 @@
                                 </el-select>
                             </div>
                         </div>
-                        <div class="col-lg-2"
-                             v-if="purchase_order_id === null">
+                        <div class="col-lg-2">
                             <div class="form-group">
                                 <label>
                                     Código tributario
@@ -162,7 +161,7 @@
 
                             <el-input
                                 v-model="form.sequential_number"
-                                :maxlength="maxLength1"
+                                :maxlength="15"
                                 show-word-limit
                                 dusk="sequential_number">
                             </el-input>
@@ -179,7 +178,7 @@
 
                             <el-input
                                 v-model="form.auth_number"
-                                :maxlength="maxLength2"
+                                :maxlength="49"
                                 show-word-limit
                                 dusk="auth_number">
                             </el-input>
@@ -503,27 +502,99 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <p class="text-right" v-if="form.total_exportation > 0">OP.EXPORTACIÓN:
-                                {{ currency_type.symbol }} {{ form.total_exportation }}</p>
-                            <p class="text-right" v-if="form.total_free > 0">OP.GRATUITAS: {{ currency_type.symbol }}
-                                {{ form.total_free }}</p>
-                            <p class="text-right" v-if="form.total_unaffected > 0">SUBTOTAL 0%: {{
-                                    currency_type.symbol
-                                }} {{ form.total_unaffected }}</p>
-                            <p class="text-right" v-if="form.total_exonerated > 0">OP.EXONERADAS:
-                                {{ currency_type.symbol }} {{ form.total_exonerated }}</p>
-                            <p class="text-right" v-if="form.total_taxed > 0">SUBTOTAL 12%: {{ currency_type.symbol }}
-                                {{ form.total_taxed }}</p>
-                            <p class="text-right" v-if="form.total_igv > 0">IVA: {{ currency_type.symbol }}
-                                {{ form.total_igv }}</p>
+                        <div class="col-md-6">
+                            <p v-if="form.total_ret > 0"
+                               class="text-left" >RETENCIONES</p>
+                            <div class="table-responsive" v-if="form.total_ret > 0">
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Tipo</th>
+                                            <th>Código</th>
+                                            <th>Descripción</th>
+                                            <th>Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row, index) in form.ret"
+                                            :key="index">
+                                            <td>{{ index + 1 }}</td>
+                                            <td>{{ row.tipo}}</td>
+                                            <td>{{ row.code}}</td>
+                                            <td>{{ row.desciption}}</td>
+                                            <td>{{ row.valor}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-                            <p v-if="form.total_isc > 0" class="text-right">ISC: {{ currency_type.symbol }}
-                                {{ form.total_isc }}</p>
+                        </div>
+                        <div class="col-md-6">
 
-                            <h3 class="text-right" v-if="form.total > 0"><b>TOTAL COMPRAS: </b>{{
-                                    currency_type.symbol
-                                }} {{ form.total }}</h3>
+                            <!-- descuentos -->
+
+                            <div class="row mt-1 mb-2"  v-if="form.total_discount > 0">
+
+                                <div class="col-lg-10 float-right">
+                                    <label class="float-right control-label">
+
+                                        <el-tooltip class="item"
+                                            :content="global_discount_type.description"
+                                            effect="dark"
+                                            placement="top">
+                                            <i class="fa fa-info-circle"></i>
+                                        </el-tooltip>
+
+                                        DESCUENTO {{ is_amount ? 'MONTO' : '%' }}
+                                        <el-checkbox v-model="is_amount" class="ml-1 mr-1" @change="changeTypeDiscount"></el-checkbox>
+                                        :
+                                    </label>
+                                </div>
+
+                                <div class="col-lg-2 float-right">
+                                    <el-input-number v-model="total_global_discount"
+                                                        :min="0"
+                                                        class="input-custom"
+                                                        controls-position="right"
+                                                        @change="changeTotalGlobalDiscount"></el-input-number>
+                                </div>
+
+                            </div>
+
+                            <!-- descuentos -->
+
+                            <p v-if="form.total_exportation > 0"
+                               class="text-right">OP.EXPORTACIÓN: {{ currency_type.symbol }}
+                                                                 {{ form.total_exportation }}</p>
+                            <p v-if="form.total_free > 0"
+                               class="text-right">OP.GRATUITAS: {{ currency_type.symbol }} {{
+                                    form.total_free
+                                                          }}</p>
+                            <p v-if="form.total_unaffected > 0"
+                               class="text-right">SUBTOTAL 0%: {{ currency_type.symbol }}
+                                                                {{ form.total_unaffected }}</p>
+                            <p v-if="form.total_exonerated > 0"
+                               class="text-right">OP.EXONERADAS: {{ currency_type.symbol }}
+                                                                {{ form.total_exonerated }}</p>
+                            <p v-if="form.total_taxed > 0"
+                               class="text-right">SUBTOTAL 12%: {{ currency_type.symbol }} {{
+                                    form.total_taxed
+                                                           }}</p>
+                            <p v-if="form.total_igv > 0"
+                               class="text-right">IVA: {{ currency_type.symbol }} {{ form.total_igv }}</p>
+
+                            <p v-if="form.total_isc > 0"
+                               class="text-right">ISC: {{ currency_type.symbol }} {{ form.total_isc }}</p>
+
+                            <p v-if="form.total_ret > 0"
+                               class="text-right" >RETENIDO: {{ currency_type.symbol }} {{ form.total_ret }}</p>
+
+                            <p v-if="form.total_discount > 0" class="text-right">DESCUENTOS TOTALES: {{ currency_type.symbol }} {{ form.total_discount }}</p>
+
+                            <h3 v-if="form.total > 0"
+                                class="text-right"><b>TOTAL COMPRAS: </b>{{ currency_type.symbol }} {{ form.total }}
+                            </h3>
 
                             <template v-if="is_perception_agent">
                                 <hr>
@@ -532,10 +603,11 @@
                                         <label class="float-right control-label">NÚMERO PERCEPCIÓN: </label>
                                     </div>
                                     <div class="col-lg-2 float-right">
-                                        <div class="form-group" :class="{'has-danger': errors.perception_number}">
+                                        <div :class="{'has-danger': errors.perception_number}"
+                                             class="form-group">
                                             <el-input v-model="form.perception_number"></el-input>
-
-                                            <small class="form-control-feedback" v-if="errors.perception_number"
+                                            <small v-if="errors.perception_number"
+                                                   class="form-control-feedback"
                                                    v-text="errors.perception_number[0]"></small>
                                         </div>
                                     </div>
@@ -546,11 +618,16 @@
                                         <label class="float-right control-label">FEC EMISIÓN PERCEPCIÓN: </label>
                                     </div>
                                     <div class="col-lg-2 float-right">
-                                        <div class="form-group" :class="{'has-danger': errors.perception_date}">
-                                            <el-date-picker v-model="form.perception_date" type="date"
-                                                            value-format="yyyy-MM-dd" :clearable="false"
+                                        <div :class="{'has-danger': errors.perception_date}"
+                                             class="form-group">
+                                            <el-date-picker v-model="form.perception_date"
+                                                            :clearable="false"
+                                                            type="date"
+                                                            value-format="yyyy-MM-dd"
                                                             @change="changeDateOfIssue"></el-date-picker>
-                                            <small class="form-control-feedback" v-if="errors.perception_date"
+
+                                            <small v-if="errors.perception_date"
+                                                   class="form-control-feedback"
                                                    v-text="errors.perception_date[0]"></small>
                                         </div>
                                     </div>
@@ -561,21 +638,24 @@
                                         <label class="float-right control-label">IMPORTE PERCEPCIÓN: </label>
                                     </div>
                                     <div class="col-lg-2 float-right">
-                                        <div class="form-group" :class="{'has-danger': errors.total_perception}">
-                                            <el-input v-model="form.total_perception" @input="inputTotalPerception"
-                                                      :readonly="true"></el-input>
+                                        <div :class="{'has-danger': errors.total_perception}"
+                                             class="form-group">
+                                            <el-input v-model="form.total_perception"
+                                                      :readonly="true"
+                                                      @input="inputTotalPerception"></el-input>
 
-                                            <small class="form-control-feedback" v-if="errors.total_perception"
+                                            <small v-if="errors.total_perception"
+                                                   class="form-control-feedback"
                                                    v-text="errors.total_perception[0]"></small>
                                         </div>
                                     </div>
                                 </div>
-                                <h3 class="text-right" v-if="form.total > 0 && !hide_button"><b>MONTO TOTAL
-                                    : </b>{{ currency_type.symbol }} {{ total_amount }}</h3>
-
-
+                                <h3 v-if="form.total > 0 && !hide_button"
+                                    class="text-right"><b>MONTO TOTAL : </b>{{ currency_type.symbol }} {{ total_amount }}
+                                </h3>
                             </template>
                         </div>
+
                     </div>
                 </div>
                 <div class="form-actions text-right mt-4">
@@ -604,7 +684,6 @@
                           :showClose="false"></purchase-options>
     </div>
 </template>
-
 <script>
 
 import PurchaseFormItem from './partials/item.vue'
@@ -627,6 +706,8 @@ export default {
             input_person: {},
             type: 'edit',
             resource: 'purchases',
+            maxLength1: 15,
+            maxLength2: 49,
             showDialogAddItem: false,
             showDialogNewPerson: false,
             showDialogOptions: false,
@@ -660,7 +741,9 @@ export default {
             purchaseNewId: null,
             localHasGlobalIgv: false,
             warehouses: [],
-
+            retention_types_income: [],
+            retention_types_iva: [],
+            retencionesActuales: [],
         }
     },
     async created() {
@@ -680,16 +763,24 @@ export default {
                 this.payment_conditions = response.data.payment_conditions
                 this.warehouses = response.data.warehouses
 
+                this.retention_types_iva = response.data.retention_types_iva
+                this.retention_types_income = response.data.retention_types_income
+
                 this.charges_types = response.data.charges_types
                 this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
                 this.form.establishment_id = (this.establishment.id) ? this.establishment.id : null
                 this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
 
+                this.retention_types_income = response.data.retention_types_income
+                this.retention_types_iva = response.data.retention_types_iva
+
+
                 this.changeDateOfIssue()
                 this.changeDocumentType()
                 this.changeCurrencyType()
 
-                this.initRecord()
+
+
             })
 
         this.$eventHub.$on('reloadDataPersons', (supplier_id) => {
@@ -704,6 +795,9 @@ export default {
         await this.changeHasPayment()
         await this.changeHasClient()
         this.initGlobalIgv()
+
+        this.initRecord()
+        //this.addRetentions()
     },
     computed: {
         creditPaymentMethod: function () {
@@ -942,7 +1036,9 @@ export default {
         async initRecord() {
             await this.$http.get(`/${this.resource}/record/${this.resourceId}`)
                 .then(response => {
+                    console.log('PURCHASE DATA: ',response.data.data.purchase)
                     let dato = response.data.data.purchase
+                    console.log('RESPONSE: ',dato)
                     this.form.id = dato.id
                     this.form.document_type_id = dato.document_type_id
                     this.form.series = dato.series
@@ -960,8 +1056,15 @@ export default {
                     this.form.purchase_order_id = dato.purchase_order_id
                     this.form.customer_id = dato.customer_id
                     this.form.establishment_id = dato.establishment_id
+                    this.form.codSustento = dato.codSustento
+                    this.form.auth_number = dato.auth_number
+                    this.form.sequential_number = dato.sequential_number
+                    this.form.observation = dato.observation
+
+                    this.retencionesActuales = dato.retenciones
 
                     this.setCurrencyType()
+                    this.changeCurrencyType()
 
                     if (this.form.customer_id) {
                         this.searchRemotePersons(dato.customer_number)
@@ -979,11 +1082,11 @@ export default {
                     this.changeDocumentType()
                     // this.changePaymentMethodType()
                     this.calculateTotal()
-
+                    this.addRetenciones()
                     // this.calculateTotal()
                 })
 
-            await this.getPercentageIgv();
+            //await this.getPercentageIgv();
         },
         getPayments(payments) {
 
@@ -1105,6 +1208,12 @@ export default {
                 has_payment: false,
                 payment_condition_id: '01',
                 fee: [],
+                ret:[],
+                codSustento: '',
+                auth_number: '',
+                sequential_number: '',
+                observation: '',
+
             }
 
             // this.clickAddPayment()
@@ -1153,7 +1262,8 @@ export default {
             await this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
                 this.form.exchange_rate_sale = response
             })
-            await this.getPercentageIgv();
+            //await this.getPercentageIgv();
+            //await this.getPercentageIgv();
             this.changeCurrencyType();
         },
         changeDocumentType() {
@@ -1176,7 +1286,41 @@ export default {
             this.form.items = items
             this.calculateTotal()
         },
+        addRetenciones(){
+            this.form.ret = []
+            let total = this.form.total_taxed + this.form.total_unaffected + this.form.total_igv
+            let retenido = 0
+            this.retencionesActuales.forEach((row) =>{
+
+                let retencionLocal = {}
+                retencionLocal.valor  = parseFloat(row.valorRet)
+                const retIvaDesc = _.find(this.retention_types_income, {'code': row.codRetencion})
+                if(retIvaDesc){
+                    retencionLocal.tipo = 'RENTA'
+                    retencionLocal.desciption  = retIvaDesc.description
+                    retencionLocal.code  = retIvaDesc.code
+                    retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                    retenido += parseFloat(row.valorRet)
+                }else{
+                    const retIvaDesc = _.find(this.retention_types_iva, {'code': row.codRetencion})
+                    retencionLocal.tipo = 'IVA'
+                    retencionLocal.desciption  = retIvaDesc.description
+                    retencionLocal.code  = retIvaDesc.code
+                    retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                    retenido += parseFloat(row.valorRet)
+                }
+
+                retencionLocal.base  = row.unit_value
+                this.form.ret.push(retencionLocal)
+            })
+
+            this.form.total_ret = retenido
+            console.log('total valor con retencion',total - retenido)
+            this.form.total = _.round(total - retenido, 2)
+        },
         calculateTotal() {
+
+
             let total_discount = 0
             let total_charge = 0
             let total_exportation = 0
@@ -1187,15 +1331,130 @@ export default {
             let total_igv = 0
             let total_value = 0
             let total = 0
-
             let total_base_isc = 0
             let total_isc = 0
+            let retention_iva = 0
+            let retention_renta = 0
+            let toal_retenido = 0
 
+            this.form.ret = []
+            //console.log('TOTAL ITEMS: '+this.form.items.length)
+            this.form.ret = []
+            //console.log('TOTAL ITEMS: '+this.form.items.length)
             this.form.items.forEach((row) => {
+
+                console.log('Rows: ',row)
+                if(row.iva_retention > 0 || row.income_retention > 0){
+                    if(this.form.ret.length > 0){
+                        let nuevaRet = true
+
+                        this.form.ret.forEach((data) => {
+                            if(row.iva_retention > 0 ){
+                                const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
+                                if(data.tipo == 'IVA' && data.desciption == retIvaDesc.description){
+                                    data.valor += parseFloat(row.iva_retention)
+                                    dato.base += row.total_taxes
+                                    nuevaRet = false
+                                }
+                            }
+                            if(row.income_retention > 0 ){
+                                const retIncomeDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
+                                if(data.tipo == 'RENTA' && data.desciption == retIncomeDesc.description){
+                                    data.valor += parseFloat(row.income_retention)
+                                    dato.base += row.unit_value
+                                    nuevaRet = false
+                                }
+                            }
+
+
+                        });
+
+                        if(nuevaRet){
+                            console.log('Nueva Retencion')
+
+                            if(row.iva_retention > 0 ){
+                                let retencionLocal = {}
+                                retencionLocal.tipo = 'IVA'
+                                retencionLocal.valor  = parseFloat(row.iva_retention)
+                                const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
+                                console.log('Tipo retencion IVA: '+retIvaDesc.description)
+                                retencionLocal.desciption  = retIvaDesc.description
+                                retencionLocal.code  = retIvaDesc.code
+                                retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                                retencionLocal.base  = row.total_taxes
+                                this.form.ret.push(retencionLocal)
+                            }
+                            if(row.income_retention > 0 ){
+                                let retencionLocal = {}
+                                retencionLocal.tipo = 'RENTA'
+                                retencionLocal.valor  = parseFloat(row.income_retention)
+                                const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
+                                console.log('Tipo retencion RENTA: '+retIvaDesc.description)
+                                retencionLocal.desciption  = retIvaDesc.description
+                                retencionLocal.code  = retIvaDesc.code
+                                retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                                retencionLocal.base  = row.unit_value
+                                this.form.ret.push(retencionLocal)
+                            }
+                        }
+
+                    }else{
+                        console.log('Retencion Inicial')
+                        if(row.iva_retention > 0 ){
+                            let retencionLocal = {}
+                            retencionLocal.tipo = 'IVA'
+                            retencionLocal.valor  = parseFloat(row.iva_retention)
+                            const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
+                            //console.log('Tipo retencion : '+retIvaDesc.description)
+                            retencionLocal.desciption  = retIvaDesc.description
+                            retencionLocal.code  = retIvaDesc.code
+                            retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                            retencionLocal.base  = row.total_taxes
+                            this.form.ret.push(retencionLocal)
+                        }
+                        if(row.income_retention > 0 ){
+                            let retencionLocal = {}
+                            retencionLocal.tipo = 'RENTA'
+                            retencionLocal.valor  = parseFloat(row.income_retention)
+                            const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
+                            //console.log('Tipo retencion : '+retIvaDesc.description)
+                            retencionLocal.desciption  = retIvaDesc.description
+                            retencionLocal.code  = retIvaDesc.code
+                            retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                            retencionLocal.base  = row.unit_value
+                            this.form.ret.push(retencionLocal)
+                        }
+
+                    }
+                }
+
+
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
 
+                retention_iva = parseFloat(row.iva_retention)
+                retention_renta = parseFloat(row.income_retention)
+
+                toal_retenido += (retention_iva + retention_renta)
+
+                retention_iva = parseFloat(row.iva_retention)
+                retention_renta = parseFloat(row.income_retention)
+
+                toal_retenido += (retention_iva + retention_renta)
+
                 if (row.affectation_igv_type_id === '10') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '11') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '12') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '11') {
+                    total_taxed += parseFloat(row.total_value)
+                }
+                if (row.affectation_igv_type_id === '12') {
                     total_taxed += parseFloat(row.total_value)
                 }
                 if (row.affectation_igv_type_id === '20') {
@@ -1207,21 +1466,30 @@ export default {
                 if (row.affectation_igv_type_id === '40') {
                     total_exportation += parseFloat(row.total_value)
                 }
-                if (['10', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
+
+                if (['10','11','12', '20', '30', '40'].indexOf(row.affectation_igv_type_id) < 0) {
                     total_free += parseFloat(row.total_value)
                 }
 
                 total_value += parseFloat(row.total_value)
                 total_igv += parseFloat(row.total_igv)
+
+
                 total += parseFloat(row.total)
 
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
 
+                //console.log('total: '+ total)
+                //console.log('retenido : '+ toal_retenido)
+                //console.log('total: '+ total)
+                //console.log('retenido : '+ toal_retenido)
             });
 
             // isc
+
+
             this.form.total_base_isc = _.round(total_base_isc, 2)
             this.form.total_isc = _.round(total_isc, 2)
 
@@ -1233,16 +1501,21 @@ export default {
             this.form.total_igv = _.round(total_igv, 2)
             this.form.total_value = _.round(total_value, 2)
             // this.form.total_taxes = _.round(total_igv, 2)
-
             //impuestos (isc + igv)
             this.form.total_taxes = _.round(total_igv + total_isc, 2)
+            this.form.total_ret =  _.round(toal_retenido, 2)
 
-            this.form.total = _.round(total, 2)
+            console.log('total ACTUAL '+ total)
+            console.log('total ACTUAL2 '+ toal_retenido)
+
+            total = total - toal_retenido
+
+            this.form.total =  _.round(total, 2)
 
             this.calculatePerception()
-            // this.setTotalDefaultPayment()
             this.calculatePayments()
             this.calculateFee()
+
 
         },
         calculatePerception() {

@@ -15,13 +15,6 @@
                             :class="{'has-danger': errors.number}"
                             class="form-group">
                             <label class="control-label">RUC</label>
-                            <!-- <el-input :disabled="form.is_update" v-model="form.number" :maxlength="11" dusk="number">
-                                <el-button :disabled="form.is_update" type="primary" slot="append" :loading="loading_search" icon="el-icon-search" @click.prevent="searchSunat">
-                                    SUNAT
-                                </el-button>
-                            </el-input> -->
-
-                            <!-- apiperu -->
                             <x-input-service v-model="form.number"
                                              :identity_document_type_id="form.identity_document_type_id"
                                              @search="searchNumber"></x-input-service>
@@ -107,7 +100,7 @@
                              class="form-group">
                             <label class="control-label">
                                 Contraseña
-                                
+
                                 <el-tooltip class="item" effect="dark" placement="top-start" v-if="regex_password_client">
                                     <i class="fa fa-info-circle"></i>
                                     <div slot="content">
@@ -795,7 +788,7 @@ export default {
                 this.group_pharmacy_apps = response.data.group_pharmacy_apps
                 this.group_restaurant_apps = response.data.group_restaurant_apps
                 this.regex_password_client = response.data.regex_password_client
-                
+
             })
 
         await this.initForm()

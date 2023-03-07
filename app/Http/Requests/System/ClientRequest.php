@@ -50,14 +50,14 @@ class ClientRequest extends FormRequest
             ],
             //JOINSOFTWARE//
             'soap_username' => [
-                'required_if:soap_send_id,"02","01"',
+                //'required_if:soap_send_id,"02","01"',
                 //'required_if:soap_type_id,"02"'
-                
+
             ],
             'soap_password' => [
-                'required_if:soap_send_id,"01","02"',
+                //'required_if:soap_send_id,"01","02"',
                 //'required_if:soap_type_id,"02"'
-                
+
             ],
             'soap_url' => [
                 'required_if:soap_send_id,"02"',
@@ -65,7 +65,7 @@ class ClientRequest extends FormRequest
         ];
     }
 
-    
+
     /**
      *
      * @param  bool $regex_password_client
@@ -81,8 +81,8 @@ class ClientRequest extends FormRequest
         if($regex_password_client)
         {
             $password_rules = array_merge($password_rules, [
-                'regex:/[a-z]/',      
-                'regex:/[A-Z]/',   
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
                 'regex:/[0-9]/',
                 'regex:/[@.$!%*#?&-]/',
             ]);

@@ -89,8 +89,10 @@ class ItemSetController extends Controller
     public function item_tables()
     {
 
+
         $individual_items = Item::whereWarehouse()->whereTypeUser()->whereNotIsSet()->whereIsActive()->get()->transform(function($row) {
             $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
+            $unit_types = UnitType::find($row->unit_type_id);
             return [
                 'id' => $row->id,
                 'full_description' => $full_description,
@@ -98,6 +100,9 @@ class ItemSetController extends Controller
                 'description' => $row->description,
                 'sale_unit_price' => $row->sale_unit_price,
                 'purchase_unit_price' => $row->purchase_unit_price,
+                'unit_type_id'=> $row->unit_type_id,
+                'unit_type_description'=>$unit_types->description,
+
             ];
         });
 
@@ -113,7 +118,7 @@ class ItemSetController extends Controller
     }
 
     public function store(ItemRequest $request) {
-        
+
         $id = $request->input('id');
 
         $record = DB::connection('tenant')->transaction(function () use ($request, $id) {
@@ -126,7 +131,7 @@ class ItemSetController extends Controller
             if($temp_path) {
 
                 UploadFileHelper::checkIfValidFile($request->input('image'), $temp_path, true);
-        
+
                 $directory = 'public'.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'items'.DIRECTORY_SEPARATOR;
 
                 $file_name_old = $request->input('image');

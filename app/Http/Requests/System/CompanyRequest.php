@@ -20,10 +20,10 @@ class CompanyRequest extends FormRequest
                 'nullable'
             ],
             'soap_username' => [
-                'required_if:soap_type_id,"02"'
+                //'required_if:soap_type_id,"02"'
             ],
             'soap_password' => [
-                'required_if:soap_type_id,"02"'
+                //'required_if:soap_type_id,"02"'
             ],
         ];
     }

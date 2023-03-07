@@ -206,11 +206,11 @@
                         <div class="form-group col-sm-12 col-md-6 col-lg-2"
                             :class="{'has-danger': errors.sequential_number}"
                             >
-                            <label class="control-label">Secuencial <span class="text-danger">*</span></label>
+                            <label class="control-label">Secuencial</label>
 
                             <el-input
                                 v-model="form.sequential_number"
-                                :maxlength="maxLength1"
+
                                 show-word-limit
                                 dusk="sequential_number">
                             </el-input>
@@ -223,11 +223,11 @@
                         <div class="form-group col-sm-12 col-md-6 col-lg-4"
                             :class="{'has-danger': errors.auth_number}"
                             >
-                            <label class="control-label">Número autorización <span class="text-danger">*</span></label>
+                            <label class="control-label">Número autorización</label>
 
                             <el-input
                                 v-model="form.auth_number"
-                                :maxlength="maxLength2"
+
                                 show-word-limit
                                 dusk="auth_number">
                             </el-input>
@@ -1386,7 +1386,6 @@ export default {
 
                         if(nuevaRet){
                             console.log('Nueva Retencion')
-
                             if(row.iva_retention > 0 ){
                                 let retencionLocal = {}
                                 retencionLocal.tipo = 'IVA'
@@ -1610,12 +1609,12 @@ export default {
             if (!validate_item_series.success) {
                 return this.$message.error(validate_item_series.message);
             }
-
+            /*
             let val_digits = await this.validateDigits()
             if (!val_digits.success) {
                 return this.$message.error(val_digits.message)
             }
-
+            */
             let validate = await this.validate_payments()
             if (!validate.success) {
                 return this.$message.error(validate.message);
