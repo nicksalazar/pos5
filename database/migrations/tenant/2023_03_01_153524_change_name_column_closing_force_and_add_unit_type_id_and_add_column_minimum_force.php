@@ -15,11 +15,12 @@ class ChangeNameColumnClosingForceAndAddUnitTypeIdAndAddColumnMinimumForce exten
     {
        
         Schema::table('machines', function (Blueprint $table) {
-            // 1. Renaming column
-            $table->renameColumn('closing_force', 'maximum_force');
 
-            // 2. Adding new column
-            $table->string('minimum_force')->nullable()->after('maximum_force');
+            // 1. Adding new column
+            $table->string('minimum_force')->nullable()->after('closing_force');
+            
+            // 2. Renaming column
+            $table->renameColumn('closing_force', 'maximum_force');
 
             // 3. Adding foreign key column
             $table->string('unit_type_id', 255)->nullable()->after('name');
