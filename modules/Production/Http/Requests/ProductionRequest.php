@@ -19,6 +19,9 @@
                 'item_id' => [
                     'required'
                 ],
+                'warehouse_id' => [
+                    'required'
+                ],
                 'quantity' => [
                     'required'
                 ],
@@ -27,10 +30,6 @@
             ];
         
             $state = $this->get('records_id');
-
-            if($state !== '01') {
-               $rules['warehouse_id'] = 'required';
-            }
         
             if ($state === '02') {
                 $rules['date_start'] = 'required';
