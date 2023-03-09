@@ -14,7 +14,7 @@
                                 <div class="col-sm-12 col-md-3 col-lg-3">
                                     <div :class="{ 'has-danger': errors.item_id }" class="form-group">
                                         <label class="control-label">Producto </label>
-                                        <el-select v-model="form.item_id" :loading="loading_search"
+                                        <el-select :disabled="!isCreating" v-model="form.item_id" :loading="loading_search"
                                             :remote-method="searchRemoteItems" filterable remote @change="changeItem">
                                             <el-option v-for="option in items" :key="option.id" :label="option.description"
                                                 :value="option.id"></el-option>
@@ -26,7 +26,7 @@
                                 <div class="col-sm-12 col-md-3 col-lg-3">
                                     <div :class="{ 'has-danger': errors.warehouse_id }" class="form-group">
                                         <label class="control-label">Almacén</label>
-                                        <el-select v-model="form.warehouse_id" filterable>
+                                        <el-select :disabled="!isCreating" v-model="form.warehouse_id" filterable>
                                             <el-option v-for="option in warehouses" :key="option.id"
                                                 :label="option.description" :value="option.id"></el-option>
                                         </el-select>
@@ -37,7 +37,7 @@
                                 <div class="col-sm-12 col-md-3 col-lg-3">
                                     <div :class="{ 'has-danger': errors.quantity }" class="form-group">
                                         <label class="control-label">Cantidad</label>
-                                        <el-input-number v-model="form.quantity" :controls="false" :min="0"
+                                        <el-input-number :disabled="!isCreating" v-model="form.quantity" :controls="false" :min="0"
                                             :precision="precision" @change="handleChange($event)"></el-input-number>
                                         <small v-if="errors.quantity" class="form-control-feedback"
                                             v-text="errors.quantity[0]"></small>
@@ -81,7 +81,7 @@
                                         <label class="control-label">
                                             Maquina
                                         </label>
-                                        <el-select v-model="form.machine_id" @change="fetchMachineInfo()">
+                                        <el-select :disabled="!isCreating" v-model="form.machine_id" @change="fetchMachineInfo()">
                                             <el-option v-for="option in machines" :key="option.id" :label="option.name"
                                                 :value="option.id"></el-option>
                                         </el-select>
@@ -465,7 +465,8 @@ export default {
             // JOINSOFTWARE
             quantityD: 0,
             max_force: null,
-            min_force: null
+            min_force: null,
+            canEdit: true,
         }
     },
     async created() {
@@ -508,6 +509,7 @@ export default {
                         let currentStatus =  this.form.records_id;
                         switch (currentStatus) {
                             case '01':
+                                    this.isCreating = true;
                                     this.deleteStatus("03")
                                     this.deleteStatus('04')
                                 break;
@@ -530,7 +532,11 @@ export default {
             } else {
                 this.isCreating = true;
                 this.deleteStatus('04')
+                this.deleteStatus("03")
+                this.deleteStatus("02")
             }
+
+            console.log("is creating", this.isCreating)
 
         },
         async initForm() {

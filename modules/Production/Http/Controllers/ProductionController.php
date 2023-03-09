@@ -61,7 +61,7 @@ class ProductionController extends Controller
 
             $production = Production::firstOrNew(['id' => null]);
             $production->fill($request->all());
-            $production->state_type_id =  $request->records_id;
+            $production->state_type_id = $request->records_id;
             $production->user_id = auth()->user()->id;
             $production->soap_type_id = $this->getCompanySoapTypeId();
             $production->save();
@@ -102,7 +102,7 @@ class ProductionController extends Controller
             $production = Production::firstOrNew(['id' => null]);
             $production->fill($request->all());
             $production->inventory_id_reference = $inventory->id;
-            $production->state_type_id =  $request->records_id;
+            $production->state_type_id = $request->records_id;
             $production->user_id = auth()->user()->id;
             $production->soap_type_id = $this->getCompanySoapTypeId();
             $production->save();
@@ -111,7 +111,7 @@ class ProductionController extends Controller
             if ($informative !== true) {
                 $items_supplies = $request->supplies;
                 foreach ($items_supplies as $item) {
-                    $supplyWarehouseId = (int)($item['warehouse_id'] ?? $warehouse_id);
+                    $supplyWarehouseId = (int) ($item['warehouse_id'] ?? $warehouse_id);
                     $supplyWarehouseId = $supplyWarehouseId !== 0 ? $supplyWarehouseId : $warehouse_id;
                     $qty = $item['quantity'] ?? 0;
                     $inventory_transaction_item = InventoryTransaction::findOrFail('101'); //Salida insumos por molino
@@ -120,7 +120,7 @@ class ProductionController extends Controller
                     $inventory_it->description = $inventory_transaction_item->name;
                     $inventory_it->item_id = $item['individual_item_id'];
                     $inventory_it->warehouse_id = $supplyWarehouseId;
-                    $inventory_it->quantity = (float)($qty * $quantity);
+                    $inventory_it->quantity = (float) ($qty * $quantity);
                     $inventory_it->inventory_transaction_id = $inventory_transaction_item->id;
                     $inventory_it->save();
                 }
@@ -184,7 +184,7 @@ class ProductionController extends Controller
             $production->fill($request->all());
             $production->inventory_id_reference = $inventory->id ?? null;
             $production->warehouse_id = $warehouse_id;
-            $production->state_type_id =  $state_type_id;
+            $production->state_type_id = $state_type_id;
             $production->user_id = auth()->user()->id;
             $production->soap_type_id = $this->getCompanySoapTypeId();
             $production->save();
@@ -192,7 +192,7 @@ class ProductionController extends Controller
             if (!$informative && $state_type_id != '01' && $state_type_id != '04' && $inventory_transaction) {
                 $items_supplies = $request->supplies;
                 foreach ($items_supplies as $item) {
-                    $supplyWarehouseId = (int)($item['warehouse_id'] ?? $warehouse_id);
+                    $supplyWarehouseId = (int) ($item['warehouse_id'] ?? $warehouse_id);
                     $supplyWarehouseId = $supplyWarehouseId !== 0 ? $supplyWarehouseId : $warehouse_id;
                     $qty = $item['quantity'] ?? 0;
                     $inventory_transaction_item = InventoryTransaction::findOrFail(101); // Salida insumos por molino
@@ -201,7 +201,7 @@ class ProductionController extends Controller
                     $inventory_it->description = $inventory_transaction_item->name;
                     $inventory_it->item_id = $item['individual_item_id'];
                     $inventory_it->warehouse_id = $supplyWarehouseId;
-                    $inventory_it->quantity = (float)($qty * $quantity);
+                    $inventory_it->quantity = (float) ($qty * $quantity);
                     $inventory_it->inventory_transaction_id = $inventory_transaction_item->id;
                     $inventory_it->save();
                 }
@@ -241,6 +241,7 @@ class ProductionController extends Controller
         return view('production::edit');
     }
 
+
     public function update(ProductionRequest $request, $id)
     {
         $result = DB::connection('tenant')->transaction(function () use ($request, $id) {
@@ -249,112 +250,102 @@ class ProductionController extends Controller
 
             $old_state_type_id = $production->state_type_id;
             $new_state_type_id = $request->records_id;
-            
-            //02 to 03
-            //deberia solamente descontar solo materiales
-            // Validar que el estado actual permita el cambio
-            if (($old_state_type_id == '01' && ($new_state_type_id == '02' || $new_state_type_id == '03')) ||
-                ($old_state_type_id == '02' && $new_state_type_id == '03') ||
-                ($old_state_type_id == '03' && $new_state_type_id == '04')
-            ) {
-                $item_id = $request->input('item_id');
-                $warehouse_id = $request->input('warehouse_id');
-                $quantity = $request->input('quantity');
-                $informative = ($request->informative) ?: false;
-                $inventory_transaction = null;
+            $item_id = $request->input('item_id');
+            $warehouse_id = $request->input('warehouse_id');
+            $quantity = $request->input('quantity');
+            $informative = ($request->informative) ?: false;
+            $inventory_transaction = null;
 
-                switch ($new_state_type_id) {
-                    case '01': // Registrado
-                        $inventory_transaction = null;
-                        break;
-                    case '02': // En elaboración
-                        $inventory_transaction = InventoryTransaction::findOrFail(101); // Salida insumos por molino
-                        break;
-                    case '03': // Finalizado
-                        $inventory_transaction = InventoryTransaction::findOrFail(19); // Ingreso de producción
-                        break;
-                    case '04': // Anulado
-                        $inventory_transaction = null;
-                        break;
-                }
+            switch ($new_state_type_id) {
+                case '01': // Registrado
+                    $inventory_transaction = null;
+                    break;
+                case '02': // En elaboración
+                    $inventory_transaction = InventoryTransaction::findOrFail(101); // Salida insumos por molino
+                    break;
+                case '03': // Finalizado
+                    $inventory_transaction = InventoryTransaction::findOrFail(19); // Ingreso de producción
+                    break;
+                case '04': // Anulado
+                    $inventory_transaction = null;
+                    break;
+            }
 
-                $inventory = new Inventory();
+            $inventory = new Inventory();
 
-                if ($inventory_transaction && !$informative && $new_state_type_id == '03') {
+            if ($inventory_transaction && !$informative && $new_state_type_id == '03') {
+                $inventory->type = null;
+                $inventory->description = $inventory_transaction->name;
+                $inventory->item_id = $item_id;
+                $inventory->warehouse_id = $warehouse_id;
+                $inventory->quantity = $quantity;
+                $inventory->inventory_transaction_id = $inventory_transaction->id;
+                $inventory->save();
+            }
+
+            $production->fill($request->all());
+            if (!($old_state_type_id == '03' && $new_state_type_id == '04')) {
+                $production->inventory_id_reference = $inventory->id ?? null;
+            }
+            $production->warehouse_id = $warehouse_id;
+            $production->state_type_id = $new_state_type_id;
+            $production->user_id = auth()->user()->id;
+            $production->soap_type_id = $this->getCompanySoapTypeId();
+            $production->save();
+
+            // Verificar si se está intentando anular después de finalizado
+            if ($old_state_type_id == '03' && $new_state_type_id == '04' && !$informative) {
+                $inventory_id_reference = $production->inventory_id_reference;
+                if ($inventory_id_reference) {
+                    $inventory_transaction = InventoryTransaction::findOrFail(103); // Salida por insumo anulado
+                    $inventory = new Inventory();
                     $inventory->type = null;
                     $inventory->description = $inventory_transaction->name;
-                    $inventory->item_id = $item_id;
-                    $inventory->warehouse_id = $warehouse_id;
-                    $inventory->quantity = $quantity;
+                    $inventory->item_id = $production->item_id;
+                    $inventory->warehouse_id = $production->warehouse_id;
+                    $inventory->quantity = ($production->quantity);
                     $inventory->inventory_transaction_id = $inventory_transaction->id;
                     $inventory->save();
-                }
-
-                $production->fill($request->all());
-                if(!($old_state_type_id == '03' && $new_state_type_id == '04')) {
-                 $production->inventory_id_reference = $inventory->id ?? null;
-                }
-                $production->warehouse_id = $warehouse_id;
-                $production->state_type_id = $new_state_type_id;
-                $production->user_id = auth()->user()->id;
-                $production->soap_type_id = $this->getCompanySoapTypeId();
-                $production->save();
-
-                    // Verificar si se está intentando anular después de finalizado
-                if ($old_state_type_id == '03' && $new_state_type_id == '04' && !$informative) {
-                    $inventory_id_reference = $production->inventory_id_reference;
-
-                    if ($inventory_id_reference) {
-                        $inventory_transaction = InventoryTransaction::findOrFail(200); // Salida de producción anulada
-
-                        $inventory = new Inventory();
-                        $inventory->type = null;
-                        $inventory->description = $inventory_transaction->name;
-                        $inventory->item_id = $production->item_id;
-                        $inventory->warehouse_id = $production->warehouse_id;
-                        $inventory->quantity = - $production->quantity;
-                        $inventory->inventory_transaction_id = $inventory_transaction->id;
-                        $inventory->save();
 
 
-                        $items_supplies = $request->supplies;
-                        foreach ($items_supplies as $item) {
-                            $supplyWarehouseId = (int)($item['warehouse_id'] ?? $warehouse_id);
-                            $supplyWarehouseId = $supplyWarehouseId !== 0 ? $supplyWarehouseId : $warehouse_id;
-                            $qty = $item['quantity'] ?? 0;
-                            $inventory_transaction_item = InventoryTransaction::findOrFail(201); // Salida insumos por molino
-                            $inventory_it = new Inventory();
-                            $inventory_it->type = null;
-                            $inventory_it->description = $inventory_transaction_item->name;
-                            $inventory_it->item_id = $item['individual_item_id'];
-                            $inventory_it->warehouse_id = $supplyWarehouseId;
-                            $inventory_it->quantity = (float)-($qty * $quantity);
-                            $inventory_it->inventory_transaction_id = $inventory_transaction_item->id;
-                            $inventory_it->save();
-                        }
-                    }
-
-                }
-
-
-                if (!$informative && $new_state_type_id != '01' && $new_state_type_id != '04' && $inventory_transaction && $new_state_type_id != '03') {
                     $items_supplies = $request->supplies;
                     foreach ($items_supplies as $item) {
-                        $supplyWarehouseId = (int)($item['warehouse_id'] ?? $warehouse_id);
+                        $supplyWarehouseId = (int) ($item['warehouse_id'] ?? $warehouse_id);
                         $supplyWarehouseId = $supplyWarehouseId !== 0 ? $supplyWarehouseId : $warehouse_id;
                         $qty = $item['quantity'] ?? 0;
-                        $inventory_transaction_item = InventoryTransaction::findOrFail(101); // Salida insumos por molino
+                        $inventory_transaction_item = InventoryTransaction::findOrFail(104); //Entrada por insumo anulado
                         $inventory_it = new Inventory();
                         $inventory_it->type = null;
                         $inventory_it->description = $inventory_transaction_item->name;
                         $inventory_it->item_id = $item['individual_item_id'];
                         $inventory_it->warehouse_id = $supplyWarehouseId;
-                        $inventory_it->quantity = (float)($qty * $quantity);
+                        $inventory_it->quantity = (float) ($qty * $quantity);
                         $inventory_it->inventory_transaction_id = $inventory_transaction_item->id;
                         $inventory_it->save();
                     }
                 }
+
             }
+
+
+            if (!$informative && $new_state_type_id != '01' && $new_state_type_id != '04' && $inventory_transaction && $new_state_type_id != '03') {
+                $items_supplies = $request->supplies;
+                foreach ($items_supplies as $item) {
+                    $supplyWarehouseId = (int) ($item['warehouse_id'] ?? $warehouse_id);
+                    $supplyWarehouseId = $supplyWarehouseId !== 0 ? $supplyWarehouseId : $warehouse_id;
+                    $qty = $item['quantity'] ?? 0;
+                    $inventory_transaction_item = InventoryTransaction::findOrFail(101); // Salida insumos por molino
+                    $inventory_it = new Inventory();
+                    $inventory_it->type = null;
+                    $inventory_it->description = $inventory_transaction_item->name;
+                    $inventory_it->item_id = $item['individual_item_id'];
+                    $inventory_it->warehouse_id = $supplyWarehouseId;
+                    $inventory_it->quantity = (float) ($qty * $quantity);
+                    $inventory_it->inventory_transaction_id = $inventory_transaction_item->id;
+                    $inventory_it->save();
+                }
+            }
+
 
             return [
                 'success' => true,
@@ -389,7 +380,7 @@ class ProductionController extends Controller
                     break;
             }
             $production->fill($request->all());
-            $production->state_type_id =  $request->records_id;
+            $production->state_type_id = $request->records_id;
 
             $inventory = Inventory::findOrFail($production->inventory_id_reference);
 
@@ -409,7 +400,7 @@ class ProductionController extends Controller
                 $items_supplies = $request->supplies;
 
                 foreach ($items_supplies as $item) {
-                    $supplyWarehouseId = (int)($item['warehouse_id'] ?? $request->input('warehouse_id'));
+                    $supplyWarehouseId = (int) ($item['warehouse_id'] ?? $request->input('warehouse_id'));
                     $supplyWarehouseId = $supplyWarehouseId !== 0 ? $supplyWarehouseId : $request->input('warehouse_id');
                     $qty = $item['quantity'] ?? 0;
 
@@ -419,7 +410,7 @@ class ProductionController extends Controller
                         ->where('inventory_transaction_id', $inventory_transaction_item->id)
                         ->firstOrFail();
 
-                    $inventory_it->quantity = (float)($qty * $request->input('quantity'));
+                    $inventory_it->quantity = (float) ($qty * $request->input('quantity'));
                     $inventory_it->save();
                 }
             }
@@ -534,20 +525,24 @@ class ProductionController extends Controller
         if (!empty($data_of_period['d_start'])) {
             $data->where(function ($query) use ($data_of_period) {
                 $query->where('date_start', '>=', $data_of_period['d_start'])
-                    ->orWhere(function ($query) use ($data_of_period) {
-                        $query->whereNull('date_start')
-                            ->where('created_at', '>=', $data_of_period['d_start']);
-                    });
+                    ->orWhere(
+                        function ($query) use ($data_of_period) {
+                            $query->whereNull('date_start')
+                                ->where('created_at', '>=', $data_of_period['d_start']);
+                        }
+                    );
             });
         }
 
         if (!empty($data_of_period['d_end'])) {
             $data->where(function ($query) use ($data_of_period) {
                 $query->where('date_end', '<=', $data_of_period['d_end'])
-                    ->orWhere(function ($query) use ($data_of_period) {
-                        $query->whereNull('date_end')
-                            ->where('created_at', '<=', $data_of_period['d_end']);
-                    });
+                    ->orWhere(
+                        function ($query) use ($data_of_period) {
+                            $query->whereNull('date_end')
+                                ->where('created_at', '<=', $data_of_period['d_end']);
+                        }
+                    );
             });
         }
 
