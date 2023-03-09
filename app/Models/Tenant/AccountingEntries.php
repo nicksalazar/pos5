@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models\Tenant;
-
+use App\Models\Tenant\Catalogs\CurrencyType;
 /**
  * App\Models\Tenant\PersonType
  *
@@ -16,72 +16,67 @@ class AccountingEntries extends ModelTenant
 
 {
     protected $table='accounting_entries';
+    protected $with = ['user', 'person', 'type_account', 'items'];
     protected $fillable = [
         'id',
         'user_id',
         'seat',
         'seat_general',
-        'seat_line',
         'seat_date',
-        'account_movement_id',
         'types_accounting_entrie_id',
         'comment',
         'serie',
         'number',
-        'debe',
-        'haber',
-        'seat_cost',
+        'total_debe',
+        'total_haber',
         'revised1',
         'user_revised1',
         'revised2',
         'user_revised2',
-        'currency_code',
+        'currency_type_id',
         'doctype',
         'is_client',
+        'external_id',
+        'establishment_id',
+        'establishment',
+        'prefix',
+        'filename',
         'person_id',
+        'person',
         'created_at',
         'updated_at',
 
     ];
-
-    public function scopeWhereTypeUser($query, $params= [])
+    public function getEstablishmentAttribute($value)
     {
-        if(isset($params['user_id'])) {
-            $user_id = (int)$params['user_id'];
-            $user = User::find($user_id);
-            if(!$user) {
-                $user = new User();
-            }
-        }
-        else {
-            $user = auth()->user();
-        }
-        return ($user->type == 'seller') ? $query->where('user_id', $user->id) : null;
+        return (is_null($value))?null:(object) json_decode($value);
     }
 
-    public function scopeTipo($query,$user)
+    public function setEstablishmentAttribute($value)
     {
-        return $query->where('seat_general',$user);
+        $this->attributes['establishment'] = (is_null($value))?null:json_encode($value);
+    }
+    public function getIdentifierAttribute()
+    {
+        return $this->prefix.'-'.$this->id;
     }
 
-    public function usuario($query)
+    public function getUrlPrintPdf($format = "a4")
     {
-        $user = User::find($query->user_id);
-        return $query->where('user_id', $user->id);
+        return url("accounting-entries/print/{$this->external_id}/{$format}");
     }
-
-    public function detalles()
+    public function items()
     {
-        return $this->hasMany(AccountingEntries::class,'seat_general', 'seat_general');
-    }
-    public function cuenta()
-    {
-        return $this->belongsTo(AccountingEntries::class, 'seat_general', 'seat_general');
+        return $this->hasMany(AccountingEntryItems::class,'accounting_entrie_id','id');
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function person()
+    {
+        return $this->belongsTo(Person::class);
     }
 
     public function type_account()
@@ -89,9 +84,23 @@ class AccountingEntries extends ModelTenant
         return $this->belongsTo(TypesAccountingEntries::class,'types_accounting_entrie_id','id');
     }
 
-    public function account_movement()
+    public function getNumberFullAttribute()
     {
-        return $this->belongsTo(AccountMovement::class);
+        return $this->prefix.'-'.$this->id;
+    }
+
+    public function getPersonAttribute($value)
+    {
+        return (is_null($value))?null:(object) json_decode($value);
+    }
+
+    public function setPersonAttribute($value)
+    {
+        $this->attributes['person'] = (is_null($value))?null:json_encode($value);
+    }
+    public function currency_type()
+    {
+        return $this->belongsTo(CurrencyType::class, 'currency_type_id');
     }
 
     

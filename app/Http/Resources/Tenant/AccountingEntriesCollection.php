@@ -16,23 +16,21 @@ class AccountingEntriesCollection extends ResourceCollection
     {
         return $this->collection->transform(function($row, $key) {
             return [
-//                'id' => $row->id,
-                'id' => $row->detalles[0]->id,
+                'id' => $row->id,
                 'user_id' => $row->user_id,
                 'type' => $row->type_account->name,
                 'user' => $row->user->name,
                 'seat' => $row->seat,
                 'seat_general' => $row->seat_general,
-                'seat_line' => $row->seat_line,
                 'seat_date' => $row->seat_date,//->format('Y-m-d'),
-                'account_code' => $row->account_code,
                 'types_accounting_entrie_id' => $row->types_accounting_entrie_id,
                 'comment' => $row->comment,
                 'serie' => $row->serie,
+                'filename' => $row->filename,
+                'external_id' => $row->external_id,
                 'number' => $row->number,
-                'debe' => $row->debe,
-                'haber' => $row->haber,
-                'seat_cost' => $row->seat_cost,
+                'total_debe' => $row->total_debe,
+                'total_haber' => $row->total_haber,
                 'revised1' => $row->revised1,
                 'user_revised1' => $row->user_revised1,
                 'revised2' => $row->revised2,
@@ -41,11 +39,9 @@ class AccountingEntriesCollection extends ResourceCollection
                 'doctype' => $row->doctype,
                 'is_client' => $row->is_client,
                 'person_id' => $row->person_id,
-                'created_at' => $row->detalles[0]->created_at->format('Y-m-d H:i:s'),
-                'updated_at' => $row->detalles[0]->updated_at->format('Y-m-d H:i:s'),
-                //'created_at' => $row->created_at->format('Y-m-d H:i:s'),
-                //'updated_at' => $row->updated_at->format('Y-m-d H:i:s'),
-                'detalles'=>$row->detalles
+                'created_at' => $row->created_at->format('d/m/Y H:i:s'),
+                'updated_at' => $row->updated_at->format('d/m/Y H:i:s'),
+                'detalles'=>$row->items,
             ];
         });
     }

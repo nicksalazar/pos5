@@ -448,7 +448,7 @@ Vue.component('system-user-not-change-password-index', require('@viewsModuleRepo
 //Asientos contables
 Vue.component('tenant-accountingentries-index', require('./views/tenant/accounting_entries/index.vue'));
 Vue.component('tenant-accountingentries-form', require('./views/tenant/accounting_entries/form.vue'));
-//Vue.component('tenant-accountingentries-edit', require('./views/tenant/accounting_entries/form_edit.vue'));
+Vue.component('tenant-accountingentries-edit', require('./views/tenant/accounting_entries/form_edit.vue'));
 
 Vue.component('tenant-accountgroups-index', require('./views/tenant/account_groups/index.vue'));
 Vue.component('tenant-accountmovements-index', require('./views/tenant/account_movements/index.vue'));

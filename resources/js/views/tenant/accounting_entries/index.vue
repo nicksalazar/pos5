@@ -25,11 +25,12 @@
                             <div class="row">
                             <div class="col-md-6">
                                 <b>Creado por: {{row.user}} </b>
-                                <p class="m-0">Fecha de creación {{ row.created_at | toDate }} </p>
+                                <p class="m-0">Fecha de creación {{ row.created_at }} </p>
                             </div>
                             <div class="col-md-6 text-right my-auto">
-                            <button type="button" data-toggle="tooltip" data-placement="top" title="Editar" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)"><i class="fa fa-edit"></i> Editar</button>
-                            <button type="button" data-toggle="tooltip" data-placement="top" title="Generar PDF" class="btn waves-effect waves-light btn-xs btn-warning" @click.prevent="clickCreate(row.id)"><i class="fa fa-file-pdf"></i> PDF</button>
+                                <a    :href="`/${resource}/edit/${row.id}`" type="button"
+                              data-toggle="tooltip" data-placement="top" title="Editar" class="btn waves-effect waves-light btn-xs btn-info" ><i class="fa fa-edit"></i></a>
+                            <button type="button" data-toggle="tooltip" data-placement="top" title="Generar PDF" class="btn waves-effect waves-light btn-xs btn-warning" @click.prevent="clickOptionsPdf(row.id)"><i class="fa fa-file-pdf"></i> PDF</button>
                              <template v-if="typeUser === 'admin'">
                              <button type="button" data-toggle="tooltip" data-placement="top" title="Eliminar"  class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)"><i class="fa fa-trash"></i> Eliminar</button>
                              </template>
@@ -50,7 +51,7 @@
                                           <tr>
                                             <td colspan="2" class="text-center py-0">
                                                 <p class="my-0" >-- {{ row.seat_date | toDate }} --</p>
-                                                <p class="my-0">Asiento N° {{row.seat_general}} -- {{row.type}} </p>
+                                                <p class="my-0">Asiento N°: {{row.filename}} -- {{row.type}} </p>
                                             </td>
                                             <td  class="text-center"></td>
                                             <td  class="text-center"></td>
@@ -98,6 +99,10 @@
                 </data-table>
             </div>
   
+              <account-options-pdf :showDialog.sync="showDialogOptionsPdf"
+                                   :recordId="recordId"
+                                   :showClose="true"></account-options-pdf>
+
         </div>
     </div>
 </template>
@@ -109,6 +114,7 @@
 <script>
 
 import DataTable from '../../../components/DataTableAccountEntries.vue'
+import AccountOptionsPdf from './partials/options_pdf.vue'
 import {deletable} from '../../../mixins/deletable'
 import {mapActions, mapState} from "vuex";
 export default {
@@ -121,7 +127,8 @@ export default {
         deletable
     ],
     components: {
-        DataTable
+        DataTable,
+        AccountOptionsPdf
     },
     computed: {
         ...mapState([
@@ -133,8 +140,6 @@ export default {
         return {
             resource: 'accounting-entries',
             recordId: null,
-            showDialogPayments: false,
-            showDialogOptions: false,
             showDialogOptionsPdf: false,
             state_types: [],
             columns: {
@@ -192,10 +197,7 @@ export default {
             this.recordId = id
             this.showDialogFormEdit = true
         },
-        clickOptions(recordId = null) {
-            this.recordId = recordId
-            this.showDialogOptions = true
-        },
+
 
         clickOptionsPdf(recordId = null) {
             this.recordId = recordId

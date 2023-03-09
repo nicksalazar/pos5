@@ -126,7 +126,10 @@
 
 
             <div class="col-md-12 px-0 pt-3">
-                <div class="table-responsive">
+                <div class="row flex justify-content-center" v-if="showButtons">
+                        <span class="loader-custom"></span>
+                </div>
+                <div class="table-responsive" v-if="!showButtons">
                     
                         <div>
                         <slot name="heading"></slot>
@@ -169,6 +172,7 @@ export default {
     return {
       types_accounting_entrie_id: null,
       account_movement_id: null,
+      showButtons:false,
       types_seat: [],
       accounts: [],
       search: {
@@ -210,7 +214,6 @@ export default {
   },
   async mounted() {
     let column_resource = _.split(this.resource, "/");
-    console.log('d', column_resource);
     await this.$http
       .get(`/${_.head(column_resource)}/columns`)
       .then((response) => {
@@ -283,12 +286,14 @@ export default {
     },
     getRecords() {
       this.search.form = JSON.stringify(this.form);
+      this.showButtons=true;
       return this.$http
         .get(`/${this.resource}/records?${this.getQueryParameters()}`)
         .then((response) => {
           this.records = response.data.data;
           this.pagination = response.data.meta;
           this.pagination.per_page = parseInt(response.data.meta.per_page);
+          this.showButtons=false;
         });
     },
     getQueryParameters() {

@@ -33801,7 +33801,7 @@ Preloader
 
 .loader,
 .loader__figure {
-  position: absolute;
+  /*position: absolute;*/
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
@@ -121056,5 +121056,42 @@ html.dark .card.card-dashboard {
   border: 1px solid #d2322d !important;
   -webkit-box-shadow: 0 1px 1px rgba(210, 50, 45, 0.7) !important;
   box-shadow: 0 1px 1px rgba(210, 50, 45, 0.7) !important;
+}
+
+.loader-custom {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #1976d2;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-animation: rotation 1s linear infinite;
+          animation: rotation 1s linear infinite;
+}
+
+@-webkit-keyframes rotation {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes rotation {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
 }
 

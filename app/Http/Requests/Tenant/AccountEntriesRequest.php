@@ -18,14 +18,14 @@ class AccountEntriesRequest extends FormRequest
             'items.*.account_movement_id' => [
                 'required',
             ],
-            'items.*.types_accounting_entrie_id' => [
+            'types_accounting_entrie_id' => [
                 'required',
             ],
-            'items.*.person_id' => [
+            'person_id' => [
                 'required',
             ],
             'items.*.seat_cost' => [
-               ' required_if:items.*.typecost,1',
+               'required_if:items.*.typecost,1',
             ],
         ];
     }
@@ -33,8 +33,8 @@ class AccountEntriesRequest extends FormRequest
     {
         return [
             'items.*.account_movement_id.required' => 'El campo Cuenta es obligatorio.',
-            'items.*.types_accounting_entrie_id.required' => 'El Tipo asiento es obligatorio.',
-            'items.*.person_id.required' => 'El campo es requerido.',
+            'types_accounting_entrie_id.required' => 'El Tipo asiento es obligatorio.',
+            'person_id.required' => 'El campo es requerido.',
             'items.*.seat_cost.required_if' => 'Centro costo es obligatorio',
         ];
     }

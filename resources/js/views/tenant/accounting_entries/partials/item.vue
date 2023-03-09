@@ -251,7 +251,7 @@ export default {
       this.form.code = code;
       this.form.cost = cost;
       this.form.description = description;
-      this.form.name = code + " - " + description;
+      this.form.name = code + " " + description;
       this.$emit("add", this.form);
       this.close();
     },

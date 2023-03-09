@@ -245,46 +245,25 @@ if ($hostname) {
 
             //Asientos contables
             Route::prefix('accounting-entries')->group(function () {
-                Route::get('', 'Tenant\AccountingEntriesController@index')->name('tenant.accountingentries.index')->middleware(['redirect.level', 'tenant.internal.mode']);
+                Route::get('/', 'Tenant\AccountingEntriesController@index')->name('tenant.accountingentries.index')->middleware(['redirect.level', 'tenant.internal.mode']);
                 Route::get('/create', 'Tenant\AccountingEntriesController@create')->name('tenant.accountingentries.create');
                 Route::get('/columns', 'Tenant\AccountingEntriesController@columns');
                 Route::get('/records', 'Tenant\AccountingEntriesController@records');
                 Route::get('/record/{person}', 'Tenant\AccountingEntriesController@record');
-                Route::post('', 'Tenant\AccountingEntriesController@store');
+                Route::post('/', 'Tenant\AccountingEntriesController@store');
                 Route::delete('/{person}', 'Tenant\AccountingEntriesController@destroy');
                 Route::get('/tables', 'Tenant\AccountingEntriesController@tables');
                 Route::get('/item/tables', 'Tenant\AccountingEntriesController@item_tables');
                 Route::get('/search/customers', 'Tenant\AccountingEntriesController@searchCustomers');
+                Route::get('/search/suppliers', 'Tenant\AccountingEntriesController@searchSuppliers');
+                Route::get('/download/{external_id}/{format?}', 'Tenant\AccountingEntriesController@download');
+                Route::get('/print/{external_id}/{format?}', 'Tenant\AccountingEntriesController@toPrint');
                 Route::delete('/{id}', 'Tenant\AccountingEntriesController@destroy');
-                //Route::get('/filter', 'Tenant\AccountingEntriesController@filter');
-                /*Route::get('quotations', 'Tenant\QuotationController@index')->name('tenant.quotations.index')->middleware('redirect.level');
-                Route::get('quotations/columns', 'Tenant\QuotationController@columns');
-                Route::get('quotations/records', 'Tenant\QuotationController@records');
-                Route::get('quotations/create/{saleOpportunityId?}', 'Tenant\QuotationController@create')->name('tenant.quotations.create')->middleware('redirect.level');
-                Route::get('quotations/edit/{id}', 'Tenant\QuotationController@edit')->middleware('redirect.level');
-    
-                Route::get('quotations/state-type/{state_type_id}/{id}', 'Tenant\QuotationController@updateStateType');
-                Route::get('quotations/filter', 'Tenant\QuotationController@filter');
-                Route::get('quotations/tables', 'Tenant\QuotationController@tables');
-                Route::get('quotations/table/{table}', 'Tenant\QuotationController@table');
-                Route::post('quotations', 'Tenant\QuotationController@store');
-                Route::post('quotations/update', 'Tenant\QuotationController@update');
-                Route::get('quotations/record/{quotation}', 'Tenant\QuotationController@record');
-                Route::get('quotations/anular/{id}', 'Tenant\QuotationController@anular');
-                Route::get('quotations/item/tables', 'Tenant\QuotationController@item_tables');
-                Route::get('quotations/option/tables', 'Tenant\QuotationController@option_tables');
-                
-                Route::get('quotations/search/customer/{id}', 'Tenant\QuotationController@searchCustomerById');
-                Route::get('quotations/download/{external_id}/{format?}', 'Tenant\QuotationController@download');
-                // Route::get('quotations/print/{external_id}/{format?}', 'Tenant\QuotationController@toPrint');
-                Route::post('quotations/email', 'Tenant\QuotationController@email');
-                Route::post('quotations/duplicate', 'Tenant\QuotationController@duplicate');
-                Route::get('quotations/record2/{quotation}', 'Tenant\QuotationController@record2');
-                Route::get('quotations/changed/{quotation}', 'Tenant\QuotationController@changed');
-    
-                Route::get('quotations/search-items', 'Tenant\QuotationController@searchItems');
-                Route::get('quotations/search/item/{item}', 'Tenant\QuotationController@searchItemById');
-                Route::get('quotations/item-warehouses/{item}', 'Tenant\QuotationController@itemWarehouses');*/
+                Route::get('/search/customer/{id}', 'Tenant\AccountingEntriesController@searchCustomerById');
+                Route::get('/search/supplier/{id}', 'Tenant\AccountingEntriesController@searchSupplierById');
+                Route::get('/edit/{id}', 'Tenant\AccountingEntriesController@edit')->middleware('redirect.level');
+                Route::post('/update', 'Tenant\AccountingEntriesController@update');
+
             });
             //cuentas grupos
             Route::prefix('accounts-groups')->group(function () {
