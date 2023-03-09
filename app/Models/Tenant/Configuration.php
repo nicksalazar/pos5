@@ -284,7 +284,8 @@
             'search_factory_code_items',
             'enabled_dispatch_ticket_pdf',
             'register_series_invoice_xml',
-            'enable_discount_by_customer'
+            'enable_discount_by_customer',
+            'amount_service_taxes',
         ];
 
         protected $casts = [
@@ -402,9 +403,9 @@
             'search_factory_code_items'=>'bool',
             'enabled_dispatch_ticket_pdf'=>'bool',
             'register_series_invoice_xml'=>'bool',
-            
+
             'enable_discount_by_customer' => 'boolean'
-            
+
         ];
 
         protected $hidden = [
@@ -441,7 +442,7 @@
             $config = self::first();
 
             if (empty($config)) $config = new self();
-            
+
             if (
                 !empty($config->smtp_host) &&
                 !empty($config->smtp_port) &&
@@ -455,7 +456,7 @@
                 Config::set('mail.password', $config->smtp_password);
                 Config::set('mail.encryption', $config->smtp_encryption);
             }
-           
+
             return $config;
         }
 
@@ -564,6 +565,7 @@
                 'igv_retention_percentage' => $this->igv_retention_percentage,
                 //JOINSOFTWARE
                 'currency_type_id' => $this->getCurrencyTypeId(),
+                'amount_service_taxes' => $this->amount_service_taxes,
                 'currency_types' => $currency,
                 'affectation_igv_types_exonerated_unaffected' => Item::AffectationIgvTypesExoneratedUnaffected(),
                 'typeUser' => $typeUser,
@@ -647,7 +649,7 @@
                 'search_factory_code_items' => $this->search_factory_code_items,
                 'enabled_dispatch_ticket_pdf' => $this->enabled_dispatch_ticket_pdf,
                 'register_series_invoice_xml' => $this->register_series_invoice_xml,
-                
+
                 'enable_discount_by_customer' => $this->enable_discount_by_customer,
 
             ];
@@ -800,7 +802,7 @@
         public function getSmtpHost()
         {
             return empty($this->smtp_host) ? config('mail.host') : $this->smtp_host;
-           
+
         }
 
         /**
@@ -839,7 +841,7 @@
         public function getSmtpUser()
         {
             return empty($this->smtp_user) ? config('mail.username') : $this->smtp_user;
-           
+
         }
 
         /**
@@ -859,7 +861,7 @@
         public function getSmtpPassword()
         {
             return empty($this->smtp_password) ? config('mail.password') : $this->smtp_password;
-            
+
         }
 
         /**
@@ -879,7 +881,7 @@
         public function getSmtpEncryption()
         {
             return empty($this->smtp_encryption) ? config('mail.encryption') : $this->smtp_encryption;
-            
+
         }
 
         /**

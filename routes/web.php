@@ -467,6 +467,11 @@ if ($hostname) {
             Route::post('tribute_concept_types', 'Tenant\TributeConceptTypeController@store');
             Route::delete('tribute_concept_types/{id}', 'Tenant\TributeConceptTypeController@destroy');
 
+            //IMPORTS
+            Route::get('imports', 'Tenant\ImportsController@index')->name('tenant.imports.index');
+            Route::get('imports/records', 'Tenant\ImportsController@records');
+            Route::get('imports/create', 'Tenant\ImportsController@create')->name('tenant.imports.form');
+
             //purchases
             Route::get('purchases', 'Tenant\PurchaseController@index')->name('tenant.purchases.index');
             Route::get('purchases/columns', 'Tenant\PurchaseController@columns');

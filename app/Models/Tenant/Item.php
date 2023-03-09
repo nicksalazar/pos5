@@ -152,6 +152,7 @@ class Item extends ModelTenant
 
         'account_id',
         'amount_plastic_bag_taxes',
+        'amount_service_taxes',
         'date_of_due',
         'is_set',
         'sale_unit_price_set',
@@ -952,6 +953,8 @@ class Item extends ModelTenant
             'calculate_quantity'               => (bool)$this->calculate_quantity,
             'has_plastic_bag_taxes'            => (bool)$this->has_plastic_bag_taxes,
             'amount_plastic_bag_taxes'         => $this->amount_plastic_bag_taxes,
+            'has_service_taxes'                => (bool)$this->has_service_taxes,
+            'amount_service_taxes'             => $this->amount_service_taxes,
             'colors' => $currentColors,
             'CatItemUnitsPerPackage' => $ItemUnitsPerPackage,
             'CatItemMoldProperty' => $ItemMoldProperty,
@@ -1278,6 +1281,7 @@ class Item extends ModelTenant
             ->setInArray('is_set',false)
             ->setInArray('purchase_has_igv',true)
             ->setInArray('amount_plastic_bag_taxes',0.1)
+            ->setInArray('amount_service_taxes',0.1)
             ->setInArray('purchase_unit_price',0)
             ->setInArray('percentage_isc',0)
             ->setInArray('suggested_price',0)

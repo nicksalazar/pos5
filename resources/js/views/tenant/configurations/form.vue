@@ -801,14 +801,14 @@
 
                             <div v-if="typeUser != 'integrator'"
                                     class="col-md-6 mt-4">
-                                <label class="control-label">Impuesto Servicio</label>
+                                <label class="control-label">Porcentaje por Servicio</label>
                                 <div :class="{'has-danger': errors.amount_service_taxes}"
                                         class="form-group">
                                     <el-input-number v-model="form.amount_service_taxes"
-                                                        :max="1"
-                                                        :min="0.01"
-                                                        :precision="2"
-                                                        :step="0.01"
+                                                        :max="100"
+                                                        :min="1"
+                                                        :precision="0"
+                                                        :step="1"
                                                         @change="changeAmountServiceTaxes"></el-input-number>
                                     <small v-if="errors.amount_service_taxes"
                                             class="form-control-feedback"

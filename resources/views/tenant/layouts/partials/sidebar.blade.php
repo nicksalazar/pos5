@@ -546,7 +546,7 @@
                                            href="{{route('tenant.agents.index')}}">Agentes</a>
                                     </li>
                                 @endif
-                                
+
                             </ul>
                         </li>
                     @endif
@@ -742,14 +742,14 @@
                                         </li>
                                     @endif
 
-                                    
+
                                     @if($inventory_configuration->inventory_review)
                                         <li class="{{ ($firstLevel === 'inventory-review')?'nav-active':'' }}">
                                             <a class="nav-link"
                                             href="{{route('tenant.inventory-review.index')}}">Revisión de inventario</a>
                                         </li>
                                     @endif
-                            
+
                                 </ul>
                             </li>
                         @endif
@@ -1527,7 +1527,7 @@
                         </li>
                     @endif
 
-                    
+
                     @if(in_array('app_2_generator', $vc_modules))
                         <li class="{{ ($firstLevel === 'live-app')?'nav-active':'' }}">
                             <a class="nav-link"

@@ -62,6 +62,10 @@ Vue.component('tenant-documents-invoice-generate', require('./views/tenant/docum
 Vue.component('tenant-documents-invoicetensu', require('./views/tenant/documents/invoicetensu.vue'));
 Vue.component('tenant-documents-note', require('./views/tenant/documents/note.vue'));
 
+//imports
+Vue.component('tenant-imports-index', require('./views/tenant/imports/index.vue'));
+Vue.component('tenant-imports-generate', require('./views/tenant/imports/generate.vue'));
+
 // purchase-settlements
 Vue.component('tenant-purchase-settlements-index', require('./views/tenant/purchase-settlements/index.vue'));
 Vue.component('tenant-purchase-settlements-form', require('./views/tenant/purchase-settlements/form.vue'));
