@@ -11,6 +11,7 @@ class ModuleViewComposer
     public function compose($view)
     {
         $modules = auth()->user()->modules()->pluck('value')->toArray();
+        
         $systemConfig = Configuration::select('use_login_global')->first();
         if(count($modules) > 0) {
             $view->vc_modules = $modules;

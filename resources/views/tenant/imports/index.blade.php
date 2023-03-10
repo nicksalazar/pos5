@@ -2,7 +2,9 @@
 
 @section('content')
 
-    <tenant-imports-index :configuration="{{ $configuration }}"></tenant-imports-index>
+    <tenant-imports-index
+    :configuration="{{ $configuration }}"
+    ></tenant-imports-index>
 
 @endsection
 

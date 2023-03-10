@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Tenant\ImportResource;
 use App\Http\Resources\Tenant\ImportsCollection;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Imports;
@@ -52,7 +53,31 @@ class ImportsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $id = $request->input('id');
+        $import = Imports::firstOrNew(['id' => $id]);
+        $data = $request->all();
+        unset($data['id']);
+
+        $import->fill($data);
+        $import->save();
+
+        $msg = '';
+
+        $msg = ($id) ? 'Importacion editada con éxito' : 'Importacion registrada con éxito';
+
+        return [
+            'success' => true,
+            'message' => $msg,
+            'id' => $import->id
+        ];
+    }
+
+    public function record($id)
+    {
+        $record = new ImportResource(Imports::findOrFail($id));
+
+        return $record;
     }
 
     /**

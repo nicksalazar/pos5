@@ -470,7 +470,9 @@ if ($hostname) {
             //IMPORTS
             Route::get('imports', 'Tenant\ImportsController@index')->name('tenant.imports.index');
             Route::get('imports/records', 'Tenant\ImportsController@records');
+            Route::get('imports/record/{id}', 'Tenant\ImportsController@record');
             Route::get('imports/create', 'Tenant\ImportsController@create')->name('tenant.imports.form');
+            Route::post('imports', 'Tenant\ImportsController@store');
 
             //purchases
             Route::get('purchases', 'Tenant\PurchaseController@index')->name('tenant.purchases.index');

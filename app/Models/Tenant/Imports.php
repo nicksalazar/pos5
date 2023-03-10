@@ -15,4 +15,18 @@ class Imports extends ModelTenant
         'fechaLlegada',
         'estado',
     ];
+
+    public function getCollectionData()
+    {
+        $data = [
+            'id' => $this->id,
+            'numeroImportacion' => $this->numeroImportacion,
+            'tipoTransporte'=> $this->tipoTransporte,
+            'fechaEmbarque'=> $this->fechaEmbarque,
+            'fechaLlegada'=>$this->fechaLlegada,
+            'estado' => $this->estado,
+
+        ];
+        return $data;
+    }
 }

@@ -31,7 +31,7 @@
 
                     </tr>
                     <tr slot-scope="{ index, row }"
-                        :class="{'text-danger': (row.estado === 'Liquidada'),
+                        :class="{'text-success': (row.estado === 'Liquidada'),
                             'text-warning': (row.estado === 'Liberada'),
                             'border-light': (row.estado === 'Registrada'),
                             'border-left border-info': (row.estado === 'Registrada'),
@@ -52,15 +52,14 @@
                             </span>
                         </td>
                         <td class="text-right"
-                            v-if="typeUser != 'integrator'">
+                        v-if="row.estado != 'Liquidada'" >
                             <div class="dropdown">
                                 <button class="btn btn-default btn-sm" type="button" id="dropdownMenuButton"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-ellipsis-v"></i>
                                 </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-                                    <div v-if="row.estado != 'Liquidada'">
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
+                                    <div >
                                         <button class="dropdown-item"
                                                 @click.prevent="clickCreate(row.id)">Editar
                                         </button>
@@ -73,10 +72,10 @@
                     </tr>
                 </data-table>
             </div>
-            <imports-generate :api_service_token="api_service_token"
+            <tenant-imports-generate
                           :recordId="recordId"
                           :showDialog.sync="showDialog"
-                          :type="type"></imports-generate>
+                          ></tenant-imports-generate>
 
         </div>
     </div>
@@ -105,6 +104,7 @@ export default {
     mixins: [deletable],
     props: [
         'configuration',
+
     ],
     computed: {
         ...mapState([
@@ -134,98 +134,13 @@ export default {
             showDialogOptions: false,
             showDialogPayments: false,
             columns: {
-                notes: {
-                    title: 'Notas C/D',
-                    visible: false
-                },
-                dispatch: {
-                    title: 'Guía de Remisión',
-                    visible: false
-                },
-                plate_numbers: {
-                    title: 'Placa',
-                    visible: false
-                },
-                user_name: {
-                    title: 'Usuario',
-                    visible: false
-                },
-                exchange_rate_sale: {
-                    title: 'Tipo de cambio',
-                    visible: false
-                },
-                total_exportation: {
-                    title: 'T.Exportación',
-                    visible: false
-                },
-                total_free: {
-                    title: 'T.Gratuito',
-                    visible: false
-                },
-                total_unaffected: {
-                    title: 'T.Inafecto',
-                    visible: false
-                },
-                total_exonerated: {
-                    title: 'T.Exonerado',
-                    visible: false
-                },
-                date_of_due: {
-                    title: 'F. Vencimiento',
-                    visible: false
-                },
-                guides: {
-                    title: 'Guias',
-                    visible: false
-                },
-                sales_note: {
-                    title: 'Nota de ventas',
-                    visible: false
-                },
-                order_note: {
-                    title: 'Pedidos',
-                    visible: false
-                },
-                send_it: {
-                    title: 'Correo enviado al destinatario',
-                    visible: false
-                },
-                total: {
-                    title: 'Total',
-                    visible: false
-                },
-                currency_type_id: {
-                    title: 'Moneda',
-                    visible: false
-                },
-                purchase_order: {
-                    title: 'Orden de Compra',
-                    visible: false
-                },
-                soap_type: {
-                    title: 'Soap',
-                    visible: false
-                },
-                balance: {
-                    title: 'Saldo',
-                    visible: true
-                },
-                total_charge: {
-                    title: 'T.Cargos',
-                    visible: false
-                },
-                date_payment:{
-                    title: 'Fecha de pago',
-                    visible: false
-                },
-
             }
         }
     },
     created() {
         this.$store.commit('setConfiguration', this.configuration)
         this.loadConfiguration();
-        this.getColumnsToShow();
+        //this.getColumnsToShow();
 
     },
     methods: {

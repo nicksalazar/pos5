@@ -754,6 +754,44 @@
                             </li>
                         @endif
 
+                        {{-- Importaciones --}}
+                        @if(in_array('imports', $vc_modules))
+                            <li class="nav-parent
+                            {{ (in_array($firstLevel, ['imports', 'folder']) |($firstLevel === 'folder' ))?'nav-active nav-expanded':'' }}
+                                ">
+                                <a class="nav-link"
+                                   href="#">
+                                   <svg xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="feather feather-package">
+                                        <line x1="16.5"
+                                            y1="9.4"
+                                            x2="7.5"
+                                            y2="4.21"/>
+                                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                                        <line x1="12" y1="22.08" x2="12" y2="12"/>
+                                    </svg>
+                                    <span>Importaciones</span>
+                                </a>
+                                <ul class="nav nav-children">
+                                    @if(in_array('folder', $vc_module_levels))
+                                        <li class="{{ ($firstLevel === 'folder')?'nav-active':'' }}">
+                                            <a class="nav-link"
+                                               href="{{route('tenant.imports.index')}}">Carpeta</a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </li>
+                        @endif
+
                     @endif
 
                     @if(in_array('establishments', $vc_modules))
@@ -1063,30 +1101,6 @@
                         </li>
                     @endif
 
-                    {{-- @if(in_array('cuenta', $vc_modules))
-                    <li class=" nav-parent
-                        {{ ($firstLevel === 'cuenta')?'nav-active nav-expanded':'' }}">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-dollar-sign" aria-hidden="true"></i>
-                            <span>Mis Pagos</span>
-                        </a>
-                        <ul class="nav nav-children">
-                            @if(in_array('account_users_settings', $vc_module_levels))
-                            <li class="{{ (($firstLevel === 'cuenta') && ($secondLevel === 'configuration')) ?'nav-active':'' }}">
-                                <a class="nav-link" href="{{route('tenant.configuration.index')}}">Configuracion</a>
-                            </li>
-                            @endif
-                            @if(in_array('account_users_list', $vc_module_levels))
-                            <li class="{{ (($firstLevel === 'cuenta') && ($secondLevel === 'payment_index')) ?'nav-active':'' }}">
-                                <a class="nav-link" href="{{route('tenant.payment.index')}}">Lista de Pagos</a>
-                            </li>
-                            @endif
-                        </ul>
-                    </li>
-                    @endif --}}
-                    {{-- @if(in_array('hotels', $vc_modules) || in_array('documentary-procedure', $vc_modules))
-                    <li class="nav-description">Módulos extras</li>
-                    @endif --}}
                     @if(in_array('hotels', $vc_modules))
                         <li class=" nav-parent {{ ($firstLevel === 'hotels') ? 'nav-active nav-expanded' : '' }}">
                             <a class="nav-link"
