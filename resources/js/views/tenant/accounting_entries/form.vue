@@ -615,11 +615,9 @@ export default {
       });
 
       this.loading_submit = true;
-      console.log("form", this.form);
 
       await this.$http.post(`/${this.resource}`, this.form).then((response) => {
           if (response.data.success) {
-            console.log(response);
             this.resetForm();
             this.quotationNewId = response.data.data.id;
             this.$message.success(`El Asiento ${response.data.data.number_full} fue generada`)

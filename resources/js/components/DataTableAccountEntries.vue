@@ -12,7 +12,7 @@
                             </label>
                             <div class="col-lg-8 col-md-8 col-sm-8 pb-2">
                                   <el-select
-                                v-model="account_movement_id"
+                                v-model="form.account_movement_id"
                                 filterable
                                 >
                               <el-option
@@ -31,14 +31,13 @@
                                 Desde:
                             </label>
                             <div class="col-lg-8 col-md-8 col-sm-8 pb-2">
-                                <el-date-picker
-                                    v-model="form.d_start"
-                                    type="date"
-                                    @change="changeDisabledDates"
-                                    value-format="yyyy-MM-dd"
-                                    format="dd/MM/yyyy"
-                                    :clearable="true">
-                                </el-date-picker>
+                            <el-date-picker
+                            v-model="form.date_start" type="date"
+                            @change="changeDisabledDates"
+                            value-format="yyyy-MM-dd"
+                            format="dd/MM/yyyy"
+                            :clearable="false"
+                            ></el-date-picker>
                             </div>
                         </div>
                     </div>
@@ -52,9 +51,9 @@
                             </label>
                             <div class="col-lg-8 col-md-8 col-sm-8 pb-2">
                                 <el-input placeholder="Buscar"
-                                    v-model="search.value"
+                                    v-model="form.cost"
                                     style="width: 100%;"
-                                    @input="getRecords">
+                                    >
                                 </el-input>
                             </div>
                         </div>
@@ -66,12 +65,11 @@
                             </label>
                             <div class="col-lg-8 col-md-8 col-sm-8 pb-2">
                                 <el-date-picker
-                                    v-model="form.d_end"
-                                    type="date"
-                                    @change="changeDisabledDates"
-                                    value-format="yyyy-MM-dd"
-                                    format="dd/MM/yyyy"
-                                    :clearable="true">
+                                  v-model="form.date_end" type="date"
+                                  value-format="yyyy-MM-dd"
+                                  :picker-options="pickerOptionsDates"
+                                  format="dd/MM/yyyy"
+                                  :clearable="false">
                                 </el-date-picker>
                             </div>
                         </div>
@@ -87,9 +85,9 @@
                             </label>
                             <div class="col-lg-8 col-md-8 col-sm-8 pb-2">
                                 <el-input placeholder="Buscar"
-                                    v-model="search.value"
+                                    v-model="form.search"
                                     style="width: 100%;"
-                                    @input="getRecords">
+                                    >
                                 </el-input>
                             </div>
                         </div>
@@ -101,7 +99,7 @@
                             </label>
                             <div class="col-lg-8 col-md-8 col-sm-8 pb-2">
                               <el-select
-                                v-model="types_accounting_entrie_id"
+                                v-model="form.types_accounting_entrie_id"
                                 filterable
                                 >
                               <el-option
@@ -118,7 +116,7 @@
 
                 <div class="row">
                     <div class="col">
-                        <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="clickCreate()"><i class="fa fa-search"></i> Consultar</button>
+                        <button type="button" class="btn btn-custom btn-sm  mt-2 mr-2" @click.prevent="searhForm()"><i class="fa fa-search"></i> Consultar</button>
                     </div>
                 </div>
             </div>
@@ -210,6 +208,8 @@ export default {
           let data = response.data;
           this.accounts = data.account_movement2;
           this.types_seat = data.types_seat;
+          this.types_seat.unshift({id:'0',name:'Todos'})
+          this.accounts.unshift({id:'0',description:'Todos'})
         });
   },
   async mounted() {
@@ -230,33 +230,18 @@ export default {
 
       this.selectDate();
     },
+
+
     selectDate() {
-      this.form.date_start = null;
-      this.form.date_end = null;
-
-      if (this.form.period === "week" && this.form.week) {
-        this.form.date_start = moment(this.form.week)
-          .startOf("week")
-          .format("YYYY-MM-DD");
-        this.form.date_end = moment(this.form.week)
-          .endOf("week")
-          .format("YYYY-MM-DD");
-      } else if (this.form.period === "month" && this.form.month) {
-        this.form.date_start = moment(this.form.month)
-          .startOf("month")
-          .format("YYYY-MM-DD");
-        this.form.date_end = moment(this.form.month)
-          .endOf("month")
-          .format("YYYY-MM-DD");
-      } else {
-        this.form.date_start = this.form.d_start;
-        this.form.date_end = this.form.d_end;
-      }
-
-      this.getRecords();
+     // this.form.date_start = null;
+     // this.form.date_end = null;
+     // this.form.date_start = moment().startOf('month').format('YYYY-MM-DD');
+      //this.form.date_end = moment().endOf('month').format('YYYY-MM-DD');
+       
+   //   this.getRecords();
     },
-    changeDisabledMonths() {},
-    changePeriod() {
+    //changeDisabledMonths() {},
+    /*changePeriod() {
       this.form.date_start = null;
       this.form.date_end = null;
       this.form.week = null;
@@ -265,16 +250,16 @@ export default {
       this.form.d_end = null;
 
       this.getRecords();
-    },
+    },*/
     initForm() {
       this.form = {
-        week: null,
-        month: null,
-        d_start: null,
-        d_end: null,
-        period: "between_dates",
-        date_start: null,
-        date_end: null,
+        period: 'between_dates',
+        date_start : moment().startOf('month').format('YYYY-MM-DD'),
+        date_end : moment().endOf('month').format('YYYY-MM-DD'),
+        account_movement_id:null,
+        types_accounting_entrie_id:null,
+        search:null,
+        cost:null
       };
     },
     customIndex(index) {
@@ -296,17 +281,29 @@ export default {
           this.showButtons=false;
         });
     },
-    getQueryParameters() {
-      return queryString.stringify({
-        page: this.pagination.current_page,
-        limit: this.limit,
-        ...this.search,
-      });
-    },
+  getQueryParameters() {
+    return queryString.stringify({
+    page: this.pagination.current_page,
+     limit: this.limit,
+     ...this.form
+    })
+            },
     changeClearInput() {
       this.search.value = "";
       this.getRecords();
     },
+
+    searhForm(){
+      this.showButtons=true;
+      return this.$http
+        .get(`/${this.resource}/records?${this.getQueryParameters()}`)
+        .then((response) => {
+          this.records = response.data.data;
+          this.pagination = response.data.meta;
+          this.pagination.per_page = parseInt(response.data.meta.per_page);
+          this.showButtons=false;
+        });
+    }
   },
 };
 </script>

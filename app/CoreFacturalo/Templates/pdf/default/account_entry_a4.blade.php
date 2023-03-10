@@ -65,7 +65,7 @@
         <td width="20%" class="font-bold">
             Código:
         </td>
-        <td width="85%">{{ $document->filename}}</td>
+        <td width="85%">{{ $document->filename}} -- {{$document->type_account->name}} </td>
     </tr>
    
     <tr class="mt-4">

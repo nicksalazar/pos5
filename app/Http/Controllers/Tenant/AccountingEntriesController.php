@@ -84,73 +84,39 @@ class AccountingEntriesController extends Controller
 
     private function getRecords($request)
     {
-        $column = $request->input('column');
-        $value = $request->input('value');
+        $accountid = $request->input('account_movement_id');
+        $typeid = $request->input('types_accounting_entrie_id');
+        $date_start = $request->input('date_start');
+        $date_end = $request->input('date_end');
+        $cost = $request->input('cost');
+        $search = $request->input('search');
+
         $query = AccountingEntries::query();
 
-        /* if ($column === 'user_name') {
-            $query->whereHas('user', function ($q) use ($value) {
-                $q->where('name', 'like', "%{$value}%");
-            })
-                ->whereTypeUser();
-        } else if ($column === 'customer') {
-            $query->whereHas('person', function ($q) use ($value) {
-                $q->where('name', 'like', "%{$value}%")
-                    ->orWhere('number', 'like', "%{$value}%");
-            })
-                ->whereTypeUser();
-
-        } else if ($column === 'seller_name') {
-            $query->whereHas('seller', function ($q) use ($value) {
-                $q->where('name', 'like', "%{$value}%");
+        if (!is_null($search)) {
+            $query->where('comment', 'like', "%{$search}%");
+        }
+        
+        if (!is_null($typeid) && $typeid>0) {
+            $query->where('types_accounting_entrie_id', '=', $typeid);
+        }
+        
+        if (!is_null($accountid) && $accountid>0) {
+            $query->whereHas('items', function ($q) use ($accountid) {
+                $q->where('account_movement_id','=',$accountid);
+            });
+        };
+    
+        if (!is_null($cost) ) {
+            $query->whereHas('items', function ($q) use ($cost) {
+                $q->where('cost', 'like', "%{$cost}%");
             });
 
-        } else if ($column === 'number') {
-            if (!is_null($value) && $value !== '') {
-                $query->where('id', $value);
-            }
-        } else {
-            $query->where($column, 'like', "%{$value}%")
-                ->whereTypeUser();
-        }*/
-
-
-        /* $records = $query->select('seat_general','comment','user_id','seat_date','types_accounting_entrie_id')
-        ->with(['user'=> function ($query) {
-            $query->select('id','name');
-        }])
-        ->with(['type_account'=> function ($query) {
-            $query->select('id','name');
-        }])
-        ->with(['account_movement'=> function ($query) {
-            $query->select('id','code','description');
-        }])
-        ->with('detalles')
-        ->distinct();*/
-
-        //multiples relaciones
-        /*$records = $query->select('seat_general', 'comment', 'user_id', 'seat_date', 'types_accounting_entrie_id')
-            ->with(['user' => function ($query) {
-                $query->select('id', 'name');
-            }])
-            ->with(['type_account' => function ($query) {
-                $query->select('id', 'name');
-            }])
-            ->with(['detalles' => function ($query) {
-                $query->with([
-                    'account_movement' => function ($query) {
-                        $query->select('id', 'code', 'description');
-                    }
-                ]);
-            }])
-            ->groupBy('seat_general', 'comment', 'user_id', 'seat_date', 'types_accounting_entrie_id');*/
-
-            
-            /*if ($form->date_start && $form->date_end) {
-                $records = $records->whereBetween('date_of_issue', [$form->date_start, $form->date_end]);
-            }*/
+        }
             $records = $query->latest();
-            //dd($records->get());
+            if ($date_start && $date_end) {
+                $records = $records->whereBetween('seat_date', [$date_start, $date_end]);
+            }
         return $records;
     }
 
