@@ -228,8 +228,6 @@ export default {
             }
         },
         async submit() {
-
-
             this.loading_submit = true
 
             await this.$http.post(`/${this.resource}`, this.form)

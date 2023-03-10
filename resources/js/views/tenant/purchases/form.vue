@@ -42,7 +42,7 @@
                                        v-text="errors.series[0]"></small>
                             </div>
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-lg-2" hidden>
                             <div :class="{'has-danger': errors.number}"
                                  class="form-group">
                                 <label class="control-label">Número <span class="text-danger">*</span></label>
@@ -236,6 +236,39 @@
                                     class="form-control-feedback"
                                     v-text="errors.auth_number[0]"></small>
                         </div>
+
+                        <div class="col-lg-2">
+                            <div :class="{'has-danger': errors.import_id}"
+                                 class="form-group">
+                                <label class="control-label">Importacion</label>
+                                <el-select v-model="form.import_id" >
+                                    <el-option v-for="option in imports"
+                                               :key="option.id"
+                                               :label="option.numeroImportacion"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.import_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.imports_id[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div :class="{'has-danger': errors.tipo_doc_id}"
+                                 class="form-group">
+                                <label class="control-label">Tipo documento</label>
+                                <el-select v-model="form.tipo_doc_id" >
+                                    <el-option v-for="option in type_docs"
+                                               :key="option.id"
+                                               :label="option.description"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.tipo_doc_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.tipo_doc_id[0]"></small>
+                            </div>
+                        </div>
+
+
                         <div class="col-12">&nbsp;</div>
 
                         <div class="col-md-8 mt-4">
@@ -830,6 +863,8 @@ export default {
             showDialogLots: false,
             retention_types_income: [],
             retention_types_iva: [],
+            imports:[],
+            type_docs:[],
         }
     },
     async mounted() {
@@ -842,6 +877,8 @@ export default {
                 this.payment_conditions = data.payment_conditions
                 this.retention_types_iva = data.retention_types_iva
                 this.retention_types_income = data.retention_types_income
+                this.imports = data.imports
+                this.type_docs = data.typeDocs
                 // this.establishment = data.establishment
 
 
@@ -1605,6 +1642,7 @@ export default {
             }
         },
         async submit() {
+
             let validate_item_series = await this.validationItemSeries()
             if (!validate_item_series.success) {
                 return this.$message.error(validate_item_series.message);
@@ -1629,6 +1667,7 @@ export default {
             this.loading_submit = true
             // await this.changePaymentMethodType(false)
             console.log('Enviando Datos: ',this.form)
+
             await this.$http.post(`/${this.resource}`, this.form)
                 .then(response => {
                     if (response.data.success) {

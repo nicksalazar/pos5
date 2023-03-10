@@ -51,10 +51,12 @@
     use Symfony\Component\HttpFoundation\StreamedResponse;
     use Throwable;
     use App\Models\Tenant\GeneralPaymentCondition;
-    use App\Models\Tenant\RetentionTypePurchase;
+use App\Models\Tenant\Imports;
+use App\Models\Tenant\RetentionTypePurchase;
     use App\Models\Tenant\RetentionsDetailEC;
     use App\Models\Tenant\RetentionsEC;
 use App\Models\Tenant\Series;
+use App\Models\Tenant\TypeDocsPurchase;
 use App\Models\Tenant\UserDefaultDocumentType;
 use Illuminate\Support\Facades\Log;
 
@@ -190,9 +192,10 @@ use Illuminate\Support\Facades\Log;
             $global_discount_types = ChargeDiscountType::whereIn('id', ['02', '03'])->whereActive()->get();
             $retention_types_iva = RetentionType::where('type_id', '02')->get();
             $retention_types_income = RetentionType::where('type_id', '01')->get();
+            $imports = Imports::where('estado',['Registrada','Liberada'])->get();
+            $typeDocs = TypeDocsPurchase::where('active',1)->get();
 
-
-            return compact('suppliers', 'establishment', 'currency_types', 'number', 'discount_types', 'configuration', 'payment_conditions',
+            return compact('suppliers', 'establishment', 'currency_types','imports','typeDocs', 'number', 'discount_types', 'configuration', 'payment_conditions',
                 'charge_types', 'document_types_invoice', 'company','retention_types_income','retention_types_iva', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
         }
 
@@ -316,6 +319,7 @@ use Illuminate\Support\Facades\Log;
             $is_client = $this->getIsClient();
             $configuration = Configuration::first();
             $configuration = $configuration->getCollectionData();
+            $imports = Imports::where('estado',['Registrada','Liberada'])->get();
 
             return compact(
                 'items',
@@ -327,6 +331,7 @@ use Illuminate\Support\Facades\Log;
                 'charge_types',
                 'attribute_types',
                 'warehouses',
+                'imports',
                 'operation_types',
                 'is_client',
                 'configuration',

@@ -127,6 +127,8 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
         'sequential_number',
         'auth_number',
         'codSustento',
+        'import_id',
+        'tipo_doc_id',
     ];
 
     protected $casts = [

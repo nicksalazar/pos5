@@ -73,14 +73,14 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-2 col-sm-12 pb-2">
-                        <label class="control-label">Fecha de emisión</label>
+                        <label class="control-label">Fecha emisión</label>
                         <el-date-picker
                             v-model="search.date_of_issue"
                             type="date"
                             style="width: 100%;"
                             placeholder="Buscar"
                             value-format="yyyy-MM-dd"
-                            @change="changeDateOfIssue"    >
+                            @change="changeDateOfIssue" >
                         </el-date-picker>
                     </div>
                     <div class="col-lg-4 col-md-4 col-md-4 col-sm-12" style="margin-top:29px">
@@ -108,10 +108,7 @@
                     </div>
                 </div>
                 </div>
-
             </div>
-
-
             <div class="col-md-12">
                 <div id="scroll1" style="overflow-x:auto;">
                     <div style="height: 20px;"></div>
@@ -183,7 +180,7 @@ export default {
                 pickerOptionsDates: {
                     disabledDate: (time) => {
                         time = moment(time).format('YYYY-MM-DD')
-                        return this.search.d_start > time
+                        return this.search.fechaEmbarque > time
                     }
                 },
             }
@@ -324,12 +321,7 @@ export default {
                 // this.getRecords()
             },
             changeDisabledDates() {
-                this.search.date_of_issue = null
-                this.search.fechaLlegada = null
-                /*
-                if (this.search.d_end < this.search.d_start) {
-                    this.search.d_end = this.search.d_start
-                }*/
+
             },
             changeDateOfIssue(){
                 this.search.fechaLlegada = null
