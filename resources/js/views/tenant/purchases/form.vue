@@ -42,18 +42,6 @@
                                        v-text="errors.series[0]"></small>
                             </div>
                         </div>
-                        <div class="col-lg-2" hidden>
-                            <div :class="{'has-danger': errors.number}"
-                                 class="form-group">
-                                <label class="control-label">Número <span class="text-danger">*</span></label>
-                                <el-input v-model="form.number"></el-input>
-
-                                <small v-if="errors.number"
-                                       class="form-control-feedback"
-                                       v-text="errors.number[0]"></small>
-                            </div>
-                        </div>
-
 
                         <div class="col-lg-2">
                             <div :class="{'has-danger': errors.date_of_issue}"
@@ -895,7 +883,7 @@ export default {
                 this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
                 this.form.establishment_id = (this.establishment.id) ? this.establishment.id : null
                 this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
-                this.form.number = (data.number.length > 0) ? data.number[0].number + 1 : 1
+                this.form.number = 0
 
             })
             .then(() => {
@@ -1226,17 +1214,17 @@ export default {
         },
         filterSuppliers() {
 
-            if (this.form.document_type_id === '01') {
+            /*if (this.form.document_type_id === '01') {
                 // this.suppliers = _.filter(this.all_suppliers, {'identity_document_type_id': '6'})
                 this.suppliers = _.filter(this.all_suppliers, (item) => {
                     return ['6', '0'].includes(item.identity_document_type_id)
                 })
                 this.selectSupplier()
 
-            } else {
+            } else {*/
                 this.suppliers = this.all_suppliers  //_.filter(this.all_suppliers, (c) => { return c.identity_document_type_id !== '6' })
                 this.selectSupplier()
-            }
+            //}
         },
         selectSupplier() {
 
@@ -1251,7 +1239,7 @@ export default {
                 establishment_id: null,
                 document_type_id: null,
                 series: 'CC',
-                number: null,
+                number: 0,
                 sequential_number: '',
                 auth_number: '',
                 date_of_issue: moment().format('YYYY-MM-DD'),
@@ -1390,12 +1378,12 @@ export default {
             let retention_iva = 0
             let retention_renta = 0
             let toal_retenido = 0
-
             this.form.ret = []
-            //console.log('TOTAL ITEMS: '+this.form.items.length)
+
             this.form.items.forEach((row) => {
 
                 console.log('Rows: ',row)
+
                 if(row.iva_retention > 0 || row.income_retention > 0){
                     if(this.form.ret.length > 0){
                         let nuevaRet = true
@@ -1417,7 +1405,6 @@ export default {
                                     nuevaRet = false
                                 }
                             }
-
 
                         });
 

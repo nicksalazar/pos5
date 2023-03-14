@@ -26,6 +26,7 @@ class TenantCreatConceptosImportItems extends Migration
             ['description' => 'Aranceles'],
             ['description' => 'Isd'],
             ['description' => 'Flete'],
+            ['description' => 'Seguros'],
         ]);
     }
 

@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers\Tenant;
 
+use App\Exports\ImportExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\ImportRequest as TenantImportRequest;
 use App\Http\Resources\Tenant\ImportResource;
 use App\Http\Resources\Tenant\ImportsCollection;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Imports;
+use App\Models\Tenant\Item;
+use App\Models\Tenant\Purchase;
+use App\Models\Tenant\PurchaseItem;
+use App\Models\Tenant\Tariff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ImportsController extends Controller
 {
@@ -56,6 +63,7 @@ class ImportsController extends Controller
     {
 
         $id = $request->input('id');
+        $estado = $request->input('estado');
         $import = Imports::firstOrNew(['id' => $id]);
         $data = $request->all();
         unset($data['id']);
@@ -63,8 +71,10 @@ class ImportsController extends Controller
         $import->fill($data);
         $import->save();
 
+        if($id && $estado == 'Liquidada'){
+            $this->updateItemCost($id);
+        }
         $msg = '';
-
         $msg = ($id) ? 'Importacion editada con éxito' : 'Importacion registrada con éxito';
 
         return [
@@ -74,10 +84,188 @@ class ImportsController extends Controller
         ];
     }
 
+    public function liquidationsReport($id){
+
+        $records = Purchase::where('import_id',$id)->where('tipo_doc_id',1)->get();
+        $flete = Purchase::where('tipo_doc_id',2)
+                    ->join('purchase_items',function($join) use($id){
+                        $join->on('purchases.id','=','purchase_items.purchase_id')
+                        ->where('purchase_items.import',$id)->where('concepto',4);
+                    })
+                    ->get();
+        $totalFlete = $flete->sum('total_value');
+        //Log::info(json_encode($flete));
+        $seguro = Purchase::where('tipo_doc_id',2)
+                    ->join('purchase_items',function($join) use($id){
+                        $join->on('purchases.id','=','purchase_items.purchase_id')
+                        ->where('purchase_items.import',$id)->where('concepto',5);
+                    })
+                    ->get();
+
+        $totalSeguro = $seguro->sum('total_value');
+        $gasto = Purchase::where('tipo_doc_id',2)
+                    ->join('purchase_items',function($join) use($id){
+                        $join->on('purchases.id','=','purchase_items.purchase_id')
+                        ->where('purchase_items.import',$id)->where('concepto',1);
+                    })
+                    ->get();
+        $totalgasto = $gasto->sum('total_value');
+
+
+        $source = $this->transformReportImports($records, $totalFlete, $totalSeguro, $totalgasto);
+
+        return (new ImportExport)
+            ->records($source)
+            ->download('Reporte_Importacion_' . Carbon::now() . '.xlsx');
+
+    }
+
+    private function updateItemCost($id){
+
+        $records = Purchase::where('import_id',$id)->where('tipo_doc_id',1)->get();
+
+        $fleteT = Purchase::where('tipo_doc_id',2)
+                    ->join('purchase_items',function($join) use($id){
+                        $join->on('purchases.id','=','purchase_items.purchase_id')
+                        ->where('purchase_items.import',$id)->where('concepto',4);
+                    })
+                    ->get();
+        $totalFlete = $fleteT->sum('total_value');
+        $seguroT = Purchase::where('tipo_doc_id',2)
+                    ->join('purchase_items',function($join) use($id){
+                        $join->on('purchases.id','=','purchase_items.purchase_id')
+                        ->where('purchase_items.import',$id)->where('concepto',5);
+                    })
+                    ->get();
+
+        $totalSeguro = $seguroT->sum('total_value');
+        $gastoT = Purchase::where('tipo_doc_id',2)
+                    ->join('purchase_items',function($join) use($id){
+                        $join->on('purchases.id','=','purchase_items.purchase_id')
+                        ->where('purchase_items.import',$id)->where('concepto',1);
+                    })
+                    ->get();
+        $totalgasto = $gastoT->sum('total_value');
+
+        $totalFOD = $records->sum('total_value');
+
+        foreach($records as $row){
+
+            foreach($row->items as $key => $item){
+
+                $arancel = Tariff::findOrFail($item->item->tariff_id);
+
+                $flete = $item->total_value * $totalFlete /  $totalFOD;
+                $seguro = $item->total_value * $totalSeguro /  $totalFOD;
+                $gasto = $item->total_value * $totalgasto /  $totalFOD;
+
+                $cif = 0;
+                $advaloren = 0;
+                $fodinfa = 0;
+                $costo = 0;
+
+
+                if($arancel->count() > 0){
+
+                    $cif = $item->unit_value + ($flete/ $item->quantity) + ($seguro / $item->quantity);
+                    $advaloren = $cif * ($arancel->advaloren/100);
+                    $costo = $item->unit_value + $advaloren + ($gasto / $item->quantity);
+
+                }else{
+
+                    $cif = $item->unit_value + ($flete/ $item->quantity) + ($seguro / $item->quantity);
+                    $costo = $item->unit_value + $advaloren + ($gasto / $item->quantity);
+
+                }
+
+                $itemUp = Item::find($item->item->id);
+                $itemUp->update([
+                    'purchase_unit_price' => round($costo,3),
+                ]);
+
+            }
+        }
+
+    }
+
+    private function transformReportImports($resource, $fleteTotal, $totalSeguro, $totalgasto )
+    {
+        $totalFOD = $resource->sum('total_value');
+        $records = null;
+
+        foreach($resource as $row){
+
+            $import = Imports::find($row->import_id);
+            foreach($row->items as $key => $item){
+
+                $arancel = Tariff::findOrFail($item->item->tariff_id);
+
+                $flete = $item->total_value * $fleteTotal /  $totalFOD;
+                $seguro = $item->total_value * $totalSeguro /  $totalFOD;
+                $gasto = $item->total_value * $totalgasto /  $totalFOD;
+
+                $cif = 0;
+                $advaloren = 0;
+                $fodinfa = 0;
+                $iva = 0;
+                $costo = 0;
+                $factor = 0;
+
+                if($arancel->count() > 0){
+
+                    $cif = $item->unit_value + ($flete/ $item->quantity) + ($seguro / $item->quantity);
+                    $advaloren = ($item->unit_value + ($seguro / $item->quantity)) * ($arancel->advaloren/100);
+                    $fodinfa = $cif * $arancel->fodinfa;
+                    $iva = ($cif + $advaloren + $fodinfa) * 0.12;
+                    $costo = $item->unit_value + $advaloren + ($gasto / $item->quantity);
+                    $factor = (($gasto / $item->quantity) + $cif) / $item->unit_value;
+
+                }else{
+
+                    $cif = $item->unit_value + ($flete / $item->quantity) + ($seguro / $item->quantity);
+                    $iva = ($cif + $advaloren + $fodinfa) * 0.12;
+                    $costo = $item->unit_value + $advaloren + ($gasto / $item->quantity);
+                    $factor = (($gasto / $item->quantity) + $cif) / $item->unit_value;
+
+                }
+
+                $records[] = [
+                    'serie' => $row->series,
+                    'numero' => $row->number,
+                    'importacion' => $import->numeroImportacion,
+                    'numLinea' => $key + 1,
+                    'codArticulo' => $item->item->id,
+                    'referencia' => $item->item->id,
+                    'descripcion' => $item->item->name,
+                    'partidaArancelaria' => ($arancel->count > 0 ) ? '' : $arancel->tariff,
+                    'porcentajeAdvaloren' => ($arancel->count > 0 ) ? 0 : $arancel->advaloren ,
+                    'unidadestotal' => $item->quantity,
+                    'fob' => round($item->unit_value,3),
+                    'fobTotal' => round($item->total_value,3),
+                    'flete' => round($flete / $item->quantity,3),
+                    'fleteTotal' => round($flete,3),
+                    'seguro' => round($seguro / $item->quantity,3),
+                    'seguroTotal' => round($seguro,3),
+                    'cif' => round($cif,3),
+                    'advaloren' => round($advaloren,3),
+                    'fodinfa' => round($fodinfa,3),
+                    'iva' => round($iva,3),
+                    'gastos' => round($gasto / $item->quantity,3),
+                    'gastosTotal' => round($gasto,3),
+                    'costo' => round($costo,3),
+                    'totalLinea' => $item->total_value,
+                    'factor' => round($factor,3),
+
+                ];
+            }
+        }
+
+        return (object) $records;
+    }
+
     public function record($id)
     {
         $record = new ImportResource(Imports::findOrFail($id));
-
         return $record;
     }
 
@@ -144,11 +332,8 @@ class ImportsController extends Controller
 
         $records = Imports::query();
 
-        if ($d_embarque && $d_llegada) {
-            $records->whereBetween('date_of_issue', [$d_embarque, $d_llegada]);
-        }
         if ($date_of_issue) {
-            $records->where('date_of_issue', 'like', '%' . $date_of_issue . '%');
+            $records->where('created_at', 'like', '%' . $date_of_issue . '%');
         }
         if ($fechaEmbarque) {
             $records->where('fechaEmbarque', 'like', '%' . $fechaEmbarque . '%');

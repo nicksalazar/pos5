@@ -185,6 +185,8 @@ class Item extends ModelTenant
         'exchange_points',
         'quantity_of_points',
         'factory_code',
+        'tariff_id',
+        'concept_id',
 
         // 'warehouse_id'
     ];
@@ -1022,6 +1024,8 @@ class Item extends ModelTenant
             'exchanged_for_points' => false, //para determinar si desea canjear el producto
             'used_points_for_exchange' => null, //total de puntos
             'factory_code' => $this->factory_code,
+            'tariff_id' => $this->tariff_id,
+            'concept_id' => $this->concept_id,
 
         ];
 
@@ -1206,6 +1210,8 @@ class Item extends ModelTenant
             }),
             'is_for_production'=>$this->isIsForProduction(),
             'supplies' => $itemSupply,
+            'tariff_id' => $this->tariff_id,
+            'concept_id' => $this->concept_id,
 
         ];
     }

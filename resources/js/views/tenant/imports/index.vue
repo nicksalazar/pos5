@@ -28,6 +28,7 @@
                         <th class="text-center" style="min-width: 95px;">Llegada</th>
                         <th class="text-center" style="min-width: 95px;">Estado</th>
                         <th class="text-center"></th>
+                        <th class="text-center"></th>
 
                     </tr>
                     <tr slot-scope="{ index, row }"
@@ -50,6 +51,13 @@
                                   :class="{'bg-success': (row.estado === 'Liquidada'), 'bg-warning': (row.estado === 'Liberada'), 'bg-secondary': (row.estado === 'Registrada')}">
                                 {{ row.estado }}
                             </span>
+                        </td>
+                        <td class="text-right">
+
+                            <button class="btn btn-success btn-sm" type="button" @click.prevent="clickGenerteReport(row.id)">
+                                <i class="fas fa-table"></i> Reporte
+                            </button>
+
                         </td>
                         <td class="text-right"
                         v-if="row.estado != 'Liquidada'" >
@@ -204,6 +212,13 @@ export default {
                 this.$message.error(error.response.data.message)
             });
         },
+        clickGenerteReport(importId){
+            //alert('SE generara el reporte de la importacion '+importId)
+            //console.log('DATA: ',importId);
+            //console.log(`/imports/liquidation-report/${importId}`);
+            window.open(`/imports/liquidation-report/${importId}`, '_blank');
+        },
+
         clickCheckOnline(document_id) {
             this.$http.get(`/${this.resource}/check_server/${document_id}`)
                 .then(response => {

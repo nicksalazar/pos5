@@ -789,6 +789,14 @@
                                         </li>
                                     @endif
                                 </ul>
+                                <ul class="nav nav-children">
+                                    @if(in_array('folder', $vc_module_levels))
+                                        <li class="{{ ($firstLevel === 'folder')?'nav-active':'' }}">
+                                            <a class="nav-link"
+                                               href="{{route('tenant.imports.tariff')}}">P. Arancelarias</a>
+                                        </li>
+                                    @endif
+                                </ul>
                             </li>
                         @endif
 

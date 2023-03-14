@@ -276,30 +276,6 @@
                                        v-text="errors.imports[0]"></small>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div :class="{'has-danger': errors.concepto}"
-                                 class="form-group">
-                                <label class="control-label">Concepto
-                                    <el-tooltip class="item"
-                                                content="Tipo de gasto asociado a este artículo"
-                                                effect="dark"
-                                                placement="top">
-                                        <i class="fa fa-info-circle"></i>
-                                    </el-tooltip>
-                                </label>
-                                <el-select v-model="form.concepto"
-                                           filterable>
-                                    <el-option v-for="option in conceptos"
-                                               :key="option.id"
-                                               :label="option.description"
-                                               :value="option.id"></el-option>
-                                </el-select>
-                                <small v-if="errors.concepto"
-                                       class="form-control-feedback"
-                                       v-text="errors.concepto[0]"></small>
-                            </div>
-                        </div>
-
                         <div v-if="form.item_id"
                              class="col-md-6 mt-2">
                             <div v-if="form.item.lots_enabled"
@@ -767,7 +743,6 @@ export default {
             all_items: [],
             warehouses: [],
             imports: [],
-            conceptos:[{'id':1 ,'description': 'Gastos locales'},{'id':2 ,'description': 'Aranceles'},{'id':3 ,'description': 'Isd'},{'id':4 ,'description': 'Flete'}],
             lots: [],
             affectation_igv_types: [],
             system_isc_types: [],
@@ -788,7 +763,7 @@ export default {
         this.activeName = 'first'
         this.initForm()
         this.$http.get(`/${this.resource}/item/tables`).then(response => {
-            console.log("Data: ", response.data);
+            console.log("Data CREATE: ", response.data.items);
             this.all_items = response.data.items
             this.affectation_igv_types = response.data.affectation_igv_types
             this.system_isc_types = response.data.system_isc_types
@@ -922,6 +897,7 @@ export default {
                 update_price: false,
                 update_date_of_due: false,
                 update_purchase_price: this.config.checked_update_purchase_price,
+                concepto:null,
                 // update_purchase_price: true,
             }
 
@@ -993,7 +969,9 @@ export default {
             this.form.item.unit_type_id = row.unit_type_id
         },
         changeItem() {
+
             const item = {..._.find(this.items, {'id': this.form.item_id})};
+            console.log('changeItem',item)
             this.form.item = item;
             this.form.item = this.setExtraFieldOfitem(this.form.item)
 
@@ -1013,6 +991,8 @@ export default {
             this.form.has_isc = this.form.item.purchase_has_isc
             this.form.percentage_isc = this.form.item.purchase_percentage_isc
             this.form.system_isc_type_id = this.form.item.purchase_system_isc_type_id
+
+            this.form.concepto = this.form.item.concept_id
 
         },
         cambioCantidad(){

@@ -473,6 +473,13 @@ if ($hostname) {
             Route::get('imports/record/{id}', 'Tenant\ImportsController@record');
             Route::get('imports/create', 'Tenant\ImportsController@create')->name('tenant.imports.form');
             Route::post('imports', 'Tenant\ImportsController@store');
+            Route::get('imports/liquidation-report/{id}', 'Tenant\ImportsController@liquidationsReport');
+
+            Route::get('tariff', 'Tenant\TariffController@index')->name('tenant.imports.tariff');
+            Route::get('tariff/records', 'Tenant\TariffController@records');
+            Route::get('tariff/record/{id}', 'Tenant\TariffController@record');
+            Route::post('tariff', 'Tenant\TariffController@store');
+
 
             //purchases
             Route::get('purchases', 'Tenant\PurchaseController@index')->name('tenant.purchases.index');

@@ -204,7 +204,7 @@ use Illuminate\Support\Facades\Log;
             switch ($table) {
                 case 'suppliers':
 
-                    $suppliers = Person::whereType('suppliers')->orderBy('name')->get()->transform(function ($row) {
+                    $suppliers = Person::where('type','suppliers')->orderBy('name')->get()->transform(function ($row) {
                         return [
                             'id' => $row->id,
                             'description' => $row->number . ' - ' . $row->name,
@@ -363,6 +363,8 @@ use Illuminate\Support\Facades\Log;
             //Log::info(json_encode($data));
             try {
                 $purchase = DB::connection('tenant')->transaction(function () use ($data) {
+                    $numero = Purchase::where('establishment_id',$data['establishment_id'])->where('series',$data['series'])->count();
+                    $data['number'] = $numero + 1;
                     $doc = Purchase::create($data);
 
                     if(count($data['ret']) > 0){
@@ -549,7 +551,6 @@ use Illuminate\Support\Facades\Log;
         public static function convert($inputs)
         {
             Log::info(json_encode($inputs));
-
             $company = Company::active();
             $values = [
                 'user_id' => auth()->id(),
