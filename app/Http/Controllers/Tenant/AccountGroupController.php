@@ -28,7 +28,7 @@ class AccountGroupController extends Controller
     public function records(Request $request)
     {
         $records = AccountGroup::where($request->column, 'like', "%{$request->value}%")
-                            ->latest();
+                            ->orderby('code');
         return new AccountGroupCollection($records->paginate(config('tenant.items_per_page')));
     }
 
