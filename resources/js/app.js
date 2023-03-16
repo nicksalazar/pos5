@@ -66,6 +66,7 @@ Vue.component('tenant-documents-note', require('./views/tenant/documents/note.vu
 Vue.component('tenant-imports-index', require('./views/tenant/imports/index.vue'));
 Vue.component('tenant-imports-generate', require('./views/tenant/imports/generate.vue'));
 Vue.component('tenant-imports-tariff', require('./views/tenant/imports/tariff.vue'));
+Vue.component('tenant-imports-tariff-form',require('./views/tenant/imports/tariff-form.vue'));
 
 
 // purchase-settlements

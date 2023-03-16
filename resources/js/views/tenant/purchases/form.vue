@@ -73,9 +73,44 @@
                                        v-text="errors.date_of_due[0]"></small>
                             </div>
                         </div>
+                    <!--
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
+                    -->
+                        <div class="col-lg-2">
+                            <div :class="{'has-danger': errors.currency_type_id}"
+                                 class="form-group">
+                                <label class="control-label">Moneda</label>
+                                <el-select v-model="form.currency_type_id"
+                                           @change="changeCurrencyType">
+                                    <el-option v-for="option in currency_types"
+                                               :key="option.id"
+                                               :label="option.description"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.currency_type_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.currency_type_id[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-2" v-if="form.currency_type_id != config.currency_type_id">
+                            <div :class="{'has-danger': errors.exchange_rate_sale}"
+                                 class="form-group">
+                                <label class="control-label">Tipo de cambio
+                                    <el-tooltip class="item"
+                                                content="Tipo de cambio del día"
+                                                effect="dark"
+                                                placement="top-end">
+                                        <i class="fa fa-info-circle"></i>
+                                    </el-tooltip>
+                                </label>
+                                <el-input v-model="form.exchange_rate_sale"></el-input>
+                                <small v-if="errors.exchange_rate_sale"
+                                       class="form-control-feedback"
+                                       v-text="errors.exchange_rate_sale[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
                             <div :class="{'has-danger': errors.supplier_id}"
                                  class="form-group">
                                 <label class="control-label">
@@ -108,40 +143,6 @@
                                     <el-option v-for="option in payment_method_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                 </el-select>
                                 <small class="form-control-feedback" v-if="errors.payment_method_type_id" v-text="errors.payment_method_type_id[0]"></small>
-                            </div>
-                        </div> -->
-                        <div class="col-lg-2">
-                            <div :class="{'has-danger': errors.currency_type_id}"
-                                 class="form-group">
-                                <label class="control-label">Moneda</label>
-                                <el-select v-model="form.currency_type_id"
-                                           @change="changeCurrencyType">
-                                    <el-option v-for="option in currency_types"
-                                               :key="option.id"
-                                               :label="option.description"
-                                               :value="option.id"></el-option>
-                                </el-select>
-                                <small v-if="errors.currency_type_id"
-                                       class="form-control-feedback"
-                                       v-text="errors.currency_type_id[0]"></small>
-                            </div>
-                        </div>
-                        <!-- JOINSOFTWARE
-                        <div class="col-lg-2">
-                            <div :class="{'has-danger': errors.exchange_rate_sale}"
-                                 class="form-group">
-                                <label class="control-label">Tipo de cambio
-                                    <el-tooltip class="item"
-                                                content="Tipo de cambio del día, extraído de SUNAT"
-                                                effect="dark"
-                                                placement="top-end">
-                                        <i class="fa fa-info-circle"></i>
-                                    </el-tooltip>
-                                </label>
-                                <el-input v-model="form.exchange_rate_sale"></el-input>
-                                <small v-if="errors.exchange_rate_sale"
-                                       class="form-control-feedback"
-                                       v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
                         </div> -->
 
@@ -258,6 +259,14 @@
 
 
                         <div class="col-12">&nbsp;</div>
+
+                        <div class="col-md-8 mt-2">
+                            <div class="form-group">
+                                <el-checkbox v-model="form.is_aproved"
+                                             @change="changeHasClient">¿Desea Autorizar las retenciones de esta compra?
+                                </el-checkbox>
+                            </div>
+                        </div>
 
                         <div class="col-md-8 mt-4">
                             <div class="form-group">
@@ -752,6 +761,7 @@
         </div>
 
         <purchase-form-item :currency-type-id-active="form.currency_type_id"
+                            :currency-type-id-config="config.currency_type_id"
                             :exchange-rate-sale="form.exchange_rate_sale"
                             :showDialog.sync="showDialogAddItem"
                             :localHasGlobalIgv="localHasGlobalIgv"
@@ -880,7 +890,7 @@ export default {
                 this.charges_types = data.charges_types
                 this.$store.commit('setConfiguration', data.configuration);
                 this.$store.commit('setEstablishment', data.establishment);
-                this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
+                //this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
                 this.form.establishment_id = (this.establishment.id) ? this.establishment.id : null
                 this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
                 this.form.number = 0

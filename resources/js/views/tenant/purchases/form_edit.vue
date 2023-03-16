@@ -22,7 +22,7 @@
                         <div class="col-lg-2">
                             <div class="form-group" :class="{'has-danger': errors.series}">
                                 <label class="control-label">Serie <span class="text-danger">*</span></label>
-                                <el-input v-model="form.series" :maxlength="4" @input="inputSeries"></el-input>
+                                <el-input v-model="form.series" :maxlength="4" @input="inputSeries" :disabled="true"></el-input>
 
                                 <small class="form-control-feedback" v-if="errors.series"
                                        v-text="errors.series[0]"></small>
@@ -31,7 +31,7 @@
                         <div class="col-lg-2">
                             <div class="form-group" :class="{'has-danger': errors.number}">
                                 <label class="control-label">Número <span class="text-danger">*</span></label>
-                                <el-input v-model="form.number"></el-input>
+                                <el-input v-model="form.number" :disabled="true"></el-input>
 
                                 <small class="form-control-feedback" v-if="errors.number"
                                        v-text="errors.number[0]"></small>
@@ -99,20 +99,23 @@
                                        v-text="errors.currency_type_id[0]"></small>
                             </div>
                         </div>
-                        <!-- JOINSOFTWARE
-                        <div class="col-lg-2">
-                            <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
+                        <div class="col-lg-2" v-if="form.currency_type_id != configuration.currency_type_id">
+                            <div :class="{'has-danger': errors.exchange_rate_sale}"
+                                 class="form-group">
                                 <label class="control-label">Tipo de cambio
-                                    <el-tooltip class="item" effect="dark"
-                                                content="Tipo de cambio del día, extraído de SUNAT" placement="top-end">
+                                    <el-tooltip class="item"
+                                                content="Tipo de cambio del día"
+                                                effect="dark"
+                                                placement="top-end">
                                         <i class="fa fa-info-circle"></i>
                                     </el-tooltip>
                                 </label>
-                                <el-input v-model="form.exchange_rate_sale"></el-input>
-                                <small class="form-control-feedback" v-if="errors.exchange_rate_sale"
+                                <el-input v-model="form.exchange_rate_sale" disabled></el-input>
+                                <small v-if="errors.exchange_rate_sale"
+                                       class="form-control-feedback"
                                        v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="col-lg-2"
                              v-if="purchase_order_id === null">
                             <div class="form-group">

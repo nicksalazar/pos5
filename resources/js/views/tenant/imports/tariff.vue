@@ -23,18 +23,20 @@
 
                         <th>#</th>
                         <th class="text-center" style="min-width: 95px;">P. Arancelaria</th>
+                        <th class="text-center" style="min-width: 95px;">Descripcion</th>
                         <th class="text-center" style="min-width: 95px;">ADVALOREN</th>
                         <th class="text-center" style="min-width: 95px;">Tarifa Especifica</th>
                         <th class="text-center" style="min-width: 95px;">FODINFA</th>
-                        <th class="text-center" style="min-width: 95px;">Estado</th>
+                        <th class="text-center" style="min-width: 95px;">Activo</th>
                         <th class="text-center"></th>
 
                     </tr>
                     <tr slot-scope="{ index, row }"
                         :class="{'text-success': (row.active === true),
-                            'text-warning': (row.active === false)}">
+                            'text-secondary': (row.active === false)}">
                         <td>{{ index }}</td>
                         <td class="text-center" > {{ row.tariff }}</td>
+                        <td class="text-center" > {{ row.description }}</td>
                         <td class="text-center" > {{ row.advaloren }}</td>
                         <td class="text-center">{{ row.specific_tariff }}</td>
                         <td class="text-center">{{ row.fodinfa }}</td>
@@ -66,10 +68,10 @@
                     </tr>
                 </data-table>
             </div>
-            <tenant-imports-generate
+            <tenant-imports-tariff-form
                           :recordId="recordId"
                           :showDialog.sync="showDialog"
-                          ></tenant-imports-generate>
+                          ></tenant-imports-tariff-form>
 
         </div>
     </div>

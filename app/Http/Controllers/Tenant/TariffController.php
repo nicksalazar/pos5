@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenant;
 use App\Models\Tenant\Tariff;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Tenant\TariffRequest;
 use App\Http\Resources\Tenant\TariffCollection;
 use App\Http\Resources\Tenant\TariffResource;
 use App\Models\Tenant\Configuration;
@@ -39,7 +40,7 @@ class TariffController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TariffRequest $request)
     {
         $id = $request->input('id');
         $tariff = Tariff::firstOrNew(['id' => $id]);
@@ -50,7 +51,7 @@ class TariffController extends Controller
         $tariff->save();
 
         $msg = '';
-        $msg = ($id) ? 'Arancel editado con éxito' : 'Arancel registrado con éxito';
+        $msg = ($id) ? 'Partida Arancelaria editada con éxito' : 'Partida Arancelaria registrada con éxito';
 
         return [
             'success' => true,
@@ -75,39 +76,24 @@ class TariffController extends Controller
 
     private function getRecords($request)
     {
-        $d_llegada = $request->d_llegada;
-        $d_embarque = $request->d_embarque;
 
-        $date_of_issue = $request->date_of_issue;
+        $tariff = $request->tariff;
 
-        $number= $request->document_type_id;
-        $tipoTransporte = $request->tipoTransporte;
-
-        $estado = $request->estado;
-
-        $fechaEmbarque = $request->fechaEmbarque;
-
-        $fechaLlegada = $request->fechaLlegada;
+        $active= $request->active;
 
         $records = Tariff::query();
 
-        if ($date_of_issue) {
-            $records->where('created_at', 'like', '%' . $date_of_issue . '%');
+        if ($tariff) {
+            $records->where('tariff', 'like', '%' . $tariff . '%');
         }
-        if ($fechaEmbarque) {
-            $records->where('fechaEmbarque', 'like', '%' . $fechaEmbarque . '%');
-        }
-        if ($fechaLlegada) {
-            $records->where('fechaLlegada', 'like', '%' . $fechaLlegada . '%');
-        }
-        if ($number) {
-            $records->where('numeroImportacion', 'like', '%' . $number. '%');
-        }
-        if ($estado) {
-            $records->where('estado', 'like', '%' . $estado . '%');
-        }
-        if ($tipoTransporte) {
-            $records->where('tipoTransporte', 'like', '%' . $tipoTransporte . '%');
+
+        if ($active) {
+            if($active > 1){
+                $records->where('active', 'like', '%' . 0 . '%');
+            }else{
+                $records->where('active', 'like', '%' . 1 . '%');
+            }
+
         }
 
         return $records;

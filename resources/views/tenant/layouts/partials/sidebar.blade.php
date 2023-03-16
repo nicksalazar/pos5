@@ -757,7 +757,7 @@
                         {{-- Importaciones --}}
                         @if(in_array('imports', $vc_modules))
                             <li class="nav-parent
-                            {{ (in_array($firstLevel, ['imports', 'folder']) |($firstLevel === 'folder' ))?'nav-active nav-expanded':'' }}
+                            {{ (in_array($firstLevel, ['imports', 'folder', 'tariff']))?'nav-active nav-expanded':'' }}
                                 ">
                                 <a class="nav-link"
                                    href="#">
@@ -783,15 +783,15 @@
                                 </a>
                                 <ul class="nav nav-children">
                                     @if(in_array('folder', $vc_module_levels))
-                                        <li class="{{ ($firstLevel === 'folder')?'nav-active':'' }}">
+                                        <li class="{{ ($firstLevel === 'imports')?'nav-active':'' }}">
                                             <a class="nav-link"
                                                href="{{route('tenant.imports.index')}}">Carpeta</a>
                                         </li>
                                     @endif
                                 </ul>
                                 <ul class="nav nav-children">
-                                    @if(in_array('folder', $vc_module_levels))
-                                        <li class="{{ ($firstLevel === 'folder')?'nav-active':'' }}">
+                                    @if(in_array('tariff', $vc_module_levels))
+                                        <li class="{{ ($firstLevel === 'tariff')?'nav-active':'' }}">
                                             <a class="nav-link"
                                                href="{{route('tenant.imports.tariff')}}">P. Arancelarias</a>
                                         </li>

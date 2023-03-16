@@ -119,10 +119,10 @@
                                     <el-select slot="prepend"
                                                v-model="form.item.currency_type_id"
                                                class="el-select-currency">
-                                        <el-option label="S/"
-                                                   value="PEN"></el-option>
-                                        <el-option label="$"
-                                                   value="USD"></el-option>
+                                            <el-option v-for="option in currencyTypes"
+                                               :key="option.id"
+                                               :label="option.symbol"
+                                               :value="option.id"></el-option>
                                     </el-select>
                                 </el-input>
                                 <small v-if="errors.unit_price"
@@ -654,9 +654,10 @@ export default {
     props: [
         'showDialog',
         'currencyTypeIdActive',
+        'currencyTypeIdConfig',
         'exchangeRateSale',
         'localHasGlobalIgv',
-        'percentageIgv'
+        'percentageIgv',
     ],
     components: {itemForm, LotsForm, Keypress},
     computed: {
@@ -755,6 +756,7 @@ export default {
             prices: {},
             retention_types_iva: [],
             retention_types_income: [],
+            currencyTypes: [],
         }
     },
     created() {
@@ -772,6 +774,7 @@ export default {
             this.attribute_types = response.data.attribute_types
             this.warehouses = response.data.warehouses
             this.imports = response.data.imports
+            this.currencyTypes = response.data.currencyTypes
             this.retention_types_iva = response.data.retention_types_iva
             this.retention_types_income = response.data.retention_types_income
             this.$store.commit('setConfiguration', response.data.configuration)
@@ -782,6 +785,7 @@ export default {
             //console.log("Item id: ", item_id);
             this.reloadDataItems(item_id)
         })
+
     },
     methods: {
         ...mapActions([
@@ -898,6 +902,7 @@ export default {
                 update_date_of_due: false,
                 update_purchase_price: this.config.checked_update_purchase_price,
                 concepto:null,
+
                 // update_purchase_price: true,
             }
 
@@ -1092,6 +1097,7 @@ export default {
             this.setGlobalIgvToItem()
         },
         async clickAddItem() {
+
             if (this.form.item.lots_enabled) {
                 if (!this.lot_code)
                     return this.$message.error('Código de lote es requerido');
@@ -1131,7 +1137,8 @@ export default {
             this.form.item.iva_retention = this.form.iva_retention;
             this.form.item.import_id = this.form.import;
             this.form.affectation_igv_type = _.find(this.affectation_igv_types, {'id': this.form.affectation_igv_type_id})
-            this.row = await calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale, this.percentageIgv)
+
+            this.row = await calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale, this.percentageIgv, this.currencyTypeIdConfig)
             this.row.lot_code = await this.lot_code
             this.row.lots = await this.lots
             this.row.update_price = this.form.update_price
@@ -1144,8 +1151,21 @@ export default {
             this.row.date_of_due = date_of_due
             this.row.retention_type_id_income = this.form.retention_type_id_income;
             this.row.retention_type_id_iva = this.form.retention_type_id_iva;
+
             this.row.income_retention = this.form.income_retention;
             this.row.iva_retention = this.form.iva_retention;
+
+            if( this.currencyTypeIdActive == this.currencyTypeIdConfig && this.currencyTypeIdActive !== this.form.currency_type_id ){
+
+                this.row.income_retention = this.form.income_retention / this.exchangeRateSale;
+                this.row.iva_retention = this.form.iva_retention  / this.exchangeRateSale;
+
+            }else if( this.form.currency_type_id == this.currencyTypeIdConfig && this.currencyTypeIdActive !== this.form.currency_type_id ){
+
+                this.row.income_retention = this.form.income_retention * this.exchangeRateSale;
+                this.row.iva_retention = this.form.iva_retention  * this.exchangeRateSale;
+
+            }
             this.row.import = this.form.import;
             this.row.concepto = this.form.concepto;
 

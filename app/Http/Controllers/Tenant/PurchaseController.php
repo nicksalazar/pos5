@@ -320,7 +320,7 @@ use Illuminate\Support\Facades\Log;
             $configuration = Configuration::first();
             $configuration = $configuration->getCollectionData();
             $imports = Imports::where('estado',['Registrada','Liberada'])->get();
-
+            $currencyTypes = CurrencyType::whereActive()->get();
             return compact(
                 'items',
                 'categories',
@@ -330,6 +330,7 @@ use Illuminate\Support\Facades\Log;
                 'discount_types',
                 'charge_types',
                 'attribute_types',
+                'currencyTypes',
                 'warehouses',
                 'imports',
                 'operation_types',

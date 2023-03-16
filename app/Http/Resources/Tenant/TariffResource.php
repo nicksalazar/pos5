@@ -23,8 +23,9 @@ class TariffResource extends JsonResource
             'advaloren' => $this->advaloren,
             'specific_tariff' => $this->specific_tariff,
             'fodinfa' => $this->fodinfa,
-            'active' => $this->active,
-            'eu_aviabilitie' => $this->eu_aviabilitie,
+            'active' => (bool) $this->active,
+            'eu_aviabilitie' => (bool) $this->eu_aviabilitie,
+            'description' => $this->description,
         ];
     }
 }

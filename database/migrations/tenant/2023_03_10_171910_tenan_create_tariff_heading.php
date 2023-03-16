@@ -16,11 +16,12 @@ class TenanCreateTariffHeading extends Migration
         Schema::create('tariffs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('tariff', 255);
-            $table->double('advaloren', 15, 3);
-            $table->double('specific_tariff', 15, 3);
-            $table->double('fodinfa', 15, 3);
+            $table->double('advaloren', 15, 3)->default(0);
+            $table->double('specific_tariff', 15, 3)->default(0);
+            $table->double('fodinfa', 15, 3)->default(0);
             $table->boolean('active')->default(true);
             $table->boolean('eu_aviabilitie')->default(false);
+            $table->string('description', 255)->nullable();
             $table->timestamps();
         });
     }

@@ -25,21 +25,22 @@
                         <div class="form-group">
                             <label class="control-label">Estado</label>
                             <el-select v-model="search.active" popper-class="el-select-document_type" filterable clearable>
-                                <el-option v-for="option in estados" :key="option.id" :value="option.description" :label="option.description"></el-option>
+                                <el-option v-for="option in estados" :key="option.id" :value="option.id" :label="option.description"></el-option>
                             </el-select>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-2">
                         <div class="form-group">
                             <label class="control-label">P. Arancelaria</label>
+                            <el-input placeholder="Ingresar"
+                                v-model="search.tariff">
+                            </el-input>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-md-4 col-sm-12" style="margin-top:29px">
                         <el-button class="submit" type="primary" @click.prevent="getRecordsByFilter" :loading="loading_submit" icon="el-icon-search" >Buscar</el-button>
                         <el-button class="submit" type="info" @click.prevent="cleanInputs"  icon="el-icon-delete" >Limpiar </el-button>
-
                     </div>
-
                 </div>
             </div>
             <div class="col-md-12">

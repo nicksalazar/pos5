@@ -24,6 +24,7 @@ class TariffCollection extends ResourceCollection
                 'fodinfa' => $row->fodinfa,
                 'active' => (bool) $row->active,
                 'eu_aviabilitie' => (bool) $row->eu_aviabilitie,
+                'description' => $row->description,
                 'created_at' => $row->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $row->updated_at->format('Y-m-d H:i:s'),
 

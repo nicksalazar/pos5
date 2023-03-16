@@ -15,6 +15,7 @@ class Tariff extends ModelTenant
         'fodinfa',
         'active',
         'eu_aviabilitie',
+        'description',
     ];
 
     public function getCollectionData()
@@ -27,7 +28,7 @@ class Tariff extends ModelTenant
             'fodinfa' => $this->fodinfa,
             'active' => $this->active,
             'eu_aviabilitie' => $this->eu_aviabilitie,
-
+            'description' => $this->description,
         ];
         return $data;
     }

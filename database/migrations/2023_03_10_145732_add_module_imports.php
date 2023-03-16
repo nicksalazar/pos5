@@ -28,7 +28,12 @@ class AddModuleImports extends Migration
                                      'value'       => 'folder',
                                      'description' => 'Carpeta Importaciones',
                                  ]);
+            $q2 = new ModuleLevel([
+                                    'value'       => 'tariff',
+                                    'description' => 'Partidas Arancelarias',
+                                ]);
             $q->setModuleId($e->id)->push();
+            $q2->setModuleId($e->id)->push();
         });
     }
 
