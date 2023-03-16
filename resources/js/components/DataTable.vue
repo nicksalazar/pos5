@@ -145,12 +145,11 @@ export default {
         },
         getRecords() {
             this.loading_submit = true;
-            console.log('url ', `/${this.resource}/records?${this.getQueryParameters()}`)
+            //console.log('url ', `/${this.resource}/records?${this.getQueryParameters()}`)
             return this.$http
                 .get(`/${this.resource}/records?${this.getQueryParameters()}`)
                 .then(response => {                    
                     this.records = response.data.data;
-                    console.log(this.records);
                     this.pagination = response.data.meta;
                     this.pagination.per_page = parseInt(
                         response.data.meta.per_page

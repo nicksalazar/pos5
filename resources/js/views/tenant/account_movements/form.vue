@@ -154,6 +154,7 @@ export default {
         id: null,
         prefix: 0,
         inputcode: null,
+        code:null,
         description: null,
         cost_center: 0,
         account_group_id: null,
@@ -199,9 +200,12 @@ export default {
       this.form.prefix = valor.code;
     },
     submit() {
+      console.log('form',this.form);
       this.loading_submit = true;
-      this.form.code = this.form.prefix + this.form.inputcode;
-      console.log(this.form);
+      if( this.form.inputcode!=null){
+        this.form.code = this.form.prefix + this.form.inputcode;
+      }
+      
       this.$http
         .post(`/${this.resource}`, this.form)
         .then((response) => {
