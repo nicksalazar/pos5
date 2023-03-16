@@ -33,7 +33,7 @@
                         <td class="text-center">{{ row.cost_center?'SI':'NO' }}</td>
                         <td>{{ row.type }}</td>
                         <td>{{ row.created_at }}</td>
-                        <td class="text-right" style="display: flex;justify-content: center;">
+                        <td class="text-right" style="display: flex;justify-content: start;">
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
                              <template v-if="typeUser === 'admin'">
                             <div v-if="row.in_use===false">
