@@ -15,13 +15,13 @@
             </div>
             <div class="card-body">
                 <data-table :resource="resource">
-                    <tr slot="heading">
+                    <tr slot="heading" class="font-weight-normal">
                         <th>#</th>
                         <th>Código Cuenta</th>
                         <th>Descripción</th>
                         <th>Tipo</th>
                         <th>Fecha registro</th>
-                        <th class="text-right">Acciones</th>
+                        <th class="text-center">Acciones</th>
                     <tr>
                     <tr slot-scope="{ index, row }">
                         <td>{{ index }}</td>
@@ -29,10 +29,12 @@
                         <td>{{ row.description }}</td>
                         <td>{{ row.type }}</td>
                         <td>{{ row.created_at }}</td>
-                        <td class="text-right">
+                        <td class="text-right" style="display: flex;justify-content: center;">
                             <button type="button" class="btn waves-effect waves-light btn-xs btn-info" @click.prevent="clickCreate(row.id)">Editar</button>
                              <template v-if="typeUser === 'admin'">
-                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger" @click.prevent="clickDelete(row.id)">Eliminar</button>
+                             <div v-if="row.in_use===false">
+                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger ml-2" @click.prevent="clickDelete(row.id)">Eliminar</button>
+                             </div>
                              </template>
                         </td>
                     </tr>

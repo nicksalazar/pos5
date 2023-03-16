@@ -18,7 +18,6 @@ class TenantCreateAccountMovementsTable extends Migration
             $table->string('code',50)->unique();
             $table->string('description',50);
             $table->boolean('cost_center');
-            $table->string('type',50);
             $table->unsignedInteger('account_group_id');
             $table->timestamps();
 

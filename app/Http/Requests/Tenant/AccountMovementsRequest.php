@@ -28,9 +28,6 @@ class AccountMovementsRequest extends FormRequest
             'cost_center' => [
                 'required',
             ],
-            'type' => [
-                'required',
-            ],
             'account_group_id' => [
                 'required',
             ]

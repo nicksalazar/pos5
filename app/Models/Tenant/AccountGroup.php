@@ -25,6 +25,12 @@ class AccountGroup extends ModelTenant
     {
         return $this->hasMany(AccountGroup::class);
     }
+
+    public function scopeInUse($query,$id)
+    {
+        $datos= AccountMovement::where('account_group_id','=',$id)->count()>0?true:false;
+        return $datos;
+    }
     
 
 }

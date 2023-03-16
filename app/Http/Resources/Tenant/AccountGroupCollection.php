@@ -21,6 +21,7 @@ class AccountGroupCollection extends ResourceCollection
                 'description' => $row->description,
                 'type' => $row->type,
                 'created_at' => $row->created_at->format('Y-m-d H:i:s'),
+                'in_use'=>$row->inUse($row->id),
                 'updated_at' => $row->updated_at->format('Y-m-d H:i:s'),
             ];
         });

@@ -18,9 +18,7 @@ class AccountMovement extends ModelTenant
         'code',
         'description',
         'cost_center',
-        'type',
         'account_group_id'
-
     ];
 
     public function account_group()
@@ -32,4 +30,9 @@ class AccountMovement extends ModelTenant
         return $this->hasMany(AccountingEntries::class);
     }
 
+    public function scopeInUse($query,$id)
+    {
+        $datos= AccountingEntryItems::where('account_movement_id','=',$id)->count()>0?true:false;
+        return $datos;
+    }
 }

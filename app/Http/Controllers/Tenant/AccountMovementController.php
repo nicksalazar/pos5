@@ -23,15 +23,14 @@ class AccountMovementController extends Controller
             'code' => 'Código Cuenta',
             'description' => 'Descripción',
             'group'=>'Grupo',
-            'cost_center' => 'Centro Costo',
-            'type' => 'Tipo',
+            'cost_center' => 'Centro Costo'            
         ];
     }
 
     public function records(Request $request)
     {
         $records = AccountMovement::where($request->column, 'like', "%{$request->value}%")
-                            ->latest();
+                            ->orderby('code');
         return new AccountMovementsCollection ($records->paginate(config('tenant.items_per_page')));
     }
 
@@ -81,7 +80,7 @@ class AccountMovementController extends Controller
     public function tables()
     {
       
-        $account_groups = AccountGroup::select('id','description')->get();
+        $account_groups = AccountGroup::select('id','code','description')->get();
         return compact('account_groups');
 
     }
