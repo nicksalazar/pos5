@@ -43,7 +43,7 @@
               <div class="form-group row">
                 <label
                   class="col-sm-4 col-form-label font-weight-bold text-info"
-                  >Comentarios:</label
+                  >Comentario:</label
                 >
                 <div class="col-sm-8">
                   <el-input v-model="form.comment"></el-input>

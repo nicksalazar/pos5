@@ -76,7 +76,7 @@
                                           <tr>
                                             <td>
                                                 <p class="my-0" >
-                                                <b>Glosa:</b>
+                                                <b>Comentario:</b>
                                                 {{row.comment}}
                                                 </p>
                                             </td>

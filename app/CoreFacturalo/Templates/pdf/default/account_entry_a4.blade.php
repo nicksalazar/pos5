@@ -70,7 +70,7 @@
    
     <tr class="mt-4">
         <td width="20%" class="font-bold">
-            Glosa:
+            Comentario:
         </td>
         <td width="85%">{{ $document->comment}}</td>
     </tr>
