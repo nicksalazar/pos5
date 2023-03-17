@@ -21,9 +21,9 @@ class AccountEntriesRequest extends FormRequest
             'types_accounting_entrie_id' => [
                 'required',
             ],
-            'person_id' => [
+            /*'person_id' => [
                 'required',
-            ],
+            ],*/
             'items.*.seat_cost' => [
                'required_if:items.*.typecost,1',
             ],

@@ -109,7 +109,6 @@
                     v-model="customer_id"
                     filterable
                     remote
-                    dusk="customer_id"
                     placeholder="Escriba el nombre o número de documento del cliente"
                     :remote-method="searchRemoteCustomers"
                     @focus="focus_on_client = true"
@@ -123,6 +122,9 @@
                       :label="option.description"
                     ></el-option>
                   </el-select>
+                  <button v-if="customer_id!==null" type="button" @click="clearCustomer" class="btn waves-effect waves-light btn-xs btn-danger mx-2 m-0">
+                    <i class="fas fa-fw fa-times" ></i>
+                     &nbsp; </button>
                   <a
                     class="col-md-3 d-flex align-items-center"
                     href="#"
@@ -139,7 +141,6 @@
                     remote
                     class="border-left rounded-left border-info"
                     popper-class="el-select-customers"
-                    dusk="supplier_id"
                     placeholder="Escriba el nombre o número de documento del proveedor"
                     :remote-method="searchRemoteSuppliers"
                     @focus="focus_on_client = true"
@@ -153,6 +154,9 @@
                       :label="option.description"
                     ></el-option>
                   </el-select>
+                  <button v-if="supplier_id!==null" type="button" @click="clearSupplier" class="btn waves-effect waves-light btn-xs btn-danger mx-2 m-0">
+                    <i class="fas fa-fw fa-times" ></i>
+                     &nbsp; </button>
                   <a
                     class="col-md-3 d-flex align-items-center"
                     href="#"
@@ -546,6 +550,7 @@ export default {
       } else {
         this.allCustomers();
         this.input_person.number = null;
+        this.customer_id=null;
       }
     },
     searchRemoteSuppliers(input) {
@@ -564,6 +569,7 @@ export default {
       } else {
         this.allSuppliers();
         this.input_person.number = null;
+        this.supplier_id=null;
       }
     },
     allCustomers() {
@@ -602,10 +608,19 @@ export default {
     //guardar
     async submit() {
       this.errors = {};
+      this.form.person_id=null;
       if (this.form.is_client == 0) {
-        this.form.person_id = this.customer_id;
+        if(this.customer_id!==null){
+          this.form.person_id = this.customer_id;
+        }else{
+            this.form.person_id=null
+        }
       } else {
-        this.form.person_id = this.supplier_id;
+         if(this.supplier_id!==null){
+          this.form.person_id = this.supplier_id;
+        }else{
+            this.form.person_id=null
+        }
       }
 
       this.form.user_id = this.userid;
@@ -642,6 +657,16 @@ export default {
     close() {
       location.href = "/accounting-entries";
     },
+    clearCustomer(){
+      this.customer_id=null;
+      this.supplier_id=null;
+      this.form.person_id=null;
+    },
+    clearSupplier(){
+      this.supplier_id=null;
+      this.customer_id=null;
+      this.form.person_id=null;
+    }
   },
 };
 </script>

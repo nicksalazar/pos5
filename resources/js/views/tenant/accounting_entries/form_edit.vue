@@ -126,6 +126,9 @@
                       :label="option.description"
                     ></el-option>
                   </el-select>
+                  <button v-if="customer_id!==null" type="button" @click="clearCustomer" class="btn waves-effect waves-light btn-xs btn-danger mx-2 m-0">
+                    <i class="fas fa-fw fa-times" ></i>
+                     &nbsp; </button>                  
                   <a
                     class="col-md-3 d-flex align-items-center"
                     href="#"
@@ -156,6 +159,9 @@
                       :label="option.description"
                     ></el-option>
                   </el-select>
+                  <button v-if="supplier_id!==null" type="button" @click="clearSupplier" class="btn waves-effect waves-light btn-xs btn-danger mx-2 m-0">
+                    <i class="fas fa-fw fa-times" ></i>
+                     &nbsp; </button>
                   <a
                     class="col-md-3 d-flex align-items-center"
                     href="#"
@@ -664,6 +670,16 @@ export default {
     },
     close() {
       location.href = "/accounting-entries";
+    },
+     clearCustomer(){
+      this.customer_id=null;
+      this.supplier_id=null;
+      this.form.person_id=null;
+    },
+    clearSupplier(){
+      this.supplier_id=null;
+      this.customer_id=null;
+      this.form.person_id=null;
     },
      initRecord() {
       this.loading_form=true;

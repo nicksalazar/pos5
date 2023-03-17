@@ -37,14 +37,14 @@ class TenantCreateAccountingEntriesTable extends Migration
             $table->json('establishment');
             $table->char('prefix', 3);
             $table->string('filename')->nullable();
-            $table->unsignedInteger('person_id');
-            $table->json('person');
+            $table->unsignedInteger('person_id')->nullable();
+            $table->json('person')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('types_accounting_entrie_id')->references('id')->on('types_accounting_entries');
             $table->foreign('establishment_id')->references('id')->on('establishments')->onDelete('set null');
-            $table->foreign('person_id')->references('id')->on('persons');
+            $table->foreign('person_id')->references('id')->on('persons')->onDelete('set null');
             $table->foreign('currency_type_id')->references('id')->on('cat_currency_types')->onDelete('set null');
         });
     }
