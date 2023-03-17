@@ -17,6 +17,7 @@ class TenantAddTipoDocToPurchases extends Migration
 
             $table->integer('tipo_doc_id')->unsigned()->nullable();
             $table->integer('import_id')->unsigned()->nullable();
+
             $table->foreign('tipo_doc_id')->references('id')->on('tipo_doc_purchase');
             $table->foreign('import_id')->references('id')->on('import');
         });

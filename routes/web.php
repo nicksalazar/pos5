@@ -507,6 +507,8 @@ if ($hostname) {
             Route::post('purchases/search/purchase_order','Tenant\PurchaseController@searchPurchaseOrder');
             // Route::get('purchases/item_resource/{id}', 'Tenant\PurchaseController@itemResource');
 
+            Route::get('purchases/document_types', 'Tenant\DocumentPurchaseTypy2Controller@index');
+
             // Route::get('documents/send/{document}', 'Tenant\DocumentController@send');
             // Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');
             // Route::post('documents/email', 'Tenant\DocumentController@email');

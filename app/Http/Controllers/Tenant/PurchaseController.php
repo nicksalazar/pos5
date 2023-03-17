@@ -23,7 +23,8 @@
     use App\Models\Tenant\Catalogs\SystemIscType;
     use App\Models\Tenant\Company;
     use App\Models\Tenant\Configuration;
-    use App\Models\Tenant\Establishment;
+use App\Models\Tenant\DocumentTypesSustentoSRI;
+use App\Models\Tenant\Establishment;
     use App\Models\Tenant\GuideFile;
     use App\Models\Tenant\Item;
     use App\Models\Tenant\ItemUnitType;
@@ -52,6 +53,7 @@
     use Throwable;
     use App\Models\Tenant\GeneralPaymentCondition;
 use App\Models\Tenant\Imports;
+use App\Models\Tenant\PurchaseDocumentTypes2;
 use App\Models\Tenant\RetentionTypePurchase;
     use App\Models\Tenant\RetentionsDetailEC;
     use App\Models\Tenant\RetentionsEC;
@@ -162,8 +164,14 @@ use Illuminate\Support\Facades\Log;
             $retention_types_iva = RetentionType::where('type_id', '02')->get();
             $retention_types_income = RetentionType::where('type_id', '01')->get();
 
+            $imports = Imports::where('estado',['Registrada','Liberada'])->get();
+            $typeDocs = TypeDocsPurchase::where('active',1)->get();
+            $codSustentos = DocumentTypesSustentoSRI::get();
+            $typeDocs2 = PurchaseDocumentTypes2::where('active',1)->get();
+
+
             return compact('suppliers', 'establishment', 'currency_types', 'discount_types', 'configuration', 'payment_conditions',
-                'charge_types', 'document_types_invoice', 'company','retention_types_iva','retention_types_income', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
+                'charge_types','typeDocs2','imports','typeDocs', 'codSustentos','document_types_invoice', 'company','retention_types_iva','retention_types_income', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
         }
 
         public function tables_purchase()
@@ -194,9 +202,11 @@ use Illuminate\Support\Facades\Log;
             $retention_types_income = RetentionType::where('type_id', '01')->get();
             $imports = Imports::where('estado',['Registrada','Liberada'])->get();
             $typeDocs = TypeDocsPurchase::where('active',1)->get();
+            $codSustentos = DocumentTypesSustentoSRI::get();
+            $typeDocs2 = PurchaseDocumentTypes2::where('active',1)->get();
 
-            return compact('suppliers', 'establishment', 'currency_types','imports','typeDocs', 'number', 'discount_types', 'configuration', 'payment_conditions',
-                'charge_types', 'document_types_invoice', 'company','retention_types_income','retention_types_iva', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
+            return compact('suppliers', 'establishment', 'currency_types','imports','typeDocs','typeDocs2', 'number', 'discount_types', 'configuration', 'payment_conditions',
+                'charge_types', 'document_types_invoice', 'company','codSustentos','retention_types_income','retention_types_iva', 'payment_method_types', 'payment_destinations', 'customers', 'warehouses','permissions', 'global_discount_types');
         }
 
         public function table($table)
@@ -369,6 +379,7 @@ use Illuminate\Support\Facades\Log;
                     $doc = Purchase::create($data);
 
                     if(count($data['ret']) > 0){
+
                         $serie = UserDefaultDocumentType::where('user_id',$doc->user_id)->get();
                         $tipoSerie = null;
                         $tiposerieText = '';
@@ -534,6 +545,7 @@ use Illuminate\Support\Facades\Log;
                         'number_full' => "{$purchase->series}-{$purchase->number}",
                     ],
                 ];
+
             } catch (Throwable $th) {
                 return response()->json([
                     'success' => false,
@@ -691,6 +703,53 @@ use Illuminate\Support\Facades\Log;
                 $doc->group_id = ($request->document_type_id === '01') ? '01' : '02';
                 $doc->user_id = auth()->id();
                 $doc->save();
+
+                if(count($request['ret']) > 0){
+
+                    $retenciones = RetentionsEC::where('idDocumento',$doc->id)->get();
+                    foreach($retenciones as $ret){
+                        $ret->delete();
+                    }
+
+                    $serie = UserDefaultDocumentType::where('user_id',$doc->user_id)->get();
+                    $tipoSerie = null;
+                    $tiposerieText = '';
+                    if($serie->count() > 0 ){
+                        $tipoSerie = Series::find($serie[0]->series_id);
+                        $tiposerieText = $tipoSerie->number;
+                    }else{
+                        $tipoSerie = Series::where('document_type_id','20')->get();
+                        $tiposerieText = $tipoSerie[0]->number;
+                    }
+
+                    $establecimiento = Establishment::find($doc->establishment_id);
+                    $secuelcialRet = RetentionsEC::where('establecimiento',$establecimiento->code)->where('ptoEmision',$tiposerieText)->count();
+
+                    $ret = new RetentionsEC();
+                    $ret->idRetencion = 'R'.$establecimiento->code.substr($tiposerieText,1,3).str_pad($secuelcialRet+1, 9, 0, STR_PAD_LEFT);
+                    $ret->idDocumento = $doc->id;
+                    $ret->fechaFizcal = $doc->date_of_issue->format('m/Y');
+                    $ret->idProveedor = $doc->supplier_id;
+                    $ret->establecimiento = $establecimiento->code;
+                    $ret->ptoEmision = $tiposerieText;
+                    $ret->secuencial = $doc->sequential_number;
+                    $ret->codSustento = $doc->document_type_id;
+                    $ret->codDocSustento = $doc->codSustento;
+                    $ret->numAuthSustento = $doc->auth_number;
+                    $ret->save();
+
+                    foreach($request['ret'] as $retDet){
+                        Log::info(json_encode($retDet));
+                        $detRet = new RetentionsDetailEC();
+                        $detRet->idRetencion = $ret->idRetencion;
+                        $detRet->codRetencion = $retDet['code'];
+                        $detRet->baseRet = $retDet['base'];
+                        $detRet->porcentajeRet = $retDet['porcentajeRet'];
+                        $detRet->valorRet = $retDet['valor'];
+                        $detRet->save();
+
+                    }
+                }
 
                 foreach ($doc->items as $it) {
 

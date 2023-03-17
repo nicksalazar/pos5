@@ -27,6 +27,7 @@ class PurchaseRequest extends FormRequest
                 'required',
                 'array',
             ],
+            ''
 
 		];
 	}
