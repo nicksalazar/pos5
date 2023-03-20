@@ -3407,6 +3407,7 @@ export default {
             this.form.items = items
             this.calculateTotal()
         },
+
         calculateTotal() {
 
             let total_discount = 0

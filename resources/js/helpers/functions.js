@@ -36,7 +36,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     let has_isc = row_old.has_isc
 
-    // console.log(row_old)
+    //console.log(row_old)
 
     let row = {
         item_id: row_old.item.id,
