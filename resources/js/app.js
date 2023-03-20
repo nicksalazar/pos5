@@ -97,6 +97,7 @@ Vue.component('tenant-guides-modal', require('./views/tenant/components/guides.v
 Vue.component('tenant-purchases-index', require('./views/tenant/purchases/index.vue'));
 Vue.component('tenant-purchases-form', require('./views/tenant/purchases/form.vue'));
 Vue.component('tenant-purchases-document-types', require('./views/tenant/purchases/doc_types.vue'));
+Vue.component('tenant-purchases-document-types-form', require('./views/tenant/purchases/form_doc_types.vue'));
 Vue.component('tenant-purchases-edit', require('./views/tenant/purchases/form_edit.vue'));
 Vue.component('tenant-transfer-reason-types-index', require('./views/tenant/transfer_reason_types/index.vue'));
 

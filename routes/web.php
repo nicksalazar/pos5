@@ -507,7 +507,11 @@ if ($hostname) {
             Route::post('purchases/search/purchase_order','Tenant\PurchaseController@searchPurchaseOrder');
             // Route::get('purchases/item_resource/{id}', 'Tenant\PurchaseController@itemResource');
 
-            Route::get('purchases/document_types', 'Tenant\DocumentPurchaseTypy2Controller@index');
+            Route::get('purchases/document_types', 'Tenant\DocumentPurchaseTypy2Controller@index')->name('tenant.purchases.types');;
+            Route::get('purchases/document_types/records', 'Tenant\DocumentPurchaseTypy2Controller@records');
+            Route::get('purchases/document_types/record/{id}', 'Tenant\DocumentPurchaseTypy2Controller@record');
+            Route::post('purchases/document_types', 'Tenant\DocumentPurchaseTypy2Controller@store');
+            Route::get('purchases/document_types/tables', 'Tenant\DocumentPurchaseTypy2Controller@tables');
 
             // Route::get('documents/send/{document}', 'Tenant\DocumentController@send');
             // Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');

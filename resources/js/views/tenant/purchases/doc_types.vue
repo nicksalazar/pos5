@@ -44,11 +44,29 @@
                                 {{ row.active }}
                             </span>
                         </td>
-                        <td class="text-center" > {{ row.description }}</td>
-                        <td class="text-center" > {{ row.DocumentTypeID }}</td>
-                        <td class="text-center">{{ row.accountant }}</td>
-                        <td class="text-center">{{ row.stock }}</td>
-                        <td class="text-center">{{ row.sign }}</td>
+                        <td class="text-center" >{{ row.description }}</td>
+                        <td class="text-center" >{{ row.DocumentTypeID }}</td>
+                        <td class="text-center" >
+                            <span
+                                  class="badge bg-secondary text-white"
+                                  :class="{'bg-success': (row.accountant === true), 'bg-secondary': (row.accountant === false)}">
+                                {{ row.accountant }}
+                            </span>
+                        </td>
+                        <td class="text-center" >
+                            <span
+                                  class="badge bg-secondary text-white"
+                                  :class="{'bg-success': (row.stock === true), 'bg-secondary': (row.stock === false)}">
+                                {{ row.stock }}
+                            </span>
+                        </td>
+                        <td class="text-center" >
+                            <span
+                                  class="badge bg-secondary text-white"
+                                  :class="{'bg-success': (row.sign === true), 'bg-danger': (row.sign === false)}">
+                                {{ row.sign  }}
+                            </span>
+                        </td>
                         <td class="text-right" >
                             <div class="dropdown">
                                 <button class="btn btn-default btn-sm" type="button" id="dropdownMenuButton"
@@ -70,10 +88,10 @@
                 </data-table>
             </div>
 
-            <tenant-imports-tariff-form
+            <tenant-purchases-document-types-form
                           :recordId="recordId"
                           :showDialog.sync="showDialog"
-                          ></tenant-imports-tariff-form>
+                          ></tenant-purchases-document-types-form>
 
         </div>
     </div>
@@ -103,7 +121,7 @@ export default {
     data() {
         return {
             showDialog: false,
-            resource: 'tariff',
+            resource: 'purchases',
             recordId: null,
             showDialogOptions: false,
             showDialogPayments: false,

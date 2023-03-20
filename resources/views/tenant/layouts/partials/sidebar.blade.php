@@ -599,6 +599,12 @@
                                                href="{{route('tenant.purchases.index')}}">Listado</a>
                                         </li>
                                     @endif
+                                    @if(in_array('purchases_create', $vc_module_levels))
+                                        <li class="{{ ($firstLevel === 'purchases' && $secondLevel === 'create')?'nav-active':'' }}">
+                                            <a class="nav-link"
+                                               href="{{route('tenant.purchases.types')}}">Tipo Documentos</a>
+                                        </li>
+                                    @endif
                                     @if(in_array('purchases_orders', $vc_module_levels))
                                         <li class="{{ ($firstLevel === 'purchase-orders')?'nav-active':'' }}">
                                             <a class="nav-link"

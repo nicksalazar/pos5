@@ -20,8 +20,9 @@ class TenantCreateCatPurchaseDocumentTypes2 extends Migration
             $table->boolean('stock')->default(false);
             $table->integer('sign',2)->default(1);
             $table->string('short')->nullable();
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->string('DocumentTypeID');
+            $table->timestamps();
             $table->foreign('DocumentTypeID')->references('id')->on('cat_purchase_document_types');
         });
     }
