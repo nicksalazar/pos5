@@ -182,7 +182,7 @@
                 'sanitary' => $this->sanitary,
                 'cod_digemid' => $this->cod_digemid,
                 'supplies' => $itemSupply,
-                
+
                 'purchase_has_isc' => $this->purchase_has_isc,
                 'purchase_system_isc_type_id' => $this->purchase_system_isc_type_id,
                 'purchase_percentage_isc' => $this->purchase_percentage_isc,
@@ -190,6 +190,8 @@
                 'exchange_points' => $this->exchange_points,
                 'quantity_of_points' => $this->quantity_of_points,
                 'factory_code' => $this->factory_code,
+                'tariff_id' => $this->tariff_id,
+                'concept_id' => $this->concept_id,
 
             ];
         }

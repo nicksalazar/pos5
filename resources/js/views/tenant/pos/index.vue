@@ -27,7 +27,7 @@
                         <el-checkbox class="ml-2 mt-1" v-model="search_item_by_barcode_presentation">Por presentación</el-checkbox>
                     </template> -->
                 </h2>
-                
+
                 <div class="row" v-if="search_item_by_barcode" style="width: 42;">
                     <div class="col-md-12">
                         <el-checkbox class="mt-1 font-weight-bold" v-model="search_item_by_barcode_presentation">Por presentación</el-checkbox>
@@ -35,7 +35,7 @@
                     <div class="col-md-12">
 
                         <el-checkbox class="mt-1 mb-1 font-weight-bold" v-model="electronic_scale_barcode">Balanza electrónica</el-checkbox>
-                        
+
                         <el-tooltip class="item" effect="dark" placement="top-start">
 
                             <div slot="content">
@@ -178,7 +178,7 @@
                         @keyup.native="keyupTabCustomer"
                         ref="ref_search_items"
                         class="m-bottom mt-3"
-                        
+
                         @focus="searchFromBarcode = true"
                         @blur="searchFromBarcode = false"
                     >
@@ -569,7 +569,7 @@
                 class="col-lg-4 col-md-6 bg-white m-0 p-0"
                 style="height: calc(100vh - 110px)"
             >
-                <div class="h-75 bg-light" style="overflow-y: auto">
+                <div class="h-70 bg-light" style="overflow-y: auto">
                     <div class="row py-3 border-bottom m-0 p-0">
                         <div class="col-8">
                             <el-select
@@ -609,7 +609,7 @@
                                     class="btn btn-sm btn-default w-100"
                                     @click="selectCurrencyType"
                                 >
-                                    
+
                                     <template>
                                         <strong>{{ currency_type.symbol }}</strong>
                                     </template>
@@ -706,7 +706,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="h-25 bg-light" style="overflow-y: auto">
+                <div class="h-30 bg-light" style="overflow-y: auto">
                     <div
                         class="row border-top bg-light m-0 p-0 h-50 d-flex align-items-right pr-5 pt-2"
                     >
@@ -798,6 +798,17 @@
                                     <td class="text-right text-blue">
                                         {{ currency_type.symbol }}
                                         {{ form.total_plastic_bag_taxes }}
+                                    </td>
+                                </tr>
+                                <tr
+                                    v-if="form.total_charge > 0"
+                                    class="font-weight-semibold  m-0"
+                                >
+                                    <td class="font-weight-semibold">CARGOS ADICIONALES</td>
+                                    <td class="font-weight-semibold">:</td>
+                                    <td class="text-right text-blue">
+                                        {{ currency_type.symbol }}
+                                        {{ form.total_charge }}
                                     </td>
                                 </tr>
                             </table>
@@ -1084,6 +1095,7 @@ export default {
             focusClienteSelect: false,
             itemUnitTypes: [],
             searchFromBarcode: false,
+            total_global_charge: 0,
         };
     },
     async created() {
@@ -1164,7 +1176,7 @@ export default {
             }
             return false;
         },
-        changeValuesElectronicScale() 
+        changeValuesElectronicScale()
         {
             return this.electronic_scale_barcode && this.electronic_scale_data.pass_validations
         }
@@ -1266,6 +1278,10 @@ export default {
                     }`
                 )
                 .then(response => {
+                    console.log( `/${this.resource}/items?${this.getQueryParameters()}&cat=${
+                        this.category_selected
+                    }`)
+                    console.log(response.data.data)
                     this.all_items = response.data.data;
                     this.filterItems();
                     this.pagination = response.data.meta;
@@ -1464,6 +1480,7 @@ export default {
 
             this.form.items[index] = this.row;
             this.calculateTotal();
+            this.chargeGlobal();
             this.setFormPosLocalStorage();
         },
         blurCalculateQuantity2(index) {
@@ -1475,6 +1492,7 @@ export default {
             );
             this.form.items[index] = this.row;
             this.calculateTotal();
+            this.chargeGlobal();
         },
         changeCustomer() {
             // console.log('clien 13')
@@ -1628,6 +1646,7 @@ export default {
                 agent_id: null,
                 dispatch_ticket_pdf: this.configuration ? this.configuration.enabled_dispatch_ticket_pdf : false,
             };
+            this.total_global_charge = 0
             // console.log(this.configuration.show_terms_condition_pos);
             if (this.configuration.show_terms_condition_pos) {
 
@@ -1685,6 +1704,7 @@ export default {
                 has_igv: false,
                 has_plastic_bag_taxes: false,
             };
+            this.total_global_charge = 0
         },
         async clickPayment() {
 
@@ -1737,6 +1757,7 @@ export default {
             }
         },
         async clickAddItem(item, index, input = false) {
+
             this.loading = true;
             let exchangeRateSale = this.form.exchange_rate_sale;
             let presentation = item.presentation
@@ -1820,7 +1841,7 @@ export default {
                         search_item_bd.sale_unit_price
                     );
                 }
-                
+
                 //JOINSOFTWARE //
                 let unit_price = 0;
 
@@ -1857,7 +1878,7 @@ export default {
                 exist_item.item.unit_price = unit_price;
 
                 exist_item.has_plastic_bag_taxes = exist_item.item.has_plastic_bag_taxes;
-
+                exist_item.has_service_taxes = exist_item.item.has_service_taxes;
 
                 //asignar variables isc
                 exist_item.has_isc = exist_item.item.has_isc
@@ -1875,8 +1896,8 @@ export default {
                 this.row["unit_type_id"] = item.unit_type_id;
 
                 this.form.items[pos] = this.row;
-            } 
-            else 
+            }
+            else
             {
                 console.log("item precio: ")
                 console.log(item.sale_unit_price)
@@ -1898,6 +1919,7 @@ export default {
                 this.form_item.unit_price_value = this.form_item.item.sale_unit_price;
                 this.form_item.has_igv = this.form_item.item.has_igv;
                 this.form_item.has_plastic_bag_taxes = this.form_item.item.has_plastic_bag_taxes;
+                this.form_item.has_service_taxes = this.form_item.item.has_service_taxes;
                 this.form_item.affectation_igv_type_id = this.form_item.item.sale_affectation_igv_type_id;
                 this.form_item.quantity = 1;
                 this.form_item.aux_quantity = 1;
@@ -1931,7 +1953,7 @@ export default {
 
                 // balanza
                 this.setScaleQuantityIfNotExistItem()
-                
+
                 if(this.changeValuesElectronicScale)
                 {
                     unit_price = this.getUnitPriceFromElectronicScale()
@@ -1967,7 +1989,7 @@ export default {
                     exchangeRateSale,
                     this.percentage_igv
                 );
-                // console.log(this.row)
+                console.log(this.row)
 
                 // this.row['unit_type_id'] = item.presentation ? item.presentation.unit_type_id : 'NIU';
 
@@ -1980,9 +2002,6 @@ export default {
                 this.form.items.unshift(this.row);
                 item.aux_quantity = 1;
             }
-
-            // console.log("pos", this.row);
-
             this.$notify({
                 title: "",
                 message: "Producto añadido!",
@@ -1996,14 +2015,11 @@ export default {
                 this.initFocus();
             }
 
-            // console.log(this.row)
-            console.log(this.form.items)
             await this.calculateTotal();
+            this.chargeGlobal();
             this.loading = false;
 
             await this.setFormPosLocalStorage();
-
-            // balanza
             this.initElectronicScaleData()
         },
         async getStatusStock(item_id, quantity) {
@@ -2018,9 +2034,8 @@ export default {
         },
         async clickDeleteItem(index) {
             this.form.items.splice(index, 1);
-
             this.calculateTotal();
-
+            this.chargeGlobal();
             await this.setFormPosLocalStorage();
         },
 
@@ -2041,6 +2056,9 @@ export default {
             let total_isc = 0
             let total_igv_free = 0
 
+            this.total_discount_no_base = 0
+            this.total_global_charge = 0
+            this.form.total_charge = 0
 
             this.form.items.forEach(row => {
 
@@ -2096,8 +2114,8 @@ export default {
                 }
 
                 // total_value += parseFloat(row.total_value);
-                
-                if(!['21', '37'].includes(row.affectation_igv_type_id)) 
+
+                if(!['21', '37'].includes(row.affectation_igv_type_id))
                 {
                     total_value += (row.total_value_without_rounding) ? parseFloat(row.total_value_without_rounding) : parseFloat(row.total_value)
                 }
@@ -2122,7 +2140,7 @@ export default {
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
-
+                this.total_global_charge += _.round(row.total_service_taxes,2)
             });
 
             // isc
@@ -2150,11 +2168,69 @@ export default {
             // this.form.total_taxes = _.round(total_igv + total_isc, 2);
 
             this.form.total_plastic_bag_taxes = _.round(total_plastic_bag_taxes, 2)
-
+            this.form.total_charge = _.round(total_charge, 2)
             this.form.total = _.round(total, 2)
             // this.form.total = _.round(total + this.form.total_plastic_bag_taxes, 2)
 
             this.form.subtotal = this.form.total
+
+            this.chargeGlobal()
+        },
+        chargeGlobal() {
+
+            let base = parseFloat(this.form.total_taxed + this.form.total_unaffected)
+
+            console.log("MONTO UNICIAL",this.total_global_charge)
+
+            if (this.configuration.active_allowance_charge) {
+                let percentage_allowance_charge = parseFloat(this.configuration.percentage_allowance_charge)
+                this.total_global_charge += _.round(base * (percentage_allowance_charge / 100), 2)
+            }
+
+            if (this.total_global_charge == 0) {
+                //this.deleteChargeGlobal()
+                return
+            }
+
+            console.log("MONTO INICIAL 2",this.total_global_charge)
+
+            let amount = parseFloat(this.total_global_charge)
+            // let base = this.form.total_taxed + amount
+            let factor = _.round(amount / base, 5)
+
+            console.log(base,factor, amount)
+
+            let charge = _.find(this.form.charges, {charge_type_id: '50'})
+
+            if (amount > 0 && !charge) {
+
+                this.form.total_charge = _.round(amount, 2)
+                console.log("total actual : " +(base  + this.form.total_taxes + this.form.total_charge))
+                this.form.total = _.round(base  + this.form.total_taxes + this.form.total_charge, 2)
+
+                this.form.charges.push({
+                    charge_type_id: '50',
+                    description: 'Cargos globales que no afectan la base imponible del IVA/IVAP',
+                    factor: factor,
+                    amount: amount,
+                    base: base
+                })
+
+            } else {
+
+                let pos = this.form.charges.indexOf(charge);
+
+                if (pos > -1) {
+
+                    this.form.total_charge = _.round(amount, 2)
+                    this.form.total = _.round(base + this.form.total_taxes + this.form.total_charge, 2)
+
+                    this.form.charges[pos].base = base
+                    this.form.charges[pos].amount = amount
+                    this.form.charges[pos].factor = factor
+
+                }
+            }
 
         },
         changeDateOfIssue() {
@@ -2288,7 +2364,7 @@ export default {
             // console.log("barcode", this.electronic_scale_data.barcode)
             // console.log("weight", this.electronic_scale_data.weight)
             // console.log("total", this.electronic_scale_data.total)
-            
+
             // console.log("parse_weight", this.electronic_scale_data.parse_weight)
             // console.log("parse_total", this.electronic_scale_data.parse_total)
 
@@ -2304,9 +2380,9 @@ export default {
             }
 
         },
-        async searchItemsBarcode() 
+        async searchItemsBarcode()
         {
-            if (this.input_item.length > 1) 
+            if (this.input_item.length > 1)
             {
                 this.loading = true;
                 let parameters = `input_item=${this.input_item}&search_item_by_barcode_presentation=${this.search_item_by_barcode_presentation}`;
@@ -2435,7 +2511,7 @@ export default {
                 this.changeCurrencyType();
             }else{
                 console.log('no tienes mas de una moneda configurada');
-            } 
+            }
         },
         async changeCurrencyType() {
             // console.log(this.form.currency_type_id)
@@ -2455,6 +2531,7 @@ export default {
             });
             this.form.items = items;
             this.calculateTotal();
+            this.chargeGlobal();
 
             await this.setFormPosLocalStorage();
         },

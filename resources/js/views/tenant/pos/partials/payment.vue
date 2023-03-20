@@ -14,20 +14,20 @@
                     <div class="col-12 px-0">
                         <h4 class="font-weight-semibold m-0 text-secondary">{{ customer.description }}</h4>
                     </div>
-                    
+
                     <!-- sistema por puntos -->
                     <div v-if="enabledPointSystem" class="mt-3">
                         <p class="fs-point-system">
-                            <label class="font-weight-bold">Puntos acumulados:</label> 
-                            <b>{{customer_accumulated_points}}</b> 
+                            <label class="font-weight-bold">Puntos acumulados:</label>
+                            <b>{{customer_accumulated_points}}</b>
 
                             <template v-if="total_exchange_points > 0">
                             - <b style="color:red">{{ total_exchange_points }}</b> = <b>{{ calculate_customer_accumulated_points }}</b>
                             </template>
                         </p>
                         <p class="fs-point-system">
-                            <label class="font-weight-bold text-danger">Puntos por la compra:</label> 
-                            <b>{{total_points_by_sale}}</b> 
+                            <label class="font-weight-bold text-danger">Puntos por la compra:</label>
+                            <b>{{total_points_by_sale}}</b>
                         </p>
                     </div>
                     <!-- sistema por puntos -->
@@ -105,6 +105,15 @@
                                                                  {{ form.total_plastic_bag_taxes }}</p>
                         </div>
                     </div>
+                    <div class="row m-0 p-0 bg-white h-25 d-flex align-items-center" v-if="form.total_charge > 0">
+                        <div class="col-sm-6 py-1">
+                            <p class="font-weight-semibold mb-0">CARGOS ADICIONALES</p>
+                        </div>
+                        <div class="col-sm-6 py-1 text-right">
+                            <p class="font-weight-semibold mb-0">{{ currencyTypeActive.symbol }}
+                                                                 {{ form.total_charge }}</p>
+                        </div>
+                    </div>
                 </template>
                 <template v-else>
                     <div class="row m-0 p-0 bg-white h-25 d-flex align-items-center">
@@ -124,6 +133,15 @@
                         <div class="col-sm-6 py-1 text-right">
                             <p class="font-weight-semibold mb-0">{{ currencyTypeActive.symbol }}
                                                                  {{ form.total_igv }}</p>
+                        </div>
+                    </div>
+                    <div class="row m-0 p-0 bg-white h-25 d-flex align-items-center" v-if="form.total_charge > 0">
+                        <div class="col-sm-6 py-1">
+                            <p class="font-weight-semibold mb-0">CARGOS ADICIONALES</p>
+                        </div>
+                        <div class="col-sm-6 py-1 text-right">
+                            <p class="font-weight-semibold mb-0">{{ currencyTypeActive.symbol }}
+                                                                 {{ form.total_charge }}</p>
                         </div>
                     </div>
                     <div class="row m-0 p-0 bg-white h-25 d-flex align-items-center" v-if="form.total_isc > 0">
@@ -470,7 +488,7 @@
                     <div class="card card-default">
                         <div class="card-body">
                             <div class="row col-lg-12">
-                                
+
                                 <div class="col-md-12 col-lg-12 mb-1" v-if="configuration.enabled_sales_agents">
                                     <search-agent @changeAgent="changeAgent"></search-agent>
                                 </div>
@@ -487,7 +505,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
         <options-form
@@ -513,8 +531,8 @@
         <card-brands-form :external="true"
                           :recordId="null"
                           :showDialog.sync="showDialogNewCardBrand"></card-brands-form>
-                          
-        <discount-permission-form 
+
+        <discount-permission-form
                     :showDialog.sync="showDialogDiscountPermission"
                     :totalDiscountPercentage ="totalDiscountPercentage"
                     :sellers-discount-limit="configuration.sellers_discount_limit"
@@ -580,7 +598,7 @@ export default {
         'configuration',
         'typeUser',
     ],
-    
+
     data() {
         return {
             enabled_discount: false,
@@ -668,7 +686,7 @@ export default {
             return ['01', '03'].includes(this.form.document_type_id)
         }
     },
-    methods: 
+    methods:
     {
         changeAgent(agent_id)
         {
@@ -690,11 +708,11 @@ export default {
             this.setTotalExchangePoints()
             this.changeRowFreeAffectationIgv(row, index)
         },
-        async changeRowFreeAffectationIgv(row, index) 
+        async changeRowFreeAffectationIgv(row, index)
         {
             this.form.items[index].affectation_igv_type_id = (row.item.exchanged_for_points) ? '15' : this.form.items[index].item.original_affectation_igv_type_id
             this.form.items[index].affectation_igv_type = await _.find(this.affectationIgvTypes, {id: this.form.items[index].affectation_igv_type_id})
-            
+
             let new_row = await calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale, this.percentageIgv)
             new_row['unit_type_id'] = row.unit_type_id
 
@@ -902,13 +920,13 @@ export default {
                 }
 
                 // if (['10', '20', '30', '40'].indexOf(row.affectation_igv_type_id) > -1) {
-                if (['10', '20', '30', '40', '21'].indexOf(row.affectation_igv_type_id) > -1) 
+                if (['10', '20', '30', '40', '21'].indexOf(row.affectation_igv_type_id) > -1)
                 {
                     total_igv += (row.total_igv_without_rounding) ? parseFloat(row.total_igv_without_rounding) : parseFloat(row.total_igv)
                     total += (row.total_without_rounding) ? parseFloat(row.total_without_rounding) : parseFloat(row.total)
                 }
 
-                if(!['21', '37'].includes(row.affectation_igv_type_id)) 
+                if(!['21', '37'].includes(row.affectation_igv_type_id))
                 {
                     total_value += (row.total_value_without_rounding) ? parseFloat(row.total_value_without_rounding) : parseFloat(row.total_value)
                 }
@@ -960,13 +978,68 @@ export default {
 
             this.form.total = _.round(total, 2)
             this.form.subtotal = this.form.total
+            //this.form.total_charge = _.round(total_charge, 2)
 
             // this.form.total = _.round(total + this.form.total_plastic_bag_taxes, 2)
             // this.form.subtotal = _.round(total + this.form.total_plastic_bag_taxes, 2)
 
             this.discountGlobal()
-
+            this.chargeGlobal()
             this.setTotalPointsBySale(this.configuration)
+
+        },
+        chargeGlobal() {
+
+            let base = parseFloat(this.form.total_taxed + this.form.total_unaffected)
+
+            if (this.configuration.active_allowance_charge) {
+                let percentage_allowance_charge = parseFloat(this.configuration.percentage_allowance_charge)
+                this.total_global_charge = _.round(base * (percentage_allowance_charge / 100), 2)
+            }
+
+            if (this.total_global_charge == 0) {
+                this.deleteChargeGlobal()
+                return
+            }
+
+
+            let amount = parseFloat(this.total_global_charge)
+            // let base = this.form.total_taxed + amount
+            let factor = _.round(amount / base, 5)
+
+            // console.log(base,factor, amount)
+
+            let charge = _.find(this.form.charges, {charge_type_id: '50'})
+
+            if (amount > 0 && !charge) {
+
+                this.form.total_charge = _.round(amount, 2)
+                this.form.total = _.round(this.form.total + this.form.total_charge, 2)
+
+                this.form.charges.push({
+                    charge_type_id: '50',
+                    description: 'Cargos globales que no afectan la base imponible del IVA/IVAP',
+                    factor: factor,
+                    amount: amount,
+                    base: base
+                })
+
+            } else {
+
+                let pos = this.form.charges.indexOf(charge);
+
+                if (pos > -1) {
+
+                    this.form.total_charge = _.round(amount, 2)
+                    this.form.total = _.round(this.form.total + this.form.total_charge, 2)
+
+                    this.form.charges[pos].base = base
+                    this.form.charges[pos].amount = amount
+                    this.form.charges[pos].factor = factor
+
+                }
+            }
+
 
         },
         deleteDiscountGlobal() {
@@ -1254,7 +1327,7 @@ export default {
                 success: true
             }
         },
-        async clickPayment() 
+        async clickPayment()
         {
             // validacion restriccion de descuento
             const validate_restrict_seller_discount = this.validateRestrictSellerDiscount()

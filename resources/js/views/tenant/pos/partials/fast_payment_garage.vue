@@ -136,6 +136,15 @@
                                 </p>
                             </div>
                         </div>
+                        <div class="row m-0 p-0 bg-white h-25 d-flex align-items-center" v-if="form.total_charge > 0">
+                            <div class="col-sm-6 py-1">
+                                <p class="font-weight-semibold mb-0">CARGOS ADICIONALES</p>
+                            </div>
+                            <div class="col-sm-6 py-1 text-right">
+                                <p class="font-weight-semibold mb-0">{{ currencyTypeActive.symbol }}
+                                                                    {{ form.total_charge }}</p>
+                            </div>
+                        </div>
                     </template>
                     <template v-else>
                         <div class="row m-0 p-0 h-25 d-flex align-items-center">
@@ -156,6 +165,15 @@
                                 <p class="font-weight-semibold mb-0">
                                     {{ currencyTypeActive.symbol }}{{ form.total_igv }}
                                 </p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 bg-white h-25 d-flex align-items-center" v-if="form.total_charge > 0">
+                            <div class="col-sm-6 py-1">
+                                <p class="font-weight-semibold mb-0">CARGOS ADICIONALES</p>
+                            </div>
+                            <div class="col-sm-6 py-1 text-right">
+                                <p class="font-weight-semibold mb-0">{{ currencyTypeActive.symbol }}
+                                                                    {{ form.total_charge }}</p>
                             </div>
                         </div>
                     </template>
@@ -277,8 +295,7 @@ import MultiplePaymentForm from './multiple_payment_garage.vue'
 
 export default {
     components: {OptionsForm, CardBrandsForm, SaleNotesOptions, MultiplePaymentForm, Keypress},
-
-    props: ['form', 'customer', 'currencyTypeActive', 'exchangeRateSale', 'is_payment', 'soapCompany', 'businessTurns', 'isPrint', 'rowsItems'],
+    props: ['form', 'customer', 'currencyTypeActive', 'exchangeRateSale', 'is_payment', 'soapCompany', 'businessTurns', 'isPrint', 'rowsItems','configuration',],
     data() {
         return {
             enabled_discount: false,
@@ -399,6 +416,7 @@ export default {
                 this.discount_amount = 0
                 this.deleteDiscountGlobal()
                 this.reCalculateTotal()
+
             }
         },
         inputDiscountAmount() {
@@ -411,6 +429,7 @@ export default {
             }
             this.deleteDiscountGlobal()
             this.reCalculateTotal()
+
         },
         isExonerated() {
 
@@ -534,10 +553,61 @@ export default {
             // this.form.total = _.round(total, 2)
             this.form.subtotal = _.round(total + this.form.total_plastic_bag_taxes, 2)
             this.form.total = _.round(total + this.form.total_plastic_bag_taxes, 2)
-
+            this.form.total_charge =  _.round(total_charge, 2)
             this.discountGlobal()
+            //this.chargeGlobal()
+        },
+        chargeGlobal() {
+
+            let base = parseFloat(this.form.total_taxed + this.form.total_unaffected)
+
+            if (this.configuration.active_allowance_charge) {
+                let percentage_allowance_charge = parseFloat(this.configuration.percentage_allowance_charge)
+                this.total_global_charge = _.round(base * (percentage_allowance_charge / 100), 2)
+            }
+
+            if (this.total_global_charge == 0) {
+                //this.deleteChargeGlobal()
+                return
+            }
 
 
+            let amount = parseFloat(this.total_global_charge)
+            // let base = this.form.total_taxed + amount
+            let factor = _.round(amount / base, 5)
+
+            // console.log(base,factor, amount)
+
+            let charge = _.find(this.form.charges, {charge_type_id: '50'})
+
+            if (amount > 0 && !charge) {
+
+                this.form.total_charge = _.round(amount, 2)
+                this.form.total = _.round(this.form.total + this.form.total_charge, 2)
+
+                this.form.charges.push({
+                    charge_type_id: '50',
+                    description: 'Cargos globales que no afectan la base imponible del IVA/IVAP',
+                    factor: factor,
+                    amount: amount,
+                    base: base
+                })
+
+            } else {
+
+                let pos = this.form.charges.indexOf(charge);
+
+                if (pos > -1) {
+
+                    this.form.total_charge = _.round(amount, 2)
+                    this.form.total = _.round(this.form.total + this.form.total_charge, 2)
+
+                    this.form.charges[pos].base = base
+                    this.form.charges[pos].amount = amount
+                    this.form.charges[pos].factor = factor
+
+                }
+            }
         },
         deleteDiscountGlobal() {
 
@@ -828,6 +898,7 @@ export default {
             this.locked_submit = true
 
             await this.$http.post(`/${this.resource_documents}`, this.form).then(response => {
+                console.log(`/${this.resource_documents}`,this.form)
                 if (response.data.success) {
 
                     if (this.form.document_type_id === "80") {

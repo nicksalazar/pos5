@@ -34,6 +34,7 @@ use App\Models\Tenant\CatItemSize;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Establishment;
+use App\Models\Tenant\ImportConcepts;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\ItemImage;
 use App\Models\Tenant\ItemMovement;
@@ -41,6 +42,7 @@ use App\Models\Tenant\ItemSupply;
 use App\Models\Tenant\ItemTag;
 use App\Models\Tenant\ItemUnitType;
 use App\Models\Tenant\ItemWarehousePrice;
+use App\Models\Tenant\Tariff;
 use App\Models\Tenant\Warehouse;
 use App\Traits\OfflineTrait;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -245,6 +247,8 @@ class ItemController extends Controller
         /** Informacion adicional */
         $configuration = $configuration->getCollectionData();
         $inventory_configuration = InventoryConfiguration::firstOrFail();
+        $tariffs = Tariff::where('active',1)->get();
+        $concepts = ImportConcepts::get();
         /*
         $configuration = Configuration::select(
             'affectation_igv_type_id',
@@ -273,7 +277,9 @@ class ItemController extends Controller
             'CatItemPackageMeasurement',
             'CatItemProductFamily',
             'CatItemUnitsPerPackage',
-            'inventory_configuration'
+            'inventory_configuration',
+            'tariffs',
+            'concepts',
         );
     }
 

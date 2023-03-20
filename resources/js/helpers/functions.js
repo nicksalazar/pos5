@@ -1,8 +1,9 @@
-function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pigv) {
+function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pigv, currency_type_id_def = null ) {
     //console.log("porcentage ICG: "+pigv);
     //pigv = 0.12;
     let currency_type_id_old = row_old.item.currency_type_id
     let unit_price = parseFloat(row_old.item.unit_price)
+    let unit_value_est = parseFloat(row_old.item.sale_unit_price)
     // } else {
     //     unit_price = parseFloat(row_old.item.unit_price) * 1.18
     // }
@@ -10,13 +11,22 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     //console.log(row_old)
 
-    if (currency_type_id_old === 'PEN' && currency_type_id_old !== currency_type_id_new) {
+    //if (currency_type_id_old === 'PEN' && currency_type_id_old !== currency_type_id_new) {
+    //    unit_price = unit_price / exchange_rate_sale;
+    //}
+
+    //if (currency_type_id_new === 'PEN' && currency_type_id_old !== currency_type_id_new) {
+    //    unit_price = unit_price * exchange_rate_sale;
+    //}
+
+    if (currency_type_id_old === currency_type_id_def && currency_type_id_old !== currency_type_id_new) {
         unit_price = unit_price / exchange_rate_sale;
     }
 
-    if (currency_type_id_new === 'PEN' && currency_type_id_old !== currency_type_id_new) {
+    if (currency_type_id_new === currency_type_id_def && currency_type_id_old !== currency_type_id_new) {
         unit_price = unit_price * exchange_rate_sale;
     }
+
 
     // unit_price = _.round(unit_price, 4);
 
@@ -26,7 +36,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     let has_isc = row_old.has_isc
 
-    // console.log(row_old)
+    //console.log(row_old)
 
     let row = {
         item_id: row_old.item.id,
@@ -86,6 +96,14 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     };
 
     // console.log(row)
+
+    //SERVICIO
+    let total_service_taxes = 0
+    if(row_old.has_service_taxes){
+        total_service_taxes = _.round(row.quantity * (unit_value_est * (row.item.amount_service_taxes/100)), 2)
+        row.total_service_taxes = total_service_taxes
+    }
+    //END SERVICIO
 
     let percentage_igv = pigv * 100
 
@@ -258,10 +276,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     }
 
 
-    //impuesto bolsa - icbper
-
     let total_plastic_bag_taxes = 0
-    let total_service_taxes = 0
 
     if (row_old.has_plastic_bag_taxes) {
 
