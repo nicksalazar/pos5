@@ -390,6 +390,13 @@
                                             disabled></el-input-number>
                                         <el-input-number v-else :value="row.quantity" :controls="false"
                                             disabled></el-input-number>
+                                        <div v-if="row.individual_item && row.individual_item.lots_enabled && isCreating"
+                                            style="padding-top: 1%;">
+                                            <a class="text-center font-weight-bold text-info" href="#"
+                                                @click.prevent="clickLotGroup(row)">[&#10004;
+                                                Seleccionar
+                                                lote]</a>
+                                        </div>
 
                                         <!-- JOINSOFTWARE
                                     <el-input-number v-model="quantityD" :step="1"></el-input-number>
@@ -417,14 +424,22 @@
 
             </form>
         </div>
+            
+            
+        <lots-group :lots_group="selectSupply.lots_group" :quantity="selectSupply.quantity"
+            :showDialog.sync="showDialogLots" @addRowLotGroup="addRowLotGroup">
+        </lots-group>
     </div>
 </template>
 
 <script>
 
+import LotsGroup from './lots_group.vue'
 
 export default {
-
+    components: {
+        LotsGroup
+    },
     props: {
         id: {
             type: Number,
@@ -440,6 +455,7 @@ export default {
         return {
             resource: 'production',
             loading_submit: false,
+            showDialogLots: false,
             errors: {},
             records: {},
             isCreating: false,
@@ -456,6 +472,11 @@ export default {
                     color: null
                 },
 
+            },
+            selectSupply: {
+                supply_id: null,
+                lots_group: [],
+                quantity: 0,
             },
             loading_search: false,
             warehouses: [],
@@ -474,6 +495,21 @@ export default {
         this.initForm()
     },
     methods: {
+        addRowLotGroup(id) {
+           /* let IdLoteSelected = id;
+            const index = this.supplies.findIndex(item => item.id === this.selectSupply.supply_id);
+
+            if (index !== -1) {
+                this.supplies[index].lots_discounts = { discount: 0.1, quantity: 10 };
+            }*/
+        },
+        clickLotGroup(row) {
+            let donwloadQuantity = row.quantity * this.form.quantity
+            this.selectSupply.supply_id = row.individual_item.individual_item_id
+            this.selectSupply.lots_group = row.individual_item.lots_group;
+            this.selectSupply.quantity = donwloadQuantity;
+            this.showDialogLots = true
+        },
         deleteStatus(id) {
             const index = this.records.findIndex((estado) => estado.id === id);
             if (index !== -1) {
@@ -544,7 +580,7 @@ export default {
                 id: this.id,
                 item_id: null,
                 warehouse_id: null,
-                quantity: 0,
+                quantity: 1,
                 informative: false,
                 records_id: null,
                 agreed: 0,
