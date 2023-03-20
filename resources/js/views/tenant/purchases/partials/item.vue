@@ -119,10 +119,10 @@
                                     <el-select slot="prepend"
                                                v-model="form.item.currency_type_id"
                                                class="el-select-currency">
-                                        <el-option label="S/"
-                                                   value="PEN"></el-option>
-                                        <el-option label="$"
-                                                   value="USD"></el-option>
+                                            <el-option v-for="option in currencyTypes"
+                                               :key="option.id"
+                                               :label="option.symbol"
+                                               :value="option.id"></el-option>
                                     </el-select>
                                 </el-input>
                                 <small v-if="errors.unit_price"
@@ -135,7 +135,7 @@
                                          v-model="form.update_date_of_due">Asignar Fecha de vencimiento
                             </el-checkbox>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-5">
                             <div :class="{'has-danger': errors.retention_type_id_iva}"
                                  class="form-group">
                                  <!-- JOINSOFTWARE -->
@@ -149,10 +149,19 @@
                                                :label="option.code + ' - ' + option.description"
                                                :value="option.id"></el-option>
                                 </el-select>
+                                <br>
+                                <el-input
+                                    v-if="is_iva"
+                                    v-model="form.iva_retention"
+                                    :disabled="true"
+                                    dusk="iva_retention">
+                                </el-input>
                                 <small v-if="errors.retention_type_id_iva"
                                        class="form-control-feedback"
                                        v-text="errors.retention_type_id_iva[0]"></small>
                             </div>
+                        </div>
+                        <div class="col-md-7">
                             <div :class="{'has-danger': errors.retention_type_id_income}"
                                  class="form-group">
                                  <!-- JOINSOFTWARE -->
@@ -166,45 +175,18 @@
                                                :label="option.code + ' - ' + option.description"
                                                :value="option.id"></el-option>
                                 </el-select>
+                                <el-input
+                                    v-if="is_income"
+                                    v-model="form.income_retention"
+                                    :disabled="true"
+                                    dusk="income_retention">
+                                </el-input>
                                 <small v-if="errors.retention_type_id_income"
                                        class="form-control-feedback"
                                        v-text="errors.retention_type_id_income[0]"></small>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div :class="{'has-danger': errors.iva_retention}"
-                                 class="form-group">
-                                 <!-- JOINSOFTWARE -->
-                                <label class="control-label">Retención IVA</label>
-                                <el-input
-                                    v-if="is_iva"
-                                    v-model="form.iva_retention"
-                                    dusk="iva_retention">
-                                </el-input>
-                                <el-input
-                                    v-else>
-                                </el-input>
-                                <small v-if="errors.iva_retention"
-                                       class="form-control-feedback"
-                                       v-text="errors.iva_retention[0]"></small>
-                            </div>
-                            <div :class="{'has-danger': errors.income_retention}"
-                                 class="form-group">
-                                 <!-- JOINSOFTWARE -->
-                                <label class="control-label">Retención RENTA</label>
-                                <el-input
-                                    v-if="is_income"
-                                    v-model="form.income_retention"
-                                    dusk="income_retention">
-                                </el-input>
-                                <el-input
-                                    v-else>
-                                </el-input>
-                                <small v-if="errors.income_retention"
-                                       class="form-control-feedback"
-                                       v-text="errors.income_retention[0]"></small>
-                            </div>
-                        </div>
+
                         <div v-if="form.update_price"
                              class="col-md-2">
                             <div :class="{'has-danger': errors.unit_price}"
@@ -269,6 +251,29 @@
                                 <small v-if="errors.warehouse_id"
                                        class="form-control-feedback"
                                        v-text="errors.warehouse_id[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div :class="{'has-danger': errors.import}"
+                                 class="form-group">
+                                <label class="control-label">Importacion
+                                    <el-tooltip class="item"
+                                                content="Pertenece a una importacion?"
+                                                effect="dark"
+                                                placement="top">
+                                        <i class="fa fa-info-circle"></i>
+                                    </el-tooltip>
+                                </label>
+                                <el-select v-model="form.import"
+                                           filterable>
+                                    <el-option v-for="option in imports"
+                                               :key="option.id"
+                                               :label="option.numeroImportacion"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.imports"
+                                       class="form-control-feedback"
+                                       v-text="errors.imports[0]"></small>
                             </div>
                         </div>
                         <div v-if="form.item_id"
@@ -649,9 +654,10 @@ export default {
     props: [
         'showDialog',
         'currencyTypeIdActive',
+        'currencyTypeIdConfig',
         'exchangeRateSale',
         'localHasGlobalIgv',
-        'percentageIgv'
+        'percentageIgv',
     ],
     components: {itemForm, LotsForm, Keypress},
     computed: {
@@ -737,6 +743,7 @@ export default {
             items: [],
             all_items: [],
             warehouses: [],
+            imports: [],
             lots: [],
             affectation_igv_types: [],
             system_isc_types: [],
@@ -749,6 +756,7 @@ export default {
             prices: {},
             retention_types_iva: [],
             retention_types_income: [],
+            currencyTypes: [],
         }
     },
     created() {
@@ -757,7 +765,7 @@ export default {
         this.activeName = 'first'
         this.initForm()
         this.$http.get(`/${this.resource}/item/tables`).then(response => {
-            //console.log("Data: ", response.data);
+            console.log("Data CREATE: ", response.data.items);
             this.all_items = response.data.items
             this.affectation_igv_types = response.data.affectation_igv_types
             this.system_isc_types = response.data.system_isc_types
@@ -765,6 +773,8 @@ export default {
             this.charge_types = response.data.charge_types
             this.attribute_types = response.data.attribute_types
             this.warehouses = response.data.warehouses
+            this.imports = response.data.imports
+            this.currencyTypes = response.data.currencyTypes
             this.retention_types_iva = response.data.retention_types_iva
             this.retention_types_income = response.data.retention_types_income
             this.$store.commit('setConfiguration', response.data.configuration)
@@ -775,6 +785,7 @@ export default {
             //console.log("Item id: ", item_id);
             this.reloadDataItems(item_id)
         })
+
     },
     methods: {
         ...mapActions([
@@ -890,6 +901,8 @@ export default {
                 update_price: false,
                 update_date_of_due: false,
                 update_purchase_price: this.config.checked_update_purchase_price,
+                concepto:null,
+
                 // update_purchase_price: true,
             }
 
@@ -961,7 +974,9 @@ export default {
             this.form.item.unit_type_id = row.unit_type_id
         },
         changeItem() {
+
             const item = {..._.find(this.items, {'id': this.form.item_id})};
+            console.log('changeItem',item)
             this.form.item = item;
             this.form.item = this.setExtraFieldOfitem(this.form.item)
 
@@ -981,6 +996,8 @@ export default {
             this.form.has_isc = this.form.item.purchase_has_isc
             this.form.percentage_isc = this.form.item.purchase_percentage_isc
             this.form.system_isc_type_id = this.form.item.purchase_system_isc_type_id
+
+            this.form.concepto = this.form.item.concept_id
 
         },
         cambioCantidad(){
@@ -1026,20 +1043,21 @@ export default {
 
             if (val.type_id == '01') {
                 if(item.has_igv){
+
                     if (item.sale_affectation_igv_type_id == '10') {
-                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.12), 3) * this.form.quantity
+                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.12), 2) * this.form.quantity
                     } else if (item.sale_affectation_igv_type_id == '11') {
-                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.08), 3) * this.form.quantity
+                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.08), 2) * this.form.quantity
                     } else if (item.sale_affectation_igv_type_id == '12') {
-                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.14), 3) * this.form.quantity
+                        this.form.income_retention = _.round((val.percentage / 100) * (this.income / 1.14), 2) * this.form.quantity
                     } else if (item.sale_affectation_igv_type_id == '30') {
 
-                        this.form.income_retention = _.round((val.percentage / 100) * this.income, 3) * this.form.quantity
+                        this.form.income_retention = _.round((val.percentage / 100) * this.income, 2) * this.form.quantity
                     }
 
                 }else{
 
-                    this.form.income_retention = _.round((val.percentage / 100) * this.income, 3) * this.form.quantity
+                    this.form.income_retention = _.round((val.percentage / 100) * this.income, 2) * this.form.quantity
                 }
 
                 this.is_income = true
@@ -1079,6 +1097,7 @@ export default {
             this.setGlobalIgvToItem()
         },
         async clickAddItem() {
+
             if (this.form.item.lots_enabled) {
                 if (!this.lot_code)
                     return this.$message.error('Código de lote es requerido');
@@ -1116,8 +1135,10 @@ export default {
             this.form.item.retention_type_id_iva = this.form.retention_type_id_iva;
             this.form.item.income_retention = this.form.income_retention;
             this.form.item.iva_retention = this.form.iva_retention;
+            this.form.item.import_id = this.form.import;
             this.form.affectation_igv_type = _.find(this.affectation_igv_types, {'id': this.form.affectation_igv_type_id})
-            this.row = await calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale, this.percentageIgv)
+
+            this.row = await calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale, this.percentageIgv, this.currencyTypeIdConfig)
             this.row.lot_code = await this.lot_code
             this.row.lots = await this.lots
             this.row.update_price = this.form.update_price
@@ -1130,9 +1151,23 @@ export default {
             this.row.date_of_due = date_of_due
             this.row.retention_type_id_income = this.form.retention_type_id_income;
             this.row.retention_type_id_iva = this.form.retention_type_id_iva;
+
             this.row.income_retention = this.form.income_retention;
             this.row.iva_retention = this.form.iva_retention;
 
+            if( this.currencyTypeIdActive == this.currencyTypeIdConfig && this.currencyTypeIdActive !== this.form.currency_type_id ){
+
+                this.row.income_retention = this.form.income_retention / this.exchangeRateSale;
+                this.row.iva_retention = this.form.iva_retention  / this.exchangeRateSale;
+
+            }else if( this.form.currency_type_id == this.currencyTypeIdConfig && this.currencyTypeIdActive !== this.form.currency_type_id ){
+
+                this.row.income_retention = this.form.income_retention * this.exchangeRateSale;
+                this.row.iva_retention = this.form.iva_retention  * this.exchangeRateSale;
+
+            }
+            this.row.import = this.form.import;
+            this.row.concepto = this.form.concepto;
 
             this.initForm()
 

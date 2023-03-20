@@ -282,7 +282,7 @@
                                             {{ row.total_plastic_bag_taxes }}</small>
                                         </template>
                                         <template v-if="row.total_service_taxes > 0">
-                                            <br/><small>SERVICIO: {{ currency_type.symbol }}
+                                            <br/><small>Adicionales: {{ currency_type.symbol }}
                                             {{ row.total_service_taxes }}</small>
                                         </template>
                                         <br/><small>{{ row.affectation_igv_type.description }}</small>
@@ -3427,11 +3427,12 @@ export default {
             let total_base_isc = 0
             let total_isc = 0
 
+            this.total_global_charge = 0
             // let total_free_igv = 0
 
             this.form.items.forEach((row) => {
 
-                // console.log(row)
+                console.log("INVOICE CREATE ROW",row)
 
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
@@ -3543,6 +3544,7 @@ export default {
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
+                this.total_global_charge += _.round(row.total_service_taxes,2)
             });
 
             // isc
@@ -3620,11 +3622,11 @@ export default {
         },
         chargeGlobal() {
 
-            let base = parseFloat(this.form.total)
+            let base = parseFloat(this.form.total_taxed + this.form.total_unaffected)
 
             if (this.config.active_allowance_charge) {
                 let percentage_allowance_charge = parseFloat(this.config.percentage_allowance_charge)
-                this.total_global_charge = _.round(base * (percentage_allowance_charge / 100), 2)
+                this.total_global_charge += _.round(base * (percentage_allowance_charge / 100), 2)
             }
 
             if (this.total_global_charge == 0) {
@@ -3644,7 +3646,7 @@ export default {
             if (amount > 0 && !charge) {
 
                 this.form.total_charge = _.round(amount, 2)
-                this.form.total = _.round(this.form.total + this.form.total_charge, 2)
+                this.form.total = _.round(base  + this.form.total_taxes + this.form.total_charge, 2)
 
                 this.form.charges.push({
                     charge_type_id: '50',
@@ -3661,7 +3663,7 @@ export default {
                 if (pos > -1) {
 
                     this.form.total_charge = _.round(amount, 2)
-                    this.form.total = _.round(this.form.total + this.form.total_charge, 2)
+                    this.form.total = _.round(base + this.form.total_taxes + this.form.total_charge, 2)
 
                     this.form.charges[pos].base = base
                     this.form.charges[pos].amount = amount
@@ -3670,6 +3672,8 @@ export default {
                 }
             }
 
+            this.setTotalDefaultPayment()
+            this.setPendingAmount()
 
         },
         deleteChargeGlobal() {

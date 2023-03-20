@@ -120,6 +120,8 @@ class PosController extends Controller
                         'brand' => ($row->brand) ? $row->brand->name : null,
                         'has_plastic_bag_taxes' => (bool) $row->has_plastic_bag_taxes,
                         'amount_plastic_bag_taxes' => $row->amount_plastic_bag_taxes,
+                        'has_service_taxes' => (bool) $row->has_service_taxes,
+                        'amount_service_taxes' => $row->amount_service_taxes,
 
                         'has_isc' => (bool)$row->has_isc,
                         'system_isc_type_id' => $row->system_isc_type_id,
@@ -252,6 +254,8 @@ class PosController extends Controller
                         'brand' => ($row->brand) ? $row->brand->name : null,
                         'has_plastic_bag_taxes' => (bool)$row->has_plastic_bag_taxes,
                         'amount_plastic_bag_taxes' => $row->amount_plastic_bag_taxes,
+                        'has_service_taxes' => (bool) $row->has_service_taxes,
+                        'amount_service_taxes' => $row->amount_service_taxes,
 
                         'has_isc' => (bool)$row->has_isc,
                         'system_isc_type_id' => $row->system_isc_type_id,
