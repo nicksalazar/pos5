@@ -464,6 +464,9 @@ Vue.component('tenant-accountgroups-index', require('./views/tenant/account_grou
 Vue.component('tenant-accountmovements-index', require('./views/tenant/account_movements/index.vue'));
 Vue.component('tenant-typesaccountingentries-index', require('./views/tenant/types_accounting_entries/index.vue'));
 
+//Lista tarifas
+Vue.component('tenant-ratelists-index', require('./views/tenant/rates/index.vue'));
+
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
 
