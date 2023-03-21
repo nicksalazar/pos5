@@ -439,10 +439,9 @@ use Modules\Document\Helpers\DocumentHelper;
                     ->where('id', 1)
                     ->update($clientData);
 
-                DB::connection('tenant')
-                    ->table('companies')
-                    ->where('id', 1)
-                    ->update([
+                $update = '';
+                if($password && $name_certificate && $name_certificate != '' && $password != ''){
+                    $update = [
                         'soap_type_id' => $request->soap_type_id,
                         'soap_send_id' => $request->soap_send_id,
                         'soap_username' => $request->soap_username,
@@ -450,7 +449,20 @@ use Modules\Document\Helpers\DocumentHelper;
                         'soap_url' => $request->soap_url,
                         'certificate' => $name_certificate,
                         'certificate_pass' => $password
-                    ]);
+                    ];
+                }else{
+                    $update = [
+                        'soap_type_id' => $request->soap_type_id,
+                        'soap_send_id' => $request->soap_send_id,
+                        'soap_username' => $request->soap_username,
+                        'soap_password' => $request->soap_password,
+                        'soap_url' => $request->soap_url
+                    ];
+                }
+                DB::connection('tenant')
+                    ->table('companies')
+                    ->where('id', 1)
+                    ->update($update);
 
 
                 //modules
