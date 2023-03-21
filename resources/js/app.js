@@ -455,6 +455,14 @@ Vue.component('tenant-remember-change-password', require('./views/tenant/users/p
 Vue.component('system-report-login-lockout-index', require('@viewsModuleReport/system/report_login_lockout/index.vue'));
 Vue.component('system-user-not-change-password-index', require('@viewsModuleReport/system/user_not_change_password/index.vue'));
 
+//Asientos contables
+Vue.component('tenant-accountingentries-index', require('./views/tenant/accounting_entries/index.vue'));
+Vue.component('tenant-accountingentries-form', require('./views/tenant/accounting_entries/form.vue'));
+Vue.component('tenant-accountingentries-edit', require('./views/tenant/accounting_entries/form_edit.vue'));
+
+Vue.component('tenant-accountgroups-index', require('./views/tenant/account_groups/index.vue'));
+Vue.component('tenant-accountmovements-index', require('./views/tenant/account_movements/index.vue'));
+Vue.component('tenant-typesaccountingentries-index', require('./views/tenant/types_accounting_entries/index.vue'));
 
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
