@@ -594,13 +594,13 @@
                                         </li>
                                     @endif
                                     @if(in_array('purchases_list', $vc_module_levels))
-                                        <li class="{{ ($firstLevel === 'purchases' && $secondLevel != 'create')?'nav-active':'' }}">
+                                        <li class="{{ ($firstLevel === 'purchases' && $secondLevel === '')?'nav-active':'' }}">
                                             <a class="nav-link"
                                                href="{{route('tenant.purchases.index')}}">Listado</a>
                                         </li>
                                     @endif
-                                    @if(in_array('purchases_create', $vc_module_levels))
-                                        <li class="{{ ($firstLevel === 'purchases' && $secondLevel === 'create')?'nav-active':'' }}">
+                                    @if(in_array('purchases_types', $vc_module_levels))
+                                        <li class="{{ ($firstLevel === 'purchases' && $secondLevel === 'document_types')?'nav-active':'' }}">
                                             <a class="nav-link"
                                                href="{{route('tenant.purchases.types')}}">Tipo Documentos</a>
                                         </li>
