@@ -7,13 +7,24 @@
             <form autocomplete="off"
                   @submit.prevent="submit">
                 <div class="form-body">
-
                     <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group" :class="{'has-danger': errors.document_type_intern}">
+                                <label class="control-label">Tipo comprobante Interno</label>
+                                <el-select v-model="form.document_type_intern" @change="changeDocumentType2">
+                                    <el-option v-for="option in document_types2" :key="option.idType" :value="option.idType"
+                                               :label="option.description"></el-option>
+                                </el-select>
+                                <small class="form-control-feedback" v-if="errors.document_type_intern"
+                                       v-text="errors.document_type_intern[0]"></small>
+                            </div>
+                        </div>
                         <div class="col-lg-4">
                             <div :class="{'has-danger': errors.document_type_id}"
                                  class="form-group">
-                                <label class="control-label">Tipo comprobante</label>
+                                <label class="control-label">Tipo comprobante SRI</label>
                                 <el-select v-model="form.document_type_id"
+                                            :disabled="true"
                                            @change="changeDocumentType">
                                     <el-option v-for="option in document_types"
                                                :key="option.id"
@@ -25,31 +36,38 @@
                                        v-text="errors.document_type_id[0]"></small>
                             </div>
                         </div>
+                        <div class="col-lg-4">
+                            <div :class="{'has-danger': errors.codSustento}"
+                                 class="form-group">
+                                <label class="control-label">Código Tributario</label>
+                                <el-select v-model="form.codSustento" :required="haveRetentions">
+                                    <el-option v-for="option in codSustentos"
+                                               :key="option.id"
+                                               :label="option.description"
+                                               :value="option.codSustento"></el-option>
+                                </el-select>
+                                <small v-if="errors.codSustento"
+                                       class="form-control-feedback"
+                                       v-text="errors.codSustento[0]"></small>
+                            </div>
+                        </div>
                         <div class="col-lg-2">
                             <div :class="{'has-danger': errors.series}"
                                  class="form-group">
                                 <label class="control-label">Serie <span class="text-danger">*</span></label>
                                 <el-input v-model="form.series"
+                                          :maxlength="4"></el-input>
+                                <!--
+                                <el-input v-model="form.series"
                                           :maxlength="4"
                                           @input="inputSeries"></el-input>
+                                -->
 
                                 <small v-if="errors.series"
                                        class="form-control-feedback"
                                        v-text="errors.series[0]"></small>
                             </div>
                         </div>
-                        <div class="col-lg-2">
-                            <div :class="{'has-danger': errors.number}"
-                                 class="form-group">
-                                <label class="control-label">Número <span class="text-danger">*</span></label>
-                                <el-input v-model="form.number"></el-input>
-
-                                <small v-if="errors.number"
-                                       class="form-control-feedback"
-                                       v-text="errors.number[0]"></small>
-                            </div>
-                        </div>
-
 
                         <div class="col-lg-2">
                             <div :class="{'has-danger': errors.date_of_issue}"
@@ -81,9 +99,44 @@
                                        v-text="errors.date_of_due[0]"></small>
                             </div>
                         </div>
+                    <!--
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
+                    -->
+                        <div class="col-lg-2">
+                            <div :class="{'has-danger': errors.currency_type_id}"
+                                 class="form-group">
+                                <label class="control-label">Moneda</label>
+                                <el-select v-model="form.currency_type_id"
+                                           @change="changeCurrencyType">
+                                    <el-option v-for="option in currency_types"
+                                               :key="option.id"
+                                               :label="option.description"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.currency_type_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.currency_type_id[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-2" v-if="form.currency_type_id != config.currency_type_id">
+                            <div :class="{'has-danger': errors.exchange_rate_sale}"
+                                 class="form-group">
+                                <label class="control-label">Tipo de cambio
+                                    <el-tooltip class="item"
+                                                content="Tipo de cambio del día"
+                                                effect="dark"
+                                                placement="top-end">
+                                        <i class="fa fa-info-circle"></i>
+                                    </el-tooltip>
+                                </label>
+                                <el-input v-model="form.exchange_rate_sale"></el-input>
+                                <small v-if="errors.exchange_rate_sale"
+                                       class="form-control-feedback"
+                                       v-text="errors.exchange_rate_sale[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
                             <div :class="{'has-danger': errors.supplier_id}"
                                  class="form-group">
                                 <label class="control-label">
@@ -118,40 +171,6 @@
                                 <small class="form-control-feedback" v-if="errors.payment_method_type_id" v-text="errors.payment_method_type_id[0]"></small>
                             </div>
                         </div> -->
-                        <div class="col-lg-2">
-                            <div :class="{'has-danger': errors.currency_type_id}"
-                                 class="form-group">
-                                <label class="control-label">Moneda</label>
-                                <el-select v-model="form.currency_type_id"
-                                           @change="changeCurrencyType">
-                                    <el-option v-for="option in currency_types"
-                                               :key="option.id"
-                                               :label="option.description"
-                                               :value="option.id"></el-option>
-                                </el-select>
-                                <small v-if="errors.currency_type_id"
-                                       class="form-control-feedback"
-                                       v-text="errors.currency_type_id[0]"></small>
-                            </div>
-                        </div>
-                        <!-- JOINSOFTWARE
-                        <div class="col-lg-2">
-                            <div :class="{'has-danger': errors.exchange_rate_sale}"
-                                 class="form-group">
-                                <label class="control-label">Tipo de cambio
-                                    <el-tooltip class="item"
-                                                content="Tipo de cambio del día, extraído de SUNAT"
-                                                effect="dark"
-                                                placement="top-end">
-                                        <i class="fa fa-info-circle"></i>
-                                    </el-tooltip>
-                                </label>
-                                <el-input v-model="form.exchange_rate_sale"></el-input>
-                                <small v-if="errors.exchange_rate_sale"
-                                       class="form-control-feedback"
-                                       v-text="errors.exchange_rate_sale[0]"></small>
-                            </div>
-                        </div> -->
 
                         <div class="col-lg-2"
                              v-if="purchase_order_id === null">
@@ -178,13 +197,86 @@
                         <div class="form-group col-sm-12 col-md-6 col-lg-4 "
                             :class="{ 'has-danger': errors.created_at }"
                             >
-                            <label>
+                            <label class="control-label">
                                 Observaciones
                             </label>
                             <el-input v-model="form.observation"
                                       placeholder="Observaciones"></el-input>
                         </div>
+                        <!--JOINSOFTWARE-->
+                        <div class="form-group col-sm-12 col-md-6 col-lg-2"
+                            :class="{'has-danger': errors.sequential_number}"
+                            >
+                            <label class="control-label">Secuencial</label>
+                            <el-input
+                                v-model="form.sequential_number"
+                                :maxlength="maxLength1"
+                                show-word-limit
+                                dusk="sequential_number"
+                                :required="haveRetentions"
+                                >
+                            </el-input>
+                            <small v-if="errors.sequential_number"
+                                    class="form-control-feedback"
+                                    v-text="errors.sequential_number[0]"></small>
+                        </div>
+                        <!--JOINSOFTWARE-->
+                        <div class="form-group col-sm-12 col-md-6 col-lg-4"
+                            :class="{'has-danger': errors.auth_number}">
+                            <label class="control-label">Número autorización</label>
+                            <el-input
+                                v-model="form.auth_number"
+                                :maxlength="maxLength2"
+                                :required="haveRetentions"
+                                show-word-limit
+                                dusk="auth_number">
+                            </el-input>
+                            <small v-if="errors.auth_number"
+                                    class="form-control-feedback"
+                                    v-text="errors.auth_number[0]"></small>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <div :class="{'has-danger': errors.import_id}"
+                                 class="form-group">
+                                <label class="control-label">Importacion</label>
+                                <el-select v-model="form.import_id" >
+                                    <el-option v-for="option in imports"
+                                               :key="option.id"
+                                               :label="option.numeroImportacion"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.import_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.imports_id[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div :class="{'has-danger': errors.tipo_doc_id}"
+                                 class="form-group">
+                                <label class="control-label">Tipo documento</label>
+                                <el-select v-model="form.tipo_doc_id" >
+                                    <el-option v-for="option in type_docs"
+                                               :key="option.id"
+                                               :label="option.description"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.tipo_doc_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.tipo_doc_id[0]"></small>
+                            </div>
+                        </div>
+
+
                         <div class="col-12">&nbsp;</div>
+
+                        <div class="col-md-8 mt-2">
+                            <div class="form-group">
+                                <el-checkbox v-model="form.is_aproved"
+                                            >¿Desea Autorizar las retenciones de esta compra?
+                                </el-checkbox>
+                            </div>
+                        </div>
 
                         <div class="col-md-8 mt-4">
                             <div class="form-group">
@@ -240,9 +332,6 @@
 
                             </div>
                         </div>
-
-
-
                     </div>
                     <div class="row">
                         <template v-if="form.has_payment">
@@ -510,7 +599,35 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-6">
+                            <p v-if="form.total_ret > 0"
+                               class="text-left" >RETENCIONES</p>
+                            <div class="table-responsive" v-if="form.total_ret > 0">
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Tipo</th>
+                                            <th>Código</th>
+                                            <th>Descripción</th>
+                                            <th>Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row, index) in form.ret"
+                                            :key="index">
+                                            <td>{{ index + 1 }}</td>
+                                            <td>{{ row.tipo}}</td>
+                                            <td>{{ row.code}}</td>
+                                            <td>{{ row.desciption}}</td>
+                                            <td>{{ row.valor }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
 
                             <!-- descuentos -->
 
@@ -566,6 +683,9 @@
 
                             <p v-if="form.total_isc > 0"
                                class="text-right">ISC: {{ currency_type.symbol }} {{ form.total_isc }}</p>
+
+                            <p v-if="form.total_ret > 0"
+                               class="text-right" >RETENIDO: {{ currency_type.symbol }} {{ form.total_ret }}</p>
 
                             <p v-if="form.total_discount > 0" class="text-right">DESCUENTOS TOTALES: {{ currency_type.symbol }} {{ form.total_discount }}</p>
 
@@ -636,6 +756,7 @@
 
                             </template>
                         </div>
+
                     </div>
                 </div>
                 <div class="form-actions text-right mt-4">
@@ -650,6 +771,7 @@
         </div>
 
         <purchase-form-item :currency-type-id-active="form.currency_type_id"
+                            :currency-type-id-config="config.currency_type_id"
                             :exchange-rate-sale="form.exchange_rate_sale"
                             :showDialog.sync="showDialogAddItem"
                             :localHasGlobalIgv="localHasGlobalIgv"
@@ -710,6 +832,8 @@ export default {
         return {
             input_person: {},
             resource: 'purchases',
+            maxLength1: null,
+            maxLength2: null,
             showDialogAddItem: false,
             readonly_date_of_due: false,
             localHasGlobalIgv: false,
@@ -720,12 +844,14 @@ export default {
             is_perception_agent: false,
             errors: {},
             form: {
-                items:[]
+                items:[],
+                ret:[]
             },
             aux_supplier_id: null,
             total_amount: 0,
             purchase_order_data: [],
             document_types: [],
+            document_types2: [],
             currency_types: [],
             discount_types: [],
             charges_types: [],
@@ -744,18 +870,30 @@ export default {
             loading_search: false,
             purchaseNewId: null,
             showDialogLots: false,
+            retention_types_income: [],
+            retention_types_iva: [],
+            imports:[],
+            type_docs:[],
+            codSustentos:[],
+            haveRetentions: false,
         }
     },
     async mounted() {
         this.initForm()
-        await this.$http.get(`/${this.resource}/tables`)
+        await this.$http.get(`/${this.resource}/tables_purchase`)
             .then(response => {
                 let data = response.data
                 this.document_types = data.document_types_invoice
                 this.currency_types = data.currency_types
                 this.payment_conditions = data.payment_conditions
+                this.retention_types_iva = data.retention_types_iva
+                this.retention_types_income = data.retention_types_income
+                this.imports = data.imports
+                this.type_docs = data.typeDocs
+                this.codSustentos = data.codSustentos
+                this.document_types2 = data.typeDocs2
+                console.log("TIPO DE DOCUMENTOS COMPRAS LOCAL",data.typeDocs2)
                 // this.establishment = data.establishment
-
 
                 this.all_suppliers = data.suppliers
                 this.discount_types = data.discount_types
@@ -767,15 +905,18 @@ export default {
                 this.charges_types = data.charges_types
                 this.$store.commit('setConfiguration', data.configuration);
                 this.$store.commit('setEstablishment', data.establishment);
-                this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
+                //this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
                 this.form.establishment_id = (this.establishment.id) ? this.establishment.id : null
-                this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
-
+                //this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
+                this.form.document_type_intern = (this.document_types2.length > 0 )? this.document_types2[0].idType : null
+                this.form.number = 0
+                this.suppliers = this.all_suppliers
 
             })
             .then(() => {
                 this.changeDateOfIssue()
-                this.changeDocumentType()
+                //this.changeDocumentType()
+                this.changeDocumentType2()
                 this.changeCurrencyType()
                 this.setConfigGlobalDiscountType()
             })
@@ -872,7 +1013,7 @@ export default {
                         if (supp.identity_document_type_id == 6) {
                             this.form.document_type_id = "01"
                         } else if (supp.identity_document_type_id == 1) {
-                            this.form.document_type_id = "03"
+                            this.form.document_type_id = "02"
                         }
 
                         this.form.items = response.data.data.purchase_order.items
@@ -1101,17 +1242,17 @@ export default {
         },
         filterSuppliers() {
 
-            if (this.form.document_type_id === '01') {
+            /*if (this.form.document_type_id === '01') {
                 // this.suppliers = _.filter(this.all_suppliers, {'identity_document_type_id': '6'})
                 this.suppliers = _.filter(this.all_suppliers, (item) => {
                     return ['6', '0'].includes(item.identity_document_type_id)
                 })
                 this.selectSupplier()
 
-            } else {
+            } else {*/
                 this.suppliers = this.all_suppliers  //_.filter(this.all_suppliers, (c) => { return c.identity_document_type_id !== '6' })
                 this.selectSupplier()
-            }
+            //}
         },
         selectSupplier() {
 
@@ -1125,8 +1266,11 @@ export default {
             this.form = {
                 establishment_id: null,
                 document_type_id: null,
-                series: null,
-                number: null,
+                document_type_intern: null,
+                series: 'CC',
+                number: 0,
+                sequential_number: '',
+                auth_number: '',
                 date_of_issue: moment().format('YYYY-MM-DD'),
                 time_of_issue: moment().format('HH:mm:ss'),
                 supplier_id: null,
@@ -1149,6 +1293,7 @@ export default {
                 total_other_taxes: 0,
                 total_taxes: 0,
                 total_value: 0,
+                total_ret: 0,
                 total: 0,
                 perception_date: null,
                 perception_number: null,
@@ -1165,6 +1310,8 @@ export default {
                 has_payment: false,
                 payment_condition_id: '01',
                 fee: [],
+                ret:[],
+                is_aproved: false,
 
             }
 
@@ -1178,6 +1325,9 @@ export default {
 
             this.total_global_discount = 0
             this.is_amount = true
+            this.haveRetentions = false
+            this.maxLength1 = null
+            this.maxLength2 = null
 
 
         },
@@ -1186,6 +1336,7 @@ export default {
             // this.changeHasGlobalIgv()
         },
         resetForm() {
+
             this.initForm()
             this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
             this.form.establishment_id = this.establishment.id
@@ -1193,6 +1344,7 @@ export default {
 
             this.changeDateOfIssue()
             this.changeDocumentType()
+            this.changeDocumentType2()
             this.changeCurrencyType()
         },
         changePaymentCondition(){
@@ -1227,6 +1379,13 @@ export default {
         changeDocumentType() {
             this.filterSuppliers()
         },
+        changeDocumentType2() {
+            var document = _.find(this.document_types2,{'idType': this.form.document_type_intern})
+            console.log('documento seleccionado',document.DocumentTypeID)
+            this.form.document_type_id = document.DocumentTypeID
+            //this.codSustentos = _.find(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
+            this.codSustentos = _.filter(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
+        },
         addRow(row) {
             this.form.items.push(row)
             this.calculateTotal()
@@ -1245,6 +1404,7 @@ export default {
             this.calculateTotal()
         },
         calculateTotal() {
+
             let total_discount = 0
             let total_charge = 0
             let total_exportation = 0
@@ -1257,10 +1417,109 @@ export default {
             let total = 0
             let total_base_isc = 0
             let total_isc = 0
+            let retention_iva = 0
+            let retention_renta = 0
+            let toal_retenido = 0
+            this.form.ret = []
 
             this.form.items.forEach((row) => {
+
+                console.log('Rows: ',row)
+
+                if(row.iva_retention > 0 || row.income_retention > 0){
+                    this.haveRetentions = true
+                    this.maxLength1 = 15
+                    this.maxLength2 = 45
+                    if(this.form.ret.length > 0){
+
+                        let nuevaRet = true
+
+                        this.form.ret.forEach((data) => {
+                            if(row.iva_retention > 0 ){
+                                const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
+                                if(data.tipo == 'IVA' && data.desciption == retIvaDesc.description){
+                                    data.valor += _.round(parseFloat(row.iva_retention),3)
+                                    dato.base += row.total_taxes
+                                    nuevaRet = false
+                                }
+                            }
+                            if(row.income_retention > 0 ){
+                                const retIncomeDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
+                                if(data.tipo == 'RENTA' && data.desciption == retIncomeDesc.description){
+                                    data.valor += _.round(parseFloat(row.income_retention),3)
+                                    dato.base += row.unit_value
+                                    nuevaRet = false
+                                }
+                            }
+
+                        });
+
+                        if(nuevaRet){
+                            console.log('Nueva Retencion')
+                            if(row.iva_retention > 0 ){
+                                let retencionLocal = {}
+                                retencionLocal.tipo = 'IVA'
+                                retencionLocal.valor  = _.round(parseFloat(row.iva_retention),3)
+                                const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
+                                console.log('Tipo retencion IVA: '+retIvaDesc.description)
+                                retencionLocal.desciption  = retIvaDesc.description
+                                retencionLocal.code  = retIvaDesc.code
+                                retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                                retencionLocal.base  = row.total_taxes
+                                this.form.ret.push(retencionLocal)
+                            }
+                            if(row.income_retention > 0 ){
+                                let retencionLocal = {}
+                                retencionLocal.tipo = 'RENTA'
+                                retencionLocal.valor  = _.round(parseFloat(row.income_retention),3)
+                                const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
+                                console.log('Tipo retencion RENTA: '+retIvaDesc.description)
+                                retencionLocal.desciption  = retIvaDesc.description
+                                retencionLocal.code  = retIvaDesc.code
+                                retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                                retencionLocal.base  = row.unit_value
+                                this.form.ret.push(retencionLocal)
+                            }
+                        }
+
+                    }else{
+                        console.log('Retencion Inicial')
+                        if(row.iva_retention > 0 ){
+                            let retencionLocal = {}
+                            retencionLocal.tipo = 'IVA'
+                            retencionLocal.valor  = _.round(parseFloat(row.iva_retention),3)
+                            const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
+                            //console.log('Tipo retencion : '+retIvaDesc.description)
+                            retencionLocal.desciption  = retIvaDesc.description
+                            retencionLocal.code  = retIvaDesc.code
+                            retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                            retencionLocal.base  = row.total_taxes
+                            this.form.ret.push(retencionLocal)
+                        }
+                        if(row.income_retention > 0 ){
+                            let retencionLocal = {}
+                            retencionLocal.tipo = 'RENTA'
+                            retencionLocal.valor  = _.round(parseFloat(row.income_retention),3)
+                            const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
+                            //console.log('Tipo retencion : '+retIvaDesc.description)
+                            retencionLocal.desciption  = retIvaDesc.description
+                            retencionLocal.code  = retIvaDesc.code
+                            retencionLocal.porcentajeRet  = retIvaDesc.percentage
+                            retencionLocal.base  = row.unit_value
+                            this.form.ret.push(retencionLocal)
+                        }
+
+                    }
+                }
+
+
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
+
+                retention_iva = parseFloat(row.iva_retention)
+                retention_renta = parseFloat(row.income_retention)
+
+                toal_retenido += (retention_iva + retention_renta)
 
                 if (row.affectation_igv_type_id === '10') {
                     total_taxed += parseFloat(row.total_value)
@@ -1286,15 +1545,19 @@ export default {
 
                 total_value += parseFloat(row.total_value)
                 total_igv += parseFloat(row.total_igv)
+
                 total += parseFloat(row.total)
 
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
 
+                //console.log('total: '+ total)
+                //console.log('retenido : '+ toal_retenido)
             });
 
             // isc
+
             this.form.total_base_isc = _.round(total_base_isc, 2)
             this.form.total_isc = _.round(total_isc, 2)
 
@@ -1306,11 +1569,11 @@ export default {
             this.form.total_igv = _.round(total_igv, 2)
             this.form.total_value = _.round(total_value, 2)
             // this.form.total_taxes = _.round(total_igv, 2)
-
             //impuestos (isc + igv)
             this.form.total_taxes = _.round(total_igv + total_isc, 2)
-
-            this.form.total = _.round(total, 2)
+            this.form.total_ret =  _.round(toal_retenido, 2)
+            total = total - toal_retenido
+            this.form.total =  _.round(total, 2)
 
             this.calculatePerception()
 
@@ -1318,7 +1581,6 @@ export default {
             // this.setTotalDefaultPayment()
             this.calculatePayments()
             this.calculateFee()
-
             this.discountGlobal()
 
         },
@@ -1377,12 +1639,53 @@ export default {
             }
 
         },
+        validateDigits() {
+            const pattern_number = new RegExp('^[0-9]+$', 'i');
+
+            if (this.form.sequential_number.length !== 15) {
+                return {
+                    success: false,
+                    message: `El campo número secuencial debe tener 15 dígitos.`
+                }
+            }
+
+            if (!pattern_number.test(this.form.sequential_number)) {
+                return {
+                    success: false,
+                    message: `El campo número secuencial debe contener solo números`
+                }
+            }
+
+            if (this.form.auth_number.length < 10 || this.form.auth_number.length > 49) {
+                return {
+                    success: false,
+                    message: `El campo número autorización debe contener entre 10 y 49 dígitos.`
+                }
+            }
+
+            if (!pattern_number.test(this.form.auth_number)) {
+                return {
+                    success: false,
+                    message: `El campo número autorización debe contener solo números`
+                }
+            }
+
+            return {
+                success: true
+            }
+        },
         async submit() {
+
             let validate_item_series = await this.validationItemSeries()
             if (!validate_item_series.success) {
                 return this.$message.error(validate_item_series.message);
             }
-
+            /*
+            let val_digits = await this.validateDigits()
+            if (!val_digits.success) {
+                return this.$message.error(val_digits.message)
+            }
+            */
             let validate = await this.validate_payments()
             if (!validate.success) {
                 return this.$message.error(validate.message);
@@ -1396,12 +1699,13 @@ export default {
 
             this.loading_submit = true
             // await this.changePaymentMethodType(false)
+            console.log('Enviando Datos: ',this.form)
+
             await this.$http.post(`/${this.resource}`, this.form)
                 .then(response => {
-
                     if (response.data.success) {
 
-                        if (this.purchase_order_id) {
+                        if (response.data.data.id) {
 
                             this.$message({
                                 showClose: true,
@@ -1432,6 +1736,7 @@ export default {
                     }
                 })
                 .then(() => {
+
                     this.loading_submit = false
                 })
         },

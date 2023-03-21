@@ -379,6 +379,29 @@ class ConfigurationController extends Controller
         ];
     }
 
+    public function serviceTax(Request $request)
+    {
+        DB::connection('tenant')->transaction(function () use ($request) {
+            $id = $request->input('id');
+            $configuration = Configuration::find($id);
+            $configuration->amount_service_taxes = $request->amount_service_taxes;
+            $configuration->save();
+
+            $items = Item::get(['id', 'amount_service_taxes']);
+
+            foreach ($items as $item) {
+                $item->amount_service_taxes = $configuration->amount_service_taxes;
+                $item->update();
+            }
+
+        });
+
+        return [
+            'success' => true,
+            'message' => 'Configuración actualizada'
+        ];
+    }
+
     public function tables()
     {
         $affectation_igv_types = AffectationIgvType::whereActive()->get();

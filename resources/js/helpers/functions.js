@@ -1,8 +1,9 @@
-function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pigv) {
+function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pigv, currency_type_id_def = null ) {
     //console.log("porcentage ICG: "+pigv);
     //pigv = 0.12;
     let currency_type_id_old = row_old.item.currency_type_id
     let unit_price = parseFloat(row_old.item.unit_price)
+    let unit_value_est = parseFloat(row_old.item.sale_unit_price)
     // } else {
     //     unit_price = parseFloat(row_old.item.unit_price) * 1.18
     // }
@@ -10,13 +11,22 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     //console.log(row_old)
 
-    if (currency_type_id_old === 'PEN' && currency_type_id_old !== currency_type_id_new) {
+    //if (currency_type_id_old === 'PEN' && currency_type_id_old !== currency_type_id_new) {
+    //    unit_price = unit_price / exchange_rate_sale;
+    //}
+
+    //if (currency_type_id_new === 'PEN' && currency_type_id_old !== currency_type_id_new) {
+    //    unit_price = unit_price * exchange_rate_sale;
+    //}
+
+    if (currency_type_id_old === currency_type_id_def && currency_type_id_old !== currency_type_id_new) {
         unit_price = unit_price / exchange_rate_sale;
     }
 
-    if (currency_type_id_new === 'PEN' && currency_type_id_old !== currency_type_id_new) {
+    if (currency_type_id_new === currency_type_id_def && currency_type_id_old !== currency_type_id_new) {
         unit_price = unit_price * exchange_rate_sale;
     }
+
 
     // unit_price = _.round(unit_price, 4);
 
@@ -50,6 +60,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         percentage_other_taxes: 0,
         total_other_taxes: 0,
         total_plastic_bag_taxes: 0,
+        total_service_taxes: 0,
         total_taxes: 0,
         price_type_id: '01',
         unit_price: unit_price,
@@ -62,6 +73,10 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         charges: row_old.charges,
         discounts: row_old.discounts,
         warehouse_id: warehouse_id,
+        retention_type_id_income: row_old.retention_type_id_income,
+        retention_type_id_iva: row_old.retention_type_id_iva,
+        income_retention: row_old.income_retention,
+        iva_retention: row_old.iva_retention,
         name_product_pdf: row_old.name_product_pdf,
         record_id: record_id, // fixed for update sale_note
 
@@ -82,6 +97,14 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     // console.log(row)
 
+    //SERVICIO
+    let total_service_taxes = 0
+    if(row_old.has_service_taxes){
+        total_service_taxes = _.round(row.quantity * (unit_value_est * (row.item.amount_service_taxes/100)), 2)
+        row.total_service_taxes = total_service_taxes
+    }
+    //END SERVICIO
+
     let percentage_igv = pigv * 100
 
     if(row.affectation_igv_type_id === '11'){
@@ -98,7 +121,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     }
 
     row.percentage_igv = percentage_igv;
-    
+
     let unit_value = row.unit_price
 
     if (row.affectation_igv_type_id === '10' || row.affectation_igv_type_id === '11' || row.affectation_igv_type_id === '12') {
@@ -132,9 +155,9 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
             let affectation_igv_type_exonerated = ['20', '21', '30', '31', '32', '33', '34', '35', '36', '37']
 
-            if (discount.is_amount) 
+            if (discount.is_amount)
             {
-                if (discount.discount_type.base) 
+                if (discount.discount_type.base)
                 {
                     discount.base = _.round(total_value_partial, 2)
                     //amount and percentage are equals in input
@@ -253,9 +276,10 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     }
 
 
-    //impuesto bolsa - icbper
+    //impuesto bolsa - icbper - servicio
 
     let total_plastic_bag_taxes = 0
+
 
     if (row_old.has_plastic_bag_taxes) {
 
@@ -268,7 +292,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
 
     // let total_taxes = total_igv + total_isc + total_other_taxes
-    let total_taxes = total_igv + total_isc + total_other_taxes + total_plastic_bag_taxes
+    let total_taxes = total_igv + total_isc + total_other_taxes + total_plastic_bag_taxes + total_service_taxes
 
     let total = total_value + total_taxes
 
@@ -297,7 +321,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         row.total_igv = _.round(total_igv, 2)
 
         //asignar nuevo total impuestos, si tiene descuentos se usa total_taxes para calcular el precio unitario
-        total_taxes = total_igv + row.total_isc + total_plastic_bag_taxes
+        total_taxes = total_igv + row.total_isc + total_plastic_bag_taxes + total_service_taxes
         // total_taxes = total_igv + row.total_isc
         row.total_taxes = _.round(total_taxes, 2)
 
@@ -371,13 +395,13 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
             row.unit_value = 0
             // row.total_value = 0
             // row.total = 0
-            row.total = 0 + total_plastic_bag_taxes
-    
+            row.total = 0 + total_plastic_bag_taxes + total_service_taxes
+
             //valor sin redondeo
             row.total_without_rounding = 0
         }
     }
- 
+
 
     //impuesto bolsa
     // if (row_old.has_plastic_bag_taxes) {
@@ -395,7 +419,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 * use_input_amount propiedad para determinar si se toma el valor de discount.amount
 * y no de discount.percentage cuando es descuento por monto
 */
-function getAmountFromInputDiscount(discount) 
+function getAmountFromInputDiscount(discount)
 {
     let value = 0
 
@@ -473,9 +497,9 @@ const filterWords = (input, items) => {
 
 
 /**
- * 
+ *
  * Retorna datos del lote en la edicion de compra
- * 
+ *
  */
 function getDataItemLotGroup(row_old)
 {

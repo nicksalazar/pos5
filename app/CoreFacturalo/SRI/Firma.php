@@ -167,12 +167,17 @@ class Firma {
             if (file_exists($nombreKey))
                 unlink($nombreKey);
 
-            $aux = 'openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1';
+            $aux = 'C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1';
             //ejecutar comando openssl en windows//
+            $salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            //servidor linux ejecutar comando openssl ///
+            //$salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+
+
             //$salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
             //servidor linux ejecutar comando openssl //
             $salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
-            //Log::info($aux);
+            Log::info($aux);
 
             if (strpos($salida, 'verified OK') !== false) {
 
@@ -273,6 +278,7 @@ class Firma {
             $certDigest = $this->getcertDigest();
             $certIssuer = $this->getIssuer();
             $serialNumber = $this->getSerial();
+            //$serialNumber = '2801755503a343f073886746bcb3022645c926ff';
 
             $prop = '<etsi:SignedProperties Id="Signature' . $this->signatureID .
                     '-SignedProperties' . $this->signatureSignedPropertiesID . '">' .
@@ -386,6 +392,7 @@ class Firma {
                     $xml = str_replace('</notaCredito>', $sig . '</notaCredito>', $xml);
 
                 $xmlSigned = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' . "\n" . $xml;
+                $xmlSigned = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' . "\n" . $xml;
 
                 // guardar documento firmado
                 /*try {
@@ -413,16 +420,34 @@ class Firma {
         $reversed = array_reverse($this->certData['issuer']);
         $certIssuer = array();
 
+
         foreach ($reversed as $item => $value) {
             if($item == 'organizationIdentifier' && $value == 'VATES-A66721499'){
-                $certIssuer[] = '2.5.4.97' . '=' . '#0c0f56415445532d413636373231343939';
+               $certIssuer[] = '2.5.4.97' . '=' . '#0c0f56415445532d413636373231343939';
+            }elseif($item == 'organizationIdentifier' && $value == '59382'){
+                //$certIssuer[] = '2.5.4.97' . '=' . '59382';
+                $certIssuer[] = '2.5.4.97' . '=' . '#0C053539333832';
+            }elseif($item == 'emailAddress' && $value == 'certificados@enext.ec'){
+                $certIssuer[] = '1.2.840.113549.1.9.1' . '=' . '#0C15636572746966696361646f7340656e6578742e6563';
+                //$certIssuer[] = 'E' . '=' . 'certificados@enext.ec';
             }else{
-                $certIssuer[] = $item . '=' . $value;
+               $certIssuer[] = $item . '=' . $value;
             }
 
-        }
+            //2.5.4.97=#13053539333832,1.2.840.113549.1.9.1=#1615636572746966696361646f7340656e6578742e6563
+            //2.5.4.97=#13053539333832,1.2.840.113549.1.9.1=#1615636572746966696361646f7340656e6578742e6563
+       }
         return $certIssuer = implode(',', $certIssuer);
-        //return "2.5.4.97=#0c0f56415445532d413636373231343939,CN=UANATACA CA2 2016,OU=TSP-UANATACA,O=UANATACA S.A.,L=Barcelona (see current address at www.uanataca.com/address),C=ES";
+
+       //return "CN=Lazzate Emisor CA, OU=Ente de Certificacion, O=Lazzate Cia. Ltda., OID.2.5.4.97=59382, E=certificados@enext.ec, L=Quito, S=Quito - Pichincha, C=EC";
+    }
+
+    function bin2hex($data) {
+
+        $corrected = preg_replace("[^0-9a-fA-F]","",$data);
+
+        return pack("H".strlen($corrected),$corrected);
+
     }
 
     public function getSerial() {

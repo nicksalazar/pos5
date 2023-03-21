@@ -17,10 +17,6 @@ class PurchaseRequest extends FormRequest
 			'supplier_id' => [
 				'required',
 			],
-			'number' => [
-				'required',
-				'numeric'
-			],
 			'series' => [
 				'required',
 			],
@@ -31,6 +27,8 @@ class PurchaseRequest extends FormRequest
                 'required',
                 'array',
             ],
+            ''
+
 		];
 	}
 }

@@ -97,6 +97,8 @@ class ItemCollection extends ResourceCollection
                         'price_default' => $row->price_default,
                     ];
                 }),
+                'tariff_id' => $row->tariff_id,
+                'concept_id' => $row->concept_id,
 
 
             ];

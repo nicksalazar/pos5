@@ -50,8 +50,11 @@ trait TotalsTrait
                 $purchase_total_payment += collect($purchase->purchase_payments)->sum('payment');
 
             }else{
-                $purchases_total_usd += $purchase->total * $purchase->exchange_rate_sale +  $purchases->sum('total_perception');;
-                $purchase_total_payment_usd += collect($purchase->purchase_payments)->sum('payment') * $purchase->exchange_rate_sale;
+                //$purchases_total_usd += $purchase->total * $purchase->exchange_rate_sale +  $purchases->sum('total_perception');;
+                //$purchase_total_payment_usd += collect($purchase->purchase_payments)->sum('payment') * $purchase->exchange_rate_sale;
+
+                $purchases_total_usd += $purchase->total +  $purchases->sum('total_perception');;
+                $purchase_total_payment_usd += collect($purchase->purchase_payments)->sum('payment');
             }
         }
 
@@ -145,8 +148,10 @@ trait TotalsTrait
 
             }else{
 
-                $sale_note_total_usd += $sale_note->total * $sale_note->exchange_rate_sale;
-                $sale_note_total_payment_usd += collect($sale_note->payments)->sum('payment') * $sale_note->exchange_rate_sale;
+                //$sale_note_total_usd += $sale_note->total * $sale_note->exchange_rate_sale;
+                //$sale_note_total_payment_usd += collect($sale_note->payments)->sum('payment') * $sale_note->exchange_rate_sale;
+                $sale_note_total_usd += $sale_note->total;
+                $sale_note_total_payment_usd += collect($sale_note->payments)->sum('payment');
 
             }
         }
@@ -191,7 +196,8 @@ trait TotalsTrait
                                     ->where('currency_type_id', 'USD');
 
         foreach ($documents_usd as $dusd) {
-            $document_total_usd += $dusd->total * $dusd->exchange_rate_sale;
+            //$document_total_usd += $dusd->total * $dusd->exchange_rate_sale;
+            $document_total_usd += $dusd->total;
         }
 
         //TWO CURRENCY
@@ -211,10 +217,12 @@ trait TotalsTrait
             }else{
 
                 if(in_array($document->state_type_id,['01','03','05','07','13'])){
-                    
-                    $document_total_payment_usd += collect($document->payments)->sum('payment') * $document->exchange_rate_sale;
-                    $document_total_note_credit_usd += ($document->document_type_id == '07') ? $document->total * $document->exchange_rate_sale:0; //nota de credito
-                
+
+                    //$document_total_payment_usd += collect($document->payments)->sum('payment') * $document->exchange_rate_sale;
+                    //$document_total_note_credit_usd += ($document->document_type_id == '07') ? $document->total * $document->exchange_rate_sale:0; //nota de credito
+                    $document_total_payment_pen += collect($document->payments)->sum('payment');
+                    $document_total_note_credit_pen += ($document->document_type_id == '07') ? $document->total:0; //nota de credito
+
                 }
 
             }
@@ -236,9 +244,9 @@ trait TotalsTrait
         ];
     }
 
-        
+
     /**
-     * 
+     *
      * Obtener suma total de pedidos
      *
      * @param  int $establishment_id
@@ -254,8 +262,8 @@ trait TotalsTrait
             return $row->getTransformTotal();
         });
     }
-    
-    
+
+
     /**
      * Redondear número
      *

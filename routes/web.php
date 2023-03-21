@@ -104,6 +104,7 @@ if ($hostname) {
             Route::post('configurations', 'Tenant\ConfigurationController@store');
             Route::post('configurations/apiruc', 'Tenant\ConfigurationController@storeApiRuc');
             Route::post('configurations/icbper', 'Tenant\ConfigurationController@icbper');
+            Route::post('configurations/serviceTax', 'Tenant\ConfigurationController@serviceTax');
             Route::post('configurations/changeFormat', 'Tenant\ConfigurationController@changeFormat');
             Route::get('configurations/tables', 'Tenant\ConfigurationController@tables');
             Route::get('configurations/visual_defaults', 'Tenant\ConfigurationController@visualDefaults')->name('visual_defaults');
@@ -518,12 +519,27 @@ if ($hostname) {
             Route::post('tribute_concept_types', 'Tenant\TributeConceptTypeController@store');
             Route::delete('tribute_concept_types/{id}', 'Tenant\TributeConceptTypeController@destroy');
 
+            //IMPORTS
+            Route::get('imports', 'Tenant\ImportsController@index')->name('tenant.imports.index');
+            Route::get('imports/records', 'Tenant\ImportsController@records');
+            Route::get('imports/record/{id}', 'Tenant\ImportsController@record');
+            Route::get('imports/create', 'Tenant\ImportsController@create')->name('tenant.imports.form');
+            Route::post('imports', 'Tenant\ImportsController@store');
+            Route::get('imports/liquidation-report/{id}', 'Tenant\ImportsController@liquidationsReport');
+
+            Route::get('tariff', 'Tenant\TariffController@index')->name('tenant.imports.tariff');
+            Route::get('tariff/records', 'Tenant\TariffController@records');
+            Route::get('tariff/record/{id}', 'Tenant\TariffController@record');
+            Route::post('tariff', 'Tenant\TariffController@store');
+
+
             //purchases
             Route::get('purchases', 'Tenant\PurchaseController@index')->name('tenant.purchases.index');
             Route::get('purchases/columns', 'Tenant\PurchaseController@columns');
             Route::get('purchases/records', 'Tenant\PurchaseController@records');
             Route::get('purchases/create/{purchase_order_id?}', 'Tenant\PurchaseController@create')->name('tenant.purchases.create');
             Route::get('purchases/tables', 'Tenant\PurchaseController@tables');
+            Route::get('purchases/tables_purchase', 'Tenant\PurchaseController@tables_purchase');
             Route::get('purchases/table/{table}', 'Tenant\PurchaseController@table');
             Route::post('purchases', 'Tenant\PurchaseController@store');
             Route::post('purchases/update', 'Tenant\PurchaseController@update');
@@ -542,6 +558,12 @@ if ($hostname) {
             Route::get('purchases/search/item/{item}', 'Tenant\PurchaseController@searchItemById');
             Route::post('purchases/search/purchase_order', 'Tenant\PurchaseController@searchPurchaseOrder');
             // Route::get('purchases/item_resource/{id}', 'Tenant\PurchaseController@itemResource');
+
+            Route::get('purchases/document_types', 'Tenant\DocumentPurchaseTypy2Controller@index')->name('tenant.purchases.types');;
+            Route::get('purchases/document_types/records', 'Tenant\DocumentPurchaseTypy2Controller@records');
+            Route::get('purchases/document_types/record/{id}', 'Tenant\DocumentPurchaseTypy2Controller@record');
+            Route::post('purchases/document_types', 'Tenant\DocumentPurchaseTypy2Controller@store');
+            Route::get('purchases/document_types/tables', 'Tenant\DocumentPurchaseTypy2Controller@tables');
 
             // Route::get('documents/send/{document}', 'Tenant\DocumentController@send');
             // Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');

@@ -151,6 +151,9 @@
             'has_discount',
             'discount_type',
             'discount_amount',
+            'pagoLocExtDoc',
+            'parteRel',
+            'pagoLocExt',
         ];
 
         protected $casts = [

@@ -783,7 +783,7 @@
                         <span slot="label">Contable</span>
                         <div class="row">
                             <div v-if="typeUser != 'integrator'"
-                                    class="col-md-4 mt-4">
+                                    class="col-md-6 mt-4">
                                 <label class="control-label">Impuesto bolsa plástica</label>
                                 <div :class="{'has-danger': errors.amount_plastic_bag_taxes}"
                                         class="form-group">
@@ -796,6 +796,23 @@
                                     <small v-if="errors.amount_plastic_bag_taxes"
                                             class="form-control-feedback"
                                             v-text="errors.amount_plastic_bag_taxes[0]"></small>
+                                </div>
+                            </div>
+
+                            <div v-if="typeUser != 'integrator'"
+                                    class="col-md-6 mt-4">
+                                <label class="control-label">Porcentaje por Servicio</label>
+                                <div :class="{'has-danger': errors.amount_service_taxes}"
+                                        class="form-group">
+                                    <el-input-number v-model="form.amount_service_taxes"
+                                                        :max="100"
+                                                        :min="1"
+                                                        :precision="0"
+                                                        :step="1"
+                                                        @change="changeAmountServiceTaxes"></el-input-number>
+                                    <small v-if="errors.amount_service_taxes"
+                                            class="form-control-feedback"
+                                            v-text="errors.amount_service_taxes[0]"></small>
                                 </div>
                             </div>
 
@@ -1964,7 +1981,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-6 mt-4">
                                 <div class="form-group">
                                     <label>
@@ -2520,6 +2537,25 @@ export default {
             this.loading_submit = true;
 
             this.$http.post(`/${this.resource}/icbper`, this.form).then(response => {
+                if (response.data.success) {
+                    this.$message.success(response.data.message);
+                } else {
+                    this.$message.error(response.data.message);
+                }
+            }).catch(error => {
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors;
+                } else {
+                    console.log(error);
+                }
+            }).then(() => {
+                this.loading_submit = false;
+            });
+        },
+        changeAmountServiceTaxes() {
+            this.loading_submit = true;
+
+            this.$http.post(`/${this.resource}/serviceTax`, this.form).then(response => {
                 if (response.data.success) {
                     this.$message.success(response.data.message);
                 } else {

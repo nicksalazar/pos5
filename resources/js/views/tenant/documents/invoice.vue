@@ -1653,7 +1653,7 @@ export default {
             this.btnText = 'Actualizar';
             this.loading_submit = true;
             await this.$http.get(`/documents/${this.documentId}/show`).then(response => {
-                
+
                 this.onSetFormData(response.data.data);
             }).finally(() => this.loading_submit = false);
         }
@@ -2903,7 +2903,7 @@ export default {
             this.form.date_of_due = this.form.date_of_issue
             // if (! this.isUpdate) {
                 /*JOINSOFTWARE CONVERSION */
-                
+
             this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
                 this.form.exchange_rate_sale = response
             });
@@ -2941,7 +2941,7 @@ export default {
 
                 if (this.form.document_type_id === '01') {
                     this.customers = _.filter(this.all_customers, {'identity_document_type_id': '6'})
-                    
+
                 } else {
                     if (this.document_type_03_filter) {
                         this.customers = _.filter(this.all_customers, (c) => {
@@ -3019,10 +3019,10 @@ export default {
             let total_isc = 0
 
             // let total_free_igv = 0
-
+            this.total_global_charge = 0
             this.form.items.forEach((row) => {
 
-                // console.log(row)
+                console.log("invoice row: ",row)
 
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
@@ -3131,6 +3131,7 @@ export default {
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
+                this.total_global_charge += _.round(row.total_service_taxes,2)
             });
 
             // isc
@@ -3181,6 +3182,62 @@ export default {
             this.chargeGlobal()
 
         },
+        chargeGlobal() {
+
+            let base = parseFloat(this.form.total_taxed + this.form.total_unaffected)
+
+            if (this.config.active_allowance_charge) {
+                let percentage_allowance_charge = parseFloat(this.config.percentage_allowance_charge)
+                this.total_global_charge += _.round(base * (percentage_allowance_charge / 100), 2)
+            }
+
+            if (this.total_global_charge == 0) {
+                this.deleteChargeGlobal()
+                return
+            }
+
+
+            let amount = parseFloat(this.total_global_charge)
+            // let base = this.form.total_taxed + amount
+            let factor = _.round(amount / base, 5)
+
+            // console.log(base,factor, amount)
+
+            let charge = _.find(this.form.charges, {charge_type_id: '50'})
+
+            if (amount > 0 && !charge) {
+
+                this.form.total_charge = _.round(amount, 2)
+                this.form.total = _.round(base  + this.form.total_taxes + this.form.total_charge, 2)
+
+                this.form.charges.push({
+                    charge_type_id: '50',
+                    description: 'Cargos globales que no afectan la base imponible del IVA/IVAP',
+                    factor: factor,
+                    amount: amount,
+                    base: base
+                })
+
+            } else {
+
+                let pos = this.form.charges.indexOf(charge);
+
+                if (pos > -1) {
+
+                    this.form.total_charge = _.round(amount, 2)
+                    this.form.total = _.round(base + this.form.total_taxes + this.form.total_charge, 2)
+
+                    this.form.charges[pos].base = base
+                    this.form.charges[pos].amount = amount
+                    this.form.charges[pos].factor = factor
+
+                }
+            }
+
+            this.setTotalDefaultPayment()
+            this.setPendingAmount()
+
+        },
         sumDiscountsNoBaseByItem(row) {
 
             let sum_discount_no_base = 0
@@ -3202,60 +3259,6 @@ export default {
             //     this.form.payments[0].payment = this.form.total
             // }
             this.calculatePayments()
-        },
-        chargeGlobal() {
-
-            let base = parseFloat(this.form.total)
-
-            if (this.config.active_allowance_charge) {
-                let percentage_allowance_charge = parseFloat(this.config.percentage_allowance_charge)
-                this.total_global_charge = _.round(base * (percentage_allowance_charge / 100), 2)
-            }
-
-            if (this.total_global_charge == 0) {
-                this.deleteChargeGlobal()
-                return
-            }
-
-
-            let amount = parseFloat(this.total_global_charge)
-            // let base = this.form.total_taxed + amount
-            let factor = _.round(amount / base, 5)
-
-            // console.log(base,factor, amount)
-
-            let charge = _.find(this.form.charges, {charge_type_id: '50'})
-
-            if (amount > 0 && !charge) {
-
-                this.form.total_charge = _.round(amount, 2)
-                this.form.total = _.round(this.form.total + this.form.total_charge, 2)
-
-                this.form.charges.push({
-                    charge_type_id: '50',
-                    description: 'Cargos globales que no afectan la base imponible del IVA/IVAP',
-                    factor: factor,
-                    amount: amount,
-                    base: base
-                })
-
-            } else {
-
-                let pos = this.form.charges.indexOf(charge);
-
-                if (pos > -1) {
-
-                    this.form.total_charge = _.round(amount, 2)
-                    this.form.total = _.round(this.form.total + this.form.total_charge, 2)
-
-                    this.form.charges[pos].base = base
-                    this.form.charges[pos].amount = amount
-                    this.form.charges[pos].factor = factor
-
-                }
-            }
-
-
         },
         deleteChargeGlobal() {
 

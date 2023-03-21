@@ -81,7 +81,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" :class="{'has-danger': errors.sale_unit_price}">
-                            <label class="control-label">Precio Unitario (Venta) <span class="text-danger">*</span></label>
+                            <label class="control-label">Costo Unitario (Venta) <span class="text-danger">*</span></label>
                             <el-input v-model="form.sale_unit_price" dusk="sale_unit_price" @input="calculatePercentageOfProfitBySale"></el-input>
                             <small class="form-control-feedback" v-if="errors.sale_unit_price" v-text="errors.sale_unit_price[0]"></small>
                         </div>
@@ -108,9 +108,10 @@
                                     <tr>
                                         <th>#</th>
                                         <th class="font-weight-bold">Descripción</th>
-                                        <th class="text-center font-weight-bold">Precio Unitario</th>
+                                        <th class="text-center font-weight-bold">Costo Unitario</th>
                                         <th class="text-right font-weight-bold">Cantidad</th>
-                                        <th class="text-right font-weight-bold">Total</th>
+                                        <th class="text-right font-weight-bold">Medida</th>
+                                        <th class="text-right font-weight-bold">Total Costo</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -118,14 +119,15 @@
                                 <tr v-for="(row, index) in form.individual_items" :key="index">
                                     <td>{{index + 1}}</td>
                                     <td>{{row.full_description}}</td>
-                                    <td class="text-center">{{row.sale_unit_price}}</td>
+                                    <td class="text-center">{{row.purchase_unit_price}}</td>
                                     <td class="text-right">
                                         <el-input-number
                                             v-model="row.quantity"
                                             @change="changeQuantity"
                                             :min="0"/>
                                     </td>
-                                    <td class="text-center">{{row.sale_unit_price * row.quantity | toDecimals }}</td>
+                                    <td>{{row.unit_type_description}}</td>
+                                    <td class="text-center">{{row.purchase_unit_price * row.quantity | toDecimals }}</td>
                                     <td class="text-right">
                                         <button class="btn waves-effect waves-light btn-xs btn-danger" type="button"
                                                 @click.prevent="clickRemoveItem(index)">x
@@ -138,7 +140,7 @@
                                     <th></th>
                                     <th class="font-weight-bold"></th>
                                     <th class="text-center font-weight-bold"></th>
-                                    <th class="text-right font-weight-bold">Total</th>
+                                    <th class="text-right font-weight-bold">Total Costo</th>
                                     <th class="text-center font-weight-bold">{{ total | toDecimals}}</th>
                                     <th></th>
                                 </tr>
@@ -173,12 +175,24 @@
 
                                 <div class="short-div col-md-8">
                                     <div class="form-group" :class="{'has-danger': errors.purchase_affectation_igv_type_id}">
-
                                         <label class="control-label">Tipo de impuesto (Venta)</label>
                                         <el-select v-model="form.sale_affectation_igv_type_id" @change="changeAffectationIgvType">
                                             <el-option v-for="option in affectation_igv_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                         </el-select>
                                         <small class="form-control-feedback" v-if="errors.sale_affectation_igv_type_id" v-text="errors.sale_affectation_igv_type_id[0]"></small>
+                                    </div>
+                                </div>
+                                 <div class="short-div col-md-8">
+                                    <div class="form-group">
+                                        <div :class="{'has-danger': errors.has_igv}"
+                                            class="form-group">
+                                            <el-checkbox v-model="form.has_igv">Incluye IVA
+                                            </el-checkbox>
+                                            <br>
+                                            <small v-if="errors.has_igv"
+                                                class="form-control-feedback"
+                                                v-text="errors.has_igv[0]"></small>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- JOINSOFTWARE
@@ -401,7 +415,7 @@ import ItemSetFormItem from './partials/item.vue'
         },
         methods: {
             changeQuantity(){
-                
+
                 this.calculateTotal()
                 this.setTotalPurchase()
 
@@ -413,7 +427,8 @@ import ItemSetFormItem from './partials/item.vue'
 
                 this.form.individual_items.forEach(row => {
 
-                    this.total += row.sale_unit_price * row.quantity;
+                    console.log("individual items: ",row)
+                    this.total += row.purchase_unit_price * row.quantity;
 
                     this.total_purchase += parseFloat(row.purchase_unit_price) * row.quantity;
 
@@ -456,7 +471,7 @@ import ItemSetFormItem from './partials/item.vue'
                 // this.form.sale_unit_price_set = acum_sale_unit_price
 
             },
-            
+
             initForm() {
                 //console.log('currency type',this.config);
                 this.loading_submit = false,

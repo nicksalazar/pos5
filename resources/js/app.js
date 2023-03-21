@@ -62,6 +62,13 @@ Vue.component('tenant-documents-invoice-generate', require('./views/tenant/docum
 Vue.component('tenant-documents-invoicetensu', require('./views/tenant/documents/invoicetensu.vue'));
 Vue.component('tenant-documents-note', require('./views/tenant/documents/note.vue'));
 
+//imports
+Vue.component('tenant-imports-index', require('./views/tenant/imports/index.vue'));
+Vue.component('tenant-imports-generate', require('./views/tenant/imports/generate.vue'));
+Vue.component('tenant-imports-tariff', require('./views/tenant/imports/tariff.vue'));
+Vue.component('tenant-imports-tariff-form',require('./views/tenant/imports/tariff-form.vue'));
+
+
 // purchase-settlements
 Vue.component('tenant-purchase-settlements-index', require('./views/tenant/purchase-settlements/index.vue'));
 Vue.component('tenant-purchase-settlements-form', require('./views/tenant/purchase-settlements/form.vue'));
@@ -89,6 +96,8 @@ Vue.component('tenant-dispatches-create', require('./views/tenant/dispatches/cre
 Vue.component('tenant-guides-modal', require('./views/tenant/components/guides.vue'));
 Vue.component('tenant-purchases-index', require('./views/tenant/purchases/index.vue'));
 Vue.component('tenant-purchases-form', require('./views/tenant/purchases/form.vue'));
+Vue.component('tenant-purchases-document-types', require('./views/tenant/purchases/doc_types.vue'));
+Vue.component('tenant-purchases-document-types-form', require('./views/tenant/purchases/form_doc_types.vue'));
 Vue.component('tenant-purchases-edit', require('./views/tenant/purchases/form_edit.vue'));
 Vue.component('tenant-transfer-reason-types-index', require('./views/tenant/transfer_reason_types/index.vue'));
 
@@ -413,6 +422,7 @@ Vue.component('tenant-workers-index', require('../../modules/Production/Resource
 
 Vue.component('tenant-production-index', require('../../modules/Production/Resources/assets/js/view/production/index.vue'));
 Vue.component('tenant-production-form', require('../../modules/Production/Resources/assets/js/view/production/form.vue'));
+Vue.component('tenant-production-state', require('../../modules/Production/Resources/assets/js/view/production/state.vue'));
 
 Vue.component('tenant-packaging-index', require('../../modules/Production/Resources/assets/js/view/packaging/index.vue'));
 Vue.component('tenant-packaging-form', require('../../modules/Production/Resources/assets/js/view/packaging/form.vue'));
