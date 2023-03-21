@@ -6,12 +6,22 @@
         <div class="tab-content">
             <form autocomplete="off" @submit.prevent="submit">
                 <div class="form-body">
-
                     <div class="row">
                         <div class="col-lg-4">
+                            <div class="form-group" :class="{'has-danger': errors.document_type_intern}">
+                                <label class="control-label">Tipo comprobante Interno</label>
+                                <el-select v-model="form.document_type_intern" @change="changeDocumentType2">
+                                    <el-option v-for="option in document_types2" :key="option.idType" :value="option.idType"
+                                               :label="option.description"></el-option>
+                                </el-select>
+                                <small class="form-control-feedback" v-if="errors.document_type_intern"
+                                       v-text="errors.document_type_intern[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
                             <div class="form-group" :class="{'has-danger': errors.document_type_id}">
-                                <label class="control-label">Tipo comprobante</label>
-                                <el-select v-model="form.document_type_id" @change="changeDocumentType">
+                                <label class="control-label">Tipo comprobante SRI</label>
+                                <el-select v-model="form.document_type_id" :disabled="true" @change="changeDocumentType">
                                     <el-option v-for="option in document_types" :key="option.id" :value="option.id"
                                                :label="option.description"></el-option>
                                 </el-select>
@@ -19,10 +29,25 @@
                                        v-text="errors.document_type_id[0]"></small>
                             </div>
                         </div>
+                        <div class="col-lg-4">
+                            <div :class="{'has-danger': errors.codSustento}"
+                                 class="form-group">
+                                <label class="control-label">Código Tributario</label>
+                                <el-select v-model="form.codSustento" :required="haveRetentions">
+                                    <el-option v-for="option in codSustentos"
+                                               :key="option.id"
+                                               :label="option.description"
+                                               :value="option.codSustento"></el-option>
+                                </el-select>
+                                <small v-if="errors.codSustento"
+                                       class="form-control-feedback"
+                                       v-text="errors.codSustento[0]"></small>
+                            </div>
+                        </div>
                         <div class="col-lg-2">
                             <div class="form-group" :class="{'has-danger': errors.series}">
-                                <label class="control-label">Serie <span class="text-danger">*</span></label>
-                                <el-input v-model="form.series" :maxlength="4" @input="inputSeries"></el-input>
+                                <label class="control-label">Serie</label>
+                                <el-input v-model="form.series" :maxlength="4" @input="inputSeries" :disabled="true"></el-input>
 
                                 <small class="form-control-feedback" v-if="errors.series"
                                        v-text="errors.series[0]"></small>
@@ -30,8 +55,8 @@
                         </div>
                         <div class="col-lg-2">
                             <div class="form-group" :class="{'has-danger': errors.number}">
-                                <label class="control-label">Número <span class="text-danger">*</span></label>
-                                <el-input v-model="form.number"></el-input>
+                                <label class="control-label">Número</label>
+                                <el-input v-model="form.number" :disabled="true"></el-input>
 
                                 <small class="form-control-feedback" v-if="errors.number"
                                        v-text="errors.number[0]"></small>
@@ -43,7 +68,7 @@
                             <div class="form-group" :class="{'has-danger': errors.date_of_issue}">
                                 <label class="control-label">Fec Emisión</label>
                                 <el-date-picker v-model="form.date_of_issue" :readonly="readonly_date_of_due"
-                                                type="date" value-format="yyyy-MM-dd" :clearable="false"
+                                                type="date" value-format="yyyy-MM-dd" :disabled="true" :clearable="false"
                                                 @change="changeDateOfIssue"></el-date-picker>
                                 <small class="form-control-feedback" v-if="errors.date_of_issue"
                                        v-text="errors.date_of_issue[0]"></small>
@@ -57,6 +82,34 @@
                                                 value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>
                                 <small class="form-control-feedback" v-if="errors.date_of_due"
                                        v-text="errors.date_of_due[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
+                                <label class="control-label">Moneda</label>
+                                <el-select v-model="form.currency_type_id" @change="changeCurrencyType">
+                                    <el-option v-for="option in currency_types" :key="option.id" :value="option.id"
+                                               :label="option.description"></el-option>
+                                </el-select>
+                                <small class="form-control-feedback" v-if="errors.currency_type_id"
+                                       v-text="errors.currency_type_id[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-2" v-if="form.currency_type_id != configuration.currency_type_id">
+                            <div :class="{'has-danger': errors.exchange_rate_sale}"
+                                 class="form-group">
+                                <label class="control-label">Tipo de cambio
+                                    <el-tooltip class="item"
+                                                content="Tipo de cambio del día"
+                                                effect="dark"
+                                                placement="top-end">
+                                        <i class="fa fa-info-circle"></i>
+                                    </el-tooltip>
+                                </label>
+                                <el-input v-model="form.exchange_rate_sale" disabled></el-input>
+                                <small v-if="errors.exchange_rate_sale"
+                                       class="form-control-feedback"
+                                       v-text="errors.exchange_rate_sale[0]"></small>
                             </div>
                         </div>
                     </div>
@@ -77,42 +130,7 @@
                                        v-text="errors.supplier_id[0]"></small>
                             </div>
                         </div>
-                        <!-- <div class="col-lg-3">
-                            <div class="form-group" :class="{'has-danger': errors.payment_method_type_id}">
-                                <label class="control-label">
-                                    Forma de pago
-                                </label>
-                                <el-select v-model="form.payment_method_type_id" filterable @change="changePaymentMethodType">
-                                    <el-option v-for="option in payment_method_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                </el-select>
-                                <small class="form-control-feedback" v-if="errors.payment_method_type_id" v-text="errors.payment_method_type_id[0]"></small>
-                            </div>
-                        </div> -->
-                        <div class="col-lg-2">
-                            <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
-                                <label class="control-label">Moneda</label>
-                                <el-select v-model="form.currency_type_id" @change="changeCurrencyType">
-                                    <el-option v-for="option in currency_types" :key="option.id" :value="option.id"
-                                               :label="option.description"></el-option>
-                                </el-select>
-                                <small class="form-control-feedback" v-if="errors.currency_type_id"
-                                       v-text="errors.currency_type_id[0]"></small>
-                            </div>
-                        </div>
-                        <!-- JOINSOFTWARE
-                        <div class="col-lg-2">
-                            <div class="form-group" :class="{'has-danger': errors.exchange_rate_sale}">
-                                <label class="control-label">Tipo de cambio
-                                    <el-tooltip class="item" effect="dark"
-                                                content="Tipo de cambio del día, extraído de SUNAT" placement="top-end">
-                                        <i class="fa fa-info-circle"></i>
-                                    </el-tooltip>
-                                </label>
-                                <el-input v-model="form.exchange_rate_sale"></el-input>
-                                <small class="form-control-feedback" v-if="errors.exchange_rate_sale"
-                                       v-text="errors.exchange_rate_sale[0]"></small>
-                            </div>
-                        </div> -->
+
                         <div class="col-lg-2"
                              v-if="purchase_order_id === null">
                             <div class="form-group">
@@ -135,15 +153,6 @@
                                 </el-select>
                             </div>
                         </div>
-                        <div class="col-lg-2">
-                            <div class="form-group">
-                                <label>
-                                    Código tributario
-                                </label>
-                                <el-input v-model="form.codSustento"
-                                      placeholder="Código Sustento"></el-input>
-                            </div>
-                        </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-4 "
                             :class="{ 'has-danger': errors.created_at }"
                             >
@@ -157,11 +166,12 @@
                         <div class="form-group col-sm-12 col-md-6 col-lg-2"
                             :class="{'has-danger': errors.sequential_number}"
                             >
-                            <label class="control-label">Secuencial <span class="text-danger">*</span></label>
+                            <label class="control-label">Secuencial</label>
 
                             <el-input
                                 v-model="form.sequential_number"
                                 :maxlength="15"
+                                :required="haveRetentions"
                                 show-word-limit
                                 dusk="sequential_number">
                             </el-input>
@@ -174,11 +184,12 @@
                         <div class="form-group col-sm-12 col-md-6 col-lg-4"
                             :class="{'has-danger': errors.auth_number}"
                             >
-                            <label class="control-label">Número autorización <span class="text-danger">*</span></label>
+                            <label class="control-label">Número autorización</label>
 
                             <el-input
                                 v-model="form.auth_number"
                                 :maxlength="49"
+                                :required="haveRetentions"
                                 show-word-limit
                                 dusk="auth_number">
                             </el-input>
@@ -187,7 +198,46 @@
                                     class="form-control-feedback"
                                     v-text="errors.auth_number[0]"></small>
                         </div>
+
+                        <div class="col-lg-2">
+                            <div :class="{'has-danger': errors.import_id}"
+                                 class="form-group">
+                                <label class="control-label">Importacion</label>
+                                <el-select v-model="form.import_id" >
+                                    <el-option v-for="option in imports"
+                                               :key="option.id"
+                                               :label="option.numeroImportacion"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.import_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.imports_id[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div :class="{'has-danger': errors.tipo_doc_id}"
+                                 class="form-group">
+                                <label class="control-label">Tipo documento</label>
+                                <el-select v-model="form.tipo_doc_id" >
+                                    <el-option v-for="option in type_docs"
+                                               :key="option.id"
+                                               :label="option.description"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.tipo_doc_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.tipo_doc_id[0]"></small>
+                            </div>
+                        </div>
+
                         <div class="col-12">&nbsp;</div>
+                        <div class="col-md-8 mt-2">
+                            <div class="form-group">
+                                <el-checkbox v-model="form.is_aproved"
+                                            >¿Desea Autorizar las retenciones de esta compra?
+                                </el-checkbox>
+                            </div>
+                        </div>
 
                         <div class="col-md-8 mt-4">
                             <div class="form-group">
@@ -706,8 +756,8 @@ export default {
             input_person: {},
             type: 'edit',
             resource: 'purchases',
-            maxLength1: 15,
-            maxLength2: 49,
+            maxLength1: null,
+            maxLength2: null,
             showDialogAddItem: false,
             showDialogNewPerson: false,
             showDialogOptions: false,
@@ -744,6 +794,10 @@ export default {
             retention_types_income: [],
             retention_types_iva: [],
             retencionesActuales: [],
+            imports:[],
+            type_docs:[],
+            codSustentos:[],
+            haveRetentions: false,
         }
     },
     async created() {
@@ -765,21 +819,26 @@ export default {
 
                 this.retention_types_iva = response.data.retention_types_iva
                 this.retention_types_income = response.data.retention_types_income
+                this.imports = response.data.imports
+                this.type_docs = response.data.typeDocs
+                this.codSustentos = response.data.codSustentos
+                this.document_types2 = response.data.typeDocs2
+                console.log('tipos de documentos Local: ',response.data.typeDocs2)
 
                 this.charges_types = response.data.charges_types
                 this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
                 this.form.establishment_id = (this.establishment.id) ? this.establishment.id : null
-                this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
+                //this.form.document_type_id = (this.document_types.length > 0) ? this.document_types[0].id : null
+                //this.form.document_type_intern = (this.document_types2.length > 0 )? this.document_types2[0].id : null
 
                 this.retention_types_income = response.data.retention_types_income
                 this.retention_types_iva = response.data.retention_types_iva
 
 
                 this.changeDateOfIssue()
-                this.changeDocumentType()
+                //this.changeDocumentType()
+                //this.changeDocumentType2()
                 this.changeCurrencyType()
-
-
 
             })
 
@@ -797,6 +856,7 @@ export default {
         this.initGlobalIgv()
 
         this.initRecord()
+        this.changeDocumentType2()
         //this.addRetentions()
     },
     computed: {
@@ -1036,10 +1096,11 @@ export default {
         async initRecord() {
             await this.$http.get(`/${this.resource}/record/${this.resourceId}`)
                 .then(response => {
-                    console.log('PURCHASE DATA: ',response.data.data.purchase)
+                    //console.log('PURCHASE DATA: ',response.data.data.purchase)
                     let dato = response.data.data.purchase
-                    console.log('RESPONSE: ',dato)
+                    //console.log('RESPONSE: ',dato)
                     this.form.id = dato.id
+                    this.form.document_type_intern = dato.document_type_intern
                     this.form.document_type_id = dato.document_type_id
                     this.form.series = dato.series
                     this.form.number = dato.number
@@ -1060,8 +1121,10 @@ export default {
                     this.form.auth_number = dato.auth_number
                     this.form.sequential_number = dato.sequential_number
                     this.form.observation = dato.observation
+                    this.form.is_aproved = (dato.is_aproved && dato.is_aproved > 0) ? true:false
 
-                    this.retencionesActuales = dato.retenciones
+                    //this.form.haveRetentions = dato.haveRetentions
+                    //this.retencionesActuales = dato.retenciones
 
                     this.setCurrencyType()
                     this.changeCurrencyType()
@@ -1080,10 +1143,8 @@ export default {
                     if (this.form.payment_condition_id == '02') this.readonly_date_of_due = true
 
                     this.changeDocumentType()
-                    // this.changePaymentMethodType()
                     this.calculateTotal()
-                    this.addRetenciones()
-                    // this.calculateTotal()
+
                 })
 
             //await this.getPercentageIgv();
@@ -1142,16 +1203,10 @@ export default {
             this.calculatePerception()
         },
         filterSuppliers() {
-            if (this.form.document_type_id === '01') {
-                this.suppliers = _.filter(this.all_suppliers, (item) => {
-                    return ['6', '0'].includes(item.identity_document_type_id)
-                })
-                this.selectSupplier()
 
-            } else {
-                this.suppliers = this.all_suppliers;
-                this.selectSupplier()
-            }
+            this.suppliers = this.all_suppliers;
+            this.selectSupplier()
+
         },
         selectSupplier() {
 
@@ -1167,6 +1222,7 @@ export default {
                 id: 0,
                 establishment_id: null,
                 document_type_id: null,
+                document_type_intern: null,
                 series: null,
                 number: null,
                 date_of_issue: moment().format('YYYY-MM-DD'),
@@ -1219,7 +1275,6 @@ export default {
             // this.clickAddPayment()
             this.initInputPerson()
             this.readonly_date_of_due = false
-
             this.initGlobalIgv()
 
         },
@@ -1268,6 +1323,13 @@ export default {
         },
         changeDocumentType() {
             this.filterSuppliers()
+        },
+        changeDocumentType2() {
+            var document = _.find(this.document_types2,{'idType': this.form.document_type_intern})
+            console.log('documento seleccionado',document.DocumentTypeID)
+            this.form.document_type_id = document.DocumentTypeID
+            //this.codSustentos = _.find(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
+            this.codSustentos = _.filter(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
         },
         addRow(row) {
             this.form.items.push(row)
@@ -1345,6 +1407,8 @@ export default {
 
                 console.log('Rows: ',row)
                 if(row.iva_retention > 0 || row.income_retention > 0){
+
+                    this.haveRetentions = true
                     if(this.form.ret.length > 0){
                         let nuevaRet = true
 

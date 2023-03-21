@@ -602,7 +602,7 @@
             @addRowSelectLot="addRowSelectLot">
         </select-lots-form>
 
-        
+
 
     </el-dialog>
 </template>
@@ -1105,6 +1105,7 @@ export default {
                 this.form.quantity = this.recordItem.quantity
                 this.form.unit_price_value = this.recordItem.input_unit_price_value
                 this.form.has_plastic_bag_taxes = (this.recordItem.total_plastic_bag_taxes > 0) ? true : false
+                this.form.has_service_taxes = (this.recordItem.total_service_taxes > 0) ? true : false
                 this.form.warehouse_id = this.recordItem.warehouse_id
                 this.isUpdateWarehouseId = this.recordItem.warehouse_id
 
@@ -1283,6 +1284,7 @@ export default {
 
             this.form.has_igv = this.form.item.has_igv;
             this.form.has_plastic_bag_taxes = this.form.item.has_plastic_bag_taxes;
+            this.form.has_service_taxes = this.form.item.has_service_taxes;
             this.form.affectation_igv_type_id = this.form.item.sale_affectation_igv_type_id;
             this.form.quantity = 1;
             this.cleanTotalItem();
@@ -1369,7 +1371,7 @@ export default {
         {
             return (this.validate_stock_add_item && (this.isFromInvoice !== undefined && this.isFromInvoice) && (this.isUpdateDocument !== undefined && !this.isUpdateDocument))
         },
-        async clickAddItem() 
+        async clickAddItem()
         {
             if(this.applyValidateStock())
             {
@@ -1424,7 +1426,7 @@ export default {
                         unit_price = this.form.unit_price_value * (1 + this.percentageIgv);
                     }
 
-                    
+
 
 
                 }
