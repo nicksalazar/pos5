@@ -593,6 +593,10 @@
                                                     type="button"
                                                     @click.prevent="clickRemoveItem(index)">x
                                             </button>
+                                            <button class="btn waves-effect waves-light btn-xs btn-info"
+                                                type="button"
+                                                @click="ediItem(row, index)">
+                                            <span style='font-size:10px;'>&#9998;</span></button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -774,6 +778,7 @@
                             :currency-type-id-config="config.currency_type_id"
                             :exchange-rate-sale="form.exchange_rate_sale"
                             :showDialog.sync="showDialogAddItem"
+                            :record-item="recordItem"
                             :localHasGlobalIgv="localHasGlobalIgv"
                             :percentage-igv="percentage_igv"
                             @add="addRow"></purchase-form-item>
@@ -835,6 +840,7 @@ export default {
             maxLength1: null,
             maxLength2: null,
             showDialogAddItem: false,
+            recordItem: null,
             readonly_date_of_due: false,
             localHasGlobalIgv: false,
             showDialogNewPerson: false,
@@ -1664,6 +1670,11 @@ export default {
             return {
                 success: true
             }
+        },
+        async ediItem(row, index) {
+            row.indexi = index
+            this.recordItem = row
+            this.showDialogAddItem = true
         },
         async submit() {
 

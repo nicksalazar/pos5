@@ -1,7 +1,8 @@
 <template>
     <el-dialog :title="titleDialog"
                :visible="showDialog"
-               @close="close">
+               @close="close"
+               @open="create">
         <Keypress
             :key-code="112"
             key-event="keyup"
@@ -658,6 +659,7 @@ export default {
         'exchangeRateSale',
         'localHasGlobalIgv',
         'percentageIgv',
+        'recordItem',
     ],
     components: {itemForm, LotsForm, Keypress},
     computed: {
@@ -764,6 +766,7 @@ export default {
         this.loadHasGlobalIgv()
         this.activeName = 'first'
         this.initForm()
+
         this.$http.get(`/${this.resource}/item/tables`).then(response => {
             console.log("Data CREATE: ", response.data.items);
             this.all_items = response.data.items
@@ -785,7 +788,6 @@ export default {
             //console.log("Item id: ", item_id);
             this.reloadDataItems(item_id)
         })
-
     },
     methods: {
         ...mapActions([
@@ -824,6 +826,105 @@ export default {
                         }
                     }
                 })
+        },
+        async create(){
+
+            console.log("record item",this.recordItem)
+            if (this.recordItem) {
+                this.titleDialog = 'Editar Producto o Servicio'
+                console.log("RECORD ITEM: ",this.recordItem)
+                await this.reloadDataItems(this.recordItem.item_id)
+                this.form.item_id = await this.recordItem.item_id
+                await this.changeItem()
+                this.form.quantity = this.recordItem.quantity
+                this.form.unit_price_value = this.recordItem.input_unit_price_value
+                this.form.has_plastic_bag_taxes = (this.recordItem.total_plastic_bag_taxes > 0) ? true : false
+                this.form.has_service_taxes = (this.recordItem.total_service_taxes > 0) ? true : false
+                this.form.warehouse_id = this.recordItem.warehouse_id
+                this.isUpdateWarehouseId = this.recordItem.warehouse_id
+
+                this.form.attributes = this.recordItem.attributes;
+                this.form.discounts = this.recordItem.discounts;
+                this.form.charges = this.recordItem.charges;
+                this.setPresentationEditItem()
+                if (this.recordItem.item.name_product_pdf) {
+                    this.form.name_product_pdf = this.recordItem.item.name_product_pdf
+                }
+                if (this.recordItem.item.change_free_affectation_igv) {
+
+                    this.form.affectation_igv_type_id = '15'
+                    this.form.item.change_free_affectation_igv = true
+
+                } else {
+                    if (this.recordItem.item.original_affectation_igv_type_id) {
+                        this.form.affectation_igv_type_id = this.recordItem.item.original_affectation_igv_type_id
+                    }
+                }
+                this.calculateQuantity()
+
+            }
+        },
+        setPresentationEditItem() {
+
+            if (!_.isEmpty(this.recordItem.item.presentation)) {
+                this.selectedPrice(this.recordItem.item.presentation)
+                this.getSelectedClass(this.recordItem.item.presentation)
+            }
+
+        },
+        selectedPrice(row) {
+
+            if (this.isSelectedPrice(row)) {
+
+                this.form.item_unit_type_id = null
+                this.item_unit_type = {}
+                this.form.unit_price = this.form.item.sale_unit_price
+                this.form.unit_price_value = this.form.item.sale_unit_price
+                this.form.item.unit_type_id = this.form.item.original_unit_type_id
+
+            } else {
+
+                let valor = 0
+                switch (row.price_default) {
+                    case 1:
+                        valor = row.price1
+                        break
+                    case 2:
+                        valor = row.price2
+                        break
+                    case 3:
+                        valor = row.price3
+                        break
+
+                }
+                this.form.item_unit_type_id = row.id
+                this.item_unit_type = row
+                this.form.unit_price = valor
+                this.form.unit_price_value = valor
+                this.form.item.unit_type_id = row.unit_type_id
+            }
+
+            this.calculateQuantity()
+        },
+        calculateQuantity() {
+            if (this.form.item.calculate_quantity) {
+                this.form.quantity = _.round((this.total_item / this.form.unit_price_value), 4)
+            }
+            //this.calculateTotal()
+        },
+        getSelectedClass(row) {
+
+            if (this.isSelectedPrice(row)) return 'btn-success'
+
+            return 'btn-secondary'
+
+        },
+        isSelectedPrice(item_unit_type) {
+
+            if (!_.isEmpty(this.item_unit_type)) {
+                return (this.item_unit_type.id === item_unit_type.id)
+            }
+            return false
         },
         handleChange(value) {
             this.income = this.form.quantity * value
