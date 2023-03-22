@@ -88,7 +88,7 @@
                             <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
                                 <label class="control-label">Moneda</label>
                                 <el-select v-model="form.currency_type_id" @change="changeCurrencyType">
-                                    <el-option v-for="option in currency_types" :key="option.symbol" :value="option.id"
+                                    <el-option v-for="option in currency_types" :key="option.id" :value="option.id"
                                                :label="option.description"></el-option>
                                 </el-select>
                                 <small class="form-control-feedback" v-if="errors.currency_type_id"
@@ -1496,11 +1496,6 @@ export default {
 
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
-
-                retention_iva = parseFloat(row.iva_retention)
-                retention_renta = parseFloat(row.income_retention)
-
-                toal_retenido += (retention_iva + retention_renta)
 
                 retention_iva = parseFloat(row.iva_retention)
                 retention_renta = parseFloat(row.income_retention)

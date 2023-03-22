@@ -9,8 +9,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Establishment;
+use App\Models\Tenant\PaymentMethodType;
 use App\Models\Tenant\Purchase;
+use App\Models\Tenant\PurchasePayment;
+use App\Models\Tenant\RetentionsDetailEC;
 use App\Models\Tenant\RetentionsEC;
+use App\Models\Tenant\SriFormasPagos;
+use Illuminate\Support\Facades\Storage;
 
 class RetentionsControllers extends Controller
 {
@@ -33,6 +38,7 @@ class RetentionsControllers extends Controller
     protected $purchase;
     protected $xmlUnsigned;
     protected $type;
+    protected $clave_acceso;
 
 
     public function __construct()
@@ -43,7 +49,7 @@ class RetentionsControllers extends Controller
         $this->ambienteLocal = ($this->company->soap_type_id === '01') ? 1 : 2;
         $this->isOse = ($this->company->soap_send_id === '02') ? true : false;
         $this->isSRI = ($this->company->soap_send_id === '03') ? true : false;
-        $this->type = 'retention';
+        $this->type = 'retentionEC';
     }
 
 
@@ -51,14 +57,17 @@ class RetentionsControllers extends Controller
     private function prepareDocument($id){
 
         $purchaseL = Purchase::findOrFail($id);
-        $retencionL = RetentionsEC::where('idDocumento', $id);
+        $retencionL = RetentionsEC::where('idDocumento', $id)->get();
         $establecimiento = Establishment::findOrFail($purchaseL->establishment_id);
+        $retencioneDetallesL = RetentionsDetailEC::where('idRetencion',$retencionL[0]->idRetencion)->get();
+        $formasPago = PurchasePayment::where('purchase_id',$id)->get();
 
         $clave = "" . date('dmY', strtotime($$retencionL[0]->create_at)) . "03" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".substr($retencionL[0]->idRetencion,1)."" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
         $digito_verificador_clave = $this->validar_clave($clave);
-        $clave_acceso = $clave . "" . $digito_verificador_clave . "";
-
+        $this->clave_acceso = $clave . "" . $digito_verificador_clave . "";
+        $retencion = null;
         if($purchaseL && $purchaseL->count() > 0 ){
+
             $retencion = [
                 'ambiente'=>$this->ambienteLocal,
                 'emision' => 1,
@@ -92,25 +101,46 @@ class RetentionsControllers extends Controller
                     'baseImponible0' => $purchaseL->total_unaffected,
                     'baseImponible12' => $purchaseL->toal_taxed,
                     'valorIva12' => $purchaseL->total_igv,
-                    
-                ]
+                ],
+                'retenciones' => $retencioneDetallesL->transform(function($row, $key) {
+                    return [
+                        'codigo' => $key + 1,
+                        'codigoRetencion' => $row->codRetencion,
+                        'baseImponible' => $row->baseRet,
+                        'porcentajeRetener' => $row->porcentajeRet,
+                        'valorRetenido' => $row->valorRet,
+                    ];
+                }),
+                'fpagos' => ($formasPago->count() > 0 )? $formasPago->transform(function($row, $key) {
+                    $pagoSRI = PaymentMethodType::find($row->payment_method_type_id);
+                    return [
+                        'formaPago' => $pagoSRI->pago_sri,
+                        'total' => $row->payment,
+                    ];
+                }): null,
+
 
 
             ];
         }
-
+        $retencionL->update([
+            'claveAcceso'=>$this->clave_acceso
+        ]);
+        return $retencion;
     }
 
     public function createXML($id){
 
-        $this->purchase = Purchase::findOrFail($id);
-        if($this->purchase->count() > 0 ){
+        $documento = $this->prepareDocument($id);
+
+        if($documento){
 
             $template = new Template();
-            $this->xmlUnsigned = XmlFormat::format($template->xml($this->type, $this->company, $this->document,null));
+            $this->xmlUnsigned = XmlFormat::format($template->xml($this->type, $this->company, $documento,null));
             $this->uploadFile($this->xmlUnsigned, 'unsigned');
+            $nombre = "generados/" . $this->clave_acceso . ".xml";
+            Storage::disk('tenant')->put($nombre, $this->xmlUnsigned);
             return $this;
-
         }
 
     }

@@ -826,7 +826,8 @@ export default {
                 })
         },
         handleChange(value) {
-
+            this.income = this.form.quantity * value
+            this.iva = this.form.quantity * value
             this.cambioCantidad()
         },
         async searchRemoteItems(input) {
@@ -1157,13 +1158,13 @@ export default {
             this.row = this.changeWarehouse(this.row)
 
             this.row.date_of_due = date_of_due
-            this.row.retention_type_id_income = this.form.retention_type_id_income;
-            this.row.retention_type_id_iva = this.form.retention_type_id_iva;
+            //this.row.retention_type_id_income = this.form.retention_type_id_income;
+            //this.row.retention_type_id_iva = this.form.retention_type_id_iva;
 
-            this.row.income_retention = this.form.income_retention;
-            this.row.iva_retention = this.form.iva_retention;
+            //this.row.income_retention = this.form.income_retention;
+            //this.row.iva_retention = this.form.iva_retention;
 
-            if( this.currencyTypeIdActive == this.currencyTypeIdConfig && this.currencyTypeIdActive !== this.form.currency_type_id ){
+            /*if( this.currencyTypeIdActive == this.currencyTypeIdConfig && this.currencyTypeIdActive !== this.form.currency_type_id ){
 
                 this.row.income_retention = this.form.income_retention / this.exchangeRateSale;
                 this.row.iva_retention = this.form.iva_retention  / this.exchangeRateSale;
@@ -1174,6 +1175,7 @@ export default {
                 this.row.iva_retention = this.form.iva_retention  * this.exchangeRateSale;
 
             }
+            */
             this.row.import = this.form.import;
             this.row.concepto = this.form.concepto;
 

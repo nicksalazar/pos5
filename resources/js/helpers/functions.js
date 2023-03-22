@@ -21,10 +21,15 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     if (currency_type_id_old === currency_type_id_def && currency_type_id_old !== currency_type_id_new) {
         unit_price = unit_price / exchange_rate_sale;
+        row_old.income_retention = row_old.income_retention / exchange_rate_sale;
+        row_old.iva_retention = row_old.iva_retention / exchange_rate_sale;
+
     }
 
     if (currency_type_id_new === currency_type_id_def && currency_type_id_old !== currency_type_id_new) {
         unit_price = unit_price * exchange_rate_sale;
+        row_old.income_retention = row_old.income_retention * exchange_rate_sale;
+        row_old.iva_retention = row_old.iva_retention * exchange_rate_sale;
     }
 
 

@@ -1424,8 +1424,6 @@ export default {
 
             this.form.items.forEach((row) => {
 
-                console.log('Rows: ',row)
-
                 if(row.iva_retention > 0 || row.income_retention > 0){
                     this.haveRetentions = true
                     this.maxLength1 = 15
@@ -1455,13 +1453,12 @@ export default {
                         });
 
                         if(nuevaRet){
-                            console.log('Nueva Retencion')
+
                             if(row.iva_retention > 0 ){
                                 let retencionLocal = {}
                                 retencionLocal.tipo = 'IVA'
                                 retencionLocal.valor  = _.round(parseFloat(row.iva_retention),3)
                                 const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
-                                console.log('Tipo retencion IVA: '+retIvaDesc.description)
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1473,7 +1470,6 @@ export default {
                                 retencionLocal.tipo = 'RENTA'
                                 retencionLocal.valor  = _.round(parseFloat(row.income_retention),3)
                                 const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
-                                console.log('Tipo retencion RENTA: '+retIvaDesc.description)
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1489,7 +1485,6 @@ export default {
                             retencionLocal.tipo = 'IVA'
                             retencionLocal.valor  = _.round(parseFloat(row.iva_retention),3)
                             const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
-                            //console.log('Tipo retencion : '+retIvaDesc.description)
                             retencionLocal.desciption  = retIvaDesc.description
                             retencionLocal.code  = retIvaDesc.code
                             retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1501,7 +1496,6 @@ export default {
                             retencionLocal.tipo = 'RENTA'
                             retencionLocal.valor  = _.round(parseFloat(row.income_retention),3)
                             const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
-                            //console.log('Tipo retencion : '+retIvaDesc.description)
                             retencionLocal.desciption  = retIvaDesc.description
                             retencionLocal.code  = retIvaDesc.code
                             retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1551,9 +1545,6 @@ export default {
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
-
-                //console.log('total: '+ total)
-                //console.log('retenido : '+ toal_retenido)
             });
 
             // isc
