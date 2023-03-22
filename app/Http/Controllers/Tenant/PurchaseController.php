@@ -320,8 +320,8 @@ use Illuminate\Support\Facades\Log;
             $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
             $warehouses = Warehouse::all();
 
-            $retention_types_iva = RetentionType::where('type_id', '02')->get();
-            $retention_types_income = RetentionType::where('type_id', '01')->get();
+            $retention_types_iva = RetentionType::where('type_id', '02')->whereActive()->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->whereActive()->get();
 
             $retention_types_purch = RetentionTypePurchase::get();
 

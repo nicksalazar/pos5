@@ -826,8 +826,8 @@ export default {
                 })
         },
         handleChange(value) {
-            this.income = this.form.quantity * value
-            this.iva = this.form.quantity * value
+
+            this.cambioCantidad()
         },
         async searchRemoteItems(input) {
 
@@ -1001,6 +1001,7 @@ export default {
 
         },
         cambioCantidad(){
+
             this.changeRetentionTypeIva(this.form.retention_type_id_iva)
             this.changeRetentionTypeIncome(this.form.retention_type_id_income)
 
@@ -1008,27 +1009,33 @@ export default {
         changeRetentionTypeIva(event) {
             const val = _.find(this.retention_types_iva, {'id': event});
             const item = {..._.find(this.items, {'id': this.form.item_id})};
+            console.log("retention_types_iva: ",this.retention_types_iva)
+
+
             if (val.type_id == '02') {
+
                 if(item.has_igv){
                     if (item.sale_affectation_igv_type_id == '10') {
-                        this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.12)), 3) * this.form.quantity
+                        this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * (this.iva - (this.iva / 1.12)), 3) * this.form.quantity
+                        console.log("valor RET: " + (parseFloat(val.percentage) + ' ' + this.iva ))
                     } else if (item.sale_affectation_igv_type_id == '11') {
-                        this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.08)), 3) * this.form.quantity
+                        this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * (this.iva - (this.iva / 1.08)), 3) * this.form.quantity
                     } else if (item.sale_affectation_igv_type_id == '12') {
-                        this.form.iva_retention = _.round((val.percentage / 100) * (this.iva - (this.iva / 1.14)), 3) * this.form.quantity
+                        this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * (this.iva - (this.iva / 1.14)), 3) * this.form.quantity
                     } else if (item.sale_affectation_igv_type_id == '30') {
-                        this.form.iva_retention = _.round((val.percentage / 100) * this.iva, 3) * this.form.quantity
+                        this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * this.iva, 3) * this.form.quantity
                     }
+
                 }else{
 
                     if (item.sale_affectation_igv_type_id == '10') {
-                        this.form.iva_retention = _.round((val.percentage / 100) * ((this.iva * 1.12) - this.iva), 3) * this.form.quantity
+                        this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * ((this.iva * 1.12) - this.iva), 3) * this.form.quantity
                     } else if (item.sale_affectation_igv_type_id == '11') {
-                        this.form.iva_retention = _.round((val.percentage / 100) * ((this.iva * 1.08) - this.iva), 3) * this.form.quantity
+                        this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * ((this.iva * 1.08) - this.iva), 3) * this.form.quantity
                     } else if (item.sale_affectation_igv_type_id == '12') {
-                        this.form.iva_retention = _.round((val.percentage / 100) * ((this.iva * 1.14) - this.iva), 3) * this.form.quantity
+                        this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * ((this.iva * 1.14) - this.iva), 3) * this.form.quantity
                     } else if (item.sale_affectation_igv_type_id == '30') {
-                        this.form.iva_retention = _.round((val.percentage / 100) * this.iva, 3) * this.form.quantity
+                        this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * this.iva, 3) * this.form.quantity
                     }
                 }
                 //_.round
@@ -1040,6 +1047,7 @@ export default {
 
             const val = _.find(this.retention_types_income, {'id': event});
             const item = {..._.find(this.items, {'id': this.form.item_id})};
+            console.log("retenciones typo: ",this.retention_types_income)
 
             if (val.type_id == '01') {
                 if(item.has_igv){

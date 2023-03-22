@@ -284,7 +284,7 @@ class Facturalo
         }else{
             //$serie = str_pad(substr($this->document->series,2,2), '3', '0', STR_PAD_LEFT);
         }
-        
+
         //Log::info('ID ESTABLECIMIENTO :'.$this->document->user->establishment->code);
 
         $template = new Template();

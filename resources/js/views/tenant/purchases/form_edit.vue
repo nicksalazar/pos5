@@ -88,7 +88,7 @@
                             <div class="form-group" :class="{'has-danger': errors.currency_type_id}">
                                 <label class="control-label">Moneda</label>
                                 <el-select v-model="form.currency_type_id" @change="changeCurrencyType">
-                                    <el-option v-for="option in currency_types" :key="option.id" :value="option.id"
+                                    <el-option v-for="option in currency_types" :key="option.symbol" :value="option.id"
                                                :label="option.description"></el-option>
                                 </el-select>
                                 <small class="form-control-feedback" v-if="errors.currency_type_id"
@@ -823,7 +823,7 @@ export default {
                 this.type_docs = response.data.typeDocs
                 this.codSustentos = response.data.codSustentos
                 this.document_types2 = response.data.typeDocs2
-                console.log('tipos de documentos Local: ',response.data.typeDocs2)
+                //console.log('tipos de documentos Local: ',response.data.typeDocs2)
 
                 this.charges_types = response.data.charges_types
                 this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
@@ -856,7 +856,7 @@ export default {
         this.initGlobalIgv()
 
         this.initRecord()
-        this.changeDocumentType2()
+        //this.changeDocumentType2()
         //this.addRetentions()
     },
     computed: {
@@ -1143,6 +1143,7 @@ export default {
                     if (this.form.payment_condition_id == '02') this.readonly_date_of_due = true
 
                     this.changeDocumentType()
+                    this.changeDocumentType2()
                     this.calculateTotal()
 
                 })
@@ -1326,7 +1327,7 @@ export default {
         },
         changeDocumentType2() {
             var document = _.find(this.document_types2,{'idType': this.form.document_type_intern})
-            console.log('documento seleccionado',document.DocumentTypeID)
+            //console.log('documento seleccionado',document.DocumentTypeID)
             this.form.document_type_id = document.DocumentTypeID
             //this.codSustentos = _.find(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
             this.codSustentos = _.filter(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
@@ -1377,7 +1378,7 @@ export default {
             })
 
             this.form.total_ret = retenido
-            console.log('total valor con retencion',total - retenido)
+            //console.log('total valor con retencion',total - retenido)
             this.form.total = _.round(total - retenido, 2)
         },
         calculateTotal() {
@@ -1405,7 +1406,7 @@ export default {
             //console.log('TOTAL ITEMS: '+this.form.items.length)
             this.form.items.forEach((row) => {
 
-                console.log('Rows: ',row)
+                //console.log('Rows: ',row)
                 if(row.iva_retention > 0 || row.income_retention > 0){
 
                     this.haveRetentions = true
@@ -1434,14 +1435,14 @@ export default {
                         });
 
                         if(nuevaRet){
-                            console.log('Nueva Retencion')
+                            //console.log('Nueva Retencion')
 
                             if(row.iva_retention > 0 ){
                                 let retencionLocal = {}
                                 retencionLocal.tipo = 'IVA'
                                 retencionLocal.valor  = parseFloat(row.iva_retention)
                                 const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
-                                console.log('Tipo retencion IVA: '+retIvaDesc.description)
+                                //console.log('Tipo retencion IVA: '+retIvaDesc.description)
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1453,7 +1454,7 @@ export default {
                                 retencionLocal.tipo = 'RENTA'
                                 retencionLocal.valor  = parseFloat(row.income_retention)
                                 const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
-                                console.log('Tipo retencion RENTA: '+retIvaDesc.description)
+                                //console.log('Tipo retencion RENTA: '+retIvaDesc.description)
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1463,7 +1464,7 @@ export default {
                         }
 
                     }else{
-                        console.log('Retencion Inicial')
+                        //console.log('Retencion Inicial')
                         if(row.iva_retention > 0 ){
                             let retencionLocal = {}
                             retencionLocal.tipo = 'IVA'
@@ -1569,8 +1570,8 @@ export default {
             this.form.total_taxes = _.round(total_igv + total_isc, 2)
             this.form.total_ret =  _.round(toal_retenido, 2)
 
-            console.log('total ACTUAL '+ total)
-            console.log('total ACTUAL2 '+ toal_retenido)
+            //console.log('total ACTUAL '+ total)
+            //console.log('total ACTUAL2 '+ toal_retenido)
 
             total = total - toal_retenido
 
