@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Tenant;
 use App\Models\Tenant\Tariff;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Tenant\TariffRequest;
 use App\Http\Resources\Tenant\TariffCollection;
 use App\Http\Resources\Tenant\TariffResource;
+use App\Http\Requests\Tenant\TariffRequest;
+
 use App\Models\Tenant\Configuration;
 
 class TariffController extends Controller

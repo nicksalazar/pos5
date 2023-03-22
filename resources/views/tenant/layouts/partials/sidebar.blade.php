@@ -594,9 +594,15 @@
                                         </li>
                                     @endif
                                     @if(in_array('purchases_list', $vc_module_levels))
-                                        <li class="{{ ($firstLevel === 'purchases' && $secondLevel != 'create')?'nav-active':'' }}">
+                                        <li class="{{ ($firstLevel === 'purchases' && $secondLevel === '')?'nav-active':'' }}">
                                             <a class="nav-link"
                                                href="{{route('tenant.purchases.index')}}">Listado</a>
+                                        </li>
+                                    @endif
+                                    @if(in_array('purchases_types', $vc_module_levels))
+                                        <li class="{{ ($firstLevel === 'purchases' && $secondLevel === 'document_types')?'nav-active':'' }}">
+                                            <a class="nav-link"
+                                               href="{{route('tenant.purchases.types')}}">Tipo Documentos</a>
                                         </li>
                                     @endif
                                     @if(in_array('purchases_orders', $vc_module_levels))
@@ -939,7 +945,13 @@
                     @endif
 
                     @if(in_array('accounting', $vc_modules))
-                        <li class="nav-parent {{ ($firstLevel === 'account' || $firstLevel === 'accounting_ledger'  )?'nav-active nav-expanded':'' }}">
+                        <li class="nav-parent 
+                        {{ ($firstLevel === 'account' || $firstLevel === 'accounting_ledger'  )?'nav-active nav-expanded':'' }}
+                        {{ ($firstLevel === 'accounting-entries')?'nav-active nav-expanded':'' }}
+                        {{ ($firstLevel === 'accounts-groups')?'nav-active nav-expanded':'' }}
+                        {{ ($firstLevel === 'accounts-movements')?'nav-active nav-expanded':'' }}
+                        {{ ($firstLevel === 'types-accounting-entries')?'nav-active nav-expanded':'' }}
+                        ">
                             <a class="nav-link"
                                href="#">
                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -995,6 +1007,36 @@
                                         Libro Mayor
                                     </a>
                                 </li>
+                                 @if(in_array('account_entry', $vc_module_levels))
+                                 <li class="nav-parent
+                                 {{ ($firstLevel === 'accounting-entries')?'nav-active nav-expanded':'' }}
+                                 {{ ($firstLevel === 'accounts-groups')?'nav-active nav-expanded':'' }}
+                                 {{ ($firstLevel === 'accounts-movements')?'nav-active nav-expanded':'' }}
+                                 {{ ($firstLevel === 'types-accounting-entries')?'nav-active nav-expanded':'' }}
+                                         ">
+                                        <a class="nav-link"
+                                           href="#">Asientos Contables</a>
+                                        <ul class="nav nav-children">
+                                            <li class="{{ ($firstLevel === 'accounting-entries')?'nav-active':'' }}">
+                                                <a class="nav-link"
+                                                   href="{{route('tenant.accountingentries.index')}}">Listado Asientos Contables</a>
+                                            </li>
+                                            <li class="{{ ($firstLevel === 'accounts-groups')?'nav-active':'' }}">
+                                                <a class="nav-link"
+                                                   href="{{route('tenant.accountsgroups.index')}}">Cuentas Grupos</a>
+                                            </li>
+                                            <li class="{{ ($firstLevel === 'accounts-movements')?'nav-active':'' }}">
+                                                <a class="nav-link"
+                                                   href="{{route('tenant.accountsmovements.index')}}">Cuentas Movimientos</a>
+                                            </li>
+                                            <li class="{{ ($firstLevel === 'types-accounting-entries')?'nav-active':'' }}">
+                                                <a class="nav-link"
+                                                   href="{{route('tenant.typesaccountingentries.index')}}">Tipos Asientos</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                @endif
+
                             </ul>
                         </li>
                     @endif

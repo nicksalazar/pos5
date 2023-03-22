@@ -945,4 +945,9 @@
             return $query->whereFilterWithOutRelations()->select('accumulated_points')->findOrFail($id)->accumulated_points;
         }
 
+        public function account_entries()
+        {
+            return $this->hasMany(AccountingEntries::class);
+        }
+
     }

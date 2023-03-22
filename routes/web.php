@@ -242,8 +242,60 @@ if ($hostname) {
                 Route::get('/search/{barcode}', 'Tenant\PersonController@getPersonByBarcode');
 
                 Route::get('accumulated-points/{id}', 'Tenant\PersonController@getAccumulatedPoints');
+            });
+
+            //Asientos contables
+            Route::prefix('accounting-entries')->group(function () {
+                Route::get('/', 'Tenant\AccountingEntriesController@index')->name('tenant.accountingentries.index')->middleware(['redirect.level', 'tenant.internal.mode']);
+                Route::get('/create', 'Tenant\AccountingEntriesController@create')->name('tenant.accountingentries.create');
+                Route::get('/columns', 'Tenant\AccountingEntriesController@columns');
+                Route::get('/records', 'Tenant\AccountingEntriesController@records');
+                Route::get('/record/{person}', 'Tenant\AccountingEntriesController@record');
+                Route::post('/', 'Tenant\AccountingEntriesController@store');
+                Route::delete('/{person}', 'Tenant\AccountingEntriesController@destroy');
+                Route::get('/tables', 'Tenant\AccountingEntriesController@tables');
+                Route::get('/item/tables', 'Tenant\AccountingEntriesController@item_tables');
+                Route::get('/search/customers', 'Tenant\AccountingEntriesController@searchCustomers');
+                Route::get('/search/suppliers', 'Tenant\AccountingEntriesController@searchSuppliers');
+                Route::get('/download/{external_id}/{format?}', 'Tenant\AccountingEntriesController@download');
+                Route::get('/print/{external_id}/{format?}', 'Tenant\AccountingEntriesController@toPrint');
+                Route::delete('/{id}', 'Tenant\AccountingEntriesController@destroy');
+                Route::get('/search/customer/{id}', 'Tenant\AccountingEntriesController@searchCustomerById');
+                Route::get('/search/supplier/{id}', 'Tenant\AccountingEntriesController@searchSupplierById');
+                Route::get('/edit/{id}', 'Tenant\AccountingEntriesController@edit')->middleware('redirect.level');
+                Route::post('/update', 'Tenant\AccountingEntriesController@update');
 
             });
+            //cuentas grupos
+            Route::prefix('accounts-groups')->group(function () {
+                Route::get('', 'Tenant\AccountGroupController@index')->name('tenant.accountsgroups.index')->middleware(['redirect.level', 'tenant.internal.mode']);
+                Route::get('/columns', 'Tenant\AccountGroupController@columns');
+                Route::get('/records', 'Tenant\AccountGroupController@records');
+                Route::get('/record/{person}', 'Tenant\AccountGroupController@record');
+                Route::post('', 'Tenant\AccountGroupController@store');
+                Route::delete('/{person}', 'Tenant\AccountGroupController@destroy');
+            });
+
+            //cuentas movimientos
+            Route::prefix('accounts-movements')->group(function () {
+                Route::get('', 'Tenant\AccountMovementController@index')->name('tenant.accountsmovements.index')->middleware(['redirect.level', 'tenant.internal.mode']);
+                Route::get('/columns', 'Tenant\AccountMovementController@columns');
+                Route::get('/records', 'Tenant\AccountMovementController@records');
+                Route::get('/record/{id}', 'Tenant\AccountMovementController@record');
+                Route::post('', 'Tenant\AccountMovementController@store');
+                Route::delete('/{id}', 'Tenant\AccountMovementController@destroy');
+                Route::get('/tables', 'Tenant\AccountMovementController@tables');
+            });
+            //cuentas movimientos
+            Route::prefix('types-accounting-entries')->group(function () {
+                Route::get('', 'Tenant\TypesAccountingEntriesController@index')->name('tenant.typesaccountingentries.index')->middleware(['redirect.level', 'tenant.internal.mode']);
+                Route::get('/columns', 'Tenant\TypesAccountingEntriesController@columns');
+                Route::get('/records', 'Tenant\TypesAccountingEntriesController@records');
+                Route::get('/record/{id}', 'Tenant\TypesAccountingEntriesController@record');
+                Route::post('', 'Tenant\TypesAccountingEntriesController@store');
+                Route::delete('/{id}', 'Tenant\TypesAccountingEntriesController@destroy');
+            });
+
             //Documents
             Route::post('documents/categories', 'Tenant\DocumentController@storeCategories');
             Route::post('documents/brands', 'Tenant\DocumentController@storeBrands');
@@ -504,10 +556,14 @@ if ($hostname) {
             // Route::get('purchases/print/{external_id}/{format?}', 'Tenant\PurchaseController@toPrint');
             Route::get('purchases/search-items', 'Tenant\PurchaseController@searchItems');
             Route::get('purchases/search/item/{item}', 'Tenant\PurchaseController@searchItemById');
-            Route::post('purchases/search/purchase_order','Tenant\PurchaseController@searchPurchaseOrder');
+            Route::post('purchases/search/purchase_order', 'Tenant\PurchaseController@searchPurchaseOrder');
             // Route::get('purchases/item_resource/{id}', 'Tenant\PurchaseController@itemResource');
 
-            Route::get('purchases/document_types', 'Tenant\DocumentPurchaseTypy2Controller@index');
+            Route::get('purchases/document_types', 'Tenant\DocumentPurchaseTypy2Controller@index')->name('tenant.purchases.types');;
+            Route::get('purchases/document_types/records', 'Tenant\DocumentPurchaseTypy2Controller@records');
+            Route::get('purchases/document_types/record/{id}', 'Tenant\DocumentPurchaseTypy2Controller@record');
+            Route::post('purchases/document_types', 'Tenant\DocumentPurchaseTypy2Controller@store');
+            Route::get('purchases/document_types/tables', 'Tenant\DocumentPurchaseTypy2Controller@tables');
 
             // Route::get('documents/send/{document}', 'Tenant\DocumentController@send');
             // Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');
@@ -713,13 +769,13 @@ if ($hostname) {
 
             Route::get('purchase-settlements/create/{order_id?}', 'Tenant\PurchaseSettlementController@create')->name('tenant.purchase-settlements.create');
 
-Route::post('purchase-settlements', 'Tenant\PurchaseSettlementController@store');
+            Route::post('purchase-settlements', 'Tenant\PurchaseSettlementController@store');
             Route::get('purchase-settlements/tables', 'Tenant\PurchaseSettlementController@tables');
             Route::get('purchase-settlements/table/{table}', 'Tenant\PurchaseSettlementController@table');
             Route::get('purchase-settlements/record/{document}', 'Tenant\PurchaseSettlementController@record');
 
             //Almacen de columnas por usuario
-            Route::post('validate_columns','Tenant\SettingController@getColumnsToDatatable');
+            Route::post('validate_columns', 'Tenant\SettingController@getColumnsToDatatable');
 
             Route::post('general-upload-temp-image', 'Controller@generalUploadTempImage');
 
@@ -733,9 +789,9 @@ Route::post('purchase-settlements', 'Tenant\PurchaseSettlementController@store')
         });
     });
 } else {
-    $prefix = env('PREFIX_URL',null);
-    $prefix = !empty($prefix)?$prefix.".":'';
-    $app_url = $prefix. env('APP_URL_BASE');
+    $prefix = env('PREFIX_URL', null);
+    $prefix = !empty($prefix) ? $prefix . "." : '';
+    $app_url = $prefix . env('APP_URL_BASE');
 
     Route::domain($app_url)->group(function () {
         Route::get('login', 'System\LoginController@showLoginForm')->name('login');
@@ -870,9 +926,6 @@ Route::post('purchase-settlements', 'Tenant\PurchaseSettlementController@store')
                 }
             });
             */
-
-
-
         });
     });
 }

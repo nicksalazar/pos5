@@ -14,7 +14,7 @@ class PurchaseDocumentTypeResource extends JsonResource
      */
     public function toArray($request)
     {
-        /** @var \App\Models\Tenant\Person $this */
+        /** @var \App\Models\Tenant\PurchaseDocumentTypes2 $this */
         return $this->getCollectionData();
         /** Pasado al modelo  */
         return [
