@@ -830,6 +830,7 @@ export default {
         async create(){
 
             console.log("record item",this.recordItem)
+
             if (this.recordItem) {
                 this.titleDialog = 'Editar Producto o Servicio'
                 console.log("RECORD ITEM: ",this.recordItem)
@@ -838,6 +839,7 @@ export default {
                 await this.changeItem()
                 this.form.quantity = this.recordItem.quantity
                 this.form.unit_price_value = this.recordItem.input_unit_price_value
+                this.form.unit_price = this.recordItem.unit_value
                 this.form.has_plastic_bag_taxes = (this.recordItem.total_plastic_bag_taxes > 0) ? true : false
                 this.form.has_service_taxes = (this.recordItem.total_service_taxes > 0) ? true : false
                 this.form.warehouse_id = this.recordItem.warehouse_id
@@ -846,7 +848,7 @@ export default {
                 this.form.attributes = this.recordItem.attributes;
                 this.form.discounts = this.recordItem.discounts;
                 this.form.charges = this.recordItem.charges;
-                this.setPresentationEditItem()
+                //this.setPresentationEditItem()
                 if (this.recordItem.item.name_product_pdf) {
                     this.form.name_product_pdf = this.recordItem.item.name_product_pdf
                 }
@@ -860,9 +862,13 @@ export default {
                         this.form.affectation_igv_type_id = this.recordItem.item.original_affectation_igv_type_id
                     }
                 }
+                this.form.income
+                this.form.retention_type_id_income = this.recordItem.retention_type_id_income
+                this.form.retention_type_id_iva = this.recordItem.retention_type_id_iva
                 this.calculateQuantity()
 
             }
+
         },
         setPresentationEditItem() {
 
@@ -878,7 +884,7 @@ export default {
 
                 this.form.item_unit_type_id = null
                 this.item_unit_type = {}
-                this.form.unit_price = this.form.item.sale_unit_price
+                this.form.unit_price = this.form.item.unit_price
                 this.form.unit_price_value = this.form.item.sale_unit_price
                 this.form.item.unit_type_id = this.form.item.original_unit_type_id
 
@@ -1004,7 +1010,6 @@ export default {
                 update_date_of_due: false,
                 update_purchase_price: this.config.checked_update_purchase_price,
                 concepto:null,
-
                 // update_purchase_price: true,
             }
 
@@ -1078,13 +1083,18 @@ export default {
         changeItem() {
 
             const item = {..._.find(this.items, {'id': this.form.item_id})};
-            console.log('changeItem',item)
+            console.log('purchase_unit_price',this.form.item)
             this.form.item = item;
             this.form.item = this.setExtraFieldOfitem(this.form.item)
 
             const saleUnitPrice = item.sale_unit_price;
             this.sale_unit_price = parseFloat(saleUnitPrice).toFixed(2);
-            this.form.unit_price = this.form.item.purchase_unit_price
+            if(this.recordItem){
+
+            }else{
+                this.form.unit_price = this.form.item.purchase_unit_price
+            }
+            
             this.form.affectation_igv_type_id = this.form.item.purchase_affectation_igv_type_id
             this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
             this.prices = this.form.item_unit_types;
@@ -1191,20 +1201,38 @@ export default {
         },
 
         changeItemAlt() {
-            let item = _.find(this.items, {'id': this.form.item_id});
-            this.form.item = item;
-            this.form.item = this.setExtraFieldOfitem(this.form.item)
-            let saleUnitPrice = item.sale_unit_price;
-            this.sale_unit_price = parseFloat(saleUnitPrice).toFixed(2);
-            this.form.unit_price = this.form.item.purchase_unit_price
-            this.form.affectation_igv_type_id = this.form.item.purchase_affectation_igv_type_id
-            this.form.item_unit_types = item.item_unit_types
-            this.prices = this.form.item_unit_types;
-            this.date_of_due = this.form.date_of_due;
-            this.form.purchase_has_igv = this.form.item.purchase_has_igv;
-            this.search_item_by_barcode = 0;
-            this.setExtraElements(this.form.item);
-            this.setGlobalIgvToItem()
+            if(recordItem){
+                let item = _.find(this.items, {'id': this.form.item_id});
+                this.form.item = item;
+                this.form.item = this.setExtraFieldOfitem(this.form.item)
+                let saleUnitPrice = item.sale_unit_price;
+                this.sale_unit_price = parseFloat(saleUnitPrice).toFixed(2);
+                //this.form.unit_price = this.form.item.purchase_unit_price
+                this.form.affectation_igv_type_id = this.form.item.purchase_affectation_igv_type_id
+                this.form.item_unit_types = item.item_unit_types
+                this.prices = this.form.item_unit_types;
+                this.date_of_due = this.form.date_of_due;
+                this.form.purchase_has_igv = this.form.item.purchase_has_igv;
+                this.search_item_by_barcode = 0;
+                this.setExtraElements(this.form.item);
+                this.setGlobalIgvToItem()
+            }else{
+                let item = _.find(this.items, {'id': this.form.item_id});
+                this.form.item = item;
+                this.form.item = this.setExtraFieldOfitem(this.form.item)
+                let saleUnitPrice = item.sale_unit_price;
+                this.sale_unit_price = parseFloat(saleUnitPrice).toFixed(2);
+                this.form.unit_price = this.form.item.purchase_unit_price
+                this.form.affectation_igv_type_id = this.form.item.purchase_affectation_igv_type_id
+                this.form.item_unit_types = item.item_unit_types
+                this.prices = this.form.item_unit_types;
+                this.date_of_due = this.form.date_of_due;
+                this.form.purchase_has_igv = this.form.item.purchase_has_igv;
+                this.search_item_by_barcode = 0;
+                this.setExtraElements(this.form.item);
+                this.setGlobalIgvToItem()
+            }
+            
         },
         async clickAddItem() {
 
@@ -1279,9 +1307,11 @@ export default {
             */
             this.row.import = this.form.import;
             this.row.concepto = this.form.concepto;
-
+            if (this.recordItem) {
+                this.row.indexi = this.recordItem.indexi
+            }
             this.initForm()
-
+           
             this.$emit('add', this.row)
         },
         changeWarehouse(row) {

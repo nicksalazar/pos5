@@ -546,6 +546,10 @@
                                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger"
                                                     @click.prevent="clickRemoveItem(index)">x
                                             </button>
+                                            <button class="btn waves-effect waves-light btn-xs btn-info"
+                                                type="button"
+                                                @click="ediItem(row, index)">
+                                            <span style='font-size:10px;'>&#9998;</span></button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -720,6 +724,7 @@
         <purchase-form-item :showDialog.sync="showDialogAddItem"
                             :currency-type-id-active="form.currency_type_id"
                             :exchange-rate-sale="form.exchange_rate_sale"
+                            :record-item="recordItem"
                             :localHasGlobalIgv="localHasGlobalIgv"
                             :percentage-igv="percentage_igv"
                             @add="addRow"></purchase-form-item>
@@ -755,6 +760,7 @@ export default {
         return {
             input_person: {},
             type: 'edit',
+            recordItem: null,
             resource: 'purchases',
             maxLength1: null,
             maxLength2: null,
@@ -1277,7 +1283,7 @@ export default {
             this.initInputPerson()
             this.readonly_date_of_due = false
             this.initGlobalIgv()
-
+            this.recordItem = null
         },
         initGlobalIgv() {
             this.localHasGlobalIgv = this.configuration.checked_global_igv_to_purchase
@@ -1575,7 +1581,7 @@ export default {
             this.calculatePerception()
             this.calculatePayments()
             this.calculateFee()
-
+            this.recordItem = null
 
         },
         calculatePerception() {
@@ -1628,6 +1634,11 @@ export default {
                 error_by_item: error_by_item,
             }
 
+        },
+        async ediItem(row, index) {
+            row.indexi = index
+            this.recordItem = row
+            this.showDialogAddItem = true
         },
         async submit() {
 
