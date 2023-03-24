@@ -1094,7 +1094,7 @@ export default {
             }else{
                 this.form.unit_price = this.form.item.purchase_unit_price
             }
-            
+
             this.form.affectation_igv_type_id = this.form.item.purchase_affectation_igv_type_id
             this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
             this.prices = this.form.item_unit_types;
@@ -1110,7 +1110,7 @@ export default {
             this.form.system_isc_type_id = this.form.item.purchase_system_isc_type_id
 
             this.form.concepto = this.form.item.concept_id
-
+            this.calculateQuantity()
         },
         cambioCantidad(){
 
@@ -1232,7 +1232,7 @@ export default {
                 this.setExtraElements(this.form.item);
                 this.setGlobalIgvToItem()
             }
-            
+
         },
         async clickAddItem() {
 
@@ -1311,7 +1311,7 @@ export default {
                 this.row.indexi = this.recordItem.indexi
             }
             this.initForm()
-           
+
             this.$emit('add', this.row)
         },
         changeWarehouse(row) {
