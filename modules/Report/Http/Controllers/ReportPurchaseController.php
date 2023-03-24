@@ -37,11 +37,18 @@ class ReportPurchaseController extends Controller
     }
 
 
-    public function index(Request $request) 
+    public function index(Request $request)
     {
         $apply_conversion_to_pen = $this->applyConversiontoPen($request);
 
         return view('report::purchases.index', compact('apply_conversion_to_pen'));
+    }
+
+    public function quotations(Request $request)
+    {
+        $apply_conversion_to_pen = $this->applyConversiontoPen($request);
+
+        return view('report::purchases.quotation', compact('apply_conversion_to_pen'));
     }
 
     public function records(Request $request)

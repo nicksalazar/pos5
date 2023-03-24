@@ -1446,7 +1446,6 @@ export default {
                 }
             }
 
-
             this.form.input_unit_price_value = this.form.unit_price_value;
 
             this.form.unit_price = unit_price;

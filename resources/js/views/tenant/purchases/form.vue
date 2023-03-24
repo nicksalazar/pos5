@@ -593,6 +593,10 @@
                                                     type="button"
                                                     @click.prevent="clickRemoveItem(index)">x
                                             </button>
+                                            <button class="btn waves-effect waves-light btn-xs btn-info"
+                                                type="button"
+                                                @click="ediItem(row, index)">
+                                            <span style='font-size:10px;'>&#9998;</span></button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -774,6 +778,7 @@
                             :currency-type-id-config="config.currency_type_id"
                             :exchange-rate-sale="form.exchange_rate_sale"
                             :showDialog.sync="showDialogAddItem"
+                            :record-item="recordItem"
                             :localHasGlobalIgv="localHasGlobalIgv"
                             :percentage-igv="percentage_igv"
                             @add="addRow"></purchase-form-item>
@@ -835,6 +840,7 @@ export default {
             maxLength1: null,
             maxLength2: null,
             showDialogAddItem: false,
+            recordItem: null,
             readonly_date_of_due: false,
             localHasGlobalIgv: false,
             showDialogNewPerson: false,
@@ -1424,8 +1430,6 @@ export default {
 
             this.form.items.forEach((row) => {
 
-                console.log('Rows: ',row)
-
                 if(row.iva_retention > 0 || row.income_retention > 0){
                     this.haveRetentions = true
                     this.maxLength1 = 15
@@ -1455,13 +1459,12 @@ export default {
                         });
 
                         if(nuevaRet){
-                            console.log('Nueva Retencion')
+
                             if(row.iva_retention > 0 ){
                                 let retencionLocal = {}
                                 retencionLocal.tipo = 'IVA'
                                 retencionLocal.valor  = _.round(parseFloat(row.iva_retention),3)
                                 const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
-                                console.log('Tipo retencion IVA: '+retIvaDesc.description)
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1473,7 +1476,6 @@ export default {
                                 retencionLocal.tipo = 'RENTA'
                                 retencionLocal.valor  = _.round(parseFloat(row.income_retention),3)
                                 const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
-                                console.log('Tipo retencion RENTA: '+retIvaDesc.description)
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1489,7 +1491,6 @@ export default {
                             retencionLocal.tipo = 'IVA'
                             retencionLocal.valor  = _.round(parseFloat(row.iva_retention),3)
                             const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
-                            //console.log('Tipo retencion : '+retIvaDesc.description)
                             retencionLocal.desciption  = retIvaDesc.description
                             retencionLocal.code  = retIvaDesc.code
                             retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1501,7 +1502,6 @@ export default {
                             retencionLocal.tipo = 'RENTA'
                             retencionLocal.valor  = _.round(parseFloat(row.income_retention),3)
                             const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
-                            //console.log('Tipo retencion : '+retIvaDesc.description)
                             retencionLocal.desciption  = retIvaDesc.description
                             retencionLocal.code  = retIvaDesc.code
                             retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1551,9 +1551,6 @@ export default {
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
-
-                //console.log('total: '+ total)
-                //console.log('retenido : '+ toal_retenido)
             });
 
             // isc
@@ -1673,6 +1670,11 @@ export default {
             return {
                 success: true
             }
+        },
+        async ediItem(row, index) {
+            row.indexi = index
+            this.recordItem = row
+            this.showDialogAddItem = true
         },
         async submit() {
 
