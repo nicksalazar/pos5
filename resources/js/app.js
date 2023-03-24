@@ -180,6 +180,9 @@ Vue.component('tenant-report-items-extra-index', require('../../modules/Report/R
 
 Vue.component('tenant-report-download-tray-index', require('../../modules/Report/Resources/assets/js/views/download_tray/index.vue'));
 
+/*PURCHASE QUOTATIONS REPORT */
+Vue.component('tenant-report-purchases-quotation', require('../../modules/Report/Resources/assets/js/views/purchases/quotation.vue'));
+
 /** Reporte de guias */
 Vue.component('tenant-report-guide-index', require('../../modules/Report/Resources/assets/js/views/guide/index.vue'));
 Vue.component('tenant-report-sale_notes-index', require('../../modules/Report/Resources/assets/js/views/sale_notes/index.vue'));

@@ -120,8 +120,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="">
-                                Cotizaciones Vs Compras
+                            <a href="{{route('tenant.reports.purchases.quotations')}}">
+                                Orden de compra Vs Compra
                             </a>
                         </li>
                     </ul>

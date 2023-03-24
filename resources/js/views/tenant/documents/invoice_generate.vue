@@ -3286,7 +3286,7 @@ export default {
             });
             await this.getPercentageIgv();
             this.changeCurrencyType();
-            // }
+            
         },
         assignmentDateOfPayment() {
             this.form.payments.forEach((payment) => {

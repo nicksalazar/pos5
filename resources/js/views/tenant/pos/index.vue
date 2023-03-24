@@ -815,39 +815,39 @@
                         </div>
 
                         <!-- <div class="col-12 text-right px-0" v-if="form.total_taxed > 0">
-              <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">SUBTOTAL 12%: </span>
-                <span class="text-blue">{{currency_type.symbol}} {{ form.total_taxed }}</span>
-              </h4>
-            </div>
+                        <h4 class="font-weight-semibold  m-0">
+                            <span class="font-weight-semibold">SUBTOTAL 12%: </span>
+                            <span class="text-blue">{{currency_type.symbol}} {{ form.total_taxed }}</span>
+                        </h4>
+                        </div>
 
-            <div class="col-12 text-right px-0" v-if="form.total_free > 0">
-              <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">OP.GRATUITAS: </span>
-                <span class="text-blue">{{currency_type.symbol}} {{ form.total_free }}</span>
-              </h4>
-            </div>
+                        <div class="col-12 text-right px-0" v-if="form.total_free > 0">
+                        <h4 class="font-weight-semibold  m-0">
+                            <span class="font-weight-semibold">OP.GRATUITAS: </span>
+                            <span class="text-blue">{{currency_type.symbol}} {{ form.total_free }}</span>
+                        </h4>
+                        </div>
 
-            <div class="col-12 text-right px-0" v-if="form.total_unaffected > 0">
-              <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">SUBTOTAL 0%: </span>
-                <span class="text-blue">{{currency_type.symbol}} {{ form.total_unaffected }}</span>
-              </h4>
-            </div>
+                        <div class="col-12 text-right px-0" v-if="form.total_unaffected > 0">
+                        <h4 class="font-weight-semibold  m-0">
+                            <span class="font-weight-semibold">SUBTOTAL 0%: </span>
+                            <span class="text-blue">{{currency_type.symbol}} {{ form.total_unaffected }}</span>
+                        </h4>
+                        </div>
 
-            <div class="col-12 text-right px-0" v-if="form.total_exonerated > 0">
-              <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">OP.EXONERADAS: </span>
-                <span class="text-blue">{{currency_type.symbol}} {{ form.total_exonerated }}</span>
-              </h4>
-            </div>
+                        <div class="col-12 text-right px-0" v-if="form.total_exonerated > 0">
+                        <h4 class="font-weight-semibold  m-0">
+                            <span class="font-weight-semibold">OP.EXONERADAS: </span>
+                            <span class="text-blue">{{currency_type.symbol}} {{ form.total_exonerated }}</span>
+                        </h4>
+                        </div>
 
-            <div class="col-12 text-right px-0" v-if="form.total_igv > 0">
-              <h4 class="font-weight-semibold  m-0">
-                <span class="font-weight-semibold">IVA: </span>
-                <span class="text-blue">{{currency_type.symbol}} {{form.total_igv}}</span>
-              </h4>
-            </div> -->
+                        <div class="col-12 text-right px-0" v-if="form.total_igv > 0">
+                        <h4 class="font-weight-semibold  m-0">
+                            <span class="font-weight-semibold">IVA: </span>
+                            <span class="text-blue">{{currency_type.symbol}} {{form.total_igv}}</span>
+                        </h4>
+                        </div> -->
                     </div>
                     <div
                         class="row text-white m-0 p-0 h-50 d-flex align-items-center"

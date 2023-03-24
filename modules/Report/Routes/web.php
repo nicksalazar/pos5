@@ -59,7 +59,7 @@
                         /* Quotations report */
 
                         Route::prefix('quotations')->group(function () {
-                            Route::get('/', 'ReportPurchaseController@quotations')->name('tenant.reports.purchases.quotations.index');
+                            Route::get('/', 'ReportPurchaseController@quotations')->name('tenant.reports.purchases.quotations');
                             Route::get('records', 'ReportPurchaseController@quotationsRecords');
                             Route::get('excel', 'ReportPurchaseController@general_items');
                             Route::get('pdf', 'ReportPurchaseController@general_items');
