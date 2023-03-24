@@ -182,7 +182,7 @@
                                         <small class="form-control-feedback" v-if="errors.sale_affectation_igv_type_id" v-text="errors.sale_affectation_igv_type_id[0]"></small>
                                     </div>
                                 </div>
-                                 <div class="short-div col-md-8">
+                                <div class="short-div col-md-8">
                                     <div class="form-group">
                                         <div :class="{'has-danger': errors.has_igv}"
                                             class="form-group">
@@ -192,6 +192,19 @@
                                             <small v-if="errors.has_igv"
                                                 class="form-control-feedback"
                                                 v-text="errors.has_igv[0]"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="short-div col-md-8">
+                                    <div class="form-group">
+                                        <div :class="{'has-danger': errors.has_service_taxes}"
+                                            class="form-group">
+                                            <el-checkbox v-model="form.has_service_taxes">Cargo por servicio
+                                            </el-checkbox>
+                                            <br>
+                                            <small v-if="errors.has_service_taxes"
+                                                class="form-control-feedback"
+                                                v-text="errors.has_service_taxes[0]"></small>
                                         </div>
                                     </div>
                                 </div>

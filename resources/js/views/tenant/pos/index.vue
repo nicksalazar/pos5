@@ -569,7 +569,7 @@
                 class="col-lg-4 col-md-6 bg-white m-0 p-0"
                 style="height: calc(100vh - 110px)"
             >
-                <div class="h-70 bg-light" style="overflow-y: auto">
+                <div class="h-75 bg-light" style="overflow-y: auto">
                     <div class="row py-3 border-bottom m-0 p-0">
                         <div class="col-8">
                             <el-select
@@ -706,9 +706,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="h-30 bg-light" style="overflow-y: auto">
+                <div class="h-25 bg-light" style="overflow-y: auto">
                     <div
-                        class="row border-top bg-light m-0 p-0 h-50 d-flex align-items-right pr-5 pt-2"
+                        class="row border-top bg-light m-0 p-0 h-70 d-flex align-items-right pr-5 pt-2"
                     >
                         <div
                             class="col-md-12"
@@ -850,7 +850,7 @@
                         </div> -->
                     </div>
                     <div
-                        class="row text-white m-0 p-0 h-50 d-flex align-items-center"
+                        class="row text-white m-0 p-0 h-30 d-flex align-items-center"
                         @click="clickPayment"
                         v-bind:class="[
                             form.total > 0 ? 'bg-info pointer' : 'bg-dark'
