@@ -525,7 +525,8 @@ import ItemSetFormItem from './partials/item.vue'
                     sale_unit_price_set: 0,
                     date_of_due:null,
                     web_platform_id:null,
-                    individual_items:[]
+                    individual_items:[],
+                    has_service_taxes: null,
                 }
                 this.show_has_igv = true
                 this.enabled_percentage_of_profit = false

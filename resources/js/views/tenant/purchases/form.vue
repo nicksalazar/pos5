@@ -1393,8 +1393,24 @@ export default {
             this.codSustentos = _.filter(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
         },
         addRow(row) {
-            this.form.items.push(row)
-            this.calculateTotal()
+
+            if (this.recordItem) {
+                //this.form.items.$set(this.recordItem.indexi, row)
+                this.form.items[this.recordItem.indexi] = row
+                this.recordItem = null
+
+                if(this.config.enabled_point_system)
+                {
+                    this.setTotalExchangePoints()
+                    this.recalculateUsedPointsForExchange(row)
+                }
+
+            } else {
+
+                this.form.items.push(row);
+            }
+
+            this.calculateTotal();
         },
         clickRemoveItem(index) {
             this.form.items.splice(index, 1)

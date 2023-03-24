@@ -158,7 +158,6 @@
                                         <tr v-for="(row, index) in form.items" :key="index" width="100%">
                                             <td>{{ index + 1 }}</td>
                                             <td>{{ row.item.description }}<br/>
-                                                <!-- <small>{{ row.affectation_igv_type.description }}</small> -->
                                             </td>
                                             <td class="text-center">{{ row.item.unit_type_id }}</td>
                                             <td class="text-right">{{ row.quantity }}</td>
@@ -380,8 +379,12 @@ export default {
             this.calculateTotal()
         },
         async inputUnitPrice(index) {
-            this.form.items[index].item = await _.find(this.items, {'id': this.form.items[index].item_id})
+
+            //console.log('inputUnitPrice', this.form.items[index].item_id)
+            //console.log('inputUnitPrice 2', this.items)
+            this.form.items[index].item = _.find(this.items, {'id': this.form.items[index].item_id})
             // this.form.unit_price = this.form.item.purchase_unit_price
+            //console.log('inputUnitPrice3', this.form.items[index].item)
             this.form.items[index].affectation_igv_type_id = this.form.items[index].item.purchase_affectation_igv_type_id
             // this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
             await this.clickAddItem(index)
@@ -393,10 +396,6 @@ export default {
             this.row = await calculateRowItem(this.form.items[index], this.form.currency_type_id, this.exchangeRateSale, this.percentage_igv)
             this.form.items[index] = this.row
             await this.calculateTotal()
-
-            // this.initForm()
-            // this.initializeFields()
-            // this.$emit('add', this.row)
         },
         initInputPerson() {
             this.input_person = {

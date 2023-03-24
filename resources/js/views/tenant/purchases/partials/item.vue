@@ -866,6 +866,7 @@ export default {
                 this.form.retention_type_id_income = this.recordItem.retention_type_id_income
                 this.form.retention_type_id_iva = this.recordItem.retention_type_id_iva
                 this.calculateQuantity()
+                this.cambioCantidad()
 
             }
 
@@ -1111,6 +1112,7 @@ export default {
 
             this.form.concepto = this.form.item.concept_id
             this.calculateQuantity()
+            this.cambioCantidad()
         },
         cambioCantidad(){
 
@@ -1307,11 +1309,12 @@ export default {
             */
             this.row.import = this.form.import;
             this.row.concepto = this.form.concepto;
+
             if (this.recordItem) {
                 this.row.indexi = this.recordItem.indexi
             }
             this.initForm()
-
+            //console.log('row: ',this.row);
             this.$emit('add', this.row)
         },
         changeWarehouse(row) {

@@ -88,8 +88,6 @@ class ItemSetController extends Controller
 
     public function item_tables()
     {
-
-
         $individual_items = Item::whereWarehouse()->whereTypeUser()->whereNotIsSet()->whereIsActive()->get()->transform(function($row) {
             $full_description = ($row->internal_id)?$row->internal_id.' - '.$row->description:$row->description;
             $unit_types = UnitType::find($row->unit_type_id);
