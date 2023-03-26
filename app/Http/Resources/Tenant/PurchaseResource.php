@@ -111,6 +111,12 @@ class PurchaseResource extends JsonResource
                 'price_type' => $row->price_type,
                 'lots' => $row->lots,
                 'warehouse' => ($row->warehouse) ? $row->warehouse :  self::getWarehouse($row->purchase->establishment_id),
+                'retention_type_id_income' => $row->retention_type_id_income,
+                'retention_type_id_iva'=> $row->retention_type_id_iva,
+                'income_retention' => $row->income_retention,
+                'iva_retention' => $row->iva_retention,
+                'import' => $row->import,
+                'concepto' => $row->concepto,
             ];
         });
 

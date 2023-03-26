@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 
 class TenancyDatabaseSeeder extends Seeder
@@ -65,6 +66,19 @@ class TenancyDatabaseSeeder extends Seeder
             ['id'=> 12, 'formats' => 'santiago'],
             ['id'=> 13, 'formats' => 'top_placa'],
             ['id'=> 14, 'formats' => 'unit_types_desc']
+        ]);
+        
+         DB::table('types_accounting_entries')->insert([
+            ['id'=> 1, 'name' => 'VENTA','created_at'=>Carbon::now(),'updated_at'=>Carbon::now()],
+            ['id'=> 2, 'name' => 'COMPRA','created_at'=>Carbon::now(),'updated_at'=>Carbon::now()],
+            ['id'=> 3, 'name' => 'LIQUIDACION IMPORTACION','created_at'=>Carbon::now(),'updated_at'=>Carbon::now()],
+            ['id'=> 4, 'name' => 'COBRO','created_at'=>Carbon::now(),'updated_at'=>Carbon::now()],
+            ['id'=> 5, 'name' => 'PAGO','created_at'=>Carbon::now(),'updated_at'=>Carbon::now()],
+            ['id'=> 6, 'name' => 'ANTICIPO CLIENTE','created_at'=>Carbon::now(),'updated_at'=>Carbon::now()],
+            ['id'=> 7, 'name' => 'ANTICIPO PROVEEDOR','created_at'=>Carbon::now(),'updated_at'=>Carbon::now()],
+            ['id'=> 8, 'name' => 'DEPRECIACION','created_at'=>Carbon::now(),'updated_at'=>Carbon::now()],
+            ['id'=> 9, 'name' => 'ASIENTOS MANUALES','created_at'=>Carbon::now(),'updated_at'=>Carbon::now()],
+          
         ]);
     }
 }

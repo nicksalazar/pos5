@@ -175,12 +175,37 @@
 
                                 <div class="short-div col-md-8">
                                     <div class="form-group" :class="{'has-danger': errors.purchase_affectation_igv_type_id}">
-
                                         <label class="control-label">Tipo de impuesto (Venta)</label>
                                         <el-select v-model="form.sale_affectation_igv_type_id" @change="changeAffectationIgvType">
                                             <el-option v-for="option in affectation_igv_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                         </el-select>
                                         <small class="form-control-feedback" v-if="errors.sale_affectation_igv_type_id" v-text="errors.sale_affectation_igv_type_id[0]"></small>
+                                    </div>
+                                </div>
+                                <div class="short-div col-md-8">
+                                    <div class="form-group">
+                                        <div :class="{'has-danger': errors.has_igv}"
+                                            class="form-group">
+                                            <el-checkbox v-model="form.has_igv">Incluye IVA
+                                            </el-checkbox>
+                                            <br>
+                                            <small v-if="errors.has_igv"
+                                                class="form-control-feedback"
+                                                v-text="errors.has_igv[0]"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="short-div col-md-8">
+                                    <div class="form-group">
+                                        <div :class="{'has-danger': errors.has_service_taxes}"
+                                            class="form-group">
+                                            <el-checkbox v-model="form.has_service_taxes">Cargo por servicio
+                                            </el-checkbox>
+                                            <br>
+                                            <small v-if="errors.has_service_taxes"
+                                                class="form-control-feedback"
+                                                v-text="errors.has_service_taxes[0]"></small>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- JOINSOFTWARE
@@ -500,7 +525,8 @@ import ItemSetFormItem from './partials/item.vue'
                     sale_unit_price_set: 0,
                     date_of_due:null,
                     web_platform_id:null,
-                    individual_items:[]
+                    individual_items:[],
+                    has_service_taxes: null,
                 }
                 this.show_has_igv = true
                 this.enabled_percentage_of_profit = false

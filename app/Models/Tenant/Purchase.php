@@ -127,6 +127,10 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
         'sequential_number',
         'auth_number',
         'codSustento',
+        'import_id',
+        'tipo_doc_id',
+        'document_type_intern',
+        'is_aproved',
     ];
 
     protected $casts = [
@@ -597,6 +601,8 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
             'total_perception'               => self::NumberFormat($this->total_perception),
             'total'                          => self::NumberFormat($total),
             'state_type_id'                  => $this->state_type_id,
+            'is_aproved'                     => $this->is_aproved,
+            'document_type_intern'           => $this->document_type_intern,
             'state_type_description'         => $this->state_type->description,
             'state_type_payment_description' => $this->total_canceled ? 'Pagado' : 'Pendiente de pago',
             // 'payment_method_type_description' => isset($this->purchase_payments['payment_method_type']['description'])?$this->purchase_payments['payment_method_type']['description']:'-',

@@ -6,7 +6,7 @@
                 :key-code="112"
                 @success="handleFn112"
             />
-            
+
             <!-- F4 -->
             <Keypress :key-code="115"
                 key-event="keyup"
@@ -671,6 +671,7 @@
                                 :businessTurns="businessTurns"
                                 :is-print="isPrint"
                                 :rows-items="form.items.length"
+                                :configuration = "configuration"
                                 ref="componentFastPaymentGarage"
                             ></fast-payment>
                         </template>
@@ -863,6 +864,7 @@ export default {
             itemUnitTypes: [],
             affectations_exonerated_igv: ['10', '20'],
             searchFromBarcode: false,
+            total_global_charge:0,
         };
     },
     async created() {
@@ -976,7 +978,7 @@ export default {
             if(this.configuration !== undefined && this.configuration.change_affectation_exonerated_igv)
             {
                 this.items.forEach(row => {
-                    
+
                     if(row.change_affectation_exonerated_igv !== undefined && row.change_affectation_exonerated_igv && row.sale_affectation_igv_type_id != row.original_affectation_igv_type_id)
                     {
                         row.sale_affectation_igv_type_id = row.original_affectation_igv_type_id
@@ -1209,11 +1211,11 @@ export default {
         },
         openDialogNewPerson()
         {
-            if (this.input_person.number) 
+            if (this.input_person.number)
             {
-                if (!isNaN(parseInt(this.input_person.number))) 
+                if (!isNaN(parseInt(this.input_person.number)))
                 {
-                    switch (this.input_person.number.length) 
+                    switch (this.input_person.number.length)
                     {
                         case 8:
                             this.input_person.identity_document_type_id = "1";
@@ -1490,6 +1492,7 @@ export default {
                 has_igv: false,
                 has_plastic_bag_taxes: false,
             };
+            this.total_global_charge = 0;
         },
         async clickPayment() {
 
@@ -1611,7 +1614,7 @@ export default {
                 exist_item.item.unit_price = unit_price;
 
                 exist_item.has_plastic_bag_taxes = exist_item.item.has_plastic_bag_taxes;
-
+                exist_item.has_service_taxes = exist_item.item.has_service_taxes;
                 this.row = calculateRowItem(
                     exist_item,
                     this.form.currency_type_id,
@@ -1640,6 +1643,7 @@ export default {
                 this.form_item.unit_price_value = this.form_item.item.sale_unit_price;
                 this.form_item.has_igv = this.form_item.item.has_igv;
                 this.form_item.has_plastic_bag_taxes = this.form_item.item.has_plastic_bag_taxes;
+                this.form_item.has_service_taxes = this.form_item.item.has_service_taxes;
                 this.form_item.affectation_igv_type_id = this.form_item.item.sale_affectation_igv_type_id;
                 this.form_item.quantity = 1;
                 this.form_item.aux_quantity = 1;
@@ -1664,7 +1668,7 @@ export default {
                     : this.form_item.unit_price_value * (1 + this.percentage_igv);
                 }
 
-           
+
 
                 this.form_item.unit_price = unit_price;
                 this.form_item.item.unit_price = unit_price;
@@ -1717,6 +1721,7 @@ export default {
             // console.log(this.row)
             // console.log(this.form.items)
             await this.calculateTotal();
+            this.chargeGlobal();
             this.loading = false;
 
             await this.setFormPosLocalStorage();
@@ -1735,6 +1740,7 @@ export default {
             this.form.items.splice(index, 1);
 
             this.calculateTotal();
+            this.chargeGlobal();
 
             await this.setFormPosLocalStorage();
         },
@@ -1752,7 +1758,8 @@ export default {
             let total_value = 0;
             let total = 0;
             let total_plastic_bag_taxes = 0
-
+            this.total_global_charge = 0
+            //this.form.total_charge = 0
             this.form.items.forEach(row => {
                 total_discount += parseFloat(row.total_discount);
                 total_charge += parseFloat(row.total_charge);
@@ -1792,6 +1799,7 @@ export default {
                 }
                 total_value += parseFloat(row.total_value);
                 total_plastic_bag_taxes += parseFloat(row.total_plastic_bag_taxes)
+                this.total_global_charge += _.round(row.total_service_taxes,2)
 
             });
 
@@ -1814,6 +1822,62 @@ export default {
             this.form.subtotal = this.form.total
 
             this.checkPaymentGarage()
+        },
+        chargeGlobal() {
+
+            let base = parseFloat(this.form.total_taxed + this.form.total_unaffected)
+
+            console.log("MONTO UNICIAL",this.total_global_charge)
+
+            if (this.configuration.active_allowance_charge) {
+                let percentage_allowance_charge = parseFloat(this.configuration.percentage_allowance_charge)
+                this.total_global_charge += _.round(base * (percentage_allowance_charge / 100), 2)
+            }
+
+            if (this.total_global_charge == 0) {
+                //this.deleteChargeGlobal()
+            }
+
+            console.log("MONTO INICIAL 2",this.total_global_charge)
+
+            let amount = parseFloat(this.total_global_charge)
+            // let base = this.form.total_taxed + amount
+            let factor = _.round(amount / base, 5)
+
+            console.log(base,factor, amount)
+
+            let charge = _.find(this.form.charges, {charge_type_id: '50'})
+
+            if (amount > 0 && !charge) {
+
+                this.form.total_charge = _.round(amount, 2)
+                console.log("total actual : " +(base  + this.form.total_taxes + this.form.total_charge))
+                this.form.total = _.round(base  + this.form.total_taxes + this.form.total_charge, 2)
+
+                this.form.charges.push({
+                    charge_type_id: '50',
+                    description: 'Cargos globales que no afectan la base imponible del IVA/IVAP',
+                    factor: factor,
+                    amount: amount,
+                    base: base
+                })
+
+            } else {
+
+                let pos = this.form.charges.indexOf(charge);
+
+                if (pos > -1) {
+
+                    this.form.total_charge = _.round(amount, 2)
+                    this.form.total = _.round(base + this.form.total_taxes + this.form.total_charge, 2)
+
+                    this.form.charges[pos].base = base
+                    this.form.charges[pos].amount = amount
+                    this.form.charges[pos].factor = factor
+
+                }
+            }
+
         },
         checkPaymentGarage(){
 
@@ -1885,6 +1949,7 @@ export default {
                     .get(`/${this.resource}/search_items_cat?${parameters}`)
                     .then(response => {
 
+                        console.log(`/${this.resource}/search_items_cat?${parameters}`)
                         this.all_items = response.data.data;
 
                         if (response.data.data.length > 0) {
@@ -2001,7 +2066,7 @@ export default {
                     this.form.currency_type_id === "PEN" ? "USD" : "PEN";
                 this.changeCurrencyType();
             }
-            
+
         },
         async changeCurrencyType() {
             // console.log(this.form.currency_type_id)

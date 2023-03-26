@@ -20,5 +20,7 @@ class RetentionsEC extends ModelTenant
         'codSustento',
         'codDocSustento',
         'numAuthSustento',
+        'claveAcceso',
+        'status_id',
     ];
 }

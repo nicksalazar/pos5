@@ -51,12 +51,21 @@
 
                         });
                         /** Nuevo */
-
-
                         Route::get('pdf', 'ReportPurchaseController@pdf')->name('tenant.reports.purchases.pdf');
                         Route::get('excel', 'ReportPurchaseController@excel')->name('tenant.reports.purchases.excel');
                         Route::get('filter', 'ReportPurchaseController@filter')->name('tenant.reports.purchases.filter');
                         Route::get('records', 'ReportPurchaseController@records')->name('tenant.reports.purchases.records');
+
+                        /* Quotations report */
+
+                        Route::prefix('quotations')->group(function () {
+                            Route::get('/', 'ReportPurchaseController@orders')->name('tenant.reports.purchases.quotations');
+                            Route::get('records', 'ReportPurchaseController@orderRecords');
+                            Route::get('excel', 'ReportPurchaseController@orderExcel');
+                            Route::get('pdf', 'ReportPurchaseController@general_items');
+                            Route::get('filter', 'ReportPurchaseController@orderFilter');
+
+                        });
 
                     });
 
@@ -336,7 +345,7 @@
                               ->name('tenant.reports.commissions_detail.filter');
                          Route::get('/records', 'ReportCommissionDetailController@records')
                               ->name('tenant.reports.commissions_detail.records');
- 
+
                      });
 
 
@@ -373,7 +382,7 @@
                          Route::get('', 'DownloadTrayController@index')->name('tenant.reports.download-tray.index');
                          Route::get('records', 'DownloadTrayController@records');
                          Route::get('download/{id}', 'DownloadTrayController@download');
-                         
+
 
                      });
 
@@ -386,7 +395,7 @@
                          Route::get('records', 'ReportTipController@records');
 
                     });
-  
+
 
                 });
 
@@ -405,11 +414,11 @@
 
           Route::domain($app_url)->group(function () {
                Route::middleware('auth:admin')->group(function () {
-                    
+
                     Route::prefix('reports')->group(function () {
-                         
+
                          Route::get('list', 'System\ReportController@listReports')->name('system.list-reports');
-                         
+
                          Route::get('clients', 'System\ReportController@clients');
 
                          Route::prefix('report-login-lockout')->group(function () {
@@ -421,7 +430,7 @@
 
                          });
 
-                         
+
                          Route::prefix('user-not-change-password')->group(function () {
 
                               Route::get('', 'System\ReportUserNotChangePasswordController@index')->name('system.user_not_change_password.index');
@@ -435,4 +444,4 @@
                });
           });
      }
- 
+

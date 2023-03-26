@@ -11,8 +11,13 @@ use Modules\Report\Traits\ReportTrait;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Purchase;
 use App\Models\Tenant\Company;
+use App\Models\Tenant\PurchaseItem;
 use Carbon\Carbon;
+use Modules\Purchase\Http\Controllers\PurchaseOrderController;
+use Modules\Purchase\Models\PurchaseOrder;
+use Modules\Purchase\Models\PurchaseOrderItem;
 use Modules\Report\Http\Resources\PurchaseCollection;
+use Modules\Report\Http\Resources\PurchaseOrderCollection;
 
 class ReportPurchaseController extends Controller
 {
@@ -36,12 +41,37 @@ class ReportPurchaseController extends Controller
         return compact('document_types','establishments', 'persons', 'sellers');
     }
 
+    public function orderfilter() {
 
-    public function index(Request $request) 
+        $document_types = DocumentType::whereIn('id', ['01', '03','GU75', 'NE76'])->get();
+
+        $persons = $this->getPersons('suppliers');
+        $sellers = $this->getSellers();
+
+        $establishments = Establishment::all()->transform(function($row) {
+            return [
+                'id' => $row->id,
+                'name' => $row->description
+            ];
+        });
+
+        $orders = PurchaseOrder::get();
+
+        return compact('document_types','establishments', 'persons', 'sellers','orders');
+    }
+
+    public function index(Request $request)
     {
         $apply_conversion_to_pen = $this->applyConversiontoPen($request);
 
         return view('report::purchases.index', compact('apply_conversion_to_pen'));
+    }
+
+    public function orders(Request $request)
+    {
+        $apply_conversion_to_pen = $this->applyConversiontoPen($request);
+
+        return view('report::purchases.quotation', compact('apply_conversion_to_pen'));
     }
 
     public function records(Request $request)
@@ -49,6 +79,26 @@ class ReportPurchaseController extends Controller
         $records = $this->getRecords($request->all(), Purchase::class);
 
         return new PurchaseCollection($records->paginate(config('tenant.items_per_page')));
+    }
+
+    public function orderRecords(Request $request)
+    {
+        //$records = $this->getRecords($request->all(), Purchase::class);
+
+
+        $ordernC = $request->input('order');
+
+        $compra = Purchase::where('purchase_order_id',$ordernC)->get();
+        $records = null;
+        if($compra->count() > 0){
+            $records = PurchaseItem::where('purchase_id',$compra[0]->id)->paginate(config('tenant.items_per_page'));
+            return new PurchaseOrderCollection($records);
+        }else{
+            $records = PurchaseItem::where('purchase_id','CARLOS')->paginate(config('tenant.items_per_page'));
+            return new PurchaseOrderCollection($records);
+        }
+
+
     }
 
 
@@ -67,8 +117,29 @@ class ReportPurchaseController extends Controller
         return $pdf->download($filename.'.pdf');
     }
 
+    public function orderExcel(Request $request) {
 
+        $company = Company::first();
+        $establishment = ($request->establishment_id) ? Establishment::findOrFail($request->establishment_id) : auth()->user()->establishment;
+        $ordernC = $request->input('order');
+        $compra = Purchase::where('purchase_order_id',$ordernC)->get();
+        $records = null;
+        if($compra->count()>0){
+            $records = PurchaseItem::where('purchase_id',$compra[0]->id);
+        }else{
+            $records = PurchaseItem::where('purchase_id','CARLOS');
+        }
+        $records = new PurchaseOrderCollection($records);
+        $filters = $request->all();
 
+        return (new PurchaseExport)
+                ->records($records)
+                ->company($company)
+                ->establishment($establishment)
+                ->filters($filters)
+                ->download('Reporte_CompraVsOrdenCompra_'.Carbon::now().'.xlsx');
+
+    }
 
     public function excel(Request $request) {
 

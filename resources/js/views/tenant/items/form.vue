@@ -381,7 +381,56 @@
                                        v-text="errors.factory_code[0]"></small>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div :class="{'has-danger': errors.tariff_id}"
+                                 class="form-group">
 
+                                <label class="control-label">
+                                    Partida Arancelaria
+                                    <el-tooltip class="item"
+                                                content="Este item pertenece a alguna partida arancelaria?"
+                                                effect="dark"
+                                                placement="top">
+                                        <i class="fa fa-info-circle"></i>
+                                    </el-tooltip>
+                                </label>
+
+                                <el-select v-model="form.tariff_id"
+                                           filterable>
+                                    <el-option v-for="option in tariffs"
+                                               :key="option.id"
+                                               :label="option.tariff"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.tariff_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.tariff_id[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div :class="{'has-danger': errors.concept_id}"
+                                 class="form-group">
+                                <label class="control-label">
+                                    Concepto
+                                    <el-tooltip class="item"
+                                                content="Este item pertence a algun concepto ?"
+                                                effect="dark"
+                                                placement="top">
+                                        <i class="fa fa-info-circle"></i>
+                                    </el-tooltip>
+                                </label>
+                                <el-select v-model="form.concept_id"
+                                           filterable>
+                                    <el-option v-for="option in concepts"
+                                               :key="option.id"
+                                               :label="option.description"
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.concept_id"
+                                       class="form-control-feedback"
+                                       v-text="errors.concept_id[0]"></small>
+                            </div>
+                        </div>
                         <div class="col-12">
                             <div class="table-responsive">
                                 <table class="table table-sm mb-0 table-borderless">
@@ -524,7 +573,7 @@
                             <div class="">
                                 <div :class="{'has-danger': errors.has_service_taxes}"
                                      class="form-group">
-                                    <el-checkbox v-model="form.has_service_taxes">Impuesto por servicio
+                                    <el-checkbox v-model="form.has_service_taxes">Cargo por servicio
                                     </el-checkbox>
                                     <br>
                                     <small v-if="errors.has_service_taxes"
@@ -938,6 +987,7 @@
                                        v-text="errors.purchase_unit_price[0]"></small>
                             </div>
                         </div>
+
                         <div v-show="purchase_show_has_igv"
                              class="col-md-4 center-el-checkbox pt-2">
                             <div :class="{'has-danger': errors.purchase_has_igv}"
@@ -1330,7 +1380,9 @@ export default {
             attribute_types: [],
             activeName: 'first',
             fromPharmacy: false,
-            inventory_configuration: null
+            inventory_configuration: null,
+            tariffs : [],
+            concepts : [],
         }
     },
     async created() {
@@ -1352,6 +1404,8 @@ export default {
                 this.categories = data.categories
                 this.brands = data.brands
                 this.attribute_types = data.attribute_types
+                this.tariffs = data.tariffs
+                this.concepts = data.concepts
                 // this.config = data.configuration
                 if (this.canShowExtraData) {
                     this.$store.commit('setColors', data.colors);
