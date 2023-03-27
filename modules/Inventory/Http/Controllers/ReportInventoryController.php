@@ -147,7 +147,7 @@ class ReportInventoryController extends Controller
               });
         }
         if ($filter === '07') {
-            //$add = ($stock > $item->stock_min);
+            //
 
             $query = ItemWarehouse::with(['warehouse', 'item'=> function ($query){
                 $query->select('id', 'barcode', 'internal_id', 'description', 'category_id', 'brand_id','stock_min', 'sale_unit_price', 'purchase_unit_price', 'model', 'date_of_due' );

@@ -469,6 +469,7 @@
                                                         <el-input-number v-model="total_global_charge"
                                                                          :disabled="config.active_allowance_charge == true ? true:false"
                                                                          :min="0"
+                                                                         :step="0.01"
                                                                          class="input-custom"
                                                                          controls-position="right"
                                                                          @change="calculateTotal"></el-input-number>
@@ -889,6 +890,7 @@
                                             <el-input-number v-model="total_global_charge"
                                                              :disabled="config.active_allowance_charge == true ? true:false"
                                                              :min="0"
+                                                             :step="0.01"
                                                              class="input-custom"
                                                              controls-position="right"
                                                              @change="calculateTotal"></el-input-number>
@@ -3286,7 +3288,7 @@ export default {
             });
             await this.getPercentageIgv();
             this.changeCurrencyType();
-            
+
         },
         assignmentDateOfPayment() {
             this.form.payments.forEach((payment) => {
