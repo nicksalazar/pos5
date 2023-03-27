@@ -59,11 +59,11 @@
                         /* Quotations report */
 
                         Route::prefix('quotations')->group(function () {
-                            Route::get('/', 'ReportPurchaseController@quotations')->name('tenant.reports.purchases.quotations');
-                            Route::get('records', 'ReportPurchaseController@quotationsRecords');
-                            Route::get('excel', 'ReportPurchaseController@general_items');
+                            Route::get('/', 'ReportPurchaseController@orders')->name('tenant.reports.purchases.quotations');
+                            Route::get('records', 'ReportPurchaseController@orderRecords');
+                            Route::get('excel', 'ReportPurchaseController@orderExcel');
                             Route::get('pdf', 'ReportPurchaseController@general_items');
-                            Route::get('filter', 'ReportPurchaseController@quotationsFilter');
+                            Route::get('filter', 'ReportPurchaseController@orderFilter');
 
                         });
 

@@ -192,6 +192,7 @@
                 'factory_code' => $this->factory_code,
                 'tariff_id' => $this->tariff_id,
                 'concept_id' => $this->concept_id,
+                'has_service_taxes' =>$this->has_service_taxes,
 
             ];
         }
