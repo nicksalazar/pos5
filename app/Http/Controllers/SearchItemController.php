@@ -42,7 +42,7 @@
             self::validateRequest($request);
             $notService = self::getNotServiceItem($request);
             $Service = self::getServiceItem($request);
-            $notService->merge($Service);
+            //$notService->merge($Service);
             return $notService->transform(function ($row) use ($warehouse) {
                 /** @var Item $row */
 
@@ -80,7 +80,7 @@
 
             self::SetWarehouseToUser($item);
 
-            return $item->orderBy('description')->get();
+            return $item->orderBy('id')->get();
         }
 
 
@@ -101,7 +101,7 @@
             // $input = self::setInputByRequest($request);
             $item = self::getAllItemBase($request, false, $id);
 
-            return $item->orderBy('description')->get();
+            return $item->orderBy('id')->get();
         }
 
         /**
@@ -222,7 +222,7 @@
                 }
             }
 
-            return $item->whereIsActive()->orderBy('description');
+            return $item->whereIsActive()->orderBy('id');
         }
 
         /**
@@ -312,7 +312,7 @@
             }
 
 
-            return $item->orderBy('description')->get();
+            return $item->orderBy('id')->get();
 
         }
 
