@@ -1431,6 +1431,11 @@ export default {
                 //console.log('Rows: ',row)
                 if(row.iva_retention > 0 || row.income_retention > 0){
 
+                    retention_iva = parseFloat(row.iva_retention)
+                    retention_renta = parseFloat(row.income_retention)
+
+                    toal_retenido += (retention_iva + retention_renta)
+
                     this.haveRetentions = true
                     if(this.form.ret.length > 0){
                         let nuevaRet = true
@@ -1518,11 +1523,6 @@ export default {
 
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
-
-                retention_iva = parseFloat(row.iva_retention)
-                retention_renta = parseFloat(row.income_retention)
-
-                toal_retenido += (retention_iva + retention_renta)
 
                 if (row.affectation_igv_type_id === '10') {
                     total_taxed += parseFloat(row.total_value)
