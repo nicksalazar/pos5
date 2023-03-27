@@ -1446,7 +1446,15 @@ export default {
 
             this.form.items.forEach((row) => {
 
-                if(row.iva_retention > 0 || row.income_retention > 0){
+                retention_iva = 0
+                retention_renta  = 0
+                console.log("documento", row)
+                if( row.iva_retention || row.income_retention || row.iva_retention > 0 || row.income_retention > 0){
+                    retention_iva = parseFloat(row.iva_retention)
+                    retention_renta = parseFloat(row.income_retention)
+
+                    toal_retenido += (retention_iva + retention_renta)
+
                     this.haveRetentions = true
                     this.maxLength1 = 15
                     this.maxLength2 = 45
@@ -1528,14 +1536,8 @@ export default {
                     }
                 }
 
-
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
-
-                retention_iva = parseFloat(row.iva_retention)
-                retention_renta = parseFloat(row.income_retention)
-
-                toal_retenido += (retention_iva + retention_renta)
 
                 if (row.affectation_igv_type_id === '10') {
                     total_taxed += parseFloat(row.total_value)
@@ -1573,7 +1575,6 @@ export default {
 
             this.form.total_base_isc = _.round(total_base_isc, 2)
             this.form.total_isc = _.round(total_isc, 2)
-
             this.form.total_exportation = _.round(total_exportation, 2)
             this.form.total_taxed = _.round(total_taxed, 2)
             this.form.total_exonerated = _.round(total_exonerated, 2)
@@ -1583,15 +1584,15 @@ export default {
             this.form.total_value = _.round(total_value, 2)
             // this.form.total_taxes = _.round(total_igv, 2)
             //impuestos (isc + igv)
+            console.log('toal_retenido',toal_retenido)
             this.form.total_taxes = _.round(total_igv + total_isc, 2)
             this.form.total_ret =  _.round(toal_retenido, 2)
+
             total = total - toal_retenido
+            console.log('total',total)
             this.form.total =  _.round(total, 2)
 
             this.calculatePerception()
-
-            // this.form.payments[0].payment = this.form.total
-            // this.setTotalDefaultPayment()
             this.calculatePayments()
             this.calculateFee()
             this.discountGlobal()

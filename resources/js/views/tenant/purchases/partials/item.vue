@@ -834,10 +834,12 @@ export default {
             if (this.recordItem) {
                 this.titleDialog = 'Editar Producto o Servicio'
                 console.log("RECORD ITEM: ",this.recordItem)
-                await this.reloadDataItems(this.recordItem.item_id)
+
                 this.form.item_id = await this.recordItem.item_id
-                await this.changeItem()
                 this.form.quantity = this.recordItem.quantity
+                await this.reloadDataItems(this.recordItem.item_id)
+                //await this.changeItem()
+
                 this.form.unit_price_value = this.recordItem.input_unit_price_value
                 this.form.unit_price = this.recordItem.unit_value
                 this.form.has_plastic_bag_taxes = (this.recordItem.total_plastic_bag_taxes > 0) ? true : false
@@ -865,8 +867,9 @@ export default {
                 this.form.income
                 this.form.retention_type_id_income = this.recordItem.retention_type_id_income
                 this.form.retention_type_id_iva = this.recordItem.retention_type_id_iva
+
                 this.calculateQuantity()
-                this.cambioCantidad()
+
 
             }
 
@@ -934,6 +937,7 @@ export default {
             return false
         },
         handleChange(value) {
+
             this.income = this.form.quantity * value
             this.iva = this.form.quantity * value
             this.cambioCantidad()
@@ -1084,13 +1088,23 @@ export default {
         changeItem() {
 
             const item = {..._.find(this.items, {'id': this.form.item_id})};
-            console.log('purchase_unit_price',this.form.item)
+
             this.form.item = item;
             this.form.item = this.setExtraFieldOfitem(this.form.item)
 
             const saleUnitPrice = item.sale_unit_price;
             this.sale_unit_price = parseFloat(saleUnitPrice).toFixed(2);
+
             if(this.recordItem){
+
+                if(this.recordItem.item.purchase_has_igv){
+                    console.log('Incluye IVA: ',this.recordItem.unit_price)
+                    this.form.unit_price = _.round(parseFloat(this.recordItem.unit_price),2)
+
+                }else{
+                    console.log('No Incluye IVA: ',this.recordItem.unit_value)
+                    this.form.unit_price = _.round(parseFloat(this.recordItem.unit_value),2)
+                }
 
             }else{
                 this.form.unit_price = this.form.item.purchase_unit_price
@@ -1109,10 +1123,10 @@ export default {
             this.form.has_isc = this.form.item.purchase_has_isc
             this.form.percentage_isc = this.form.item.purchase_percentage_isc
             this.form.system_isc_type_id = this.form.item.purchase_system_isc_type_id
-
             this.form.concepto = this.form.item.concept_id
-            this.calculateQuantity()
-            this.cambioCantidad()
+
+            this.handleChange(this.form.unit_price)
+
         },
         cambioCantidad(){
 
@@ -1201,40 +1215,26 @@ export default {
 
             }
         },
-
         changeItemAlt() {
-            if(recordItem){
-                let item = _.find(this.items, {'id': this.form.item_id});
-                this.form.item = item;
-                this.form.item = this.setExtraFieldOfitem(this.form.item)
-                let saleUnitPrice = item.sale_unit_price;
-                this.sale_unit_price = parseFloat(saleUnitPrice).toFixed(2);
-                //this.form.unit_price = this.form.item.purchase_unit_price
-                this.form.affectation_igv_type_id = this.form.item.purchase_affectation_igv_type_id
-                this.form.item_unit_types = item.item_unit_types
-                this.prices = this.form.item_unit_types;
-                this.date_of_due = this.form.date_of_due;
-                this.form.purchase_has_igv = this.form.item.purchase_has_igv;
-                this.search_item_by_barcode = 0;
-                this.setExtraElements(this.form.item);
-                this.setGlobalIgvToItem()
-            }else{
-                let item = _.find(this.items, {'id': this.form.item_id});
-                this.form.item = item;
-                this.form.item = this.setExtraFieldOfitem(this.form.item)
-                let saleUnitPrice = item.sale_unit_price;
-                this.sale_unit_price = parseFloat(saleUnitPrice).toFixed(2);
-                this.form.unit_price = this.form.item.purchase_unit_price
-                this.form.affectation_igv_type_id = this.form.item.purchase_affectation_igv_type_id
-                this.form.item_unit_types = item.item_unit_types
-                this.prices = this.form.item_unit_types;
-                this.date_of_due = this.form.date_of_due;
-                this.form.purchase_has_igv = this.form.item.purchase_has_igv;
-                this.search_item_by_barcode = 0;
-                this.setExtraElements(this.form.item);
-                this.setGlobalIgvToItem()
-            }
 
+                let item = _.find(this.items, {'id': this.form.item_id});
+                this.form.item = item;
+                this.form.item = this.setExtraFieldOfitem(this.form.item)
+                let saleUnitPrice = item.sale_unit_price;
+                this.sale_unit_price = parseFloat(saleUnitPrice).toFixed(2);
+                if(this.recordItem){
+
+                }else{
+                    this.form.unit_price = this.form.item.purchase_unit_price
+                }
+                this.form.affectation_igv_type_id = this.form.item.purchase_affectation_igv_type_id
+                this.form.item_unit_types = item.item_unit_types
+                this.prices = this.form.item_unit_types;
+                this.date_of_due = this.form.date_of_due;
+                this.form.purchase_has_igv = this.form.item.purchase_has_igv;
+                this.search_item_by_barcode = 0;
+                this.setExtraElements(this.form.item);
+                this.setGlobalIgvToItem()
         },
         async clickAddItem() {
 
@@ -1343,7 +1343,6 @@ export default {
 
                 })
             }
-
         },
         enabledSearchItemsBarcode() {
             if (this.search_item_by_barcode) {
