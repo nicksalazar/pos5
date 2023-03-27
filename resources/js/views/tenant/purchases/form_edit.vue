@@ -1423,9 +1423,7 @@ export default {
             let toal_retenido = 0
 
             this.form.ret = []
-            //console.log('TOTAL ITEMS: '+this.form.items.length)
-            this.form.ret = []
-            //console.log('TOTAL ITEMS: '+this.form.items.length)
+
             this.form.items.forEach((row) => {
 
                 //console.log('Rows: ',row)
@@ -1436,7 +1434,6 @@ export default {
 
                     toal_retenido += (retention_iva + retention_renta)
 
-                    this.haveRetentions = true
                     if(this.form.ret.length > 0){
                         let nuevaRet = true
 
@@ -1571,7 +1568,6 @@ export default {
 
             // isc
 
-
             this.form.total_base_isc = _.round(total_base_isc, 2)
             this.form.total_isc = _.round(total_isc, 2)
 
@@ -1586,9 +1582,6 @@ export default {
             //impuestos (isc + igv)
             this.form.total_taxes = _.round(total_igv + total_isc, 2)
             this.form.total_ret =  _.round(toal_retenido, 2)
-
-            //console.log('total ACTUAL '+ total)
-            //console.log('total ACTUAL2 '+ toal_retenido)
 
             total = total - toal_retenido
 
