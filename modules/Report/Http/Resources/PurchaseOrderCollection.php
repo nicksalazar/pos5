@@ -32,7 +32,7 @@ class PurchaseOrderCollection extends ResourceCollection
 
             $data['itemId'] = $row->item_id;
             $data['itemDescription'] = $row->item->description;
-            $data['unitValue'] = $row->unit_value;
+            $data['unitValue'] = round($row->unit_value,2);
             $data['purchaseQuantity'] = floatval($row->quantity);
             $data['purchaseOrderQuantity'] = $orderItem[0]->quantity;
             $data['dif'] = round($orderItem[0]->quantity - floatval($row->quantity),2);
