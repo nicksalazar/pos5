@@ -380,8 +380,8 @@ export default {
         },
         async inputUnitPrice(index) {
 
-            //console.log('inputUnitPrice', this.form.items[index].item_id)
-            //console.log('inputUnitPrice 2', this.items)
+            console.log('inputUnitPrice', this.form.items[index].item_id)
+            console.log('inputUnitPrice 2', this.items)
             this.form.items[index].item = _.find(this.items, {'id': this.form.items[index].item_id})
             // this.form.unit_price = this.form.item.purchase_unit_price
             //console.log('inputUnitPrice3', this.form.items[index].item)
