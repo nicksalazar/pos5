@@ -74,6 +74,7 @@ use Modules\Inventory\Models\{
 };
 use Swift_SmtpTransport;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Swift_Mailer;
 
 class DocumentController extends Controller
@@ -579,6 +580,7 @@ class DocumentController extends Controller
 
     public function store(DocumentRequest $request)
     {
+        Log::info('Store: '.json_encode($request->all()));
 
         $validate = $this->validateDocument($request);
         if (!$validate['success']) return $validate;
@@ -661,6 +663,7 @@ class DocumentController extends Controller
         self::setChildrenToData($data);
         $fact = DB::connection('tenant')->transaction(function () use ($data) {
             $facturalo = new Facturalo();
+            Log::info('storeWithData: '.json_encode($data));
             $facturalo->save($data);
             $facturalo->createXmlUnsigned();
             $facturalo->signXmlUnsigned();
