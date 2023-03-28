@@ -1487,6 +1487,7 @@ export default {
 
             this.showMessageDetraction()
 
+            console.log('DESPUES DE ENVIAR: ', this.row)
             this.$emit('add', this.row);
 
             if (this.search_item_by_barcode) {
