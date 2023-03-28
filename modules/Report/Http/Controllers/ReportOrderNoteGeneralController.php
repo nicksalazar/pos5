@@ -8,6 +8,7 @@ use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Company;
+use App\Models\Tenant\Dispatch;
 use Carbon\Carbon;
 use Modules\Report\Http\Resources\OrderNoteGeneralCollection;
 use Modules\Report\Traits\ReportTrait;
@@ -60,9 +61,26 @@ class ReportOrderNoteGeneralController extends Controller
         return new OrderNoteGeneralCollection($records->paginate(config('tenant.items_per_page')));
     }
 
+    public function recordsReport(Request $request)
+    {
+        $records = $this->getRecordsOrderNotesReport($request->all(), Dispatch::class);
+
+        return new OrderNoteGeneralCollection($records->paginate(config('tenant.items_per_page')));
+    }
+
 
 
     public function getRecordsOrderNotes($request, $model){
+
+        // dd($request);
+
+        $records = $this->dataOrderNotes($request, $model);
+
+        return $records;
+
+    }
+
+    public function getRecordsOrderNotesReport($request, $model){
 
         // dd($request);
 
@@ -76,6 +94,30 @@ class ReportOrderNoteGeneralController extends Controller
     {
 
         return OrderNote::SearchByDate($request)->latest();
+
+    }
+
+    private function dataOrderNotesReport($request, $model)
+    {
+
+        $order_state_type_id = $request['order_state_type_id'];
+
+        switch ($order_state_type_id) {
+
+            case 'pending':
+                $data = $model::wherePendingState($request);
+                break;
+
+            case 'processed':
+                $data = $model::whereProcessedState($request);
+                break;
+
+            default:
+                $data = $model::whereDefaultState($request);
+                break;
+        }
+
+        return $data->whereTypeUser()->latest();
 
     }
 

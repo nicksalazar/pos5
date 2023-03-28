@@ -1095,6 +1095,7 @@ export default {
 //
 
             if (this.recordItem) {
+
                 if (this.recordItem.item !== undefined && this.recordItem.item.extra !== undefined) {
                     this.extra_temp = this.recordItem.item.extra
                 }
@@ -1111,7 +1112,7 @@ export default {
 
                 this.form.attributes = this.recordItem.attributes;
                 this.form.discounts = this.recordItem.discounts;
-                this.form.charges = this.recordItem.charges;
+                this.form.charges = this.recordItem.charges + this.recordItem.total_service_taxes;
 
                 if (this.isEditItemNote) {
                     this.form.item.currency_type_id = this.currencyTypeIdActive
@@ -1447,7 +1448,6 @@ export default {
             }
 
             this.form.input_unit_price_value = this.form.unit_price_value;
-
             this.form.unit_price = unit_price;
             this.form.item.unit_price = unit_price;
             this.form.item.presentation = this.item_unit_type;
@@ -1455,6 +1455,9 @@ export default {
 
             let IdLoteSelected = this.form.IdLoteSelected
             let document_item_id = this.form.document_item_id
+
+            console.log('ANTES DE ENVIAR: ', this.form)
+
             this.row = calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale, this.percentageIgv);
 
             this.row.item.name_product_pdf = this.row.name_product_pdf || '';
