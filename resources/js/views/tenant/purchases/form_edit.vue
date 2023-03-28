@@ -1344,13 +1344,6 @@ export default {
                 //this.form.items.$set(this.recordItem.indexi, row)
                 this.form.items[this.recordItem.indexi] = row
                 this.recordItem = null
-
-                if(this.config.enabled_point_system)
-                {
-                    this.setTotalExchangePoints()
-                    this.recalculateUsedPointsForExchange(row)
-                }
-
             } else {
 
                 this.form.items.push(row);
@@ -1404,8 +1397,6 @@ export default {
             this.form.total = _.round(total - retenido, 2)
         },
         calculateTotal() {
-
-
             let total_discount = 0
             let total_charge = 0
             let total_exportation = 0
@@ -1423,15 +1414,17 @@ export default {
             let toal_retenido = 0
 
             this.form.ret = []
-            //console.log('TOTAL ITEMS: '+this.form.items.length)
-            this.form.ret = []
-            //console.log('TOTAL ITEMS: '+this.form.items.length)
+
             this.form.items.forEach((row) => {
 
                 //console.log('Rows: ',row)
                 if(row.iva_retention > 0 || row.income_retention > 0){
 
-                    this.haveRetentions = true
+                    retention_iva = parseFloat(row.iva_retention)
+                    retention_renta = parseFloat(row.income_retention)
+
+                    toal_retenido += (retention_iva + retention_renta)
+
                     if(this.form.ret.length > 0){
                         let nuevaRet = true
 
@@ -1519,11 +1512,6 @@ export default {
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
 
-                retention_iva = parseFloat(row.iva_retention)
-                retention_renta = parseFloat(row.income_retention)
-
-                toal_retenido += (retention_iva + retention_renta)
-
                 if (row.affectation_igv_type_id === '10') {
                     total_taxed += parseFloat(row.total_value)
                 }
@@ -1571,7 +1559,6 @@ export default {
 
             // isc
 
-
             this.form.total_base_isc = _.round(total_base_isc, 2)
             this.form.total_isc = _.round(total_isc, 2)
 
@@ -1586,9 +1573,6 @@ export default {
             //impuestos (isc + igv)
             this.form.total_taxes = _.round(total_igv + total_isc, 2)
             this.form.total_ret =  _.round(toal_retenido, 2)
-
-            //console.log('total ACTUAL '+ total)
-            //console.log('total ACTUAL2 '+ toal_retenido)
 
             total = total - toal_retenido
 

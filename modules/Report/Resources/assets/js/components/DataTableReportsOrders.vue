@@ -264,7 +264,7 @@ export default {
             delete(query.user_id)
             delete(query.document_type_id)
 
-            window.open(`${parameters}&order=${JSON.stringify(this.form.order)}`, '_blank');
+            window.open(`/${this.resource}/${type}/?${query}&order=${JSON.stringify(this.form.order)}`, '_blank');
         },
 
         initForm() {

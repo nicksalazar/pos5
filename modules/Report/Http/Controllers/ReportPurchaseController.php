@@ -13,9 +13,11 @@ use App\Models\Tenant\Purchase;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\PurchaseItem;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Modules\Purchase\Http\Controllers\PurchaseOrderController;
 use Modules\Purchase\Models\PurchaseOrder;
 use Modules\Purchase\Models\PurchaseOrderItem;
+use Modules\Report\Exports\PurchaseOrderExport;
 use Modules\Report\Http\Resources\PurchaseCollection;
 use Modules\Report\Http\Resources\PurchaseOrderCollection;
 
@@ -83,9 +85,6 @@ class ReportPurchaseController extends Controller
 
     public function orderRecords(Request $request)
     {
-        //$records = $this->getRecords($request->all(), Purchase::class);
-
-
         $ordernC = $request->input('order');
 
         $compra = Purchase::where('purchase_order_id',$ordernC)->get();
@@ -97,11 +96,7 @@ class ReportPurchaseController extends Controller
             $records = PurchaseItem::where('purchase_id','CARLOS')->paginate(config('tenant.items_per_page'));
             return new PurchaseOrderCollection($records);
         }
-
-
     }
-
-
 
     public function pdf(Request $request) {
 
@@ -123,16 +118,17 @@ class ReportPurchaseController extends Controller
         $establishment = ($request->establishment_id) ? Establishment::findOrFail($request->establishment_id) : auth()->user()->establishment;
         $ordernC = $request->input('order');
         $compra = Purchase::where('purchase_order_id',$ordernC)->get();
-        $records = null;
+        $records1 = null;
         if($compra->count()>0){
-            $records = PurchaseItem::where('purchase_id',$compra[0]->id);
+            $records1 = PurchaseItem::where('purchase_id',$compra[0]->id)->paginate(100);
         }else{
-            $records = PurchaseItem::where('purchase_id','CARLOS');
+            $records1 = PurchaseItem::where('purchase_id','CARLOS')->paginate(100);
         }
-        $records = new PurchaseOrderCollection($records);
+        $records = new PurchaseOrderCollection($records1);
         $filters = $request->all();
 
-        return (new PurchaseExport)
+        Log::info("RECORDS: " . json_encode($records));
+        return (new PurchaseOrderExport)
                 ->records($records)
                 ->company($company)
                 ->establishment($establishment)

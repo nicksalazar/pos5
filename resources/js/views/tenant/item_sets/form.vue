@@ -526,7 +526,7 @@ import ItemSetFormItem from './partials/item.vue'
                     date_of_due:null,
                     web_platform_id:null,
                     individual_items:[],
-                    has_service_taxes: null,
+                    has_service_taxes: true,
                 }
                 this.show_has_igv = true
                 this.enabled_percentage_of_profit = false
@@ -566,6 +566,7 @@ import ItemSetFormItem from './partials/item.vue'
                 if (this.recordId) {
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
+                            console.log('create PACK: ', response.data.data)
                             this.form = response.data.data
                             this.changeAffectationIgvType()
                             this.calculateTotal();
@@ -576,6 +577,7 @@ import ItemSetFormItem from './partials/item.vue'
                 if (this.recordId) {
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
+                            console.log('loadRecord PACK: ', response.data.data)
                             this.form = response.data.data
                             this.changeAffectationIgvType();
 

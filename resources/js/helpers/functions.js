@@ -105,7 +105,8 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     //SERVICIO
     let total_service_taxes = 0
     if(row_old.has_service_taxes){
-        total_service_taxes = _.round(row.quantity * (unit_value_est * (row.item.amount_service_taxes/100)), 2)
+
+        total_service_taxes = _.round(row.quantity * (unit_value_est * (row.item.amount_service_taxes/100)), 3)
         row.total_service_taxes = total_service_taxes
     }
     //END SERVICIO

@@ -305,6 +305,7 @@ export default {
             })
 
         await this.$http.get(`/${this.resource}/item/tables`).then(response => {
+            console.log('items: ',this.items)
             this.items = response.data.items
             this.affectation_igv_types = response.data.affectation_igv_types
             this.system_isc_types = response.data.system_isc_types
@@ -380,11 +381,11 @@ export default {
         },
         async inputUnitPrice(index) {
 
-            //console.log('inputUnitPrice', this.form.items[index].item_id)
-            //console.log('inputUnitPrice 2', this.items)
+            console.log('inputUnitPrice', this.form.items[index].item_id)
+            console.log('inputUnitPrice 2', this.items)
             this.form.items[index].item = _.find(this.items, {'id': this.form.items[index].item_id})
             // this.form.unit_price = this.form.item.purchase_unit_price
-            //console.log('inputUnitPrice3', this.form.items[index].item)
+            console.log('inputUnitPrice3', this.form.items[index].item)
             this.form.items[index].affectation_igv_type_id = this.form.items[index].item.purchase_affectation_igv_type_id
             // this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
             await this.clickAddItem(index)
