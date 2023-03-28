@@ -22,18 +22,35 @@ class ReportOrderNoteGeneralController extends Controller
     public function filter() {
 
 
-        $persons = $this->getPersons('customers'); 
+        $persons = $this->getPersons('customers');
         $date_range_types = $this->getDateRangeTypes();
         $order_state_types = $this->getOrderStateTypes();
         $sellers = $this->getSellers();
 
+
         return compact('persons', 'date_range_types', 'order_state_types', 'sellers');
+    }
+
+    public function filterReport() {
+
+        //$persons = $this->getPersons('customers');
+        //$date_range_types = $this->getDateRangeTypes();
+        //$order_state_types = $this->getOrderStateTypes();
+        //$sellers = $this->getSellers();
+        $documents = $this->getDocuments();
+
+        return compact('documents');
     }
 
 
     public function index() {
 
         return view('report::order_notes_general.index');
+    }
+
+    public function indexReport() {
+
+        return view('report::order_notes_general.report');
     }
 
     public function records(Request $request)
@@ -78,7 +95,7 @@ class ReportOrderNoteGeneralController extends Controller
                 $data = $model::whereProcessedState($request);
                 break;
 
-            default: 
+            default:
                 $data = $model::whereDefaultState($request);
                 break;
         }

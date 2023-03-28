@@ -305,6 +305,7 @@ export default {
             })
 
         await this.$http.get(`/${this.resource}/item/tables`).then(response => {
+            console.log('items: ',this.items)
             this.items = response.data.items
             this.affectation_igv_types = response.data.affectation_igv_types
             this.system_isc_types = response.data.system_isc_types
