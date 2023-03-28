@@ -100,16 +100,8 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         data_item_lot_group: getDataItemLotGroup(row_old)
     };
 
-    // console.log(row)
+    console.log('ROWOLD: ',row_old)
 
-    //SERVICIO
-    let total_service_taxes = 0
-    if(row_old.has_service_taxes){
-
-        total_service_taxes = _.round(row.quantity * (unit_value_est * (row.item.amount_service_taxes/100)), 3)
-        row.total_service_taxes = total_service_taxes
-    }
-    //END SERVICIO
 
     let percentage_igv = pigv * 100
 
@@ -137,6 +129,16 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     // row.unit_value = _.round(unit_value, 4)
 
     row.unit_value = unit_value
+
+     //SERVICIO
+     let total_service_taxes = 0
+     if(row_old.has_service_taxes == true){
+
+         total_service_taxes = _.round(row.quantity * (row.unit_value * (row.item.amount_service_taxes/100)), 3)
+         row.total_service_taxes = total_service_taxes
+     }
+     //END SERVICIO
+
 
     let total_value_partial = unit_value * row.quantity
 

@@ -164,6 +164,27 @@
                                            v-text="errors.currency_type_id[0]"></small>
                                 </div>
                             </div>
+
+
+                            <div class="col-lg-2 align-self-end">
+                                <div :class="{'has-danger': errors.active}"
+                                     class="form-group">
+                                    <label class="control-label">Mandar a Autorizar? </label>
+                                    <el-switch
+                                        v-model="form.apoved"
+                                        class="ml-2"
+                                        inline-prompt
+                                        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                                        active-text="Si"
+                                        inactive-text="No"
+                                    />
+                                    <small v-if="errors.fodinfa"
+                                           class="form-control-feedback"
+                                           v-text="errors.fodinfa[0]"></small>
+                                </div>
+                            </div>
+
+
                             <!-- JOINSOFTWARE
                             <div class="col-lg-2 align-self-end">
                                 <div :class="{'has-danger': errors.exchange_rate_sale}"
@@ -2277,7 +2298,7 @@ export default {
             }
         },
         async onSetFormData(data) {
-            console.log('onSetFormData')
+            console.log('onSetFormData',data)
             this.currency_type = await _.find(this.currency_types, {'id': data.currency_type_id})
             this.form.establishment_id = data.establishment_id;
             this.form.document_type_id = data.document_type_id;
@@ -2382,9 +2403,7 @@ export default {
             this.establishment = data.establishment;
 
             this.changeDateOfIssue();
-            // await this.filterCustomers();
             this.updateChangeDestinationSale();
-
             this.prepareDataCustomer()
 
             this.calculateTotal();
@@ -3375,6 +3394,7 @@ export default {
                 }
 
             } else {
+                //console.log('ITEM A ADD: ',row)
                 this.form.items.push(JSON.parse(JSON.stringify(row)));
             }
 
@@ -3418,8 +3438,6 @@ export default {
             // let total_free_igv = 0
 
             this.form.items.forEach((row) => {
-
-                console.log("INVOICE CREATE ROW",row)
 
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge + row.total_service_taxes)
@@ -3823,6 +3841,7 @@ export default {
         },
         async submit() {
 
+
             //Validando las series seleccionadas
             let errorSeries = false;
             _.forEach(this.form.items, row => {
@@ -3889,6 +3908,9 @@ export default {
             let temp = this.form.payment_condition_id;
             // Condicion de pago Credito con cuota pasa a credito
             if (this.form.payment_condition_id === '03') this.form.payment_condition_id = '02';
+
+            console.log(path,this.form)
+
 
             this.$http.post(path, this.form).then(response => {
                 if (response.data.success) {
