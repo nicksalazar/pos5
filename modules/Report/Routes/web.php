@@ -296,14 +296,23 @@
                               ->name('tenant.reports.state_account.records');
                          Route::get('/pdf-simple', 'ReportStateAccountController@pdfSimple')
                               ->name('tenant.reports.state_account.pdfSimple');
-                     });
+                    });
 
-                   Route::get('order-notes-general', 'ReportOrderNoteGeneralController@index')
+                    Route::get('order-notes-general', 'ReportOrderNoteGeneralController@index')
                          ->name('tenant.reports.order_notes_general.index');
+
                     Route::get('order-notes-general/excel', 'ReportOrderNoteGeneralController@excel');
                     Route::get('order-notes-general/pdf', 'ReportOrderNoteGeneralController@pdf');
                     Route::get('order-notes-general/filter', 'ReportOrderNoteGeneralController@filter');
                     Route::get('order-notes-general/records', 'ReportOrderNoteGeneralController@records');
+
+                    Route::get('order-notes-report', 'ReportOrderNoteGeneralController@indexReport')
+                         ->name('tenant.reports.order_notes_general.report');
+
+                    Route::get('order-notes-report/excel', 'ReportOrderNoteGeneralController@excelReport');
+                    Route::get('order-notes-report/pdf', 'ReportOrderNoteGeneralController@pdfReport');
+                    Route::get('order-notes-report/filter', 'ReportOrderNoteGeneralController@filterReport');
+                    Route::get('order-notes-report/records', 'ReportOrderNoteGeneralController@recordsReport');
 
                     Route::get('sales-consolidated', 'ReportSaleConsolidatedController@index')
                          ->name('tenant.reports.sales_consolidated.index');

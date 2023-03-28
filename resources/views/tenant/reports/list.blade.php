@@ -222,6 +222,9 @@
                                 Consolidado de items
                             </a>
                         </li>
+                        <li>
+                            <a href="{{route('tenant.reports.order_notes_general.report')}}">Pedido Vs Despachado</a>
+                        </li>
                     </ul>
                 </div>
             </div>

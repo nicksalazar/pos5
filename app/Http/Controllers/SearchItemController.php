@@ -42,7 +42,7 @@
             self::validateRequest($request);
             $notService = self::getNotServiceItem($request);
             $Service = self::getServiceItem($request);
-            //$notService->merge($Service);
+            $notService->merge($Service);
             return $notService->transform(function ($row) use ($warehouse) {
                 /** @var Item $row */
 

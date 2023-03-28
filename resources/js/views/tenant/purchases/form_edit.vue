@@ -1344,13 +1344,6 @@ export default {
                 //this.form.items.$set(this.recordItem.indexi, row)
                 this.form.items[this.recordItem.indexi] = row
                 this.recordItem = null
-
-                if(this.config.enabled_point_system)
-                {
-                    this.setTotalExchangePoints()
-                    this.recalculateUsedPointsForExchange(row)
-                }
-
             } else {
 
                 this.form.items.push(row);
@@ -1404,8 +1397,6 @@ export default {
             this.form.total = _.round(total - retenido, 2)
         },
         calculateTotal() {
-
-
             let total_discount = 0
             let total_charge = 0
             let total_exportation = 0
