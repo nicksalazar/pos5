@@ -100,14 +100,15 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         data_item_lot_group: getDataItemLotGroup(row_old)
     };
 
-    // console.log(row)
+    //console.log(" row OLD: ", row_old)
 
     //SERVICIO
     let total_service_taxes = 0
-    if(row_old.has_service_taxes){
+    if(row_old.has_service_taxes == true){
 
         total_service_taxes = _.round(row.quantity * (unit_value_est * (row.item.amount_service_taxes/100)), 3)
         row.total_service_taxes = total_service_taxes
+
     }
     //END SERVICIO
 

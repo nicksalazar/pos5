@@ -2278,6 +2278,7 @@ export default {
         },
         async onSetFormData(data) {
             console.log('onSetFormData')
+
             this.currency_type = await _.find(this.currency_types, {'id': data.currency_type_id})
             this.form.establishment_id = data.establishment_id;
             this.form.document_type_id = data.document_type_id;
@@ -2367,9 +2368,6 @@ export default {
             this.form.quotation_id = data.quotation_id;
 
             this.form.additional_information = this.onPrepareAdditionalInformation(data.additional_information);
-
-            // this.form.additional_information = data.additional_information;
-            // this.form.fee = [];
             this.prepareDataDetraction()
             this.prepareDataRetention()
 
@@ -2382,13 +2380,10 @@ export default {
             this.establishment = data.establishment;
 
             this.changeDateOfIssue();
-            // await this.filterCustomers();
             this.updateChangeDestinationSale();
-
             this.prepareDataCustomer()
-
             this.calculateTotal();
-            // this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
+
         },
         prepareDataGlobalDiscount(data)
         {
