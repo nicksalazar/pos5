@@ -3631,7 +3631,7 @@ export default {
 
             if (amount > 0 && !charge) {
 
-                this.form.total_charge = _.round(amount, 2)
+                this.form.total_charge = _.round(amount, 3)
                 this.form.total = _.round(base  + this.form.total_taxes + this.form.total_charge, 2)
 
                 this.form.charges.push({
@@ -3648,7 +3648,7 @@ export default {
 
                 if (pos > -1) {
 
-                    this.form.total_charge = _.round(amount, 2)
+                    this.form.total_charge = _.round(amount, 3)
                     this.form.total = _.round(base + this.form.total_taxes + this.form.total_charge, 2)
 
                     this.form.charges[pos].base = base
