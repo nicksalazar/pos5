@@ -469,7 +469,7 @@
                                                         <el-input-number v-model="total_global_charge"
                                                                          :disabled="config.active_allowance_charge == true ? true:false"
                                                                          :min="0"
-                                                                         :step="0.01"
+
                                                                          class="input-custom"
                                                                          controls-position="right"
                                                                          @change="calculateTotal"></el-input-number>
@@ -890,7 +890,6 @@
                                             <el-input-number v-model="total_global_charge"
                                                              :disabled="config.active_allowance_charge == true ? true:false"
                                                              :min="0"
-                                                             :step="0.01"
                                                              class="input-custom"
                                                              controls-position="right"
                                                              @change="calculateTotal"></el-input-number>
@@ -3423,7 +3422,7 @@ export default {
                 console.log("INVOICE CREATE ROW",row)
 
                 total_discount += parseFloat(row.total_discount)
-                total_charge += parseFloat(row.total_charge)
+                total_charge += parseFloat(row.total_charge + row.total_service_taxes)
 
                 if (row.affectation_igv_type_id === '10' || row.affectation_igv_type_id === '11' || row.affectation_igv_type_id === '12') {
                     // total_taxed += parseFloat(row.total_value)
@@ -3531,7 +3530,7 @@ export default {
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
-                this.total_global_charge += _.round(row.total_service_taxes,2)
+                this.total_global_charge += _.round(row.total_service_taxes,3)
             });
 
             // isc
@@ -3612,7 +3611,7 @@ export default {
 
             if (this.config.active_allowance_charge) {
                 let percentage_allowance_charge = parseFloat(this.config.percentage_allowance_charge)
-                this.total_global_charge += _.round(base * (percentage_allowance_charge / 100), 2)
+                this.total_global_charge += _.round(base * (percentage_allowance_charge / 100), 3)
             }
 
             if (this.total_global_charge == 0) {
