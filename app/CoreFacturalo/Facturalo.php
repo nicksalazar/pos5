@@ -146,7 +146,6 @@ class Facturalo
                 $this->savePayments($document, $inputs['payments']);
                 $this->saveFee($document, $inputs['fee']);
                 foreach ($inputs['items'] as $row) {
-                    Log::info('ROW:'.json_encode($row));
                     $document->items()->create($row);
                     // $row['document_id']=  $document->id;
                     // $item = new DocumentItem($row);

@@ -169,7 +169,6 @@ class Item extends ModelTenant
         'web_platform_id',
         'has_plastic_bag_taxes',
         'has_service_taxes',
-        'amount_service_taxes',
         'barcode',
         'sanitary',
         'cod_digemid',

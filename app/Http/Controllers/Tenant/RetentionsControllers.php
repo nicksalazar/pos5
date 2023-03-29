@@ -15,19 +15,18 @@ use App\Models\Tenant\PurchasePayment;
 use App\Models\Tenant\RetentionsDetailEC;
 use App\Models\Tenant\RetentionsEC;
 use App\Models\Tenant\SriFormasPagos;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class RetentionsControllers extends Controller
 {
-    const REGISTERED = '01';
-    const SENT = '03';
-    const ACCEPTED = '05';
-    const NOACCEPTED = '09';
-    const OBSERVED = '07';
-    const REJECTED = '31';
-    const CANCELING = '13';
-    const VOIDED = '11';
-    const RETURNED = '30';
+    const CREADA = '01';
+    const GENERADA = '02';
+    const RECIBIDA = '03';
+    const DEVUELTA = '04';
+    const AUTORIZADA = '05';
+    const NOAUTORIZADA = '06';
+    const RECHAZADA = '07';
 
     protected $configuration;
     protected $company;
@@ -62,10 +61,11 @@ class RetentionsControllers extends Controller
         $retencioneDetallesL = RetentionsDetailEC::where('idRetencion',$retencionL[0]->idRetencion)->get();
         $formasPago = PurchasePayment::where('purchase_id',$id)->get();
 
-        $clave = "" . date('dmY', strtotime($$retencionL[0]->create_at)) . "03" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".substr($retencionL[0]->idRetencion,1)."" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
+        $clave = "" . date('dmY', strtotime($retencionL[0]->created_at)) . "03" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".substr($retencionL[0]->idRetencion,1)."" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
         $digito_verificador_clave = $this->validar_clave($clave);
         $this->clave_acceso = $clave . "" . $digito_verificador_clave . "";
         $retencion = null;
+
         if($purchaseL && $purchaseL->count() > 0 ){
 
             $retencion = [
@@ -74,34 +74,34 @@ class RetentionsControllers extends Controller
                 'razonSocial' => $this->company->name,
                 'nombreComercial' => $this->company->trade_name,
                 'ruc' => $this->company->number,
-                'claveAcceso' => $clave_acceso,
+                'claveAcceso' => $this->clave_acceso,
                 'codDoc' => '03',
                 'establecimiento' => $retencionL[0]->establecimiento,
                 'ptoEmision'=> substr($retencionL[0]->ptoEmision,1),
                 'secuencial'=>substr($retencionL[0]->idRetencion,7),
                 'dirMatriz' => $establecimiento->address,
-                'fechaEmision' => $retencionL[0]->create_at->format('d/m/Y'),
+                'fechaEmision' => $retencionL[0]->created_at->format('d/m/Y'),
                 'disEstablecimiento' => $establecimiento->address,
                 'contribuyenteEspecial' => $this->company->contribuyente_especial_num,
-                'obligadoContabilidad' => $this->company->obligado_contabilidad,
+                'obligadoContabilidad' => ($this->company->obligado_contabilidad > 0 ) ? 'SI':'NO',
                 'tipoIdentificacionSujetoRetenido' => str_pad($purchaseL->supplier->identity_document_type_id, '2', '0', STR_PAD_LEFT),
                 'parteRel' => 'NO',
                 'razonSocialSujetoRetenido' => $purchaseL->supplier->name,
                 'identificacionSujetoRetenido' => $purchaseL->supplier->number,
-                'periodoFiscal'=> $retencionL[0]->create_at->format('m/Y'),
+                'periodoFiscal'=> $retencionL[0]->created_at->format('m/Y'),
                 'codSustento' => $purchaseL->codSustento,
                 'codDocSustento' => $purchaseL->document_type_id,
                 'numDocSustento' => $purchaseL->sequential_number,
-                'fechaEmisionDocSustento' => $retencionL[0]->create_at->format('m/Y'),
+                'fechaEmisionDocSustento' => $retencionL[0]->created_at->format('m/Y'),
                 'numAutDocSustento' => $purchaseL->auth_number,
                 'pagoLocExt' => '01',
                 'totalSinImpuestos' => $purchaseL->total_value,
                 'importeTotal' => $purchaseL->total,
-                'impuestosDocSustento' => [
-                    'baseImponible0' => $purchaseL->total_unaffected,
-                    'baseImponible12' => $purchaseL->toal_taxed,
-                    'valorIva12' => $purchaseL->total_igv,
-                ],
+
+                'baseImponible0' => ($purchaseL->total_unaffected) ? $purchaseL->total_unaffected :0,
+                'baseImponible12' => ($purchaseL->total_taxed)? $purchaseL->total_taxed:0,
+                'valorIva12' => ($purchaseL->total_igv) ? $purchaseL->total_igv:0,
+
                 'retenciones' => $retencioneDetallesL->transform(function($row, $key) {
                     return [
                         'codigo' => $key + 1,
@@ -117,13 +117,14 @@ class RetentionsControllers extends Controller
                         'formaPago' => $pagoSRI->pago_sri,
                         'total' => $row->payment,
                     ];
-                }): null,
+                }): [],
 
 
 
             ];
         }
-        $retencionL->update([
+
+        $retencionL[0]->update([
             'claveAcceso'=>$this->clave_acceso
         ]);
         return $retencion;
@@ -132,16 +133,20 @@ class RetentionsControllers extends Controller
     public function createXML($id){
 
         $documento = $this->prepareDocument($id);
-
         if($documento){
-
+            Log::info('DOCUEMNTO AGENENRAR: '. json_encode($documento));
             $template = new Template();
             $this->xmlUnsigned = XmlFormat::format($template->xml($this->type, $this->company, $documento,null));
-            $this->uploadFile($this->xmlUnsigned, 'unsigned');
-            $nombre = "generados/" . $this->clave_acceso . ".xml";
+            //$this->uploadFile($this->xmlUnsigned, 'unsigned');
+            $nombre = "unsigned/" . $this->clave_acceso . ".xml";
             Storage::disk('tenant')->put($nombre, $this->xmlUnsigned);
-            return $this;
+            return $this->clave_acceso;
+        }else{
+            return 'No generado';
         }
+
+    }
+    public function firmarXML(){
 
     }
 

@@ -183,27 +183,6 @@
                                            v-text="errors.fodinfa[0]"></small>
                                 </div>
                             </div>
-
-
-                            <!-- JOINSOFTWARE
-                            <div class="col-lg-2 align-self-end">
-                                <div :class="{'has-danger': errors.exchange_rate_sale}"
-                                     class="form-group">
-                                    <label class="control-label">Tipo de cambio
-                                        <el-tooltip class="item"
-                                                    content="Tipo de cambio del día, extraído de SUNAT"
-                                                    effect="dark"
-                                                    placement="top-end">
-                                            <i class="fa fa-info-circle"></i>
-                                        </el-tooltip>
-                                    </label>
-                                    <el-input v-model="form.exchange_rate_sale"></el-input>
-                                    {{-- <el-input :disabled="isUpdate" v-model="form.exchange_rate_sale"></el-input> --}}
-                                    <small v-if="errors.exchange_rate_sale"
-                                           class="form-control-feedback"
-                                           v-text="errors.exchange_rate_sale[0]"></small>
-                                </div>
-                            </div> -->
                         </div>
                     </div>
                     <div class="card-body border-top no-gutters">
@@ -305,6 +284,10 @@
                                         <template v-if="row.total_service_taxes > 0">
                                             <br/><small>Adicionales: {{ currency_type.symbol }}
                                             {{ row.total_service_taxes }}</small>
+                                        </template>
+                                        <template v-if="row.total_charge > 0">
+                                            <br/><small>Cargo incluido: {{ currency_type.symbol }}
+                                            {{ row.total_charge }}</small>
                                         </template>
                                         <br/><small>{{ row.affectation_igv_type.description }}</small>
                                         <template v-if="row.item.lots && row.item.lots.length > 0">
@@ -1900,6 +1883,7 @@ export default {
             this.btnText = 'Actualizar';
             this.loading_submit = true;
             await this.$http.get(`/documents/${this.documentId}/show`).then(response => {
+                console.log('GET SHOW DATA: ',response.data.data)
                 this.onSetFormData(response.data.data);
             }).finally(() => this.loading_submit = false);
         }
@@ -2299,6 +2283,7 @@ export default {
         },
         async onSetFormData(data) {
             console.log('onSetFormData',data)
+
             this.currency_type = await _.find(this.currency_types, {'id': data.currency_type_id})
             this.form.establishment_id = data.establishment_id;
             this.form.document_type_id = data.document_type_id;
@@ -2356,6 +2341,7 @@ export default {
             this.form.total_unaffected = parseFloat(data.total_unaffected);
             this.form.total_value = parseFloat(data.total_value);
             this.form.total_charge = parseFloat(data.total_charge);
+            this.total_global_charge = parseFloat(data.total_charge);
             this.form.total = parseFloat(data.total);
             this.form.subtotal = parseFloat(data.subtotal);
             this.form.total_igv_free = parseFloat(data.total_igv_free);
@@ -2406,7 +2392,7 @@ export default {
             this.updateChangeDestinationSale();
             this.prepareDataCustomer()
 
-            this.calculateTotal();
+            //this.calculateTotal();
             // this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
         },
         prepareDataGlobalDiscount(data)
@@ -2516,7 +2502,8 @@ export default {
 
                 i.discounts = (i.discounts) ? Object.values(i.discounts) : []
                 // i.discounts = i.discounts || [];
-                i.charges = i.charges || [];
+                //i.charges = i.charges || [];
+                i.charges = (i.charges) ? Object.values(i.charges) : []
                 i.attributes = i.attributes || [];
                 i.item.id = i.item_id;
                 i.additional_information = this.onPrepareAdditionalInformation(i.additional_information);
@@ -3018,6 +3005,7 @@ export default {
             this.calculatePayments()
         },
         async ediItem(row, index) {
+            console.log('EditItem',row)
             row.indexi = index
             this.recordItem = row
             this.showDialogAddItem = true
@@ -3407,10 +3395,14 @@ export default {
             if(this.config.enabled_point_system) this.setTotalExchangePoints()
         },
         changeCurrencyType() {
+
             this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
             let items = []
             this.form.items.forEach((row) => {
-                items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale, this.percentage_igv))
+                //console.log('changeCurrencyType init',row)
+                items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale, this.percentage_igv, this.configuration.currency_type_id))
+                //console.log('changeCurrencyType end',items)
+
             });
             this.form.items = items
             this.calculateTotal()
@@ -3642,7 +3634,7 @@ export default {
             // let base = this.form.total_taxed + amount
             let factor = _.round(amount / base, 5)
 
-            // console.log(base,factor, amount)
+            console.log('this form charges',this.form)
 
             let charge = _.find(this.form.charges, {charge_type_id: '50'})
 
@@ -3661,13 +3653,12 @@ export default {
 
             } else {
 
-                let pos = this.form.charges.indexOf(charge);
+                let pos = String(this.form.charges).indexOf(charge);
 
                 if (pos > -1) {
 
                     this.form.total_charge = _.round(amount, 3)
                     this.form.total = _.round(base + this.form.total_taxes + this.form.total_charge, 2)
-
                     this.form.charges[pos].base = base
                     this.form.charges[pos].amount = amount
                     this.form.charges[pos].factor = factor
@@ -3682,7 +3673,11 @@ export default {
         deleteChargeGlobal() {
 
             let charge = _.find(this.form.charges, {charge_type_id: '50'})
-            let index = this.form.charges.indexOf(charge)
+            let index = -1
+            if(this.form.charges.length > 0 ){
+                index = this.form.charges.indexOf(charge)
+            }
+
 
             if (index > -1) {
                 this.form.charges.splice(index, 1)
@@ -3910,8 +3905,6 @@ export default {
             if (this.form.payment_condition_id === '03') this.form.payment_condition_id = '02';
 
             console.log(path,this.form)
-
-
             this.$http.post(path, this.form).then(response => {
                 if (response.data.success) {
                     this.$eventHub.$emit('reloadDataItems', null)
