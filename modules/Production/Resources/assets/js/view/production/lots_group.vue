@@ -157,6 +157,7 @@ export default {
             const lots_selecteds = this.lots_group_.filter(x => x.compromise_quantity > 0).map(item => {
                 return {
                     id: item.id,
+                    item_supply_id: item.item_supply_id,
                     code: item.code,
                     compromise_quantity: item.compromise_quantity,
                     date_of_due: item.date_of_due,
