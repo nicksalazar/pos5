@@ -292,9 +292,98 @@ class RetentionsControllers extends Controller
 
         $sender = new BillSender();
         $this->loadXmlSigned($file);
-        return $sender->send($this->urlSri, $this->xmlSigned);
+        $res =  $sender->send($this->urlSri, $this->xmlSigned);
+
+        if($res) {
+
+            $responseSRI = $res;
+            $estado = NULL;
+            $code = NULL;
+            $mensaje = NULL;
+
+            try{
+
+                $estado = $responseSRI['RespuestaRecepcionComprobante']['estado'];
+
+                if($estado == 'DEVUELTA'){
+                    $this->updateState(self::DEVUELTA);
+                    $code = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['identificador'];
+                    $mensaje = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['mensaje'];
+
+                }elseif($estado == 'RECIBIDA'){
+                    $this->updateState(self::OBSERVED);
+                    $code = 200;
+                    $mensaje = "DOCUMENTO RECIBIDO POR EL SRI";
+
+                }else{
+
+                    $code = 0;
+                    $mensaje = 'NO SE RECUPERO UNA RESPUESTA DEL SRI';
+
+                }
+
+                $this->response = [
+                    'sent' => false,
+                    'code' => $code,
+                    'description' => $mensaje,
+                    'notes' => $estado
+                ];
+
+                $this->document->update([
+                    'regularize_shipping' => false,
+                    'response_regularize_shipping' => [
+                        'code' => $code,
+                        'description' => $mensaje
+                    ]
+                ]);
 
 
+            }catch(Exception $ex){
+
+
+
+                try {
+
+                    $code = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['identificador'];
+                    $mensaje = $responseSRI['RespuestaRecepcionComprobante']['comprobantes']['comprobante']['mensajes']['mensaje']['mensaje'];
+
+                    $this->response = [
+                        'sent' => true,
+                        'code' => $code,
+                        'description' => $mensaje
+                    ];
+
+                }catch(Exception $ex){
+
+                    $estado = 'PENDIENTE';
+                    $code = 500;
+                    $mensaje = 'SIN RESPUESTA DEL SRI';
+
+                    $this->response = [
+                        'sent' => false,
+                        'code' => $code,
+                        'description' => json_encode($ex),
+                        'notes' => $estado
+                    ];
+                }
+
+
+                $this->updateRegularizeShipping($code, $mensaje);
+
+            }
+
+        } else {
+            $code = 110;
+            $message = 'SIN RESPUESTA DEL SRI';
+            Log::error($res);
+            $this->response = [
+                'sent' => false,
+                'code' => $code,
+                'description' => $message
+            ];
+
+            $this->updateRegularizeShipping($code, $message);
+        }
     }
 
     public function createXML($id){
