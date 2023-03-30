@@ -971,7 +971,7 @@ class Facturalo
         $this->setDataSoapType();
         $this->setSoapCredentials();
 
-        $sender = in_array($this->type, ['summary', 'voided'])?new SummarySender():new BillSender();
+        $sender = new BillSender();
         $sender->setClient($this->wsClient);
         $sender->setCodeProvider(new XmlErrorCodeProvider());
         $this->loadXmlSigned();

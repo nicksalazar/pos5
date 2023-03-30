@@ -14,7 +14,7 @@ class RetentionsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'retentions:ec';
+    protected $signature = 'retentions:xml';
 
     /**
      * The console command description.
@@ -47,18 +47,15 @@ class RetentionsCommand extends Command
             }*/
 
             $documents = Purchase::query()
-                //->whereIn('document_type_id', ['01','07'])
-                ->where('number', 12)
-                //->where('success_sunat_shipping_status', true)
+                ->where('is_aproved', 1)
                 ->get();
 
             foreach ($documents as $document) {
                 try {
-                    //$this->info('CONSULTANDO: '.$document->clave_SRI);
-                    $response = new RetentionsControllers();
 
-                    $result = $response->createXML(19);
-                    $this->info('Generado XML de : '.$document->id);
+                    $response = new RetentionsControllers();
+                    $result = $response->createXML($document->id);
+                    $this->info($result);
                 }
                 catch (\Exception $e) {
                     /*

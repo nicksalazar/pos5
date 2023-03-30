@@ -174,9 +174,9 @@ class Firma {
             //$salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
 
 
-            //$salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            $salida = shell_exec('C:\openssl-0.9.8k_X64\bin\openssl.exe pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
             //servidor linux ejecutar comando openssl //
-            $salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            //$salida = shell_exec('/usr/local/ssl/bin/openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
             Log::info($aux);
 
             if (strpos($salida, 'verified OK') !== false) {
@@ -390,17 +390,11 @@ class Firma {
                     $xml = str_replace('</guiaRemision>', $sig . '</guiaRemision>', $xml);
                 elseif ($this->tipoComprobante === '04')
                     $xml = str_replace('</notaCredito>', $sig . '</notaCredito>', $xml);
+                elseif ($this->tipoComprobante === '03')
+                $xml = str_replace('</comprobanteRetencion>', $sig . '</comprobanteRetencion>', $xml);
 
                 $xmlSigned = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' . "\n" . $xml;
-                $xmlSigned = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' . "\n" . $xml;
 
-                // guardar documento firmado
-                /*try {
-
-                    file_put_contents($docFirmados . DIRECTORY_SEPARATOR . $this->claveAcceso . '.xml', $xmlSigned);
-                } catch (Exception $ex) {
-                    return $respuesta = array('error' => true, 'mensaje' => 'el documento fue firmado exitosamente pero no pudo ser guardado, ' . $ex->getMessage());
-                }*/
             } else
                 $respuesta = array('error' => true, 'mensaje' => 'error desconocido en la firma del documento consulte con el administrador');
         } catch (Exception $ex) {
