@@ -371,13 +371,12 @@ use Illuminate\Support\Facades\Log;
             //Log::info("REQUEST: ".json_encode($request));
             //Log::info(json_encode($request->ret));
             $data = self::convert($request);
-            //Log::info(json_encode($data));
+            Log::info(json_encode($data));
             try {
                 $purchase = DB::connection('tenant')->transaction(function () use ($data) {
                     $numero = Purchase::where('establishment_id',$data['establishment_id'])->where('series',$data['series'])->count();
                     $data['number'] = $numero + 1;
                     $doc = Purchase::create($data);
-
                     if(count($data['ret']) > 0){
 
                         $serie = UserDefaultDocumentType::where('user_id',$doc->user_id)->get();
@@ -547,6 +546,7 @@ use Illuminate\Support\Facades\Log;
                 ];
 
             } catch (Throwable $th) {
+                Log::error('Error al generar Compra: '.$th->getMessage());
                 return response()->json([
                     'success' => false,
                     'message' => $th->getMessage(),

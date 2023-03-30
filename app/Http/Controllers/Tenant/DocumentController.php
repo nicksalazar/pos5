@@ -74,6 +74,7 @@ use Modules\Inventory\Models\{
 };
 use Swift_SmtpTransport;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Swift_Mailer;
 
 class DocumentController extends Controller
@@ -579,16 +580,29 @@ class DocumentController extends Controller
 
     public function store(DocumentRequest $request)
     {
+        try{
 
-        $validate = $this->validateDocument($request);
-        if (!$validate['success']) return $validate;
+            $validate = $this->validateDocument($request);
+            if (!$validate['success']) return $validate;
+            $res = $this->storeWithData($request->all());
+            $document_id = $res['data']['id'];
+            $this->associateDispatchesToDocument($request, $document_id);
+            $this->associateSaleNoteToDocument($request, $document_id);
+            return $res;
 
-        $res = $this->storeWithData($request->all());
-        $document_id = $res['data']['id'];
-        $this->associateDispatchesToDocument($request, $document_id);
-        $this->associateSaleNoteToDocument($request, $document_id);
+        }catch(Exception $ex){
 
-        return $res;
+            Log::error('Error al generar Documento: '.$ex->getMessage());
+            return [
+                'success' => false,
+                'data' => [
+                    'id' => null,
+                    'number_full' => null,
+                    'response' => $ex->getMessage()
+                ]
+            ];
+        }
+
     }
 
 
