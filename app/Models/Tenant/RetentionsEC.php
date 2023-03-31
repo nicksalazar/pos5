@@ -22,5 +22,8 @@ class RetentionsEC extends ModelTenant
         'numAuthSustento',
         'claveAcceso',
         'status_id',
+        'response_envio',
+        'response_message_envio',
+
     ];
 }

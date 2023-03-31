@@ -4,24 +4,24 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\Tenant\RetentionsControllers;
 use App\Models\Tenant\Configuration;
-use App\Models\Tenant\Purchase;
+use App\Models\Tenant\RetentionsEC;
 use Illuminate\Console\Command;
 
-class RetentionsCommand extends Command
+class RetentionsSendCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'retentions:xml';
+    protected $signature = 'retentions:send';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Genera los XML de las retenciones y los firma';
+    protected $description = 'Este comando envia al SRI las retenciones de las cuales ya se genero el XML y se firmo';
 
     /**
      * Create a new command instance.
@@ -42,16 +42,17 @@ class RetentionsCommand extends Command
     {
         if (Configuration::firstOrFail()->cron) {
 
-            $documents = Purchase::query()
-                ->where('is_aproved', 1)
+            $documents = RetentionsEC::whereNotNull('claveAcceso')
+                ->whereIn('status_id',['01','02'])
                 ->get();
 
+            $this->info('ENVIANDO DOCUMENTOS AL SRI');
             foreach ($documents as $document) {
                 try {
 
                     $response = new RetentionsControllers();
-                    $result = $response->createXML($document->id);
-                    $this->info($result);
+                    $result = $response->sendXmlSigned($document->id,$document->claveAcceso.'.xml');
+
                 }
                 catch (\Exception $e) {
 
@@ -61,8 +62,7 @@ class RetentionsCommand extends Command
             }
         }
         else {
-            $this->info('The crontab is disabled');
+            $this->info('ESTE COMANDO ESTA DESHABILITADO');
         }
-
     }
 }

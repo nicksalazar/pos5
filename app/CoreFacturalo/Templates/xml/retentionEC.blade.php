@@ -66,14 +66,23 @@
                 </retencion>
                 @endforeach
             </retenciones>
+            @if(count($document['fpagos']) > 0)
             <pagos>
                 @foreach($document['fpagos'] as $pago)
                 <pago>
-                    <formaPago>{{ $pago['formaPago'] }}</pformaPagoago>
+                    <formaPago>{{ $pago['formaPago'] }}</formaPago>
                     <total> {{ $pago['total'] }}</total>
                 </pago>
                 @endforeach
             </pagos>
+            @else
+            <pagos>
+                <pago>
+                    <formaPago>20</formaPago>
+                    <total>{{ $document['importeTotal'] }}</total>
+                </pago>
+            </pagos>
+            @endif
         </docSustento>
     </docsSustento>
 
