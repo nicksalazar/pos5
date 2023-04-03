@@ -30,6 +30,7 @@
      * App\Models\Tenant\Person
      *
      * @property int|null                             $seller_id
+     * @property int|null                             $rate_id
      * @property User                                 $seller
      * @property int|null                             $zone_id
      * @property Zone                                 $zone
@@ -144,6 +145,7 @@
             'credit_days',
             'optional_email',
             'seller_id',
+            'rate_id',
             'zone_id',
             'status',
             'parent_id',
@@ -579,6 +581,7 @@
                 'zone' => $this->getZone(),
                 'zone_id' => $this->zone_id,
                 'seller_id' => $this->seller_id,
+                'rate_id' => $this->rate_id,
                 'website' => $this->website,
                 'document_type' => $this->identity_document_type->description,
                 'enabled' => (bool)$this->enabled,

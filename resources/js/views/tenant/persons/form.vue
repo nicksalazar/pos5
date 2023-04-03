@@ -159,6 +159,26 @@
                                            v-text="errors.person_type_id[0]"></small>
                                 </div>
                             </div>
+
+                            <div class="col-md-4">
+                                <div :class="{'has-danger': errors.rate_id}"
+                                     class="form-group">
+                                    <label class="control-label">
+                                        Tarifa
+                                    </label>
+                                    <el-select v-model="form.rate_id"
+                                               clearable
+                                               filterable>
+                                        <el-option v-for="option in rates"
+                                                   :key="option.id"
+                                                   :label="option.rate_name"
+                                                   :value="option.id"></el-option>
+                                    </el-select>
+                                    <small v-if="errors.rate_id"
+                                           class="form-control-feedback"
+                                           v-text="errors.rate_id[0]"></small>
+                                </div>
+                            </div>
                             <!--JOINSOFTWARE-->
                             <div class="col-md-3" hidden>
                                 <div :class="{'has-danger': errors.barcode}"
@@ -809,6 +829,7 @@ export default {
             districts: [],
             locations: [],
             person_types: [],
+            rates: [],
             identity_document_types: [],
             discount_types: [],
             activeName: 'first'
@@ -832,6 +853,7 @@ export default {
                 this.identity_document_types = response.data.identity_document_types;
                 this.locations = response.data.locations;
                 this.person_types = response.data.person_types;
+                this.rates = response.data.rates;
                 this.discount_types = response.data.discount_types;
             })
             .finally(() => {
@@ -885,6 +907,7 @@ export default {
                 perception_agent: false,
                 percentage_perception: 0,
                 person_type_id: null,
+                rate_id: null,
                 comment: null,
                 addresses: [],
                 contact: {
