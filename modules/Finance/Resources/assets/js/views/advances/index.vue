@@ -1,187 +1,107 @@
 <template>
-    <div class="card mb-0 pt-2 pt-md-0">
-        <div class="card-header bg-info">
-            <h3 class="my-0">
-                {{ currentTitle}}
-            </h3>
+    <div>
+        <div class="page-header pr-0">
+            <h2><a href="/dashboard"><i class="fas fa-tachometer-alt"></i></a></h2>
+            <ol class="breadcrumbs">
+                <li class="active"><span>Anticipos</span></li>
+            </ol>
+            <div class="right-wrapper pull-right">
+                <button class="btn btn-custom btn-sm  mt-2 mr-2" type="button" @click.prevent="clickCreate()"><i
+                    class="fa fa-plus-circle"></i> Nuevo
+                </button>
+            </div>
         </div>
         <div class="card mb-0">
             <div class="card-body">
-                <data-table
-                    :configuration="config"
-                    :filter="filter"
-                    :ismovements="ismovements"
-                    :resource="resource">
+                <data-table :resource="resource">
                     <tr slot="heading">
-                        <th class="">#</th>
-                        <th :class="(filter.column === 'date_of_payment')?'text-info':''"
-                            @click="ChangeOrder('date_of_payment')">
-                            Fecha
-                        </th>
-                        <th :class="(filter.column === 'person_name')?'text-info':''"
-                            @click="ChangeOrder('person_name')">
-                            Adquiriente
-                        </th>
-                        <th :class="(filter.column === 'number_full')?'text-info':''"
-                            @click="ChangeOrder('number_full')">
-                            Documento/Transacción
-                        </th>
-                        <th :class="(filter.column === 'items')?'text-info':''"
-                            @click="ChangeOrder('items')">
-                            Detalle
-                            <el-tooltip
-                                class="item"
-                                content="Aplica a Ingresos/Gastos"
-                                effect="dark"
-                                placement="top-start"
-                            >
-                                <i class="fa fa-info-circle"></i>
-                            </el-tooltip>
-                        </th>
-                        <th :class="(filter.column === 'currency_type_id')?'text-info':''"
-                            @click="ChangeOrder('currency_type_id')">
-                            Moneda
-                        </th>
-                        <th
-                            :class="(filter.column === 'destination_name')?'text-info':''"
-                            v-if="showDestination!== true"
-                        >
-                            Destino
-                        </th>
-                        <th :class="(filter.column === 'instance_type_description')?'text-info':''"
-                            @click="ChangeOrder('instance_type_description')"
-                            v-else
-                        >
-                            Tipo *
-                        </th>
-                        <th class="">
-                            Ingresos
-                        </th>
-                        <th class="">
-                            Gastos
-                        </th>
-                        <th class="">
-                            Saldo
-                        </th>
-                    </tr>
-                    <tr slot-scope="{ index, row }">
-                        <!-- # -->
-                        <td>{{ row.index }}</td>
-                        <!-- Fecha -->
-                        <td>{{ row.date_of_payment }}</td>
-                        <!-- Adquiriente -->
-                        <td>
-                            {{ row.person_name }}<br/><small
-                            v-text="row.person_number"
-                        ></small>
-                        </td>
-                        <!-- Documento/Transacción -->
-                        <td>
-                            {{ row.number_full }}<br/>
-                            <small v-text="row.document_type_description"></small>
-                        </td>
-                        <!-- Detalle -->
-                        <td>
-                            <template v-for="(item, index) in row.items">
-                                <label :key="index">- {{ item.description }}<br/></label>
-                            </template>
-                        </td>
-                        <!-- Moneda -->
-                        <td>{{ row.currency_type_id }}</td>
-                        <!-- Destino -->
-                        <td
-                            v-if="showDestination!== true"
-                        >
-                            {{row.destination_name}}
-                        </td>
-                        <!-- Tipo -->
-                        <td
-                            v-else
-                        >{{ row.instance_type_description }}</td>
+                        <th class="text-center">Identificador</th>
+                        <th class="text-center">Método</th>
+                        <th class="text-center">Cliente</th>
+                        <th class="text-center">Valor</th>
+                        <th class="text-center">Notas</th>
+                        <th class="text-center"></th>
 
-                        <!-- Ingresos -->
-                        <td>
-                            <label v-show="row.input > 0 || row.input != '-'">S/ </label
-                            >{{ row.input }}
+                    </tr>
+                    <tr slot-scope="{ index, row }" >
+                        <td class="text-center">{{ row.id }}</td>
+                        <td class="text-center">{{ row.method }}</td>
+                        <td class="text-center">{{ row.cliente }}</td>
+                        <td class="text-center">{{ row.valor }}</td>
+                        <td class="text-center">{{ row.observation }}</td>
+                        <td class="text-center">
+
+                            <button type="button" style="min-width: 41px" class="btn waves-effect waves-light btn-xs btn-primary m-1__2"
+                                    @click.prevent="clickCreate(row.id)">
+                                    <i class="fas fa-edit"></i>
+                            </button>
+
                         </td>
-                        <!-- Gastos -->
-                        <td>
-                            <label v-show="row.output > 0 || row.output != '-'">S/ </label
-                            >{{ row.output }}
-                        </td>
-                        <!-- Saldo -->
-                        <td>
-                            <label v-show="row.balance > 0 || row.balance != '-'">S/ </label
-                            >{{ row.balance }}
-                        </td>
+
                     </tr>
                 </data-table>
             </div>
+
+            <tenant-finance-advances-generate
+                :recordId="recordId"
+                :showDialog.sync="showDialog"
+            ></tenant-finance-advances-generate>
         </div>
     </div>
+
 </template>
 
 <script>
-import DataTable from "../../components/DataTableMovement.vue";
-import {mapActions, mapState} from "vuex/dist/vuex.mjs";
 
-export default {
-    components: {
-        DataTable
-    },
-    props: [
-        'configuration',
-        'ismovements',
-    ],
-    data() {
-        return {
-            title:'Movimientos de ingresos y egresos',
-            resource: "finances/movements",
-            form: {},
-            filter: {
-                column: '',
-                order: ''
+    import DataTable from '../../components/DataTableAdvance.vue'
+    import {deletable} from '@mixins/deletable'
+    import IncomePayments from './partials/payments.vue'
+
+    export default {
+        mixins: [deletable],
+        components: {DataTable, IncomePayments},
+        data() {
+            return {
+                showDialogVoided: false,
+                resource: 'finances/advances',
+                showDialogPayments: false,
+                recordId: null,
+                showDialogOptions: false,
+                showDialog:false,
             }
-        };
-    },computed:{
-        ...mapState([
-            'config',
-        ]),
-        showDestination:function(){
-            return !(this.ismovements !== undefined && this.ismovements === 0);
         },
-        currentTitle:function(){
-            if(this.showDestination!== true) {
-                this.title = "Reporte de transacciones";
-                this.resource = 'finances/transactions'
-            }else {
-                this.title = 'Movimientos de ingresos y egresos';
-            }
-            return this.title
-        }
-    },
-    created() {
-        if(this.ismovements === undefined) this.ismovements = 1
-        this.ismovements = parseInt(this.ismovements)
-        this.$store.commit('setConfiguration', this.configuration);
-        this.loadConfiguration()
-        this.currentTitle
+        created() {
+        },
+        methods: {
+            clickCreate(recordId = null) {
+                this.recordId = recordId
+                this.showDialog = true
+            },
+            clickPrint(external_id){
 
-    },
-    methods: {
-        ...mapActions([
-            'loadConfiguration',
-        ]),
-        ChangeOrder(col) {
-            if (this.filter.order !== 'DESC') {
-                this.filter.order = 'DESC'
-            } else {
-                this.filter.order = 'ASC'
-            }
-            this.filter.column = col
-            this.$eventHub.$emit('filtrado', this.filter)
-            console.log('sale')
+                window.open(`/${this.resource}/print/${external_id}`, '_blank');
+
+            },
+            clickExpensePayment(recordId) {
+                this.recordId = recordId;
+                this.showDialogExpensePayments = true
+            },
+            clickVoided(recordId) {
+                this.voided(`/${this.resource}/voided/${recordId}`).then(() =>
+                    this.$eventHub.$emit('reloadData')
+                )
+            },
+            clickDownload(download) {
+                window.open(download, '_blank');
+            },
+            clickOptions(recordId = null) {
+                this.recordId = recordId
+                this.showDialogOptions = true
+            },
+            clickPayment(recordId) {
+                this.recordId = recordId;
+                this.showDialogPayments = true;
+            },
         }
     }
-};
 </script>
