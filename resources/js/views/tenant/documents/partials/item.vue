@@ -1109,10 +1109,10 @@ export default {
                 this.form.has_service_taxes = (this.recordItem.total_service_taxes > 0) ? true : false
                 this.form.warehouse_id = this.recordItem.warehouse_id
                 this.isUpdateWarehouseId = this.recordItem.warehouse_id
-
+                this.form.total_service_taxes = this.recordItem.total_service_taxes
                 this.form.attributes = this.recordItem.attributes;
                 this.form.discounts = this.recordItem.discounts;
-                this.form.charges = this.recordItem.charges + this.recordItem.total_service_taxes;
+                this.form.charges = this.recordItem.charges;
 
                 if (this.isEditItemNote) {
                     this.form.item.currency_type_id = this.currencyTypeIdActive

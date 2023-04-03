@@ -74,6 +74,7 @@ use Modules\Inventory\Models\{
 };
 use Swift_SmtpTransport;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Swift_Mailer;
 
 class DocumentController extends Controller
@@ -579,10 +580,8 @@ class DocumentController extends Controller
 
     public function store(DocumentRequest $request)
     {
-
         $validate = $this->validateDocument($request);
         if (!$validate['success']) return $validate;
-
         $res = $this->storeWithData($request->all());
         $document_id = $res['data']['id'];
         $this->associateDispatchesToDocument($request, $document_id);
@@ -844,6 +843,7 @@ class DocumentController extends Controller
             }
             $item->discounts = $discounts;
         }
+        Log::info('DOCUMENTO SHOW: '. json_encode($document));
 
         return response()->json([
             'data' => $document,
