@@ -89,7 +89,7 @@ class RetentionsControllers extends Controller
             $retencioneDetallesL = RetentionsDetailEC::where('idRetencion',$retencionL[0]->idRetencion)->get();
             $formasPago = PurchasePayment::where('purchase_id',$id)->get();
 
-            $clave = "" . date('dmY', strtotime($retencionL[0]->created_at)) . "03" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".substr($retencionL[0]->idRetencion,1)."" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
+            $clave = "" . date('dmY', strtotime($retencionL[0]->created_at)) . "07" . $this->company->number."".substr($this->company->soap_type_id,1,1)."".substr($retencionL[0]->idRetencion,1)."" . str_pad('12345678', '8', '0', STR_PAD_LEFT) . "" . 1 . "";
             $digito_verificador_clave = $this->validar_clave($clave);
             $this->clave_acceso = $clave . "" . $digito_verificador_clave . "";
             $retencion = null;
@@ -103,7 +103,7 @@ class RetentionsControllers extends Controller
                     'nombreComercial' => $this->company->trade_name,
                     'ruc' => $this->company->number,
                     'claveAcceso' => $this->clave_acceso,
-                    'codDoc' => '03',
+                    'codDoc' => '07',
                     'establecimiento' => $retencionL[0]->establecimiento,
                     'ptoEmision'=> substr($retencionL[0]->ptoEmision,1),
                     'secuencial'=>substr($retencionL[0]->idRetencion,7),
@@ -120,7 +120,7 @@ class RetentionsControllers extends Controller
                     'codSustento' => $purchaseL->codSustento,
                     'codDocSustento' => $purchaseL->document_type_id,
                     'numDocSustento' => $purchaseL->sequential_number,
-                    'fechaEmisionDocSustento' => $retencionL[0]->created_at->format('m/Y'),
+                    'fechaEmisionDocSustento' => $retencionL[0]->created_at->format('d/m/Y'),
                     'numAutDocSustento' => $purchaseL->auth_number,
                     'pagoLocExt' => '01',
                     'totalSinImpuestos' => $purchaseL->total_value,
@@ -630,6 +630,7 @@ class RetentionsControllers extends Controller
         $sender = new BillSender();
         $this->loadXmlSigned($file);
         $res =  $sender->send($this->urlSri, $this->xmlSigned);
+        Log::alert('sendXmlSigned: '.$res);
         $Retencion = RetentionsEC::find($id);
 
         if($res) {

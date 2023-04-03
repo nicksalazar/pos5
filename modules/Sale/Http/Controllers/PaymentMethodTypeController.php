@@ -2,6 +2,7 @@
 
 namespace Modules\Sale\Http\Controllers;
 
+use App\Models\Tenant\Company;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -28,11 +29,15 @@ class PaymentMethodTypeController extends Controller
         if ($id != 'join6v') {
             $record = PaymentMethodType::findOrFail($id);
             $sri = SriFormasPagos::get();
+            $isCountable = Company::active();
             $record['pago_sri_list'] = $sri;
+            $record['isCountable'] = (bool)  $isCountable->countable;
             return $record;
         } else {
             $sri = SriFormasPagos::get();
+            $isCountable = Company::active();
             $record['pago_sri_list'] = $sri;
+            $record['isCountable'] = (bool)  $isCountable->countable;
             return $record;
         }
     }

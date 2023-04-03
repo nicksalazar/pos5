@@ -78,7 +78,7 @@
             @else
             <pagos>
                 <pago>
-                    <formaPago>20</formaPago>
+                    <formaPago>01</formaPago>
                     <total>{{ $document['importeTotal'] }}</total>
                 </pago>
             </pagos>

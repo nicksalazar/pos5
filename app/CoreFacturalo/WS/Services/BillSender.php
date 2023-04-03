@@ -26,7 +26,7 @@ class BillSender extends BaseSunat
         $client = new nusoap_client("$filename", 'wsdl');
         $client->soap_defencoding = 'UTF-8';
         $params = array();
-
+        Log::alert('URL a ebviar: '.$filename);
         try {
 
             $params['xml'] = base64_encode($content);
@@ -36,10 +36,8 @@ class BillSender extends BaseSunat
             Log::info('response: '.json_encode($response));
             //Log::info('response: '.$response['RespuestaRecepcionComprobante']['estado']);
 
-            $cdrZip = $response;
-
         } catch (\SoapFault $e) {
-            $result->setError($this->getErrorFromFault($e));
+            //$result->setError($this->getErrorFromFault($e));
             Log::info('exception try to consult SRI: '.json_encode($e));
             return false;
         }
