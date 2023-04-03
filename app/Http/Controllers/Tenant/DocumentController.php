@@ -580,11 +580,8 @@ class DocumentController extends Controller
 
     public function store(DocumentRequest $request)
     {
-        Log::info('Store: '.json_encode($request->all()));
-
         $validate = $this->validateDocument($request);
         if (!$validate['success']) return $validate;
-
         $res = $this->storeWithData($request->all());
         $document_id = $res['data']['id'];
         $this->associateDispatchesToDocument($request, $document_id);
@@ -663,7 +660,6 @@ class DocumentController extends Controller
         self::setChildrenToData($data);
         $fact = DB::connection('tenant')->transaction(function () use ($data) {
             $facturalo = new Facturalo();
-            Log::info('storeWithData: '.json_encode($data));
             $facturalo->save($data);
             $facturalo->createXmlUnsigned();
             $facturalo->signXmlUnsigned();
@@ -847,6 +843,7 @@ class DocumentController extends Controller
             }
             $item->discounts = $discounts;
         }
+        Log::info('DOCUMENTO SHOW: '. json_encode($document));
 
         return response()->json([
             'data' => $document,

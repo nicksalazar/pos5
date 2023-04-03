@@ -109,10 +109,25 @@ if($hostname) {
                     Route::get('pdf', 'MovementController@pdf');
                     Route::post('pdf', 'MovementController@postPdf');
                     Route::get('excel', 'MovementController@excel');
-                    //Route::post('excel', 'MovementController@excel');
-                    //Route::post('excel', 'MovementController@excel');
                     Route::get('records', 'MovementController@records');
                 });
+
+                                /**
+                 * finances/advances
+                 * finances/advances/pdf
+                 * finances/advances/excel
+                 * finances/advances/records
+                 */
+                Route::prefix('advances')->group(function () {
+
+                    Route::get('', 'AdvanceController@index')->name('tenant.finances.advances.index');
+                    Route::get('pdf', 'AdvanceController@pdf');
+                    Route::post('pdf', 'AdvanceController@postPdf');
+                    Route::get('excel', 'AdvanceController@excel');
+                    Route::get('records', 'AdvanceController@records');
+                });
+
+
                 /**
                  * finances/transactions
                  * finances/transactions/pdf

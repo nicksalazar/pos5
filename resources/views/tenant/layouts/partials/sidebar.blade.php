@@ -945,7 +945,7 @@
                     @endif
 
                     @if(in_array('accounting', $vc_modules))
-                        <li class="nav-parent 
+                        <li class="nav-parent
                         {{ ($firstLevel === 'account' || $firstLevel === 'accounting_ledger'  )?'nav-active nav-expanded':'' }}
                         {{ ($firstLevel === 'accounting-entries')?'nav-active nav-expanded':'' }}
                         {{ ($firstLevel === 'accounts-groups')?'nav-active nav-expanded':'' }}
