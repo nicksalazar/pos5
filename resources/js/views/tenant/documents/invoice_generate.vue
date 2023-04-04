@@ -533,6 +533,9 @@
                                                                 <thead>
                                                                 <tr>
                                                                     <th
+                                                                        style="width: 120px">Forma de Pago
+                                                                    </th>
+                                                                    <th
                                                                         style="width: 120px">Anticipos disponibles
                                                                     </th>
                                                                     <template v-if="enabled_payments">
@@ -554,16 +557,27 @@
                                                                             v-model="row.payment_method_type_id"
                                                                             @change="changePaymentMethodType(index)">
                                                                             <el-option
-                                                                                v-for="option in advances"
+                                                                                v-for="option in advance_payment_metod"
                                                                                 :key="option.id"
                                                                                 :label="option.description"
+                                                                                :value="option.id"></el-option>
+                                                                        </el-select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <el-select
+                                                                            v-model="row.reference"
+                                                                            @change="changeAdvance(index,$event)">
+                                                                            <el-option
+                                                                                v-for="option in advances"
+                                                                                :key="option.id"
+                                                                                :label="option.id"
                                                                                 :value="option.id"></el-option>
                                                                         </el-select>
                                                                     </td>
                                                                     <template v-if="enabled_payments">
                                                                         <td>
                                                                             <el-date-picker
-                                                                                v-model="row.date"
+                                                                                v-model="row.date_of_payment"
                                                                                 :clearable="false"
                                                                                 format="dd/MM/yyyy"
                                                                                 type="date"
@@ -1906,6 +1920,9 @@ export default {
             'series',
             'all_series',
         ]),
+        advance_payment_metod:function(){
+            return _.filter(this.payment_method_types, {'is_advance': true})
+        },
         credit_payment_metod: function () {
             return _.filter(this.payment_method_types, {'is_credit': true})
         },
@@ -2710,12 +2727,35 @@ export default {
             // this.readonly_date_of_due = false
             // this.form.payment_method_type_id = null
         },
+        changeAdvance(index, id){
+
+            let selectedAdvance = _.find(this.advances,{'id':id})
+            let maxAmount = selectedAdvance.valor
+
+            let payment_count = this.form.payments.length;
+            // let total = this.form.total;
+            let total = this.getTotal()
+
+            let payment = 0;
+            let amount = _.round(total / payment_count, 2);
+
+            if(maxAmount >= amount ){
+                console.log('el valor a pagar no supera el monto maximo del anticipo')
+            }else if(amount > maxAmount ){
+                console.log('el monto a pagar supero el valor del anticipo')
+                this.form.payments[index]
+            }
+            // console.log(amount);
+
+        },
         changePaymentMethodType(index) {
 
             let id = '01';
+
             if (this.form.payments[index] !== undefined &&
                 this.form.payments[index].payment_method_type_id !== undefined) {
                 id = this.form.payments[index].payment_method_type_id;
+
             } else if (this.form.fee[index] !== undefined &&
                 this.form.fee[index].payment_method_type_id !== undefined) {
                 id = this.form.fee[index].payment_method_type_id;
@@ -2766,6 +2806,7 @@ export default {
 
             if (this.input_person.number) {
 
+
                 if (!isNaN(parseInt(this.input_person.number))) {
 
                     switch (this.input_person.number.length) {
@@ -2784,15 +2825,17 @@ export default {
                             break;
                     }
                 }
-                this.addAdvancesCustomer()
+
+
             }
         },
         addAdvancesCustomer(){
 
-            this.$http.get(`/${this.resource}/advance/${parameters}`).then(
+            console.log('addAdvancesCustomer',this.form.customer_id)
+            this.$http.get(`/${this.resource}/advance/${this.form.customer_id}`).then(
                 response => {
-                    console.log('addAdvancesCustomer',response)
-                    this.advances = response
+                    console.log('addAdvancesCustomer',response.data)
+                    this.advances = response.data
                 }
             )
         },
@@ -3085,7 +3128,7 @@ export default {
         },
         clickAddPayment() {
 
-            let id = '01';
+            let id = null;
             if (this.cash_payment_metod !== undefined &&
                 this.cash_payment_metod[0] !== undefined) {
                 id = this.cash_payment_metod[0].id
@@ -3104,7 +3147,6 @@ export default {
                 reference: null,
                 payment_destination_id: this.getPaymentDestinationId(),
                 payment: total,
-
                 payment_received: true,
                 filename: null,
                 temp_path: null,
@@ -4183,20 +4225,15 @@ export default {
             }
 
             this.setCustomerAccumulatedPoints(customer.id, this.config.enabled_point_system)
-
             let seller = this.sellers.find(element => element.id == customer.seller_id)
             if (seller !== undefined) {
                 this.form.seller_id = seller.id
-
             }
 
             // retencion para clientes con ruc
             this.validateCustomerRetention(customer.identity_document_type_id)
+            this.addAdvancesCustomer()
 
-            /*if(this.customer_addresses.length > 0) {
-                let address = _.find(this.customer_addresses, {'main' : 1});
-                this.form.customer_address_id = address.id;
-            }*/
         },
         validateCustomerRetention(identity_document_type_id) {
 
@@ -4223,6 +4260,7 @@ export default {
 
         },
         changePaymentCondition() {
+
             this.form.fee = [];
             this.form.payments = [];
             if (this.form.payment_condition_id === '01') {
