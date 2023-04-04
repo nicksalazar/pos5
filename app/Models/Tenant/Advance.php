@@ -14,5 +14,6 @@ class Advance extends ModelTenant
         'idCliente',
         'valor',
         'observation',
+        'is_supplier',
     ];
 }

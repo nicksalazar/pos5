@@ -15,7 +15,7 @@
                         <span slot="label">{{ titleTabDialog }}</span>
                         <div class="row">
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div :class="{'has-danger': errors.idMethodType}"
                                      class="form-group">
                                     <label class="control-label">Tipo</label>
@@ -25,38 +25,55 @@
                                         <el-option v-for="option in methodTypes"
                                                    :key="option.id"
                                                    :label="option.description"
-                                                   :value="option.description"></el-option>
+                                                   :value="option.id"></el-option>
                                     </el-select>
                                     <small v-if="errors.idMethodType"
                                            class="form-control-feedback"
                                            v-text="errors.idMethodType[0]"></small>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <div :class="{'has-danger': errors.is_supplier}"
+                                     class="form-group">
+                                     <label class="control-label">Es de proveedor?</label>
+                                    <el-switch
+                                        v-model="form.is_supplier"
+                                        class="ml-2"
+                                        active-text="Si"
+                                        inactive-text="No"
+                                        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                                        @change="changeTipy()"
+                                    />
+                                    <small v-if="errors.is_supplier"
+                                           class="form-control-feedback"
+                                           v-text="errors.is_supplier[0]"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div :class="{'has-danger': errors.idCliente}"
                                      class="form-group">
-                                    <label class="control-label">Cliente</label>
+                                    <label class="control-label">{{ cliente_text }}</label>
                                     <el-select v-model="form.idCliente"
                                                dusk="tipoTransporte"
                                                filterable>
                                         <el-option v-for="option in clients"
                                                    :key="option.id"
-                                                   :label="option.description"
-                                                   :value="option.description"></el-option>
+                                                   :label="option.name"
+                                                   :value="option.id"></el-option>
                                     </el-select>
                                     <small v-if="errors.idCliente"
                                            class="form-control-feedback"
                                            v-text="errors.idCliente[0]"></small>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4" :class="{'has-danger': errors.valor}">
                                 <label class="control-label">Valor</label>
                                 <el-input-number v-model="form.valor" :step="1" :min="0"></el-input-number>
                                 <small v-if="errors.valor"
                                             class="form-control-feedback"
                                             v-text="errors.valor[0]"></small>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4" :class="{'has-danger': errors.observation}">
                                 <label class="control-label">Nota</label>
                                 <el-input v-model="form.observation"></el-input>
                                 <small v-if="errors.observation"
@@ -96,6 +113,7 @@ export default {
     data() {
         return {
             clients:[],
+            clients_all:[],
             methodTypes:[],
             loading_submit: false,
             titleDialog: null,
@@ -103,8 +121,10 @@ export default {
             typeDialog: null,
             resource: 'finances/advances',
             errors: {},
+            activeName: 'first',
             form: {
             },
+            cliente_text:'Cliente',
 
         }
     },
@@ -128,16 +148,7 @@ export default {
             if (this.form.identity_document_type_id === '1') {
                 return 8
             }
-        },
-        created(){
-            this.$http.get(`/finances/advances/tables`)
-                    .then(response => {
-                        console.log('DATA CREATED: ', response.data.data)
-                        this.clients = response.data.data.clients
-                    }).then(() => {
-                    //this.updateEmail()
-                })
-        },
+        }
     },
     methods: {
         ...mapActions([
@@ -147,12 +158,7 @@ export default {
             this.errors = {}
             this.form = {
                 id: null,
-                estado:'Registrada',
-                fechaLlegada: null,
-                fechaEmbarque: null,
-                tipoTransporte: null,
-                numeroImportacion:null,
-
+                is_supplier:false,
             }
             this.resource = 'finances/advances'
 
@@ -160,25 +166,43 @@ export default {
         async opened() {
 
         },
+        changeTipy(){
+            console.log('Filtrando clientes')
+            if(this.form.is_supplier){
+                this.clients=_.filter(this.clients_all,{'type':'suppliers'})
+            }else{
+                this.clients=_.filter(this.clients_all,{'type':'customers'})
+            }
+            console.log('Filtrando clientes', this.clients)
+        },
         create() {
 
             this.titleDialog = (this.recordId) ? 'Editar anticipo' : 'Nuevo anticipo';
-            this.titleTabDialog = 'Datod el anticipo';
+            this.titleTabDialog = 'Datos para crear anticipo';
             this.typeDialog = (this.recordId) ? 'Editar' : 'Guardar';
             this.isEditForm = (this.recordId) ? true : false;
             if (this.recordId) {
                 this.$http.get(`/${this.resource}/record/${this.recordId}`)
                     .then(response => {
-                        console.log('DATOS A EDITAR: ', response.data.data)
+                        //console.log('DATOS A EDITAR: ', response.data.data)
                         this.form = response.data.data
-                    }).then(() => {
-                    //this.updateEmail()
+                }).then(() => {
+
                 })
             }
+
+            this.$http.get(`/${this.resource}/tables`)
+                .then(response => {
+                    console.log('DATA CREATED: ', response)
+                    this.clients_all = response.data.clients
+                    this.methodTypes = response.data.methodTypes
+            }).then(() => {
+                this.changeTipy()
+            })
+
         },
         async submit() {
             this.loading_submit = true
-
             await this.$http.post(`/${this.resource}`, this.form)
                 .then(response => {
                     if (response.data.success) {

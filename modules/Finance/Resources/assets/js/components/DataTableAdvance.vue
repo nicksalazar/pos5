@@ -21,61 +21,34 @@
                     </div>
                 </div>
                 <div class="row mt-2" v-if="see_more">
-                    <div class="col-lg-2 col-md-2">
+                    <div class="col-lg-3 col-md-3">
                         <div class="form-group">
-                            <label class="control-label">Estado</label>
-                            <el-select v-model="search.estado" popper-class="el-select-document_type" filterable clearable>
-                                <el-option v-for="option in estados" :key="option.id" :value="option.description" :label="option.description"></el-option>
+                            <label class="control-label">Cliente</label>
+                            <el-select v-model="search.idCliente" popper-class="el-select-document_type" filterable clearable>
+                                <el-option v-for="option in clients_all" :key="option.id" :value="option.id" :label="option.name"></el-option>
                             </el-select>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-2">
+                    <div class="col-lg-3 col-md-3">
                         <div class="form-group">
-                            <label class="control-label">Transporte</label>
-                            <el-select v-model="search.tipoTransporte" popper-class="el-select-document_type" filterable clearable>
-                                <el-option v-for="option in tipoTransportes" :key="option.id" :value="option.description" :label="option.description"></el-option>
+                            <label class="control-label">Tipo</label>
+                            <el-select v-model="search.methodTypes" popper-class="el-select-document_type" filterable clearable>
+                                <el-option v-for="option in methodTypes" :key="option.id" :value="option.id" :label="option.description"></el-option>
                             </el-select>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-2">
                         <div class="form-group"  >
-                            <label class="control-label">Importacion</label>
+                            <label class="control-label">Identificador</label>
                             <el-input placeholder="Ingresar"
-                                v-model="search.numeroImportacion">
+                                v-model="search.identificador">
                             </el-input>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-2 pb-2">
-                        <div class="form-group">
-                            <label class="control-label">Fecha Embarque </label>
-                            <el-date-picker
-                                v-model="search.fechaEmbarque"
-                                type="date"
-                                style="width: 100%;"
-                                placeholder="Buscar"
-                                value-format="yyyy-MM-dd"
-                                @change="changeDisabledDates">
-                            </el-date-picker>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-2 pb-2">
-                        <div class="form-group">
-                            <label class="control-label">Fecha Llegada</label>
-                            <el-date-picker
-                                v-model="search.fechaLlegada"
-                                type="date"
-                                style="width: 100%;"
-                                placeholder="Buscar"
-                                value-format="yyyy-MM-dd"
-                                :picker-options="pickerOptionsDates"
-                                @change="changeEndDate">
-                            </el-date-picker>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-2 col-sm-12 pb-2">
+                    <div class="col-lg-4 col-md-4 col-sm-12 pb-4">
                         <label class="control-label">Fecha emisión</label>
                         <el-date-picker
-                            v-model="search.date_of_issue"
+                            v-model="search.date_created"
                             type="date"
                             style="width: 100%;"
                             placeholder="Buscar"
@@ -86,7 +59,6 @@
                     <div class="col-lg-4 col-md-4 col-md-4 col-sm-12" style="margin-top:29px">
                         <el-button class="submit" type="primary" @click.prevent="getRecordsByFilter" :loading="loading_submit" icon="el-icon-search" >Buscar</el-button>
                         <el-button class="submit" type="info" @click.prevent="cleanInputs"  icon="el-icon-delete" >Limpiar </el-button>
-
                     </div>
 
                 </div>
@@ -165,16 +137,8 @@ export default {
                 all_items: [],
                 loading_search:false,
                 loading_search_item:false,
-                estados: [{'id':1,'description':'Registrada'},{'id':2,'description':'Liberada'},{'id':3,'description':'Liquidada'}],
-                tipoTransportes : [{'id':1,'description':'Aereo'},{'id':2,'description':'Maritimo'},{'id':3,'description':'Terrestre'}],
-                categories: [],
-                state_types: [],
                 pagination: {},
-                search: {},
-                all_series: [],
-                establishment: null,
-                establishments: [],
-                series: [],
+                search:[],
                 activePanel:0,
                 see_more:false,
                 pickerOptionsDates: {
@@ -183,6 +147,8 @@ export default {
                         return this.search.fechaEmbarque > time
                     }
                 },
+                clients_all:[],
+                methodTypes:[],
             }
         },
         computed: {
@@ -191,68 +157,28 @@ export default {
             ]),
         },
         created() {
+
             this.loadConfiguration();
             this.initForm()
             this.$eventHub.$on('reloadData', () => {
                 this.getRecords()
             })
+
+            this.$http.get(`/${this.resource}/tables`)
+                .then(response => {
+                    console.log('DATA CREATED: ', response)
+                    this.clients_all = response.data.clients
+                    this.methodTypes = response.data.methodTypes
+            })
         },
         async mounted () {
 
             await this.getRecords()
-            //await this.filterCustomers()
-            //await this.filterItems()
             await this.cargalo()
         },
         methods: {
             ...mapActions(['loadConfiguration']),
 
-            searchRemoteItems(input) {
-
-                if (input.length > 0) {
-
-                    this.loading_search = true
-                    let parameters = `input=${input}`
-
-                    this.$http.get(`/documents/data-table/items?${parameters}`)
-                            .then(response => {
-                                // console.log(response.data)
-                                this.items = response.data
-                                this.loading_search = false
-
-                                if(this.items.length == 0){
-                                    this.filterItems()
-                                }
-                            })
-                } else {
-                    this.filterItems()
-                }
-
-            },
-            filterItems() {
-                this.items = this.all_items
-            },
-            searchRemoteCustomers(input) {
-
-                if (input.length > 0) {
-
-                    this.loading_search = true
-                    let parameters = `input=${input}`
-
-                    this.$http.get(`/documents/data-table/customers?${parameters}`)
-                            .then(response => {
-                                this.customers = response.data.customers
-                                this.loading_search = false
-
-                                if(this.customers.length == 0){
-                                    this.filterCustomers()
-                                }
-                            })
-                } else {
-                    this.filterCustomers()
-                }
-
-            },
             filterCustomers() {
                 this.customers = this.all_customers
             },
@@ -262,20 +188,11 @@ export default {
             initForm(){
 
                 this.search = {
-                    date_of_issue: null,
-                    document_type_id:null,
-                    customer_id:null,
-                    item_id:null,
-                    category_id:null,
-                    state_type_id:null,
-                    series:null,
-                    number:null,
-                    d_start:null,
-                    d_end:null,
-                    pending_payment:false,
+
                 }
             },
             filterSeries() {
+
                 this.search.series = null
                 this.series = _.filter(this.all_series, {'document_type_id': this.search.document_type_id});
                 this.search.series = (this.series.length > 0)?this.series[0].number:null

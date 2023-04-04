@@ -18,6 +18,7 @@ class CreateAdvancesTable extends Migration
             $table->char('idMethodType', 2);
             $table->integer('idCliente')->unsigned()->nullable();
             $table->double('valor', 15, 3);
+            $table->boolean('is_supplier')->nullable()->default(false);
             $table->string('observation', 255)->nullable();
             $table->timestamps();
 

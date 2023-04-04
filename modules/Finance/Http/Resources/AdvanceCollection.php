@@ -26,6 +26,7 @@ class AdvanceCollection extends ResourceCollection
                 'method' => ($method && $method->count() > 0 ) ? $method->description:'Sin metodo de pago',
                 'cliente' => ($cliente && $cliente->count() > 0 ) ? $cliente->name: 'Sin cliente',
                 'valor' => $row->valor,
+                'is_supplier' => (bool) $row->is_supplier,
                 'observation' => ($row->observation) ? $row->observation : '',
                 'created_at' => $row->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $row->updated_at->format('Y-m-d H:i:s'),

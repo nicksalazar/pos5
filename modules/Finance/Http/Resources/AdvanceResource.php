@@ -18,6 +18,7 @@ class AdvanceResource extends JsonResource
             'id' => $this->id,
             'idMethodType' => $this->idMethodType,
             'idCliente' => $this->idCliente,
+            'is_supplier' => (bool) $this->is_supplier,
             'valor' => $this->valor,
             'observation' => ($this->observation) ? $this->observation : '',
 

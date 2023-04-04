@@ -27,6 +27,7 @@ use App\CoreFacturalo\Helpers\Functions\GeneralPdfHelper;
 use App\CoreFacturalo\Helpers\Storage\StorageDocument;
 use App\Models\Tenant\Advance;
 use Exception;
+use Modules\Finance\Http\Requests\AdvanceRequest;
 use Modules\Finance\Http\Resources\AdvanceCollection;
 use Modules\Finance\Http\Resources\AdvanceResource;
 
@@ -56,12 +57,22 @@ class AdvanceController extends Controller
 
     public function records(Request $request)
     {
-        $records = null;
-        if($request->column){
-            $records = Advance::where($request->column, 'like', "%{$request->value}%")
-                            ->latest();
-        }else{
-            $records = Advance::orderBy('id');
+        $records =  Advance::query();
+
+        if($request->idCliente){
+            $records->where('idCliente', 'like', "%{$request->idCliente}%");
+        }
+        elseif($request->methodTypes){
+
+            $records->where('idMethodType', 'like', "%{$request->methodTypes}%");
+        }
+        elseif($request->identificador){
+
+            $records->where('id', 'like', "%{$request->identificador}%");
+        }
+        elseif($request->date_created){
+
+            $records->where('created_at', 'like', "%{$request->date_created}%");
         }
 
         return new AdvanceCollection($records->paginate(config('tenant.items_per_page')));
@@ -76,8 +87,9 @@ class AdvanceController extends Controller
         $income_reasons = IncomeReason::all();
         $payment_destinations = $this->getPaymentDestinations();
         $clients = Person::get();
+        $methodTypes = PaymentMethodType::where('is_advance',1)->get();
 
-        return compact('clients');
+        return compact('clients','methodTypes');
     }
 
 
@@ -89,37 +101,25 @@ class AdvanceController extends Controller
         return $record;
     }
 
-    public function store(IncomeRequest $request)
+    public function store(AdvanceRequest $request)
     {
 
-        $data = self::merge_inputs($request);
+        $id = $request->input('id');
+        $estado = $request->input('estado');
+        $advance = Advance::firstOrNew(['id' => $id]);
+        $data = $request->all();
+        unset($data['id']);
 
-        $income = DB::connection('tenant')->transaction(function () use ($data) {
+        $advance->fill($data);
+        $advance->save();
 
-            $doc = Income::create($data);
-
-            foreach ($data['items'] as $row)
-            {
-                $doc->items()->create($row);
-            }
-
-            foreach ($data['payments'] as $row)
-            {
-                $record_payment = $doc->payments()->create($row);
-                $this->createGlobalPayment($record_payment, $row);
-            }
-
-            $this->setFilename($doc);
-            $this->createPdf($doc);
-
-            return $doc;
-        });
+        $msg = '';
+        $msg = ($id) ? 'Anticipo editado con éxito' : 'Anticipo registrado con éxito';
 
         return [
             'success' => true,
-            'data' => [
-                'id' => $income->id,
-            ],
+            'message' => $msg,
+            'id' => $advance->id
         ];
     }
 

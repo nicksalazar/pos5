@@ -200,7 +200,6 @@
                                            class="border-left rounded-left border-info"
                                            dusk="customer_id"
                                            filterable
-
                                            @focus="focus_on_client = true"
                                            @blur="focus_on_client = false"
                                            placeholder="Escriba el nombre o número de documento del cliente"
@@ -409,13 +408,6 @@
                                                     </tr>
                                                 </template>
 
-<!--                                                <template v-if="form.retention">-->
-<!--                                                    <tr v-if="form.retention.amount > 0">-->
-<!--                                                        <td>M. RETENCIÓN ({{ form.retention.percentage * 100 }}%):</td>-->
-<!--                                                        <td>{{ currency_type.symbol }} {{ form.retention.amount }}</td>-->
-<!--                                                    </tr>-->
-<!--                                                </template>-->
-
                                                 <tr v-if="form.total_exportation > 0">
                                                     <td>OP.EXPORTACIÓN:</td>
                                                     <td>{{ currency_type.symbol }} {{ form.total_exportation }}</td>
@@ -480,11 +472,6 @@
                                                     </td>
                                                 </tr>
 
-<!--                                                <tr v-if="form.total > 0">-->
-<!--                                                    <td><strong>TOTAL A PAGAR</strong>:</td>-->
-<!--                                                    <td>{{ currency_type.symbol }} {{ form.total }}</td>-->
-<!--                                                </tr>-->
-
                                                 <template v-if="form.has_retention">
                                                     <tr v-if="form.total > 0">
                                                         <td><strong>IMPORTE TOTAL</strong>:</td>
@@ -514,6 +501,8 @@
                                                                    popper-class="el-select-document_type"
                                                                    style="max-width: 200px;"
                                                                    @change="changePaymentCondition">
+                                                            <el-option label="Anticipo"
+                                                                       value="04"></el-option>
                                                             <el-option label="Crédito con cuotas"
                                                                        value="03"></el-option>
                                                             <el-option label="Crédito"
@@ -523,15 +512,6 @@
                                                         </el-select>
                                                     </td>
                                                 </tr>
-
-
-                                                <!-- <template v-if="form.detraction">
-                                                    <tr v-if="form.detraction.amount > 0 && form.total_pending_payment > 0">
-                                                        <td width="60%">M. PENDIENTE:</td>
-                                                        <td>{{ currency_type.symbol }} {{ form.total_pending_payment }}</td>
-                                                    </tr>
-                                                </template> -->
-
                                                 <template v-if="form.detraction || form.retention">
                                                     <tr v-if="form.total_pending_payment > 0">
                                                         <!-- <tr v-if="form.detraction.amount > 0 && form.total_pending_payment > 0"> -->
@@ -543,11 +523,81 @@
                                                     </tr>
                                                 </template>
 
-
                                                 <tr v-if="form.total > 0">
                                                     <!-- Metodos de pago -->
                                                     <td class="p-0"
                                                         colspan="2">
+                                                        <!-- Anticipo -->
+                                                        <div v-if="!is_receivable && form.payment_condition_id === '04'">
+                                                            <table class="text-left">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th
+                                                                        style="width: 120px">Anticipos disponibles
+                                                                    </th>
+                                                                    <template v-if="enabled_payments">
+                                                                        <th
+                                                                            style="width: 100px">Fecha
+                                                                        </th>
+                                                                        <th
+                                                                            style="width: 100px">Monto
+                                                                        </th>
+                                                                        <th style="width: 30px"></th>
+                                                                    </template>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr v-for="(row, index) in form.payments"
+                                                                    :key="index">
+                                                                    <td>
+                                                                        <el-select
+                                                                            v-model="row.payment_method_type_id"
+                                                                            @change="changePaymentMethodType(index)">
+                                                                            <el-option
+                                                                                v-for="option in advances"
+                                                                                :key="option.id"
+                                                                                :label="option.description"
+                                                                                :value="option.id"></el-option>
+                                                                        </el-select>
+                                                                    </td>
+                                                                    <template v-if="enabled_payments">
+                                                                        <td>
+                                                                            <el-date-picker
+                                                                                v-model="row.date"
+                                                                                :clearable="false"
+                                                                                format="dd/MM/yyyy"
+                                                                                type="date"
+                                                                                :readonly="readonly_date_of_due"
+                                                                                value-format="yyyy-MM-dd"></el-date-picker>
+                                                                        </td>
+                                                                        <td>
+                                                                            <el-input v-model="row.payment"></el-input>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <button
+                                                                                class="btn waves-effect waves-light btn-xs btn-danger"
+                                                                                type="button"
+                                                                                @click.prevent="clickCancel(index)">
+                                                                                <i class="fa fa-trash"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </template>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="5">
+                                                                        <label class="control-label">
+                                                                            <a class=""
+                                                                            href="#"
+                                                                            @click.prevent="clickAddPayment"><i
+                                                                                class="fa fa-plus font-weight-bold text-info"></i>
+                                                                                <span style="color: #777777">Agregar pago</span></a>
+
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
                                                         <!-- Crédito con cuotas -->
                                                         <div v-if="form.payment_condition_id === '03'"
                                                              class="table-responsive">
@@ -913,6 +963,8 @@
                                                        popper-class="el-select-document_type"
                                                        style="max-width: 200px;"
                                                        @change="changePaymentCondition">
+                                                <el-option label="Anticipo"
+                                                            value="04"></el-option>
                                                 <el-option label="Crédito con cuotas"
                                                            value="03"></el-option>
                                                 <el-option label="Crédito"
@@ -941,6 +993,77 @@
                                         <!-- Metodos de pago -->
                                         <td class="p-0"
                                             colspan="2">
+                                            <!-- Anticipo -->
+                                            <div v-if="!is_receivable && form.payment_condition_id === '04'">
+                                                <table class="text-left">
+                                                    <thead>
+                                                    <tr>
+                                                        <th v-if="form.payments.length>0"
+                                                            style="width: 120px">Anticipos disponibles
+                                                        </th>
+                                                        <template v-if="enabled_payments">
+                                                            <th
+                                                                style="width: 100px">Fecha
+                                                            </th>
+                                                            <th v-if="form.payments.length>0"
+                                                                style="width: 100px">Monto
+                                                            </th>
+                                                            <th style="width: 30px"></th>
+                                                        </template>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr v-for="(row, index) in form.payments"
+                                                        :key="index">
+                                                        <td>
+                                                            <el-select
+                                                                v-model="row.payment_method_type_id"
+                                                                @change="changePaymentMethodType(index)">
+                                                                <el-option
+                                                                    v-for="option in cash_payment_metod"
+                                                                    :key="option.id"
+                                                                    :label="option.description"
+                                                                    :value="option.id"></el-option>
+                                                            </el-select>
+                                                        </td>
+                                                        <template v-if="enabled_payments">
+                                                            <td>
+                                                                <el-date-picker
+                                                                    v-model="row.date"
+                                                                    :clearable="false"
+                                                                    format="dd/MM/yyyy"
+                                                                    type="date"
+                                                                    :readonly="readonly_date_of_due"
+                                                                    value-format="yyyy-MM-dd"></el-date-picker>
+                                                            </td>
+                                                            <td>
+                                                                <el-input v-model="row.payment"></el-input>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button
+                                                                    class="btn waves-effect waves-light btn-xs btn-danger"
+                                                                    type="button"
+                                                                    @click.prevent="clickCancel(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </template>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="5">
+                                                            <label class="control-label">
+                                                                <a class=""
+                                                                   href="#"
+                                                                   @click.prevent="clickAddPayment"><i
+                                                                    class="fa fa-plus font-weight-bold text-info"></i>
+                                                                    <span style="color: #777777">Agregar pago</span></a>
+
+                                                            </label>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                             <!-- Crédito con cuotas -->
                                             <div v-if="form.payment_condition_id === '03'">
                                                 <table v-if="form.fee.length>0"
@@ -1697,8 +1820,7 @@ export default {
                     preventDefault: true,
                 },
             ],
-            // default_document_type: null,
-            // default_series_type: null,
+            advances:[],
             focus_on_client: false,
             dateValid: false,
             input_person: {},
@@ -2662,7 +2784,17 @@ export default {
                             break;
                     }
                 }
+                this.addAdvancesCustomer()
             }
+        },
+        addAdvancesCustomer(){
+
+            this.$http.get(`/${this.resource}/advance/${parameters}`).then(
+                response => {
+                    console.log('addAdvancesCustomer',response)
+                    this.advances = response
+                }
+            )
         },
         addDocumentDetraction(detraction) {
             this.form.detraction = detraction

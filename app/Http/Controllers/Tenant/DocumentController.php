@@ -17,6 +17,7 @@ use App\Imports\DocumentImportExcelFormat;
 use App\Imports\DocumentsImport;
 use App\Imports\DocumentsImportTwoFormat;
 use App\Mail\Tenant\DocumentEmail;
+use App\Models\Tenant\Advance;
 use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Catalogs\CatColorsItem;
@@ -1488,6 +1489,12 @@ class DocumentController extends Controller
             'document_types' => $document_types,
             'series' => $series,
         ];
+    }
+
+    public function searchAdvancesByIdCustomer($client_id){
+
+        return Advance::where('idCliente',$client_id)->get();
+
     }
 
     public function retention($document_id)
