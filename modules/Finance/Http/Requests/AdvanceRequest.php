@@ -20,6 +20,9 @@ class AdvanceRequest extends FormRequest
             'idMethodType' => [
                 'required',
             ],
+            'id_payment' => [
+                'required',
+            ],
             'idCliente' => [
                 'required',
             ],
@@ -32,6 +35,7 @@ class AdvanceRequest extends FormRequest
 	{
 		return [
 			'idMethodType.required' => 'El tipo de Anticipo es obligatorio',
+            'id_payment.required' => 'El metodo de pago es obligatorio',
             'idCliente.required' => 'DEbe seleccionar un cliente/Proveedor',
             'valor.required' => 'El valor del anticipo no puede ser 0 (cero) o null',
 		];

@@ -20,7 +20,6 @@
                                      class="form-group">
                                     <label class="control-label">Tipo</label>
                                     <el-select v-model="form.idMethodType"
-                                               dusk="tipoTransporte"
                                                filterable>
                                         <el-option v-for="option in methodTypes"
                                                    :key="option.id"
@@ -30,6 +29,22 @@
                                     <small v-if="errors.idMethodType"
                                            class="form-control-feedback"
                                            v-text="errors.idMethodType[0]"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div :class="{'has-danger': errors.id_payment}"
+                                     class="form-group">
+                                    <label class="control-label">Forma de pago</label>
+                                    <el-select v-model="form.id_payment"
+                                               filterable>
+                                        <el-option v-for="option in methodTypes2"
+                                                   :key="option.id"
+                                                   :label="option.description"
+                                                   :value="option.id"></el-option>
+                                    </el-select>
+                                    <small v-if="errors.id_payment"
+                                           class="form-control-feedback"
+                                           v-text="errors.id_payment[0]"></small>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -80,6 +95,13 @@
                                             class="form-control-feedback"
                                             v-text="errors.observation[0]"></small>
                             </div>
+                            <div class="col-md-4" :class="{'has-danger': errors.reference}">
+                                <label class="control-label">Referencia</label>
+                                <el-input v-model="form.reference"></el-input>
+                                <small v-if="errors.reference"
+                                            class="form-control-feedback"
+                                            v-text="errors.reference[0]"></small>
+                            </div>
                         </div>
 
                     </el-tab-pane>
@@ -115,6 +137,7 @@ export default {
             clients:[],
             clients_all:[],
             methodTypes:[],
+            methodTypes2:[],
             loading_submit: false,
             titleDialog: null,
             titleTabDialog: null,
@@ -177,6 +200,8 @@ export default {
         },
         create() {
 
+            console.log('config',this.config)
+
             this.titleDialog = (this.recordId) ? 'Editar anticipo' : 'Nuevo anticipo';
             this.titleTabDialog = 'Datos para crear anticipo';
             this.typeDialog = (this.recordId) ? 'Editar' : 'Guardar';
@@ -196,6 +221,7 @@ export default {
                     console.log('DATA CREATED: ', response)
                     this.clients_all = response.data.clients
                     this.methodTypes = response.data.methodTypes
+                    this.methodTypes2 = response.data.methodTypes2
             }).then(() => {
                 this.changeTipy()
             })

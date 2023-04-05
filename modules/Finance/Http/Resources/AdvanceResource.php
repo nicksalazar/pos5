@@ -17,6 +17,8 @@ class AdvanceResource extends JsonResource
         return [
             'id' => $this->id,
             'idMethodType' => $this->idMethodType,
+            'id_payment' => $this->id_payment,
+            'reference' =>$this->reference,
             'idCliente' => $this->idCliente,
             'is_supplier' => (bool) $this->is_supplier,
             'valor' => $this->valor,

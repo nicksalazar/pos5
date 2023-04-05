@@ -88,8 +88,9 @@ class AdvanceController extends Controller
         $payment_destinations = $this->getPaymentDestinations();
         $clients = Person::get();
         $methodTypes = PaymentMethodType::where('is_advance',1)->get();
+        $methodTypes2 = PaymentMethodType::where('is_cash',1)->get();
 
-        return compact('clients','methodTypes');
+        return compact('clients','methodTypes','methodTypes2');
     }
 
 

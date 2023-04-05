@@ -501,8 +501,6 @@
                                                                    popper-class="el-select-document_type"
                                                                    style="max-width: 200px;"
                                                                    @change="changePaymentCondition">
-                                                            <el-option label="Anticipo"
-                                                                       value="04"></el-option>
                                                             <el-option label="Crédito con cuotas"
                                                                        value="03"></el-option>
                                                             <el-option label="Crédito"
@@ -527,91 +525,6 @@
                                                     <!-- Metodos de pago -->
                                                     <td class="p-0"
                                                         colspan="2">
-                                                        <!-- Anticipo -->
-                                                        <div v-if="!is_receivable && form.payment_condition_id === '04'">
-                                                            <table class="text-left">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th
-                                                                        style="width: 120px">Forma de Pago
-                                                                    </th>
-                                                                    <th
-                                                                        style="width: 120px">Anticipos disponibles
-                                                                    </th>
-                                                                    <template v-if="enabled_payments">
-                                                                        <th
-                                                                            style="width: 100px">Fecha
-                                                                        </th>
-                                                                        <th
-                                                                            style="width: 100px">Monto
-                                                                        </th>
-                                                                        <th style="width: 30px"></th>
-                                                                    </template>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <tr v-for="(row, index) in form.payments"
-                                                                    :key="index">
-                                                                    <td>
-                                                                        <el-select
-                                                                            v-model="row.payment_method_type_id"
-                                                                            @change="changePaymentMethodType(index)">
-                                                                            <el-option
-                                                                                v-for="option in advance_payment_metod"
-                                                                                :key="option.id"
-                                                                                :label="option.description"
-                                                                                :value="option.id"></el-option>
-                                                                        </el-select>
-                                                                    </td>
-                                                                    <td>
-                                                                        <el-select
-                                                                            v-model="row.reference"
-                                                                            @change="changeAdvance(index,$event)">
-                                                                            <el-option
-                                                                                v-for="option in advances"
-                                                                                :key="option.id"
-                                                                                :label="option.id"
-                                                                                :value="option.id"></el-option>
-                                                                        </el-select>
-                                                                    </td>
-                                                                    <template v-if="enabled_payments">
-                                                                        <td>
-                                                                            <el-date-picker
-                                                                                v-model="row.date_of_payment"
-                                                                                :clearable="false"
-                                                                                format="dd/MM/yyyy"
-                                                                                type="date"
-                                                                                :readonly="readonly_date_of_due"
-                                                                                value-format="yyyy-MM-dd"></el-date-picker>
-                                                                        </td>
-                                                                        <td>
-                                                                            <el-input v-model="row.payment"></el-input>
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            <button
-                                                                                class="btn waves-effect waves-light btn-xs btn-danger"
-                                                                                type="button"
-                                                                                @click.prevent="clickCancel(index)">
-                                                                                <i class="fa fa-trash"></i>
-                                                                            </button>
-                                                                        </td>
-                                                                    </template>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td colspan="5">
-                                                                        <label class="control-label">
-                                                                            <a class=""
-                                                                            href="#"
-                                                                            @click.prevent="clickAddPayment"><i
-                                                                                class="fa fa-plus font-weight-bold text-info"></i>
-                                                                                <span style="color: #777777">Agregar pago</span></a>
-
-                                                                        </label>
-                                                                    </td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
                                                         <!-- Crédito con cuotas -->
                                                         <div v-if="form.payment_condition_id === '03'"
                                                              class="table-responsive">
@@ -741,7 +654,7 @@
                                                                             </el-tooltip>
                                                                         </th>
                                                                         <th v-if="form.payments.length>0"
-                                                                            style="width: 100px">Referencia
+                                                                            style="width: 100px">Referencia/Anticipo
                                                                         </th>
                                                                         <th v-if="form.payments.length>0"
                                                                             style="width: 100px">Monto
@@ -799,12 +712,24 @@
                                                                                     :value="option.id"></el-option>
                                                                             </el-select>
                                                                         </td>
-                                                                        <td>
+                                                                        <td v-if="row.payment_method_type_id != 14">
                                                                             <el-input
                                                                                 v-model="row.reference"></el-input>
+
+                                                                        </td>
+                                                                        <td v-if="row.payment_method_type_id == 14">
+                                                                            <el-select
+                                                                                v-model="row.reference"
+                                                                                @change="changeAdvance(index,$event)">
+                                                                                <el-option
+                                                                                    v-for="option in advances"
+                                                                                    :key="option.id"
+                                                                                    :label="option.id"
+                                                                                    :value="option.id"></el-option>
+                                                                            </el-select>
                                                                         </td>
                                                                         <td>
-                                                                            <el-input v-model="row.payment"></el-input>
+                                                                            <el-input v-model="row.payment"  @change="changeAdvanceInput(index,$event,row.payment_method_type_id,row.reference)"></el-input>
                                                                         </td>
 
 
@@ -977,8 +902,6 @@
                                                        popper-class="el-select-document_type"
                                                        style="max-width: 200px;"
                                                        @change="changePaymentCondition">
-                                                <el-option label="Anticipo"
-                                                            value="04"></el-option>
                                                 <el-option label="Crédito con cuotas"
                                                            value="03"></el-option>
                                                 <el-option label="Crédito"
@@ -2727,6 +2650,24 @@ export default {
             // this.readonly_date_of_due = false
             // this.form.payment_method_type_id = null
         },
+        changeAdvanceInput(index,event,methodType, id){
+
+            if(methodType == 14){
+                let selectedAdvance = _.find(this.advances,{'id':id})
+                console.log('VALOR INGRESADO',this.advances)
+                console.log('VALOR INGRESADOs',selectedAdvance)
+                let maxAmount = selectedAdvance.valor
+
+                if(maxAmount >= event){
+                    /*EL VALOR INGRESADO EN PERMITIDO EN EL ANTICIPO */
+                }else{
+                    this.form.payments[index].payment = maxAmount
+                    let message = 'El monto maximo del anticipo es de '+maxAmount
+                    this.$message.warning(message)
+
+                }
+            }
+        },
         changeAdvance(index, id){
 
             let selectedAdvance = _.find(this.advances,{'id':id})
@@ -2739,13 +2680,18 @@ export default {
             let payment = 0;
             let amount = _.round(total / payment_count, 2);
 
+            console.log('monto pendinete: ',amount)
+            console.log('Max amount',maxAmount)
+
             if(maxAmount >= amount ){
-                console.log('el valor a pagar no supera el monto maximo del anticipo')
+                /* EL MONTO INGRESADO ESTA PERMITIDO */
             }else if(amount > maxAmount ){
-                console.log('el monto a pagar supero el valor del anticipo')
-                this.form.payments[index]
+
+                this.form.payments[index].payment = maxAmount
+                let message = 'El monto maximo del anticipo es de '+amount
+                this.$message.warning(message)
             }
-            // console.log(amount);
+
 
         },
         changePaymentMethodType(index) {
@@ -2789,7 +2735,20 @@ export default {
                 // this.form.payments = []
                 this.enabled_payments = false
 
-            } else {
+            }else if(payment_method_type.id == '14'){
+
+                this.$notify({
+                    title: '',
+                    message: 'Debes seleccionar un anticipo disponible',
+                    type: 'success'
+                })
+
+                this.form.date_of_due = this.form.date_of_issue
+                this.readonly_date_of_due = false
+                this.form.payment_method_type_id = null
+                this.enabled_payments = true
+
+            }else {
 
                 this.form.date_of_due = this.form.date_of_issue
                 this.readonly_date_of_due = false
@@ -3128,7 +3087,7 @@ export default {
         },
         clickAddPayment() {
 
-            let id = null;
+            let id = '01';
             if (this.cash_payment_metod !== undefined &&
                 this.cash_payment_metod[0] !== undefined) {
                 id = this.cash_payment_metod[0].id

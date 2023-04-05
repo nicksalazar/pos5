@@ -14,8 +14,11 @@ class CreateAdvancesTable extends Migration
     public function up()
     {
         Schema::create('advances', function (Blueprint $table) {
+
             $table->increments('id');
             $table->char('idMethodType', 2);
+            $table->char('id_payment', 2);
+            $table->string('reference', 255)->nullable();
             $table->integer('idCliente')->unsigned()->nullable();
             $table->double('valor', 15, 3);
             $table->boolean('is_supplier')->nullable()->default(false);
@@ -24,6 +27,8 @@ class CreateAdvancesTable extends Migration
 
             $table->foreign('idCliente')->references('id')->on('persons');
             $table->foreign('idMethodType')->references('id')->on('payment_method_types');
+            $table->foreign('id_payment')->references('id')->on('payment_method_types');
+
         });
     }
 

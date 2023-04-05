@@ -41,6 +41,7 @@ use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Dispatch;
 use App\Models\Tenant\Document;
+use App\Models\Tenant\DocumentPayment;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\PaymentCondition;
@@ -1493,7 +1494,18 @@ class DocumentController extends Controller
 
     public function searchAdvancesByIdCustomer($client_id){
 
-        return Advance::where('idCliente',$client_id)->get();
+        $records = Advance::where('idCliente',$client_id)->get();
+
+        $data = $records->transform(function($row) use($client_id){
+            $documents = DocumentPayment::where('reference',$row->id)->where('payment_method_type_id',$row->idMethodType)->get();
+            $total = 0;
+            if($documents->count()> 0){
+                $total = $documents->sum('payment');
+            }
+            $row->valor = round(($row->valor - $total),2);
+            return $row;
+        });
+        return $data;
 
     }
 

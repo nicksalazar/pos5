@@ -11,6 +11,8 @@ class Advance extends ModelTenant
     protected $fillable = [
         'id',
         'idMethodType',
+        'id_payment',
+        'reference',
         'idCliente',
         'valor',
         'observation',
