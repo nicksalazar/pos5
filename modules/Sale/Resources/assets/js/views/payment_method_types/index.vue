@@ -30,7 +30,9 @@
                         <td>{{ index + 1 }}</td>
                         <td>{{ row.id }}</td>
                         <td>{{ row.description }}</td>
-                        <td>{{ (row.is_credit == 1)?'Crédito':'Contado' }}</td>
+                        <td v-if="row.is_credit == 1">Crédito</td>
+                        <td v-if="row.is_cash == 1">Contado</td>
+                        <td v-if="row.is_advance == 1">Anticipo</td>
                         <td>{{ (row.sri_desciption) ? row.sri_desciption:'N/A' }}</td>
                         <td class="text-right">
 

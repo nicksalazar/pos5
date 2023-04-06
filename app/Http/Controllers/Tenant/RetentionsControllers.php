@@ -630,7 +630,7 @@ class RetentionsControllers extends Controller
         $sender = new BillSender();
         $this->loadXmlSigned($file);
         $res =  $sender->send($this->urlSri, $this->xmlSigned);
-        Log::alert('sendXmlSigned: '.$res);
+        Log::alert('sendXmlSigned: '.json_encode($res));
         $Retencion = RetentionsEC::find($id);
 
         if($res) {
@@ -659,7 +659,7 @@ class RetentionsControllers extends Controller
 
                 }else{
 
-                    $IdEstado = self::GENERADA;
+                    $IdEstado = (self::GENERADA);
                     $mensajeEstado = 'ERROR AL PROCESAR LA RESPUESTA DEL SRI';
                     $mensajesRespuesta = json_encode($res);
                 }

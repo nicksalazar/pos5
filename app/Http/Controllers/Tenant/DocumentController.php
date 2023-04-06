@@ -17,6 +17,7 @@ use App\Imports\DocumentImportExcelFormat;
 use App\Imports\DocumentsImport;
 use App\Imports\DocumentsImportTwoFormat;
 use App\Mail\Tenant\DocumentEmail;
+use App\Models\Tenant\Advance;
 use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Catalogs\CatColorsItem;
@@ -40,6 +41,7 @@ use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Dispatch;
 use App\Models\Tenant\Document;
+use App\Models\Tenant\DocumentPayment;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\PaymentCondition;
@@ -1488,6 +1490,23 @@ class DocumentController extends Controller
             'document_types' => $document_types,
             'series' => $series,
         ];
+    }
+
+    public function searchAdvancesByIdCustomer($client_id){
+
+        $records = Advance::where('idCliente',$client_id)->get();
+
+        $data = $records->transform(function($row) use($client_id){
+            $documents = DocumentPayment::where('reference',$row->id)->where('payment_method_type_id',$row->idMethodType)->get();
+            $total = 0;
+            if($documents->count()> 0){
+                $total = $documents->sum('payment');
+            }
+            $row->valor = round(($row->valor - $total),2);
+            return $row;
+        });
+        return $data;
+
     }
 
     public function retention($document_id)

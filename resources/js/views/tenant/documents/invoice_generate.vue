@@ -200,7 +200,6 @@
                                            class="border-left rounded-left border-info"
                                            dusk="customer_id"
                                            filterable
-
                                            @focus="focus_on_client = true"
                                            @blur="focus_on_client = false"
                                            placeholder="Escriba el nombre o número de documento del cliente"
@@ -409,13 +408,6 @@
                                                     </tr>
                                                 </template>
 
-<!--                                                <template v-if="form.retention">-->
-<!--                                                    <tr v-if="form.retention.amount > 0">-->
-<!--                                                        <td>M. RETENCIÓN ({{ form.retention.percentage * 100 }}%):</td>-->
-<!--                                                        <td>{{ currency_type.symbol }} {{ form.retention.amount }}</td>-->
-<!--                                                    </tr>-->
-<!--                                                </template>-->
-
                                                 <tr v-if="form.total_exportation > 0">
                                                     <td>OP.EXPORTACIÓN:</td>
                                                     <td>{{ currency_type.symbol }} {{ form.total_exportation }}</td>
@@ -480,11 +472,6 @@
                                                     </td>
                                                 </tr>
 
-<!--                                                <tr v-if="form.total > 0">-->
-<!--                                                    <td><strong>TOTAL A PAGAR</strong>:</td>-->
-<!--                                                    <td>{{ currency_type.symbol }} {{ form.total }}</td>-->
-<!--                                                </tr>-->
-
                                                 <template v-if="form.has_retention">
                                                     <tr v-if="form.total > 0">
                                                         <td><strong>IMPORTE TOTAL</strong>:</td>
@@ -523,15 +510,6 @@
                                                         </el-select>
                                                     </td>
                                                 </tr>
-
-
-                                                <!-- <template v-if="form.detraction">
-                                                    <tr v-if="form.detraction.amount > 0 && form.total_pending_payment > 0">
-                                                        <td width="60%">M. PENDIENTE:</td>
-                                                        <td>{{ currency_type.symbol }} {{ form.total_pending_payment }}</td>
-                                                    </tr>
-                                                </template> -->
-
                                                 <template v-if="form.detraction || form.retention">
                                                     <tr v-if="form.total_pending_payment > 0">
                                                         <!-- <tr v-if="form.detraction.amount > 0 && form.total_pending_payment > 0"> -->
@@ -542,7 +520,6 @@
                                                         </td>
                                                     </tr>
                                                 </template>
-
 
                                                 <tr v-if="form.total > 0">
                                                     <!-- Metodos de pago -->
@@ -677,7 +654,7 @@
                                                                             </el-tooltip>
                                                                         </th>
                                                                         <th v-if="form.payments.length>0"
-                                                                            style="width: 100px">Referencia
+                                                                            style="width: 100px">Referencia/Anticipo
                                                                         </th>
                                                                         <th v-if="form.payments.length>0"
                                                                             style="width: 100px">Monto
@@ -735,12 +712,24 @@
                                                                                     :value="option.id"></el-option>
                                                                             </el-select>
                                                                         </td>
-                                                                        <td>
+                                                                        <td v-if="row.payment_method_type_id != 14">
                                                                             <el-input
                                                                                 v-model="row.reference"></el-input>
+
+                                                                        </td>
+                                                                        <td v-if="row.payment_method_type_id == 14">
+                                                                            <el-select
+                                                                                v-model="row.reference"
+                                                                                @change="changeAdvance(index,$event)">
+                                                                                <el-option
+                                                                                    v-for="option in advances"
+                                                                                    :key="option.id"
+                                                                                    :label="option.id"
+                                                                                    :value="option.id"></el-option>
+                                                                            </el-select>
                                                                         </td>
                                                                         <td>
-                                                                            <el-input v-model="row.payment"></el-input>
+                                                                            <el-input v-model="row.payment"  @change="changeAdvanceInput(index,$event,row.payment_method_type_id,row.reference)"></el-input>
                                                                         </td>
 
 
@@ -941,6 +930,77 @@
                                         <!-- Metodos de pago -->
                                         <td class="p-0"
                                             colspan="2">
+                                            <!-- Anticipo -->
+                                            <div v-if="!is_receivable && form.payment_condition_id === '04'">
+                                                <table class="text-left">
+                                                    <thead>
+                                                    <tr>
+                                                        <th v-if="form.payments.length>0"
+                                                            style="width: 120px">Anticipos disponibles
+                                                        </th>
+                                                        <template v-if="enabled_payments">
+                                                            <th
+                                                                style="width: 100px">Fecha
+                                                            </th>
+                                                            <th v-if="form.payments.length>0"
+                                                                style="width: 100px">Monto
+                                                            </th>
+                                                            <th style="width: 30px"></th>
+                                                        </template>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr v-for="(row, index) in form.payments"
+                                                        :key="index">
+                                                        <td>
+                                                            <el-select
+                                                                v-model="row.payment_method_type_id"
+                                                                @change="changePaymentMethodType(index)">
+                                                                <el-option
+                                                                    v-for="option in cash_payment_metod"
+                                                                    :key="option.id"
+                                                                    :label="option.description"
+                                                                    :value="option.id"></el-option>
+                                                            </el-select>
+                                                        </td>
+                                                        <template v-if="enabled_payments">
+                                                            <td>
+                                                                <el-date-picker
+                                                                    v-model="row.date"
+                                                                    :clearable="false"
+                                                                    format="dd/MM/yyyy"
+                                                                    type="date"
+                                                                    :readonly="readonly_date_of_due"
+                                                                    value-format="yyyy-MM-dd"></el-date-picker>
+                                                            </td>
+                                                            <td>
+                                                                <el-input v-model="row.payment"></el-input>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button
+                                                                    class="btn waves-effect waves-light btn-xs btn-danger"
+                                                                    type="button"
+                                                                    @click.prevent="clickCancel(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </template>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="5">
+                                                            <label class="control-label">
+                                                                <a class=""
+                                                                   href="#"
+                                                                   @click.prevent="clickAddPayment"><i
+                                                                    class="fa fa-plus font-weight-bold text-info"></i>
+                                                                    <span style="color: #777777">Agregar pago</span></a>
+
+                                                            </label>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                             <!-- Crédito con cuotas -->
                                             <div v-if="form.payment_condition_id === '03'">
                                                 <table v-if="form.fee.length>0"
@@ -1697,8 +1757,7 @@ export default {
                     preventDefault: true,
                 },
             ],
-            // default_document_type: null,
-            // default_series_type: null,
+            advances:[],
             focus_on_client: false,
             dateValid: false,
             input_person: {},
@@ -1784,6 +1843,9 @@ export default {
             'series',
             'all_series',
         ]),
+        advance_payment_metod:function(){
+            return _.filter(this.payment_method_types, {'is_advance': true})
+        },
         credit_payment_metod: function () {
             return _.filter(this.payment_method_types, {'is_credit': true})
         },
@@ -2374,9 +2436,6 @@ export default {
             this.form.quotation_id = data.quotation_id;
 
             this.form.additional_information = this.onPrepareAdditionalInformation(data.additional_information);
-
-            // this.form.additional_information = data.additional_information;
-            // this.form.fee = [];
             this.prepareDataDetraction()
             this.prepareDataRetention()
 
@@ -2391,9 +2450,8 @@ export default {
             this.changeDateOfIssue();
             this.updateChangeDestinationSale();
             this.prepareDataCustomer()
-
             //this.calculateTotal();
-            // this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
+
         },
         prepareDataGlobalDiscount(data)
         {
@@ -2592,12 +2650,58 @@ export default {
             // this.readonly_date_of_due = false
             // this.form.payment_method_type_id = null
         },
+        changeAdvanceInput(index,event,methodType, id){
+
+            if(methodType == 14){
+                let selectedAdvance = _.find(this.advances,{'id':id})
+                console.log('VALOR INGRESADO',this.advances)
+                console.log('VALOR INGRESADOs',selectedAdvance)
+                let maxAmount = selectedAdvance.valor
+
+                if(maxAmount >= event){
+                    /*EL VALOR INGRESADO EN PERMITIDO EN EL ANTICIPO */
+                }else{
+                    this.form.payments[index].payment = maxAmount
+                    let message = 'El monto maximo del anticipo es de '+maxAmount
+                    this.$message.warning(message)
+
+                }
+            }
+        },
+        changeAdvance(index, id){
+
+            let selectedAdvance = _.find(this.advances,{'id':id})
+            let maxAmount = selectedAdvance.valor
+
+            let payment_count = this.form.payments.length;
+            // let total = this.form.total;
+            let total = this.getTotal()
+
+            let payment = 0;
+            let amount = _.round(total / payment_count, 2);
+
+            console.log('monto pendinete: ',amount)
+            console.log('Max amount',maxAmount)
+
+            if(maxAmount >= amount ){
+                /* EL MONTO INGRESADO ESTA PERMITIDO */
+            }else if(amount > maxAmount ){
+
+                this.form.payments[index].payment = maxAmount
+                let message = 'El monto maximo del anticipo es de '+amount
+                this.$message.warning(message)
+            }
+
+
+        },
         changePaymentMethodType(index) {
 
             let id = '01';
+
             if (this.form.payments[index] !== undefined &&
                 this.form.payments[index].payment_method_type_id !== undefined) {
                 id = this.form.payments[index].payment_method_type_id;
+
             } else if (this.form.fee[index] !== undefined &&
                 this.form.fee[index].payment_method_type_id !== undefined) {
                 id = this.form.fee[index].payment_method_type_id;
@@ -2631,7 +2735,20 @@ export default {
                 // this.form.payments = []
                 this.enabled_payments = false
 
-            } else {
+            }else if(payment_method_type.id == '14'){
+
+                this.$notify({
+                    title: '',
+                    message: 'Debes seleccionar un anticipo disponible',
+                    type: 'success'
+                })
+
+                this.form.date_of_due = this.form.date_of_issue
+                this.readonly_date_of_due = false
+                this.form.payment_method_type_id = null
+                this.enabled_payments = true
+
+            }else {
 
                 this.form.date_of_due = this.form.date_of_issue
                 this.readonly_date_of_due = false
@@ -2647,6 +2764,7 @@ export default {
         keyupCustomer() {
 
             if (this.input_person.number) {
+
 
                 if (!isNaN(parseInt(this.input_person.number))) {
 
@@ -2666,7 +2784,19 @@ export default {
                             break;
                     }
                 }
+
+
             }
+        },
+        addAdvancesCustomer(){
+
+            console.log('addAdvancesCustomer',this.form.customer_id)
+            this.$http.get(`/${this.resource}/advance/${this.form.customer_id}`).then(
+                response => {
+                    console.log('addAdvancesCustomer',response.data)
+                    this.advances = response.data
+                }
+            )
         },
         addDocumentDetraction(detraction) {
             this.form.detraction = detraction
@@ -2976,7 +3106,6 @@ export default {
                 reference: null,
                 payment_destination_id: this.getPaymentDestinationId(),
                 payment: total,
-
                 payment_received: true,
                 filename: null,
                 temp_path: null,
@@ -4055,20 +4184,15 @@ export default {
             }
 
             this.setCustomerAccumulatedPoints(customer.id, this.config.enabled_point_system)
-
             let seller = this.sellers.find(element => element.id == customer.seller_id)
             if (seller !== undefined) {
                 this.form.seller_id = seller.id
-
             }
 
             // retencion para clientes con ruc
             this.validateCustomerRetention(customer.identity_document_type_id)
+            this.addAdvancesCustomer()
 
-            /*if(this.customer_addresses.length > 0) {
-                let address = _.find(this.customer_addresses, {'main' : 1});
-                this.form.customer_address_id = address.id;
-            }*/
         },
         validateCustomerRetention(identity_document_type_id) {
 
@@ -4095,6 +4219,7 @@ export default {
 
         },
         changePaymentCondition() {
+
             this.form.fee = [];
             this.form.payments = [];
             if (this.form.payment_condition_id === '01') {

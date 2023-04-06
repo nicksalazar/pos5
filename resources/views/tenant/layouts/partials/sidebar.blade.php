@@ -1093,6 +1093,12 @@
                                            href="{{route('tenant.finances.income.index')}}">Ingresos</a>
                                     </li>
                                 @endif
+                                @if(in_array('finances_advances', $vc_module_levels))
+                                    <li class="{{(($firstLevel === 'finances') && ($secondLevel == 'advances')) ? 'nav-active' : ''}}">
+                                        <a class="nav-link"
+                                        href="{{route('tenant.finances.advances.index')}}">Anticipos</a>
+                                    </li>
+                                @endif
                                 @if(in_array('finances_unpaid', $vc_module_levels))
                                     <li class="{{(($firstLevel === 'finances') && ($secondLevel == 'unpaid')) ? 'nav-active' : ''}}">
                                         <a class="nav-link"

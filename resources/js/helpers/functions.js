@@ -102,8 +102,9 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         data_item_lot_group: getDataItemLotGroup(row_old)
     };
 
-    console.log('RECIVED ROW: ',row_old)
 
+
+    //END SERVICIO
 
     let percentage_igv = pigv * 100
 
