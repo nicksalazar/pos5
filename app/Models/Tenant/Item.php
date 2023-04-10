@@ -110,7 +110,7 @@ use Picqer\Barcode\BarcodeGeneratorPNG;
  */
 class Item extends ModelTenant
 {
-    protected $with = ['item_type', 'unit_type', 'currency_type', 'warehouses','item_unit_types', 'tags','item_lots'];
+    protected $with = ['item_type', 'unit_type', 'currency_type', 'warehouses','item_unit_types', 'tags','item_lots','item_rates'];
 
     public const SERVICE_UNIT_TYPE = 'ZZ';
 
@@ -498,6 +498,10 @@ class Item extends ModelTenant
     public function item_unit_types()
     {
         return $this->hasMany(ItemUnitType::class);
+    }
+    public function item_rates()
+    {
+        return $this->hasMany(ItemRate::class);
     }
 
     /**

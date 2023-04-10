@@ -38,10 +38,12 @@ use App\Models\Tenant\ImportConcepts;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\ItemImage;
 use App\Models\Tenant\ItemMovement;
+use App\Models\Tenant\ItemRate;
 use App\Models\Tenant\ItemSupply;
 use App\Models\Tenant\ItemTag;
 use App\Models\Tenant\ItemUnitType;
 use App\Models\Tenant\ItemWarehousePrice;
+use App\Models\Tenant\Rate;
 use App\Models\Tenant\Tariff;
 use App\Models\Tenant\Warehouse;
 use App\Traits\OfflineTrait;
@@ -256,6 +258,7 @@ class ItemController extends Controller
             'show_extra_info_to_item'
         )->firstOrFail();
         */
+        $rates =Rate::select('id','rate_name')->orderBy('rate_name')->get();
         return compact(
             'unit_types',
             'currency_types',
@@ -280,6 +283,7 @@ class ItemController extends Controller
             'inventory_configuration',
             'tariffs',
             'concepts',
+            'rates',
         );
     }
 
@@ -389,6 +393,16 @@ class ItemController extends Controller
                 $item_unit_type->save();
             }
         }
+
+        foreach ($request->item_rate as $val) {
+            $item_rate = ItemRate::firstOrNew(['id' => $val['id']]);
+            $item_rate->item_id = $item->id;
+            $item_rate->rate_id = $val['rate_id'];
+            //$item_unit_type->unit_type_id = $value['unit_type_id'];
+            $item_rate->price1 = $val['price1'];
+            $item_rate->save();
+        }
+
         if (isset($request->supplies)) {
             foreach($request->supplies as $value){
 
@@ -750,6 +764,16 @@ class ItemController extends Controller
     public function destroyItemUnitType($id)
     {
         $item_unit_type = ItemUnitType::findOrFail($id);
+        $item_unit_type->delete();
+
+        return [
+            'success' => true,
+            'message' => 'Registro eliminado con éxito'
+        ];
+    }
+    public function destroyItemRate($id)
+    {
+        $item_unit_type = ItemRate::findOrFail($id);
         $item_unit_type->delete();
 
         return [

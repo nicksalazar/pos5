@@ -113,6 +113,7 @@
                 'has_perception' => (bool)$this->has_perception,
                 'percentage_perception' => $this->percentage_perception,
                 'item_unit_types' => $this->item_unit_types,
+                'item_rate' => $this->item_rates,
                 'image' => $this->image,
                 'account_id' => $this->account_id,
                 'category_id' => $this->category_id,
