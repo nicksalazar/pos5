@@ -24,6 +24,10 @@ class RetentionsEC extends ModelTenant
         'status_id',
         'response_envio',
         'response_message_envio',
+        'response_verification',
+        'DateTimeAutorization',
+        'response_message_verification',
+        'verificated',
 
     ];
 }
