@@ -75,9 +75,9 @@ class RetentionsControllers extends Controller
     }
     private function loadXmlSigned($file)
     {
-        $this->xmlSigned = Storage::disk('tenant')->get('signed',$file);
 
-        return $this;
+        $this->xmlSigned = Storage::disk('tenant')->get('signed/'.$file);
+
     }
 
     private function prepareDocument($id){
@@ -190,7 +190,7 @@ class RetentionsControllers extends Controller
             if($estado == 'RECHAZADA'){
 
                 $estateId =  self::RECHAZADA;
-                $responseAuth = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes'];
+                $responseAuth = json_encode($authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']);
                 $mensajeAuth = 'DOCUMENTO RECHAZADO POR EL SRI';
 
             }elseif($estado == 'AUTORIZADO'){
@@ -217,16 +217,18 @@ class RetentionsControllers extends Controller
 
             }elseif($estado == 'NO AUTORIZADO'){
 
-                $mensajeAuth = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes'];
-                $responseAuth = 'DOCUEMNTO NO AUTORIZADO POR EL SRI';
+                Log::info('NO AUTH RESPONSE: '.$authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']);
+
+                $responseAuth = json_encode($authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']);
+                $mensajeAuth = 'DOCUMENTO NO AUTORIZADO POR EL SRI';
                 $estateId = self::NOAUTORIZADA;
                 $fechaAuth = null;
 
 
             }elseif($estado == 'EN PROCESO'){
 
-                $mensajeAuth = $authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes'];
-                $responseAuth = 'DOCUEMNTO EN PROCESO DE VALIDACIÓN';
+                $responseAuth = json_encode($authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']);
+                $mensajeAuth = 'DOCUEMNTO EN PROCESO DE VALIDACIÓN';
                 $estateId = self::ENPROCESO;
                 $fechaAuth = null;
 
@@ -630,7 +632,6 @@ class RetentionsControllers extends Controller
         $sender = new BillSender();
         $this->loadXmlSigned($file);
         $res =  $sender->send($this->urlSri, $this->xmlSigned);
-        Log::alert('sendXmlSigned: '.json_encode($res));
         $Retencion = RetentionsEC::find($id);
 
         if($res) {
