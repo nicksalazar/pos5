@@ -224,7 +224,6 @@ class RetentionsControllers extends Controller
                 $estateId = self::NOAUTORIZADA;
                 $fechaAuth = null;
 
-
             }elseif($estado == 'EN PROCESO'){
 
                 $responseAuth = json_encode($authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']);
