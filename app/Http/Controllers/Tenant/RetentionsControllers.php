@@ -12,6 +12,7 @@ use App\CoreFacturalo\WS\Services\SunatEndpoints;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Mail\Tenant\DocumentEmail;
+use App\Models\Tenant\Catalogs\RetentionType;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Establishment;
@@ -83,7 +84,7 @@ class RetentionsControllers extends Controller
     private function prepareDocument($id){
 
         $purchaseL = Purchase::findOrFail($id);
-        $retencionL = RetentionsEC::where('idDocumento', $id)->get();
+        $retencionL = RetentionsEC::where('idDocumento', $id)->where('status_id',['01'])->get();
         if($retencionL->count() > 0 ){
             $establecimiento = Establishment::findOrFail($purchaseL->establishment_id);
             $retencioneDetallesL = RetentionsDetailEC::where('idRetencion',$retencionL[0]->idRetencion)->get();
@@ -131,8 +132,9 @@ class RetentionsControllers extends Controller
                     'valorIva12' => ($purchaseL->total_igv) ? $purchaseL->total_igv:0,
 
                     'retenciones' => $retencioneDetallesL->transform(function($row, $key) {
+                        $retentionDescrip = RetentionType::where('code',$row->codRetencion)->get();
                         return [
-                            'codigo' => $key + 1,
+                            'codigo' => intval($retentionDescrip[0]->type_id),
                             'codigoRetencion' => $row->codRetencion,
                             'baseImponible' => $row->baseRet,
                             'porcentajeRetener' => $row->porcentajeRet,
@@ -153,7 +155,10 @@ class RetentionsControllers extends Controller
             }
 
             $retencionL[0]->update([
-                'claveAcceso'=>$this->clave_acceso
+
+                'claveAcceso'=>$this->clave_acceso,
+                'status_id' => Self::GENERADA
+
             ]);
             return $retencion;
         }else{
@@ -217,7 +222,19 @@ class RetentionsControllers extends Controller
 
             }elseif($estado == 'NO AUTORIZADO'){
 
-                Log::info('NO AUTH RESPONSE: '.$authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']);
+                $valor = array_filter($authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes'], function($B,$k){
+
+                    return array_filter($B,function ($key, $value) use($k){
+                        //$authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes'][$k][$value] = preg_replace("/[\r\n|\n|\r]+/", '', $key);
+                        return preg_replace("/[\r\n|\n|\r]+/", '', $key);
+                        //Log::info('A: '.$authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes'][$k][$value]);
+
+                    },ARRAY_FILTER_USE_BOTH);
+
+                },ARRAY_FILTER_USE_BOTH);
+
+                //Log::info('data ejemplo: '.json_encode($valor));
+                //Log::info('DATOS DESPUES : ', ($authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']));
 
                 $responseAuth = json_encode($authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']);
                 $mensajeAuth = 'DOCUMENTO NO AUTORIZADO POR EL SRI';
@@ -286,7 +303,7 @@ class RetentionsControllers extends Controller
         $format_pdf = ($format != null) ? $format : $format_pdf;
         $this->type = ($type != null) ? $type : $this->type;
 
-        $this->changePaymentSRI();
+        //$this->changePaymentSRI();
 
         // dd($this->document);
         $base_pdf_template = ($type != null && $type == 'retention') ? 'default': Establishment::find($this->document->establishment_id)->template_pdf;
@@ -316,6 +333,7 @@ class RetentionsControllers extends Controller
             $pdf_margin_left = 14;
         }
 
+        Log::info('InfoRet: '.json_encode($this->document));
         $html = $template->pdf($base_pdf_template, $this->type, $this->company, $this->document, $format_pdf);
 
         if (($format_pdf === 'ticket') OR

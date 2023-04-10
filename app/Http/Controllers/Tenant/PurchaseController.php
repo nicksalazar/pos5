@@ -405,6 +405,7 @@ use Illuminate\Support\Facades\Log;
                         $ret->codSustento = $doc->document_type_id;
                         $ret->codDocSustento = $doc->codSustento;
                         $ret->numAuthSustento = $doc->auth_number;
+                        $ret->status_id = '01';
                         $ret->save();
 
                         foreach($data['ret'] as $retDet){
@@ -707,6 +708,7 @@ use Illuminate\Support\Facades\Log;
                 if(count($request['ret']) > 0){
 
                     $retenciones = RetentionsEC::where('idDocumento',$doc->id)->get();
+
                     foreach($retenciones as $ret){
                         $ret->delete();
                     }
@@ -736,6 +738,7 @@ use Illuminate\Support\Facades\Log;
                     $ret->codSustento = $doc->document_type_id;
                     $ret->codDocSustento = $doc->codSustento;
                     $ret->numAuthSustento = $doc->auth_number;
+                    $ret->status_id = '01';
                     $ret->save();
 
                     foreach($request['ret'] as $retDet){

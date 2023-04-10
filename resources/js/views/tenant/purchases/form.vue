@@ -1467,7 +1467,7 @@ export default {
                                 const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
                                 if(data.tipo == 'IVA' && data.desciption == retIvaDesc.description){
                                     data.valor += _.round(parseFloat(row.iva_retention),3)
-                                    dato.base += row.total_taxes
+                                    dato.base += row.total_taxes;
                                     nuevaRet = false
                                 }
                             }
@@ -1475,7 +1475,7 @@ export default {
                                 const retIncomeDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
                                 if(data.tipo == 'RENTA' && data.desciption == retIncomeDesc.description){
                                     data.valor += _.round(parseFloat(row.income_retention),3)
-                                    dato.base += row.unit_value
+                                    dato.base += (row.unit_value * row.quantity);
                                     nuevaRet = false
                                 }
                             }
@@ -1503,7 +1503,7 @@ export default {
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
-                                retencionLocal.base  = row.unit_value
+                                retencionLocal.base  = row.unit_value * row.quantity
                                 this.form.ret.push(retencionLocal)
                             }
                         }
@@ -1529,7 +1529,7 @@ export default {
                             retencionLocal.desciption  = retIvaDesc.description
                             retencionLocal.code  = retIvaDesc.code
                             retencionLocal.porcentajeRet  = retIvaDesc.percentage
-                            retencionLocal.base  = row.unit_value
+                            retencionLocal.base  = row.unit_value * row.quantity
                             this.form.ret.push(retencionLocal)
                         }
 

@@ -24,7 +24,8 @@ class BillSender extends BaseSunat
         $response = null;
         $servicio = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl"; //url del servicio
         $client = new nusoap_client("$filename", 'wsdl');
-        $client->soap_defencoding = 'UTF-8';
+        $client->soap_defencoding = 'utf-8';
+        $client->decode_utf8 = false;
         $params = array();
         Log::alert('URL a ebviar: '.$filename);
         try {

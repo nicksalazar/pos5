@@ -9,6 +9,7 @@ class RetentionsEC extends ModelTenant
 {
     protected $table = 'retenciones_join';
     protected $fillable = [
+
         'id',
         'idRetencion',
         'idDocumento',

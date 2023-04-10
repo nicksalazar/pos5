@@ -86,7 +86,7 @@ class PurchaseCollection extends ResourceCollection
                 'retenciones' => $retencoinesArray->each(function($row, $key) {
                     $catType = RetentionType::where('code',$row->code)->get();
                     $tipo = 'RENTA';
-                    if($catType->type_id == '01'){
+                    if($catType->type_id == '02'){
                         $tipo = 'IVA';
                     }
                     return [
