@@ -569,7 +569,7 @@ if ($hostname) {
 
             // Route::get('documents/send/{document}', 'Tenant\DocumentController@send');
             // Route::get('documents/consult_cdr/{document}', 'Tenant\DocumentController@consultCdr');
-            // Route::post('documents/email', 'Tenant\DocumentController@email');
+            Route::post('purchases/retention/email', 'Tenant\RetentionsControllers@sendEmail');
             // Route::get('documents/note/{document}', 'Tenant\NoteController@create');
             Route::get('purchases/item/tables', 'Tenant\PurchaseController@item_tables');
             // Route::get('documents/table/{table}', 'Tenant\DocumentController@table');

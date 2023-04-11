@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Tenant;
 
 use App\Models\Tenant\Catalogs\RetentionType;
+use App\Models\Tenant\RetencionesStateTypes;
 use App\Models\Tenant\RetentionsDetailEC;
 use App\Models\Tenant\RetentionsEC;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -35,10 +36,21 @@ class PurchaseCollection extends ResourceCollection
             }
 
             $retencionesID = RetentionsEC::where('idDocumento',$this->id)->get();
+            $idRetentionsState = '';
+            $nameRetentionsState = '';
+            $fileRetentions = '';
+            $idRetentions = '';
             $retencoinesArray = [];
+
             if($retencionesID){
                 //Log::info(json_encode($retencionesID));
                 $retencoinesArray =  RetentionsDetailEC::where('idRetencion',$retencionesID->idRetencion)->get();
+                $idRetentionsState = ( $retencionesID->count() > 0 )? $retencionesID[0]->status_id:'';
+                $estados = RetencionesStateTypes::where('idEstado',$retencionesID[0]->status_id)->get();
+                $nameRetentionsState = $estados;
+                $fileRetentions = $retencionesID[0]->claveAcceso;
+                $idRetentions = $retencionesID[0]->id;
+
             }
 
             return [
@@ -96,6 +108,11 @@ class PurchaseCollection extends ResourceCollection
                         'value' => round($row->valorRet,2)
                     ];
                 }),
+                'retenciones_state_id' => $idRetentionsState,
+                'retenciones_id' => $idRetentions,
+                'retenciones_state_name' => $nameRetentionsState,
+                'retenciones_unique_name' => $fileRetentions,
+                'suplier_email' => $row->supplier->email,
                 'print_a4' => url('')."/purchases/print/{$row->external_id}/a4",
             ];
         });

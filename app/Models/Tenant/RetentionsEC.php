@@ -29,6 +29,9 @@ class RetentionsEC extends ModelTenant
         'DateTimeAutorization',
         'response_message_verification',
         'verificated',
+        'external_id',
+        'filename',
+        'barCode',
 
     ];
 }
