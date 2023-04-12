@@ -549,10 +549,12 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
         $retencionesID = RetentionsEC::where('idDocumento',$this->id)->get();
         $retencoinesArray = [];
         $idRetentionsState = '';
+
         $nameRetentionsState = 'N/A';
         $fileRetentions = '';
         $idRetentions = null;
-
+        $descriptionRetentionsState = null;
+        $descriptionRetentionsStateDet = null;
         if($retencionesID && $retencionesID->count() > 0){
             //Log::info(json_encode($retencionesID));
             $retencoinesArray =  RetentionsDetailEC::where('idRetencion',$retencionesID[0]->idRetencion)->get();
@@ -561,6 +563,8 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
             $nameRetentionsState = $estados[0]->name;
             $fileRetentions = $retencionesID[0]->claveAcceso;
             $idRetentions = $retencionesID[0]->id;
+            $descriptionRetentionsState = ($retencionesID[0]->response_verification) ? $retencionesID[0]->response_verification : $retencionesID[0]->response_envio ;
+            $descriptionRetentionsStateDet = ($retencionesID[0]->response_message_verification) ? $retencionesID[0]->response_message_verification: $retencionesID[0]->response_message_envio;
         }
         $retMejora = null;
 
@@ -644,6 +648,8 @@ protected $with = ['user', 'soap_type', 'state_type', 'document_type', 'currency
             'retenciones_id' => $idRetentions,
             'retenciones_state_name' => $nameRetentionsState,
             'retenciones_unique_name' => $fileRetentions,
+            'retenciones_state_description' => $descriptionRetentionsState,
+            'retenciones_state_description_det' => $descriptionRetentionsStateDet,
             'print_a4'                       => url('')."/purchases/print/{$this->external_id}/a4",
             'filename'                         => $this->filename,
         ];

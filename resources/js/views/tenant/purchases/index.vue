@@ -92,7 +92,17 @@
                             </el-popover>
 
                         </td>
-                        <td>{{row.retenciones_state_name}} </td>
+                        <td>{{row.retenciones_state_name}} <br/>
+                            <el-popover v-if = "row.retenciones_state_id != '05' && row.retenciones_state_description"
+                                placement="right"
+                                width="300"
+                                :title="row.retenciones_state_description"
+                                trigger="hover"
+                                :content="row.retenciones_state_description_det"
+                                >
+                                <el-button slot="reference"> <i class="fa fa-info"></i></el-button>
+                            </el-popover>
+                        </td>
 
                         <td class="text-right">
                             <button
