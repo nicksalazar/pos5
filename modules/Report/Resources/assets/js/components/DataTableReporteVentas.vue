@@ -217,8 +217,28 @@
 
                 </div>
             </div>
+        </div>
+        
+        <div>
+            <div>
+                <DxChart ref="chart">
+                    <DxTooltip :enabled="true" />
+                    <DxAdaptiveLayout :width="450" />
+                    <DxSize :height="200" />
+                    <DxCommonSeriesSettings type="bar" />
+                </DxChart>
+            </div>
+            <div>
+                <DxPivotGrid id="pivotgrid" ref="grid" :data-source="dataSource" :allow-sorting-by-summary="true"
+                    :allow-filtering="true" :show-borders="true" :show-column-grand-totals="false"
+                    :show-row-grand-totals="false" :show-row-totals="false" :show-column-totals="false">
+                    <DxFieldChooser :enabled="true" :height="800" />
+                </DxPivotGrid>
+            </div>
 
+        </div>
 
+        <div>
             <div class="col-md-12">
                 <div class="table-responsive">
                     <table class="table">
@@ -305,21 +325,6 @@
             <div>
 
             </div>
-        </div>
-        <div>
-            <DxChart ref="chart">
-                <DxTooltip :enabled="true" />
-                <DxAdaptiveLayout :width="450" />
-                <DxSize :height="200" />
-                <DxCommonSeriesSettings type="bar" />
-            </DxChart>
-        </div>
-        <div>
-            <DxPivotGrid id="pivotgrid" ref="grid" :data-source="dataSource" :allow-sorting-by-summary="true"
-                :allow-filtering="true" :show-borders="true" :show-column-grand-totals="false"
-                :show-row-grand-totals="false" :show-row-totals="false" :show-column-totals="false">
-                <DxFieldChooser :enabled="true" :height="800" />
-            </DxPivotGrid>
         </div>
     </div>
 </template>
