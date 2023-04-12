@@ -292,13 +292,13 @@ class ItemController extends Controller
 
     public function store(ItemRequest $request) {
 
-
         $id = $request->input('id');
         if (!$request->barcode) {
             if ($request->internal_id) {
                 $request->merge(['barcode' => $request->internal_id]);
             }
         }
+
         $item = Item::firstOrNew(['id' => $id]);
         $item->item_type_id = '01';
         $item->amount_plastic_bag_taxes = Configuration::firstOrFail()->amount_plastic_bag_taxes;
