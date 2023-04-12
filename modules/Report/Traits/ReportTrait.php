@@ -55,7 +55,7 @@ trait ReportTrait
         $guides = FunctionController::InArray($request, 'guides');
         $web_platform = FunctionController::InArray($request, 'web_platform_id',0);
 
-
+        $time_of_issue = FunctionController::InArray($request, 'time_of_issue');
 
 
 
@@ -89,6 +89,7 @@ trait ReportTrait
 
         $records = $this->data($document_type_id,
             $establishment_id,
+            $time_of_issue,
             $d_start,
             $d_end,
             $person_id,
@@ -122,6 +123,7 @@ trait ReportTrait
     private function data(
         $document_type_id,
         $establishment_id,
+        $time_of_issue,
         $date_start,
         $date_end,
         $person_id,
