@@ -1,6 +1,6 @@
 @php
 
-    $document_number = $document->idRetencion;
+    $document_number = substr($document->idRetencion,1);
     $str2 = explode("|", $document->purchase->supplier->email);
     $payments = $document->purchase_payments;
     $establishment = $document->establecimiento;

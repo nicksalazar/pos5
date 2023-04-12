@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant;
 
+use App\CoreFacturalo\Helpers\Functions\GeneralPdfHelper;
 use App\CoreFacturalo\Helpers\QrCode\QrCodeGenerate;
 use App\CoreFacturalo\Helpers\Storage\StorageDocument;
 use App\CoreFacturalo\Helpers\Xml\XmlFormat;
@@ -168,9 +169,10 @@ class RetentionsControllers extends Controller
                 'filename'=>$this->clave_acceso,
                 'external_id'=>$this->clave_acceso,
                 'status_id' => Self::GENERADA,
-                ''
+                'barCode' => $qr,
 
             ]);
+
             return $retencion;
         }else{
             return false;
@@ -295,13 +297,32 @@ class RetentionsControllers extends Controller
 
     }
 
-    private function getQr()
+    private function getQr($clave)
     {
 
         $qrCode = new QrCodeGenerate();
         //JOINSOFTWARE
-        $barcode = $qrCode->generarCodigoBarras($this->document->claveAcceso);
+        $barcode = $qrCode->generarCodigoBarras($clave);
         return $barcode;
+    }
+
+    public function toPrint($id, $format)
+    {
+        $retencion = RetentionsEC::find($id);
+        $external_id = $retencion->external_id;
+
+        if (!$retencion) throw new Exception("El código {$external_id} es inválido, no se encontro el pedido relacionado");
+
+        //$this->reloadPDF($purchase, $format, $purchase->filename);
+
+        $content = Storage::disk('tenant')->get('pdf/'.$retencion->claveAcceso.'.pdf');
+        $temp = tempnam(sys_get_temp_dir(), 'retention');
+
+        file_put_contents($temp, $content);
+        //file_put_contents($temp, $this->getStorage($retencion->filename, 'purchase'));
+        //Log::info('ruta del archivo : ', $ruta);
+        return response()->file($temp, $this->generalPdfResponseFileHeaders($retencion->filename));
+        //return response()->file('pdf/'.$retencion->claveAcceso.'.pdf', $this->generalPdfResponseFileHeaders($retencion->filename.'.pdf'));
     }
 
     private function createPdf($document = null, $type = null, $format = null, $output = 'pdf') {

@@ -6,11 +6,17 @@
 
         <div class="row">
 
-            <div class="col-lg-12 col-md-12 col-sm-12 text-center font-weight-bold mt-3">
+            <div class="col-lg-6 col-md-6 col-sm-6 text-center font-weight-bold mt-3">
                 <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickPrint('a4')">
                     <i class="fa fa-file-alt"></i>
                 </button>
-                <p>Imprimir A4</p>
+                <p>Compra A4</p>
+            </div>
+            <div v-if="retentionId" class="col-lg-6 col-md-6 col-sm-6 text-center font-weight-bold mt-3">
+                <button type="button" class="btn btn-lg btn-info waves-effect waves-light" @click="clickPrintRet('a4')">
+                    <i class="fa fa-file-alt"></i>
+                </button>
+                <p>Retencion A4</p>
             </div>
 
             <div class="col-md-12" v-if="retentionId">
@@ -60,6 +66,9 @@
         methods: {
             clickPrint(format){
                 window.open(`/${this.resource}/print/${this.form.external_id}/${format}`, '_blank');
+            },
+            clickPrintRet(format){
+                window.open(`/retentions/print/${this.retentionId}/${format}`, '_blank');
             },
             initForm() {
                 this.errors = {}

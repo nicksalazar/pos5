@@ -146,14 +146,7 @@
                 <h2>{{ $document->currency_type->symbol }}{{ $document->total }}</h2>
                 @endif
             </div>
-            <!--
-            <div class="fdiv">
-                <h6 id="value2">Consulta el comprobante detallado en línea:</h6>
-                <button class="btn1">VER DOCUMENTO</button>
-            </div>
-            -->
-            <!--<button class="btn2">Descargar XML</button>-->
-            <p class="btn2">Adjunto encontrará los archivos pdf y xml de su factura</p>
+            <p class="btn2">Adjunto encontrará los archivos pdf y xml de su documento electronico</p>
             <div class="tdiv"></div>
         </div>
     </body>

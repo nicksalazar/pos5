@@ -22,7 +22,7 @@ if ($hostname) {
         Route::get('sale-notes/print/{external_id}/{format?}', 'Tenant\SaleNoteController@toPrint');
         Route::get('sale-notes/ticket/{external_id}/{format?}', 'Tenant\SaleNoteController@toTicket');
         Route::get('purchases/print/{external_id}/{format?}', 'Tenant\PurchaseController@toPrint');
-
+        Route::get('retentions/print/{external_id}/{format?}', 'Tenant\RetentionsControllers@toPrint');
         Route::get('quotations/print/{external_id}/{format?}', 'Tenant\QuotationController@toPrint');
 
         Route::middleware(['auth', 'redirect.module', 'locked.tenant'])->group(function () {

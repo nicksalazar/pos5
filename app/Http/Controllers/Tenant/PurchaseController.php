@@ -674,16 +674,9 @@ use Illuminate\Support\Facades\Log;
             if (!$purchase) throw new Exception("El código {$external_id} es inválido, no se encontro el pedido relacionado");
 
             $this->reloadPDF($purchase, $format, $purchase->filename);
+            
             $temp = tempnam(sys_get_temp_dir(), 'purchase');
-
             file_put_contents($temp, $this->getStorage($purchase->filename, 'purchase'));
-
-            /*
-            $headers = [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="'.$purchase->filename.'"'
-            ];
-            */
 
             return response()->file($temp, $this->generalPdfResponseFileHeaders($purchase->filename));
         }
