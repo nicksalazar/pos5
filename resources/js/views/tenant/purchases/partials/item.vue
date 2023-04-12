@@ -1135,12 +1135,13 @@ export default {
 
         },
         changeRetentionTypeIva(event) {
+
             const val = _.find(this.retention_types_iva, {'id': event});
             const item = {..._.find(this.items, {'id': this.form.item_id})};
-            console.log("retention_types_iva: ",this.retention_types_iva)
+            //console.log("retention_types_iva: ",val)
 
 
-            if (val.type_id == '02') {
+            if (val && val.type_id == '02') {
 
                 if(item.has_igv){
                     if (item.sale_affectation_igv_type_id == '10') {
@@ -1173,11 +1174,13 @@ export default {
         },
         changeRetentionTypeIncome(event) {
 
+            //console.log("changeRetentionTypeIncome1 : ",event)
+            //console.log("changeRetentionTypeIncome2 : ",this.retention_types_income)
             const val = _.find(this.retention_types_income, {'id': event});
             const item = {..._.find(this.items, {'id': this.form.item_id})};
-            console.log("retenciones typo: ",this.retention_types_income)
+            //console.log("changeRetentionTypeIncome: ",this.val)
 
-            if (val.type_id == '01') {
+            if (val && val.type_id == '01') {
                 if(item.has_igv){
 
                     if (item.sale_affectation_igv_type_id == '10') {

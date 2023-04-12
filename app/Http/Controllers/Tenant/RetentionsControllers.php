@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Tenant;
 
+use App\CoreFacturalo\Helpers\Functions\GeneralPdfHelper;
+use App\CoreFacturalo\Helpers\QrCode\QrCodeGenerate;
 use App\CoreFacturalo\Helpers\Storage\StorageDocument;
 use App\CoreFacturalo\Helpers\Xml\XmlFormat;
 use App\CoreFacturalo\SRI\FirmarSri;
@@ -12,6 +14,7 @@ use App\CoreFacturalo\WS\Services\SunatEndpoints;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Mail\Tenant\DocumentEmail;
+use App\Models\Tenant\Catalogs\RetentionType;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Establishment;
@@ -22,13 +25,17 @@ use App\Models\Tenant\RetentionsDetailEC;
 use App\Models\Tenant\RetentionsEC;
 use App\Models\Tenant\SriFormasPagos;
 use Exception;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Modules\Item\Models\Category;
 use Mpdf\Config\ConfigVariables;
 use Mpdf\Config\FontVariables;
 use Mpdf\HTMLParserMode;
 use Mpdf\Mpdf;
-
+use Swift_Mailer;
+use Swift_SmtpTransport;
 
 class RetentionsControllers extends Controller
 {
@@ -61,6 +68,7 @@ class RetentionsControllers extends Controller
     protected $actions;
     protected $document;
     protected $doc_type;
+    protected $email;
 
     public function __construct()
     {
@@ -73,6 +81,7 @@ class RetentionsControllers extends Controller
         $this->type = 'retentionEC';
 
     }
+
     private function loadXmlSigned($file)
     {
 
@@ -83,7 +92,7 @@ class RetentionsControllers extends Controller
     private function prepareDocument($id){
 
         $purchaseL = Purchase::findOrFail($id);
-        $retencionL = RetentionsEC::where('idDocumento', $id)->get();
+        $retencionL = RetentionsEC::where('idDocumento', $id)->where('status_id',['01'])->get();
         if($retencionL->count() > 0 ){
             $establecimiento = Establishment::findOrFail($purchaseL->establishment_id);
             $retencioneDetallesL = RetentionsDetailEC::where('idRetencion',$retencionL[0]->idRetencion)->get();
@@ -131,9 +140,10 @@ class RetentionsControllers extends Controller
                     'valorIva12' => ($purchaseL->total_igv) ? $purchaseL->total_igv:0,
 
                     'retenciones' => $retencioneDetallesL->transform(function($row, $key) {
+                        $retentionDescrip = RetentionType::where('code',$row->codRetencion)->get();
                         return [
-                            'codigo' => $key + 1,
-                            'codigoRetencion' => $row->codRetencion,
+                            'codigo' => intval($retentionDescrip[0]->type_id),
+                            'codigoRetencion' => ($retentionDescrip[0]->code2)? $retentionDescrip[0]->code2 : $row->codRetencion,
                             'baseImponible' => $row->baseRet,
                             'porcentajeRetener' => $row->porcentajeRet,
                             'valorRetenido' => $row->valorRet,
@@ -151,10 +161,18 @@ class RetentionsControllers extends Controller
 
                 ];
             }
+            $qr = $this->getQr($this->clave_acceso);
 
             $retencionL[0]->update([
-                'claveAcceso'=>$this->clave_acceso
+
+                'claveAcceso'=>$this->clave_acceso,
+                'filename'=>$this->clave_acceso,
+                'external_id'=>$this->clave_acceso,
+                'status_id' => Self::GENERADA,
+                'barCode' => $qr,
+
             ]);
+
             return $retencion;
         }else{
             return false;
@@ -211,19 +229,24 @@ class RetentionsControllers extends Controller
                 $this->actions['format_pdf'] = 'blank';
 
                 $this->createPdf($retencion, $tipodoc, 'a4');
-                $temp = tempnam(sys_get_temp_dir(), 'pdf');
-                file_put_contents($temp, $this->getStorage($retencion->claveAcceso, 'pdf'));
-                $this->sendEmail2();
+
+                $this->sendEmail2($id);
 
             }elseif($estado == 'NO AUTORIZADO'){
 
-                Log::info('NO AUTH RESPONSE: '.$authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']);
+                $valor = array_filter($authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes'], function($B,$k){
+
+                    return array_filter($B,function ($key, $value) use($k){
+                        return preg_replace("/[\r\n|\n|\r]+/", '', $key);
+
+                    },ARRAY_FILTER_USE_BOTH);
+
+                },ARRAY_FILTER_USE_BOTH);
 
                 $responseAuth = json_encode($authSRI['RespuestaAutorizacionComprobante']['autorizaciones']['autorizacion']['mensajes']);
                 $mensajeAuth = 'DOCUMENTO NO AUTORIZADO POR EL SRI';
                 $estateId = self::NOAUTORIZADA;
                 $fechaAuth = null;
-
 
             }elseif($estado == 'EN PROCESO'){
 
@@ -253,13 +276,14 @@ class RetentionsControllers extends Controller
 
             }
 
+            $retencion = RetentionsEC::find($id);
             $retencion->update([
+
                 'status_id' => $estateId,
                 'response_verification' => $mensajeAuth,
                 'DateTimeAutorization' => $fechaAuth,
                 'response_message_verification' => $responseAuth,
                 'verificated' => 1,
-
             ]);
 
         }else{
@@ -273,9 +297,35 @@ class RetentionsControllers extends Controller
 
     }
 
+    private function getQr($clave)
+    {
+
+        $qrCode = new QrCodeGenerate();
+        //JOINSOFTWARE
+        $barcode = $qrCode->generarCodigoBarras($clave);
+        return $barcode;
+    }
+
+    public function toPrint($id, $format)
+    {
+        $retencion = RetentionsEC::find($id);
+        $external_id = $retencion->external_id;
+
+        if (!$retencion) throw new Exception("El código {$external_id} es inválido, no se encontro el pedido relacionado");
+
+        //$this->reloadPDF($purchase, $format, $purchase->filename);
+
+        $content = Storage::disk('tenant')->get('pdf/'.$retencion->claveAcceso.'.pdf');
+        $temp = tempnam(sys_get_temp_dir(), 'retention');
+
+        file_put_contents($temp, $content);
+        //file_put_contents($temp, $this->getStorage($retencion->filename, 'purchase'));
+        //Log::info('ruta del archivo : ', $ruta);
+        return response()->file($temp, $this->generalPdfResponseFileHeaders($retencion->filename));
+        //return response()->file('pdf/'.$retencion->claveAcceso.'.pdf', $this->generalPdfResponseFileHeaders($retencion->filename.'.pdf'));
+    }
+
     private function createPdf($document = null, $type = null, $format = null, $output = 'pdf') {
-
-
 
         ini_set("pcre.backtrack_limit", "5000000");
         $template = new Template();
@@ -283,13 +333,10 @@ class RetentionsControllers extends Controller
 
         $format_pdf = $this->actions['format_pdf'] ?? null;
 
-        $this->document = ($document != null) ? $document : $this->document;
+        $documentoEnviar = ($document != null) ? $document : $this->document;
         $format_pdf = ($format != null) ? $format : $format_pdf;
         $this->type = ($type != null) ? $type : $this->type;
 
-        $this->changePaymentSRI();
-
-        // dd($this->document);
         $base_pdf_template = ($type != null && $type == 'retention') ? 'default': Establishment::find($this->document->establishment_id)->template_pdf;
 
         if (($format_pdf === 'ticket') OR
@@ -304,20 +351,25 @@ class RetentionsControllers extends Controller
         $pdf_margin_bottom = 15;
         $pdf_margin_left = 15;
 
-        if (in_array($base_pdf_template, ['full_height', 'default3_new','rounded'])) {
-            $pdf_margin_top = 5;
-            $pdf_margin_right = 5;
-            $pdf_margin_bottom = 5;
-            $pdf_margin_left = 5;
-        }
-        if ($base_pdf_template === 'blank' && in_array($this->document->document_type_id, ['09'])) {
-            $pdf_margin_top = 15;
-            $pdf_margin_right = 5;
-            $pdf_margin_bottom = 15;
-            $pdf_margin_left = 14;
-        }
+        $purchase = Purchase::find($documentoEnviar->idDocumento);
+        $detalles = RetentionsDetailEC::where('idRetencion',$documentoEnviar->idRetencion)->get();
+        $establecimiento = Establishment::find($purchase->establishment_id);
 
-        $html = $template->pdf($base_pdf_template, $this->type, $this->company, $this->document, $format_pdf);
+        $detalles->transform(function($row){
+
+            $code = RetentionType::where('code',$row->codRetencion)->get();
+            $row['code'] = ( $code->count() > 0 && $code[0]->type_id == '01') ? 'RENTA':'IVA';
+            return $row;
+
+        });
+
+        $documentoEnviar->purchase = $purchase;
+        $documentoEnviar->detalles = $detalles;
+        $documentoEnviar->establecimiento = $establecimiento;
+
+        $this->email = $purchase->supplier->email;
+
+        $html = $template->pdf($base_pdf_template, $this->type, $this->company, $documentoEnviar, $format_pdf);
 
         if (($format_pdf === 'ticket') OR
             ($format_pdf === 'ticket_58') OR
@@ -490,7 +542,7 @@ class RetentionsControllers extends Controller
                 $pdf_margin_top = 93.7;
                 $pdf_margin_bottom = 74;
             }
-            if ($base_pdf_template === 'blank' && in_array($this->document->document_type_id, ['09'])) {
+            if ($base_pdf_template === 'blank' && in_array($documentoEnviar->document_type_id, ['09'])) {
                 $pdf_margin_top = 110;
                 $pdf_margin_bottom = 125;
             }
@@ -543,66 +595,21 @@ class RetentionsControllers extends Controller
 
         $stylesheet = file_get_contents($path_css);
 
-
-        // if (($format_pdf != 'ticket') AND ($format_pdf != 'ticket_58') AND ($format_pdf != 'ticket_50')) {
-            // dd($base_pdf_template);// = config(['tenant.pdf_template'=> $configuration]);
-            if(config('tenant.pdf_template_footer')) {
-                $html_footer = '';
-                if (($format_pdf != 'ticket') AND ($format_pdf != 'ticket_58') AND ($format_pdf != 'ticket_50')) {
-                    $html_footer = $template->pdfFooter($base_pdf_template, in_array($this->document->document_type_id, ['09']) ? null : $this->document);
-                    $html_footer_legend = "";
-                }
-                // dd($this->configuration->legend_footer && in_array($this->document->document_type_id, ['01', '03']));
-                // se quiere visuzalizar ahora la legenda amazona en todos los formatos
-                $html_footer_legend = '';
-                if($this->configuration->legend_footer && in_array($this->document->document_type_id, ['01', '03'])){
-                    $html_footer_legend = $template->pdfFooterLegend($base_pdf_template, $document);
-                }
-
-                $pdf->SetHTMLFooter($html_footer.$html_footer_legend);
-
+        if(config('tenant.pdf_template_footer')) {
+            $html_footer = '';
+            if (($format_pdf != 'ticket') AND ($format_pdf != 'ticket_58') AND ($format_pdf != 'ticket_50')) {
+                $html_footer = $template->pdfFooter($base_pdf_template, in_array($documentoEnviar->document_type_id, ['09']) ? null : $documentoEnviar);
+                $html_footer_legend = "";
             }
-        //            $html_footer = $template->pdfFooter();
-        //            $pdf->SetHTMLFooter($html_footer);
-        // }
-
-        if ($base_pdf_template === 'brand') {
-
-            $html_header = $template->pdfHeader($base_pdf_template, $this->company, in_array($this->document->document_type_id, ['09']) ? null : $this->document);
-            $pdf->SetHTMLHeader($html_header);
-
-            if (($format_pdf === 'ticket') || ($format_pdf === 'ticket_58') || ($format_pdf === 'ticket_50') || ($format_pdf === 'a5')) {
-                $pdf->SetHTMLHeader("");
-                $pdf->SetHTMLFooter("");
+            // dd($this->configuration->legend_footer && in_array($this->document->document_type_id, ['01', '03']));
+            // se quiere visuzalizar ahora la legenda amazona en todos los formatos
+            $html_footer_legend = '';
+            if($this->configuration->legend_footer && in_array($documentoEnviar->document_type_id, ['01', '03'])){
+                $html_footer_legend = $template->pdfFooterLegend($base_pdf_template, $document);
             }
-        }
 
-        if ($base_pdf_template === 'blank' && in_array($this->document->document_type_id, ['09'])) {
+            $pdf->SetHTMLFooter($html_footer.$html_footer_legend);
 
-            $html_header = $template->pdfHeader($base_pdf_template, $this->company, $this->document);
-            $pdf->SetHTMLHeader($html_header);
-
-            $html_footer_blank = $template->pdfFooterBlank($base_pdf_template, $this->document);
-            $pdf->SetHTMLFooter($html_footer_blank);
-        }
-
-        if ($base_pdf_template === 'default3_929' && in_array($this->document->document_type_id, ['03','01'])) {
-            // Solo boleta o factura #929
-            $html_header = $template->pdfHeader($base_pdf_template, $this->company, $this->document);
-            $pdf->SetHTMLHeader($html_header);
-            $html_footer = $template->pdfFooter($base_pdf_template, $this->document);
-            $pdf->SetHTMLFooter($html_footer);
-        }
-
-        if ($base_pdf_template === 'distpatch_pharmacy' && in_array($this->document->document_type_id, ['09'])) {
-            // Solo para guia #1192
-            $pdf->setAutoTopMargin = 'stretch'; //margen autommatico
-            $pdf->autoMarginPadding  = 0;
-            $pdf->setAutoBottomMargin = 'stretch';
-            $html_header = $template->pdfHeader($base_pdf_template, $this->company, $this->document);
-            $pdf->SetHTMLHeader($html_header);
-            $html_footer = $template->pdfFooterDispatch($base_pdf_template, $this->document);
-            $pdf->SetHTMLFooter($html_footer);
         }
 
         // para impresion automatica se requiere el resultado en html ya que es lo que se envia a las funciones de impresión
@@ -620,9 +627,10 @@ class RetentionsControllers extends Controller
             $pdf->WriteHTML($html, HTMLParserMode::HTML_BODY);
         }
 
-        // echo $html_header.$html.$html_footer; exit();
-        $this->uploadFile($pdf->output('', 'S'), 'pdf');
-        return $this;
+        //$this->uploadFile($pdf->output('', 'S'), 'pdf');
+        Storage::disk('tenant')->put('pdf/'.$documentoEnviar->claveAcceso.'.pdf',$pdf->output('', 'S'));
+
+        //return $this;
     }
 
     public function sendXmlSigned($id ,$file)
@@ -839,14 +847,50 @@ class RetentionsControllers extends Controller
 
     }
 
-    private function sendEmail2()
+    public function sendEmail( Request $request )
     {
 
         $company = $this->company;
-        $document = $this->document;
-        $email = ($this->document->customer) ? $this->document->customer->email : $this->document->supplier->email;
+        $document = RetentionsEC::find($request->id);
+        $purchase = Purchase::find($document->idDocumento);
+        $detalles = RetentionsDetailEC::where('idRetencion',$document->idRetencion)->get();
+        $establecimiento = Establishment::find($purchase->establishment_id);
+
+        $document->establishment = $establecimiento;
+        $document->purchase = $purchase;
+        $document->total_retention = $detalles->sum('valorRet');
+
+        $email = $request->email;
         $mailable =new DocumentEmail($company, $document);
-        $id =  $document->id;
+        $id =  $request->id;
+
+        Configuration::setConfigSmtpMail();
+
+        // Backup your default mailer
+        $backup = Mail::getSwiftMailer();
+        $transport =  new Swift_SmtpTransport(Config::get('mail.host'), Config::get('mail.port'), Config::get('mail.encryption'));
+        $transport->setUsername(Config::get('mail.username'));
+        $transport->setPassword(Config::get('mail.password'));
+        $mailer = new Swift_Mailer($transport);
+        Mail::setSwiftMailer($mailer);
+        Mail::to($email)->send($mailable);
+
+        //$model = __FILE__.";;".__LINE__;
+        //$sendIt = EmailController::SendMail($email, $mailable, $id, $model);
+
+        return [
+            'success' => true
+        ];
+    }
+
+    private function sendEmail2($id)
+    {
+
+        $company = $this->company;
+        $document = RetentionsEC::find($id);
+        $email = $this->email;
+        $mailable =new DocumentEmail($company, $document);
+        $id =  $id;
         $model = __FILE__.";;".__LINE__;
         $sendIt = EmailController::SendMail($email, $mailable, $id, $model);
 

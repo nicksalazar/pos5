@@ -23,6 +23,7 @@ use Maatwebsite\Excel\Excel;
 use Modules\Account\Models\Account;
 use App\Models\Tenant\ItemTag;
 use App\Models\Tenant\Catalogs\Tag;
+use App\Models\Tenant\Configuration;
 use Illuminate\Support\Facades\DB;
 use Modules\Finance\Helpers\UploadFileHelper;
 use Modules\Item\Models\Brand;
@@ -123,7 +124,9 @@ class ItemSetController extends Controller
 
             $item = Item::firstOrNew(['id' => $id]);
             $item->item_type_id = '01';
+
             $item->fill($request->all());
+            $item->amount_service_taxes = (Configuration::first())->amount_service_taxes;
 
             $temp_path = $request->input('temp_path');
             if($temp_path) {

@@ -1441,7 +1441,7 @@ export default {
                                 const retIncomeDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
                                 if(data.tipo == 'RENTA' && data.desciption == retIncomeDesc.description){
                                     data.valor += parseFloat(row.income_retention)
-                                    dato.base += row.unit_value
+                                    dato.base += row.unit_value * row.quantity
                                     nuevaRet = false
                                 }
                             }
@@ -1473,7 +1473,7 @@ export default {
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
-                                retencionLocal.base  = row.unit_value
+                                retencionLocal.base  = row.unit_value * row.quantity
                                 this.form.ret.push(retencionLocal)
                             }
                         }
@@ -1501,7 +1501,7 @@ export default {
                             retencionLocal.desciption  = retIvaDesc.description
                             retencionLocal.code  = retIvaDesc.code
                             retencionLocal.porcentajeRet  = retIvaDesc.percentage
-                            retencionLocal.base  = row.unit_value
+                            retencionLocal.base  = row.unit_value * row.quantity
                             this.form.ret.push(retencionLocal)
                         }
 

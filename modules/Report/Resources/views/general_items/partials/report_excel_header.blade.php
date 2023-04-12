@@ -53,7 +53,7 @@
 <th> TIPO DE IGV</th>
 <th> IGV</th>
 @if($type == 'sale')
-    <th> CARGOS ADICIONALES</th>
+    <th> CARGOS POR SERVICIO</th>
 @endif
 <th> TIPO DE ISC</th>
 <th> ISC</th>

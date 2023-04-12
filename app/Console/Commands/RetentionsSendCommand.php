@@ -43,7 +43,7 @@ class RetentionsSendCommand extends Command
         if (Configuration::firstOrFail()->cron) {
 
             $documents = RetentionsEC::whereNotNull('claveAcceso')
-                ->whereIn('status_id',['01','02'])
+                ->whereIn('status_id',['02'])
                 ->get();
 
             $this->info('ENVIANDO DOCUMENTOS AL SRI');
