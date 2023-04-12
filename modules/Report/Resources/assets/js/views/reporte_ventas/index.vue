@@ -182,7 +182,6 @@
             clickViewProducts(items = []) {
                 this.recordsItems = items;
                 this.showDialogProducts = true;
-                //console.log('asadssdasd', this.recordsItems)
             }
 
         }
