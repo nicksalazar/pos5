@@ -392,7 +392,6 @@ export default {
     data() {
         return {
             dataSource: {},
-            store: null,
             loading_submit: false,
             persons: [],
             all_persons: [],
