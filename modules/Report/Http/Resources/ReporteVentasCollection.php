@@ -68,7 +68,7 @@ class ReporteVentasCollection extends ResourceCollection
                 $payment_state = number_format($row->total - $total_paid, 2, '.', '');
                 $description=$row->state_type?$row->state_type->description:null;
                 $date_of_due=SaleNote::find($row->id);
-                $date_of_due=($date_of_due->count() > 0)?$date_of_due->due_date:null;
+                $date_of_due=($date_of_due && $date_of_due->count() > 0)?$date_of_due->due_date:null;
                 $type_description='NOTA DE VENTA';
                 //dd($row);
             }
