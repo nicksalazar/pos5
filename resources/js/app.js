@@ -97,6 +97,7 @@ Vue.component('tenant-guides-modal', require('./views/tenant/components/guides.v
 Vue.component('tenant-purchases-index', require('./views/tenant/purchases/index.vue'));
 Vue.component('tenant-purchases-form', require('./views/tenant/purchases/form.vue'));
 Vue.component('tenant-purchases-document-types', require('./views/tenant/purchases/doc_types.vue'));
+Vue.component('tenant-purchases-document-types-form', require('./views/tenant/purchases/form_doc_types.vue'));
 Vue.component('tenant-purchases-edit', require('./views/tenant/purchases/form_edit.vue'));
 Vue.component('tenant-transfer-reason-types-index', require('./views/tenant/transfer_reason_types/index.vue'));
 
@@ -184,6 +185,8 @@ Vue.component('tenant-reporte-ventas-index', require('../../modules/Report/Resou
 Vue.component('tenant-reporte-ventas-excel', require('../../modules/Report/Resources/assets/js/views/reporte_ventas/index.vue'));
 //Vue.component('tenant-reporte-ventas-pdf', require('../../modules/Report/Resources/assets/js/views/reporte_ventas/index.vue'));
 //Vue.component('tenant-reporte-ventas-pdf-simple', require('../../modules/Report/Resources/assets/js/views/reporte_ventas/index.vue'));
+/*PURCHASE QUOTATIONS REPORT */
+Vue.component('tenant-report-purchases-quotation', require('../../modules/Report/Resources/assets/js/views/purchases/quotation.vue'));
 
 /** Reporte de guias */
 Vue.component('tenant-report-guide-index', require('../../modules/Report/Resources/assets/js/views/guide/index.vue'));
@@ -202,6 +205,7 @@ Vue.component('tenant-report-commissions-index', require('../../modules/Report/R
 Vue.component('tenant-report-order-notes-consolidated-index', require('../../modules/Report/Resources/assets/js/views/order_notes_consolidated/index.vue'));
 Vue.component('tenant-report-general-items-index', require('../../modules/Report/Resources/assets/js/views/general_items/index.vue'));
 Vue.component('tenant-report-order-notes-general-index', require('../../modules/Report/Resources/assets/js/views/order_notes_general/index.vue'));
+Vue.component('tenant-report-order-notes-general-report', require('../../modules/Report/Resources/assets/js/views/order_notes_general/report.vue'));
 Vue.component('tenant-report-sales-consolidated-index', require('../../modules/Report/Resources/assets/js/views/sales_consolidated/index.vue'));
 Vue.component('tenant-report-user-commissions-index', require('../../modules/Report/Resources/assets/js/views/user_commissions/index.vue'));
 Vue.component('tenant-report-fixed-asset-purchases-index', require('../../modules/Report/Resources/assets/js/views/fixed-asset-purchases/index.vue'));
@@ -259,6 +263,8 @@ Vue.component('tenant-finance-income-form', require('@viewsModuleFinance/income/
 Vue.component('tenant-income-types-index', require('@viewsModuleFinance/income_types/index.vue'));
 Vue.component('tenant-income-reasons-index', require('@viewsModuleFinance/income_reasons/index.vue'));
 Vue.component('tenant-finance-movements-index', require('@viewsModuleFinance/movements/index.vue'));
+Vue.component('tenant-finance-advances-index', require('@viewsModuleFinance/advances/index.vue'));
+Vue.component('tenant-finance-advances-generate', require('@viewsModuleFinance/advances/form.vue'));
 
 
 //Sale
@@ -460,6 +466,14 @@ Vue.component('tenant-remember-change-password', require('./views/tenant/users/p
 Vue.component('system-report-login-lockout-index', require('@viewsModuleReport/system/report_login_lockout/index.vue'));
 Vue.component('system-user-not-change-password-index', require('@viewsModuleReport/system/user_not_change_password/index.vue'));
 
+//Asientos contables
+Vue.component('tenant-accountingentries-index', require('./views/tenant/accounting_entries/index.vue'));
+Vue.component('tenant-accountingentries-form', require('./views/tenant/accounting_entries/form.vue'));
+Vue.component('tenant-accountingentries-edit', require('./views/tenant/accounting_entries/form_edit.vue'));
+
+Vue.component('tenant-accountgroups-index', require('./views/tenant/account_groups/index.vue'));
+Vue.component('tenant-accountmovements-index', require('./views/tenant/account_movements/index.vue'));
+Vue.component('tenant-typesaccountingentries-index', require('./views/tenant/types_accounting_entries/index.vue'));
 
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)

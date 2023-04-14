@@ -1686,7 +1686,7 @@ class Document extends ModelTenant
         return $qrCode->displayPNGBase64($text);
     }
 
-                
+
     /**
      *
      * @param  string $format
@@ -1697,7 +1697,7 @@ class Document extends ModelTenant
         return url("print/document/{$this->external_id}/{$format}");
     }
 
-    
+
     /**
      *
      * Filtrar registro para envio de mensajes por whatsapp

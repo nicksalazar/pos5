@@ -320,8 +320,8 @@ use Illuminate\Support\Facades\Log;
             $attribute_types = AttributeType::whereActive()->orderByDescription()->get();
             $warehouses = Warehouse::all();
 
-            $retention_types_iva = RetentionType::where('type_id', '02')->get();
-            $retention_types_income = RetentionType::where('type_id', '01')->get();
+            $retention_types_iva = RetentionType::where('type_id', '02')->whereActive()->get();
+            $retention_types_income = RetentionType::where('type_id', '01')->whereActive()->get();
 
             $retention_types_purch = RetentionTypePurchase::get();
 
@@ -405,10 +405,11 @@ use Illuminate\Support\Facades\Log;
                         $ret->codSustento = $doc->document_type_id;
                         $ret->codDocSustento = $doc->codSustento;
                         $ret->numAuthSustento = $doc->auth_number;
+                        $ret->status_id = '01';
                         $ret->save();
 
                         foreach($data['ret'] as $retDet){
-                            Log::info(json_encode($retDet));
+                            //Log::info(json_encode($retDet));
                             $detRet = new RetentionsDetailEC();
                             $detRet->idRetencion = $ret->idRetencion;
                             $detRet->codRetencion = $retDet['code'];
@@ -563,7 +564,7 @@ use Illuminate\Support\Facades\Log;
 
         public static function convert($inputs)
         {
-            Log::info(json_encode($inputs));
+            //Log::info(json_encode($inputs));
             $company = Company::active();
             $values = [
                 'user_id' => auth()->id(),
@@ -673,16 +674,9 @@ use Illuminate\Support\Facades\Log;
             if (!$purchase) throw new Exception("El código {$external_id} es inválido, no se encontro el pedido relacionado");
 
             $this->reloadPDF($purchase, $format, $purchase->filename);
+            
             $temp = tempnam(sys_get_temp_dir(), 'purchase');
-
             file_put_contents($temp, $this->getStorage($purchase->filename, 'purchase'));
-
-            /*
-            $headers = [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="'.$purchase->filename.'"'
-            ];
-            */
 
             return response()->file($temp, $this->generalPdfResponseFileHeaders($purchase->filename));
         }
@@ -707,6 +701,7 @@ use Illuminate\Support\Facades\Log;
                 if(count($request['ret']) > 0){
 
                     $retenciones = RetentionsEC::where('idDocumento',$doc->id)->get();
+
                     foreach($retenciones as $ret){
                         $ret->delete();
                     }
@@ -736,10 +731,11 @@ use Illuminate\Support\Facades\Log;
                     $ret->codSustento = $doc->document_type_id;
                     $ret->codDocSustento = $doc->codSustento;
                     $ret->numAuthSustento = $doc->auth_number;
+                    $ret->status_id = '01';
                     $ret->save();
 
                     foreach($request['ret'] as $retDet){
-                        Log::info(json_encode($retDet));
+                        //Log::info(json_encode($retDet));
                         $detRet = new RetentionsDetailEC();
                         $detRet->idRetencion = $ret->idRetencion;
                         $detRet->codRetencion = $retDet['code'];

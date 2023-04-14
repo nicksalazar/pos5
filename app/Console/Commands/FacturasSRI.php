@@ -85,6 +85,6 @@ class FacturasSRI extends Command
         }
 
         $this->info('SRI:SEE A TERMINADO');
-  
+
     }
 }

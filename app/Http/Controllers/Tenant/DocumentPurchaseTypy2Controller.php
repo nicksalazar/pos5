@@ -5,9 +5,15 @@ namespace App\Http\Controllers\Tenant;
 use App\Models\Tenant\PurchaseDocumentTypes2;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Tenant\DocumentTypePurchaseRequest;
 use App\Http\Resources\Tenant\PurchaseDocumentTypeCollection;
 use App\Http\Resources\Tenant\PurchaseDocumentTypeResource;
+use App\Models\Tenant\Catalogs\PurchaseDocumentType;
 use App\Models\Tenant\Configuration;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Log;
+use SebastianBergmann\Environment\Console;
 
 class DocumentPurchaseTypy2Controller extends Controller
 {
@@ -39,9 +45,41 @@ class DocumentPurchaseTypy2Controller extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(DocumentTypePurchaseRequest $request)
     {
-        //
+        $id = $request->input('idType');
+        $tariff = PurchaseDocumentTypes2::where('idType', $id)->get();
+
+        if($tariff && $tariff->count() > 0){
+
+            DB::connection('tenant')->table('cat_purchase_document_types2')->where('idType', $id)->update([
+                'short' => $request->input('short'),
+                'DocumentTypeID' => $request->input('DocumentTypeID'),
+                'active' => $request->input('active'),
+                'description' => $request->input('description'),
+                'accountant' => $request->input('accountant'),
+                'stock' => $request->input('stock'),
+                'sign' => $request->input('sign'),
+            ]);
+
+            $msg = 'Tipo de documento de compra actualizado con éxito';
+
+        }else{
+
+            $tariff = new PurchaseDocumentTypes2();
+            $data = $request->all();
+            $tariff->fill($data);
+            $tariff->save();
+            $msg = '';
+            $msg = 'Tipo de documento de compra generado con éxito';
+        }
+
+
+        return [
+            'success' => true,
+            'message' => $msg,
+            'id' => $id
+        ];
     }
 
     /**
@@ -91,15 +129,15 @@ class DocumentPurchaseTypy2Controller extends Controller
 
     public function record($id)
     {
-        $record = new PurchaseDocumentTypeResource(PurchaseDocumentTypes2::findOrFail($id));
+
+        $record = new PurchaseDocumentTypeResource(PurchaseDocumentTypes2::where('idType',$id)->get()[0]);
+        //$record = PurchaseDocumentTypes2::where('idType',$id)->get();
         return $record;
     }
 
     public function records(Request $request)
     {
-
         $records = $this->getRecords($request);
-
         return new PurchaseDocumentTypeCollection($records->paginate(config('tenant.items_per_page')));
     }
 
@@ -107,9 +145,7 @@ class DocumentPurchaseTypy2Controller extends Controller
     {
 
         $tariff = $request->tariff;
-
         $active= $request->active;
-
         $records = PurchaseDocumentTypes2::query();
 
         if ($tariff) {
@@ -126,5 +162,15 @@ class DocumentPurchaseTypy2Controller extends Controller
         }
 
         return $records;
+    }
+
+    public function tables()
+    {
+        $doc_types = PurchaseDocumentType::whereActive()->get();
+
+        return compact(
+            'doc_types',
+
+        );
     }
 }

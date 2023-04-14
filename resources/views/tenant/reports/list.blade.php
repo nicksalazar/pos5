@@ -66,7 +66,7 @@
                                 Bandeja descarga de reportes
                             </a>
                         </li>
-                        
+
                         {{-- Actividades del sistema --}}
                         <li>
                             <a href="#" data-toggle="collapse" data-target="#system_activity_logs_id">
@@ -117,6 +117,11 @@
                         <li>
                             <a href="{{route('tenant.reports.purchases.general_items.index')}}">
                                 Productos
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('tenant.reports.purchases.quotations')}}">
+                                Orden de compra Vs Compra
                             </a>
                         </li>
                     </ul>
@@ -171,7 +176,7 @@
                         <li>
                             <a href="{{route('tenant.reports.sales_consolidated.index')}}">Consolidado de items</a>
                         </li>
-                        
+
                         <li>
                             <a href="{{route('tenant.reports.tips.index')}}">Propinas</a>
                         </li>
@@ -182,7 +187,7 @@
                         <li>
                             <a href="{{route('tenant.reports.reporte_ventas.index')}}">Reporte de Ventas</a>
                         </li>
-                        
+
                     </ul>
                 </div>
             </div>
@@ -219,6 +224,9 @@
                             <a href="{{route('tenant.reports.order_notes_consolidated.index')}}">
                                 Consolidado de items
                             </a>
+                        </li>
+                        <li>
+                            <a href="{{route('tenant.reports.order_notes_general.report')}}">Pedido Vs Despachado</a>
                         </li>
                     </ul>
                 </div>

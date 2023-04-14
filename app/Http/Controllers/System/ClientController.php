@@ -21,7 +21,8 @@
     use Illuminate\Http\Request;
     use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\DB;
-    use Modules\Document\Helpers\DocumentHelper;
+use Illuminate\Support\Facades\Log;
+use Modules\Document\Helpers\DocumentHelper;
     use Modules\MobileApp\Models\System\AppModule;
 
 
@@ -247,6 +248,7 @@
                 ->select('modules.value as value')
                 ->get()
                 ->pluck('value');
+
             $client->modules = DB::connection('system')
                 ->table('modules')
                 ->wherein('value', $modules)
@@ -374,14 +376,14 @@
             $smtp_port = ($request->has('smtp_port')) ? $request->smtp_port : null;
             $smtp_user = ($request->has('smtp_user')) ? $request->smtp_user : null;
             $smtp_encryption = ($request->has('smtp_encryption')) ? $request->smtp_encryption : null;
+            $countable = ($request->has('countable')) ? $request->countable: 0;
             try {
 
                 $temp_path = $request->input('temp_path');
-
                 $name_certificate = $request->input('certificate');
                 $password = $request->input('password_certificate');
 
-                if ($temp_path) {
+                if ($temp_path && $password && $password != '') {
 
                     try {
                         $password = $request->input('password_certificate');
@@ -438,18 +440,33 @@
                     ->where('id', 1)
                     ->update($clientData);
 
-                DB::connection('tenant')
-                    ->table('companies')
-                    ->where('id', 1)
-                    ->update([
+                $update = '';
+                if($password && $name_certificate && $name_certificate != '' && $password != ''){
+                    $update = [
                         'soap_type_id' => $request->soap_type_id,
                         'soap_send_id' => $request->soap_send_id,
                         'soap_username' => $request->soap_username,
                         'soap_password' => $request->soap_password,
                         'soap_url' => $request->soap_url,
                         'certificate' => $name_certificate,
-                        'certificate_pass' => $password
-                    ]);
+                        'certificate_pass' => $password,
+                        'countable' => $countable,
+                    ];
+                }else{
+                    $update = [
+                        'soap_type_id' => $request->soap_type_id,
+                        'soap_send_id' => $request->soap_send_id,
+                        'soap_username' => $request->soap_username,
+                        'soap_password' => $request->soap_password,
+                        'soap_url' => $request->soap_url,
+                        'countable' => $countable,
+
+                    ];
+                }
+                DB::connection('tenant')
+                    ->table('companies')
+                    ->where('id', 1)
+                    ->update($update);
 
 
                 //modules
@@ -468,6 +485,7 @@
                     ->wherein('id', $request->modules)
                     ->get()
                     ->pluck('value');
+
                 $valueLevels = DB::connection('system')
                     ->table('module_levels')
                     ->wherein('id', $request->levels)
@@ -486,6 +504,7 @@
                     ->transform(function ($module) use (&$array_modules) {
                         $array_modules[] = (array)$module;
                     });
+
                 DB::connection('tenant')
                     ->table('module_levels')
                     ->wherein('value', $valueLevels)
@@ -502,9 +521,13 @@
                 DB::connection('tenant')
                     ->table('module_user')
                     ->insert($array_modules);
+
+                Log::info("modulos: ".json_encode($array_modules));
                 DB::connection('tenant')
                     ->table('module_level_user')
                     ->insert($array_levels);
+
+                Log::info("module_level_user: ".json_encode($array_levels));
 
                 // Actualiza el modulo de farmacia.
                 $config = (array)DB::connection('tenant')
@@ -646,7 +669,8 @@
                 'obligado_contabilidad'=>$request->input('obligado_contabilidad'),
                 'agente_retencion'=>$request->input('agente_retencion'),
                 'agente_retencion_num'=>$request->input('agente_retencion_num'),
-                'contribuyente_especial_num'=>$request->input('contribuyente_especial_num'),
+                'contribuyente_especial_num' =>$request->input('contribuyente_especial_num'),
+                'countable' => (bool) $request->input('countable'),
             ]);
 
             $plan = Plan::findOrFail($request->input('plan_id'));
