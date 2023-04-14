@@ -6,15 +6,11 @@
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
-                                    <th class="">Categoria</th>
-                                    <th class="">Marca</th>
                                     <th class="">Product</th>
                                     <th class="">Cantidad</th>
                                 </thead>
                                 <tbody>
                                     <tr v-for="item in records" :key="item.key">
-                                        <td >{{ item.category }}</td>
-                                        <td >{{ item.marca }}</td>
                                         <td >{{ item.description }}</td>
                                         <td >{{ item.quantity }}</td>
                                     </tr>
