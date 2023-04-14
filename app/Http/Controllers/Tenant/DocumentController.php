@@ -1198,6 +1198,7 @@ class DocumentController extends Controller
         $d_end = $request->d_end;
         $d_start = $request->d_start;
         $date_of_issue = $request->date_of_issue;
+        $time_of_issue = $request->time_of_issue->format('H:i:s');
         $document_type_id = $request->document_type_id;
         $state_type_id = $request->state_type_id;
         $number = $request->number;
@@ -1226,6 +1227,9 @@ class DocumentController extends Controller
         }
         if ($number) {
             $records->where('number', $number);
+        }
+        if($time_of_issue){
+            $records->where('time_of_issue', $time_of_issue);
         }
         if ($state_type_id) {
             $records->where('state_type_id', 'like', '%' . $state_type_id . '%');

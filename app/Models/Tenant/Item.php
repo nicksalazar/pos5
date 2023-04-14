@@ -953,6 +953,7 @@ class Item extends ModelTenant
             'purchase_affectation_igv_type_id' => $this->purchase_affectation_igv_type_id,
             'calculate_quantity'               => (bool)$this->calculate_quantity,
             'has_plastic_bag_taxes'            => (bool)$this->has_plastic_bag_taxes,
+            'has_service_taxes'                => (bool)$this->has_service_taxes,
             'amount_plastic_bag_taxes'         => $this->amount_plastic_bag_taxes,
             'has_service_taxes'                => (bool)$this->has_service_taxes,
             'amount_service_taxes'             => $this->amount_service_taxes,
@@ -1292,7 +1293,7 @@ class Item extends ModelTenant
             ->setInArray('suggested_price',0)
             ->setInArray('has_plastic_bag_taxes',false)
             ->setInArray('has_isc',false)
-            ->setInArray('has_plastic_bag_taxes',false)
+            ->setInArray('has_service_taxes',false)
             ->setInArray('warehouse_id',$warehouse)
             ->setInArray('image','imagen-no-disponible.jpg')
             ->setInArray('image_medium','imagen-no-disponible.jpg')

@@ -273,6 +273,7 @@ class Document extends ModelTenant
 
     protected $casts = [
         'date_of_issue' => 'date',
+        'time_of_issue' => 'time',
         'user_rel_suscription_plan_id' => 'int',
         'quantity_period' => 'int',
         'enabled_concurrency' => 'bool',
@@ -302,6 +303,17 @@ class Document extends ModelTenant
     public function setAdditionalDataAttribute($value)
     {
         $this->attributes['additional_data'] = (is_null($value))?null:json_encode($value);
+    }
+
+    
+    public function getTimeofIssue($value)
+    {
+        return (is_null($value))?null:(object) json_decode($value);
+    }
+
+    public function setTimeofIssue($value)
+    {
+        $this->attributes['time_of_issue'] = (is_null($value))?null:json_encode($value);
     }
 
     /**

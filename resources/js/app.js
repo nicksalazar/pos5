@@ -29,7 +29,7 @@ Vue.component('tenant-dashboard-sales-by-product', require('../../modules/Dashbo
 Vue.component('x-graph', require('./components/graph/src/Graph.vue'));
 Vue.component('x-graph-line', require('./components/graph/src/GraphLine.vue'));
 
-// configuracion pse
+// configuracion pse tenant-state-account-index
 Vue.component('tenant-signature-pse-index', require('./views/tenant/companies/signature_pse/index.vue'))
 Vue.component('tenant-whatsapp-api-index', require('./views/tenant/companies/whatsapp_api/index.vue'))
 
@@ -180,6 +180,11 @@ Vue.component('tenant-report-items-extra-index', require('../../modules/Report/R
 
 Vue.component('tenant-report-download-tray-index', require('../../modules/Report/Resources/assets/js/views/download_tray/index.vue'));
 
+//Reporte de Ventas
+Vue.component('tenant-reporte-ventas-index', require('../../modules/Report/Resources/assets/js/views/reporte_ventas/index.vue'));
+Vue.component('tenant-reporte-ventas-excel', require('../../modules/Report/Resources/assets/js/views/reporte_ventas/index.vue'));
+//Vue.component('tenant-reporte-ventas-pdf', require('../../modules/Report/Resources/assets/js/views/reporte_ventas/index.vue'));
+//Vue.component('tenant-reporte-ventas-pdf-simple', require('../../modules/Report/Resources/assets/js/views/reporte_ventas/index.vue'));
 /*PURCHASE QUOTATIONS REPORT */
 Vue.component('tenant-report-purchases-quotation', require('../../modules/Report/Resources/assets/js/views/purchases/quotation.vue'));
 

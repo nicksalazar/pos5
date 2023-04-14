@@ -43,7 +43,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     let has_isc = row_old.has_isc
 
-    // console.log(row_old)
+    //console.log(row_old)
 
     let row = {
         item_id: row_old.item.id,
@@ -294,16 +294,17 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     }
 
 
-    //impuesto bolsa - icbper - servicio
-
     let total_plastic_bag_taxes = 0
-
 
     if (row_old.has_plastic_bag_taxes) {
 
         total_plastic_bag_taxes = _.round(row.quantity * row.item.amount_plastic_bag_taxes, 1)
         row.total_plastic_bag_taxes = total_plastic_bag_taxes
 
+    }
+    if(row_old.has_service_taxes){
+        total_service_taxes = _.round(row.quantity * row.item.amount_service_taxes, 1)
+        row.total_service_taxes = total_service_taxes
     }
 
     // icbper

@@ -184,6 +184,9 @@
                         <li>
                             <a href="{{route('tenant.reports.state_account.index')}}">Estado de cuenta</a>
                         </li>
+                        <li>
+                            <a href="{{route('tenant.reports.reporte_ventas.index')}}">Reporte de Ventas</a>
+                        </li>
 
                     </ul>
                 </div>
