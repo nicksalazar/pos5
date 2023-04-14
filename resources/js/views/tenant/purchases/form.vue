@@ -593,6 +593,10 @@
                                                     type="button"
                                                     @click.prevent="clickRemoveItem(index)">x
                                             </button>
+                                            <button class="btn waves-effect waves-light btn-xs btn-info"
+                                                type="button"
+                                                @click="ediItem(row, index)">
+                                            <span style='font-size:10px;'>&#9998;</span></button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -774,6 +778,7 @@
                             :currency-type-id-config="config.currency_type_id"
                             :exchange-rate-sale="form.exchange_rate_sale"
                             :showDialog.sync="showDialogAddItem"
+                            :record-item="recordItem"
                             :localHasGlobalIgv="localHasGlobalIgv"
                             :percentage-igv="percentage_igv"
                             @add="addRow"></purchase-form-item>
@@ -835,6 +840,7 @@ export default {
             maxLength1: null,
             maxLength2: null,
             showDialogAddItem: false,
+            recordItem: null,
             readonly_date_of_due: false,
             localHasGlobalIgv: false,
             showDialogNewPerson: false,
@@ -1387,8 +1393,24 @@ export default {
             this.codSustentos = _.filter(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
         },
         addRow(row) {
-            this.form.items.push(row)
-            this.calculateTotal()
+
+            if (this.recordItem) {
+                //this.form.items.$set(this.recordItem.indexi, row)
+                this.form.items[this.recordItem.indexi] = row
+                this.recordItem = null
+
+                if(this.config.enabled_point_system)
+                {
+                    this.setTotalExchangePoints()
+                    this.recalculateUsedPointsForExchange(row)
+                }
+
+            } else {
+
+                this.form.items.push(row);
+            }
+
+            this.calculateTotal();
         },
         clickRemoveItem(index) {
             this.form.items.splice(index, 1)
@@ -1424,9 +1446,15 @@ export default {
 
             this.form.items.forEach((row) => {
 
-                console.log('Rows: ',row)
+                retention_iva = 0
+                retention_renta  = 0
+                console.log("documento", row)
+                if( row.iva_retention || row.income_retention || row.iva_retention > 0 || row.income_retention > 0){
+                    retention_iva = parseFloat(row.iva_retention)
+                    retention_renta = parseFloat(row.income_retention)
 
-                if(row.iva_retention > 0 || row.income_retention > 0){
+                    toal_retenido += (retention_iva + retention_renta)
+
                     this.haveRetentions = true
                     this.maxLength1 = 15
                     this.maxLength2 = 45
@@ -1439,7 +1467,7 @@ export default {
                                 const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
                                 if(data.tipo == 'IVA' && data.desciption == retIvaDesc.description){
                                     data.valor += _.round(parseFloat(row.iva_retention),3)
-                                    dato.base += row.total_taxes
+                                    dato.base += row.total_taxes;
                                     nuevaRet = false
                                 }
                             }
@@ -1447,7 +1475,7 @@ export default {
                                 const retIncomeDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
                                 if(data.tipo == 'RENTA' && data.desciption == retIncomeDesc.description){
                                     data.valor += _.round(parseFloat(row.income_retention),3)
-                                    dato.base += row.unit_value
+                                    dato.base += (row.unit_value * row.quantity);
                                     nuevaRet = false
                                 }
                             }
@@ -1455,13 +1483,12 @@ export default {
                         });
 
                         if(nuevaRet){
-                            console.log('Nueva Retencion')
+
                             if(row.iva_retention > 0 ){
                                 let retencionLocal = {}
                                 retencionLocal.tipo = 'IVA'
                                 retencionLocal.valor  = _.round(parseFloat(row.iva_retention),3)
                                 const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
-                                console.log('Tipo retencion IVA: '+retIvaDesc.description)
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1473,11 +1500,10 @@ export default {
                                 retencionLocal.tipo = 'RENTA'
                                 retencionLocal.valor  = _.round(parseFloat(row.income_retention),3)
                                 const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
-                                console.log('Tipo retencion RENTA: '+retIvaDesc.description)
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
-                                retencionLocal.base  = row.unit_value
+                                retencionLocal.base  = row.unit_value * row.quantity
                                 this.form.ret.push(retencionLocal)
                             }
                         }
@@ -1489,7 +1515,6 @@ export default {
                             retencionLocal.tipo = 'IVA'
                             retencionLocal.valor  = _.round(parseFloat(row.iva_retention),3)
                             const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
-                            //console.log('Tipo retencion : '+retIvaDesc.description)
                             retencionLocal.desciption  = retIvaDesc.description
                             retencionLocal.code  = retIvaDesc.code
                             retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1501,25 +1526,18 @@ export default {
                             retencionLocal.tipo = 'RENTA'
                             retencionLocal.valor  = _.round(parseFloat(row.income_retention),3)
                             const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
-                            //console.log('Tipo retencion : '+retIvaDesc.description)
                             retencionLocal.desciption  = retIvaDesc.description
                             retencionLocal.code  = retIvaDesc.code
                             retencionLocal.porcentajeRet  = retIvaDesc.percentage
-                            retencionLocal.base  = row.unit_value
+                            retencionLocal.base  = row.unit_value * row.quantity
                             this.form.ret.push(retencionLocal)
                         }
 
                     }
                 }
 
-
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
-
-                retention_iva = parseFloat(row.iva_retention)
-                retention_renta = parseFloat(row.income_retention)
-
-                toal_retenido += (retention_iva + retention_renta)
 
                 if (row.affectation_igv_type_id === '10') {
                     total_taxed += parseFloat(row.total_value)
@@ -1551,16 +1569,12 @@ export default {
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
-
-                //console.log('total: '+ total)
-                //console.log('retenido : '+ toal_retenido)
             });
 
             // isc
 
             this.form.total_base_isc = _.round(total_base_isc, 2)
             this.form.total_isc = _.round(total_isc, 2)
-
             this.form.total_exportation = _.round(total_exportation, 2)
             this.form.total_taxed = _.round(total_taxed, 2)
             this.form.total_exonerated = _.round(total_exonerated, 2)
@@ -1570,15 +1584,15 @@ export default {
             this.form.total_value = _.round(total_value, 2)
             // this.form.total_taxes = _.round(total_igv, 2)
             //impuestos (isc + igv)
+            console.log('toal_retenido',toal_retenido)
             this.form.total_taxes = _.round(total_igv + total_isc, 2)
             this.form.total_ret =  _.round(toal_retenido, 2)
+
             total = total - toal_retenido
+            console.log('total',total)
             this.form.total =  _.round(total, 2)
 
             this.calculatePerception()
-
-            // this.form.payments[0].payment = this.form.total
-            // this.setTotalDefaultPayment()
             this.calculatePayments()
             this.calculateFee()
             this.discountGlobal()
@@ -1673,6 +1687,11 @@ export default {
             return {
                 success: true
             }
+        },
+        async ediItem(row, index) {
+            row.indexi = index
+            this.recordItem = row
+            this.showDialogAddItem = true
         },
         async submit() {
 

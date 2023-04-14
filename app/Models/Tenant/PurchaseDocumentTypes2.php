@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PurchaseDocumentTypes2 extends ModelTenant
 {
+    //protected $primaryKey = 'idType';
     protected $table = 'cat_purchase_document_types2';
     protected $fillable = [
         'idType',
@@ -30,6 +31,7 @@ class PurchaseDocumentTypes2 extends ModelTenant
             'stock' => $this->stock,
             'sign' => $this->sign,
         ];
+
         return $data;
     }
 }

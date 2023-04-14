@@ -207,6 +207,10 @@
                 $('#dn-menu').toggleClass('show');
                 e.stopPropagation();
             });
+
+            $(function () {
+               $('[data-toggle="tooltip"]').tooltip()
+            })
         });
 
         $(document).click(function(){

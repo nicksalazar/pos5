@@ -573,7 +573,7 @@
                             <div class="">
                                 <div :class="{'has-danger': errors.has_service_taxes}"
                                      class="form-group">
-                                    <el-checkbox v-model="form.has_service_taxes">Impuesto por servicio
+                                    <el-checkbox v-model="form.has_service_taxes">Cargo por servicio
                                     </el-checkbox>
                                     <br>
                                     <small v-if="errors.has_service_taxes"

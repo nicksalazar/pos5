@@ -42,20 +42,31 @@ if ($current_hostname) {
                          * reports/purchases/general_items/pdf
                          * reports/purchases/general_items/filter
                          */
-                         Route::prefix('general_items')->group(function () {
-                              Route::get('/', 'ReportPurchaseItemController@general_items')->name('tenant.reports.purchases.general_items.index');
-                              Route::get('records', 'ReportPurchaseItemController@records');
-                              Route::get('excel', 'ReportPurchaseItemController@general_items');
-                              Route::get('pdf', 'ReportPurchaseItemController@general_items');
-                              Route::get('filter', 'ReportPurchaseItemController@filter');
-                         });
-                         /** Nuevo */
+                        Route::prefix('general_items')->group(function () {
+                            Route::get('/', 'ReportPurchaseItemController@general_items')->name('tenant.reports.purchases.general_items.index');
+                            Route::get('records', 'ReportPurchaseItemController@records');
+                            Route::get('excel', 'ReportPurchaseItemController@general_items');
+                            Route::get('pdf', 'ReportPurchaseItemController@general_items');
+                            Route::get('filter', 'ReportPurchaseItemController@filter');
 
+                        });
+                        /** Nuevo */
+                        Route::get('pdf', 'ReportPurchaseController@pdf')->name('tenant.reports.purchases.pdf');
+                        Route::get('excel', 'ReportPurchaseController@excel')->name('tenant.reports.purchases.excel');
+                        Route::get('filter', 'ReportPurchaseController@filter')->name('tenant.reports.purchases.filter');
+                        Route::get('records', 'ReportPurchaseController@records')->name('tenant.reports.purchases.records');
 
-                         Route::get('pdf', 'ReportPurchaseController@pdf')->name('tenant.reports.purchases.pdf');
-                         Route::get('excel', 'ReportPurchaseController@excel')->name('tenant.reports.purchases.excel');
-                         Route::get('filter', 'ReportPurchaseController@filter')->name('tenant.reports.purchases.filter');
-                         Route::get('records', 'ReportPurchaseController@records')->name('tenant.reports.purchases.records');
+                        /* Quotations report */
+
+                        Route::prefix('quotations')->group(function () {
+                            Route::get('/', 'ReportPurchaseController@orders')->name('tenant.reports.purchases.quotations');
+                            Route::get('records', 'ReportPurchaseController@orderRecords');
+                            Route::get('excel', 'ReportPurchaseController@orderExcel');
+                            Route::get('pdf', 'ReportPurchaseController@general_items');
+                            Route::get('filter', 'ReportPurchaseController@orderFilter');
+
+                        });
+
                     });
 
 
@@ -304,13 +315,22 @@ if ($current_hostname) {
                          Route::get('/recuperarCategorias', 'ReporteVentasController@recuperarCategorias')
                               ->name('tenant.reports.reporte_ventas.recuperarCategorias');
                     });
-                    
+
                     Route::get('order-notes-general', 'ReportOrderNoteGeneralController@index')
                          ->name('tenant.reports.order_notes_general.index');
+
                     Route::get('order-notes-general/excel', 'ReportOrderNoteGeneralController@excel');
                     Route::get('order-notes-general/pdf', 'ReportOrderNoteGeneralController@pdf');
                     Route::get('order-notes-general/filter', 'ReportOrderNoteGeneralController@filter');
                     Route::get('order-notes-general/records', 'ReportOrderNoteGeneralController@records');
+
+                    Route::get('order-notes-report', 'ReportOrderNoteGeneralController@indexReport')
+                         ->name('tenant.reports.order_notes_general.report');
+
+                    Route::get('order-notes-report/excel', 'ReportOrderNoteGeneralController@excelReport');
+                    Route::get('order-notes-report/pdf', 'ReportOrderNoteGeneralController@pdfReport');
+                    Route::get('order-notes-report/filter', 'ReportOrderNoteGeneralController@filterReport');
+                    Route::get('order-notes-report/records', 'ReportOrderNoteGeneralController@recordsReport');
 
                     Route::get('sales-consolidated', 'ReportSaleConsolidatedController@index')
                          ->name('tenant.reports.sales_consolidated.index');
@@ -351,7 +371,8 @@ if ($current_hostname) {
                               ->name('tenant.reports.commissions_detail.filter');
                          Route::get('/records', 'ReportCommissionDetailController@records')
                               ->name('tenant.reports.commissions_detail.records');
-                    });
+
+                     });
 
 
                     Route::prefix('fixed-asset-purchases')->group(function () {
@@ -385,7 +406,9 @@ if ($current_hostname) {
                          Route::get('', 'DownloadTrayController@index')->name('tenant.reports.download-tray.index');
                          Route::get('records', 'DownloadTrayController@records');
                          Route::get('download/{id}', 'DownloadTrayController@download');
-                    });
+
+
+                     });
 
 
                     Route::prefix('tips')->group(function () {
@@ -402,38 +425,36 @@ if ($current_hostname) {
           });
      });
 } else {
-     $prefix = env('PREFIX_URL', null);
-     $prefix = !empty($prefix) ? $prefix . "." : '';
-     $app_url = $prefix . env('APP_URL_BASE');
+    $prefix = env('PREFIX_URL', null);
+    $prefix = !empty($prefix) ? $prefix . "." : '';
+    $app_url = $prefix . env('APP_URL_BASE');
 
-     Route::domain($app_url)->group(function () {
-          Route::middleware('auth:admin')->group(function () {
+    Route::domain($app_url)->group(function () {
+        Route::middleware('auth:admin')->group(function () {
 
-               Route::prefix('reports')->group(function () {
+            Route::prefix('reports')->group(function () {
 
-                    Route::get('list', 'System\ReportController@listReports')->name('system.list-reports');
+                Route::get('list', 'System\ReportController@listReports')->name('system.list-reports');
 
-                    Route::get('clients', 'System\ReportController@clients');
+                Route::get('clients', 'System\ReportController@clients');
 
-                    Route::prefix('report-login-lockout')->group(function () {
+                Route::prefix('report-login-lockout')->group(function () {
 
-                         Route::get('', 'System\ReportLoginLockoutController@index')->name('system.report_login_lockout.index');
-                         Route::get('columns', 'System\ReportLoginLockoutController@columns');
-                         Route::get('records', 'System\ReportLoginLockoutController@records');
-                         // Route::get('report/{type}', 'System\ReportLoginLockoutController@exportReport');
+                        Route::get('', 'System\ReportLoginLockoutController@index')->name('system.report_login_lockout.index');
+                        Route::get('columns', 'System\ReportLoginLockoutController@columns');
+                        Route::get('records', 'System\ReportLoginLockoutController@records');
+                        // Route::get('report/{type}', 'System\ReportLoginLockoutController@exportReport');
 
-                    });
+                });
+            });
+
+            Route::get('cash/report/income-summary/{cash}', 'ReportIncomeSummaryController@pdf')
+                    ->name('tenant.reports.income_summary.pdf');
 
 
-                    Route::prefix('user-not-change-password')->group(function () {
-
-                         Route::get('', 'System\ReportUserNotChangePasswordController@index')->name('system.user_not_change_password.index');
-                         Route::get('columns', 'System\ReportUserNotChangePasswordController@columns');
-                         Route::get('records', 'System\ReportUserNotChangePasswordController@records');
-                         // Route::get('report/{type}', 'System\ReportUserNotChangePasswordController@exportReport');
-
-                    });
-               });
-          });
-     });
+        });
+    });
 }
+
+
+

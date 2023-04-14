@@ -169,7 +169,6 @@ class Item extends ModelTenant
         'web_platform_id',
         'has_plastic_bag_taxes',
         'has_service_taxes',
-        'amount_service_taxes',
         'barcode',
         'sanitary',
         'cod_digemid',
@@ -2216,6 +2215,23 @@ class Item extends ModelTenant
         });
     }
 
+
+    public function scopeWhereStockMinMax($query)
+    {
+        $stockmin = (int)$this->stock_min;
+        return $query->whereHas('warehouses', function($query) use($stockmin) {
+            $query->where('stock', '<', $stockmin);
+        });
+    }
+
+    public function scopeWhereStockMinMaxEqual($query)
+    {
+        $stockmin = (int)$this->stock_min;
+        return $query->whereHas('warehouses', function($query) use($stockmin) {
+            //$query->where('stock', '<=', $stockmin);
+            $query->where('stock', '>', $stockmin);
+        });
+    }
 
     /**
      *

@@ -1217,4 +1217,9 @@ $withEstablishment = true){
         return $show_modules;
     }
 
+    public function accounting_entries()
+    {
+        return $this->hasMany(AccountingEntries::class);
+    }
+
 }

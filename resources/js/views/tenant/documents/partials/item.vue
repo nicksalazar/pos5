@@ -1105,6 +1105,7 @@ export default {
 //
 
             if (this.recordItem) {
+
                 if (this.recordItem.item !== undefined && this.recordItem.item.extra !== undefined) {
                     this.extra_temp = this.recordItem.item.extra
                 }
@@ -1118,7 +1119,7 @@ export default {
                 this.form.has_service_taxes = (this.recordItem.total_service_taxes > 0) ? true : false
                 this.form.warehouse_id = this.recordItem.warehouse_id
                 this.isUpdateWarehouseId = this.recordItem.warehouse_id
-
+                this.form.total_service_taxes = this.recordItem.total_service_taxes
                 this.form.attributes = this.recordItem.attributes;
                 this.form.discounts = this.recordItem.discounts;
                 this.form.charges = this.recordItem.charges;
@@ -1456,9 +1457,7 @@ export default {
                 }
             }
 
-
             this.form.input_unit_price_value = this.form.unit_price_value;
-
             this.form.unit_price = unit_price;
             this.form.item.unit_price = unit_price;
             this.form.item.presentation = this.item_unit_type;
@@ -1497,6 +1496,7 @@ export default {
 
             this.showMessageDetraction()
 
+            console.log('DESPUES DE ENVIAR: ', this.row)
             this.$emit('add', this.row);
 
             if (this.search_item_by_barcode) {
