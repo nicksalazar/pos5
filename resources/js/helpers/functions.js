@@ -304,9 +304,6 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     }
 
-    // icbper
-
-
     // let total_taxes = total_igv + total_isc + total_other_taxes
     let total_taxes = total_igv + total_isc + total_other_taxes + total_plastic_bag_taxes + total_service_taxes
 
