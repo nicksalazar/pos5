@@ -302,8 +302,7 @@ class ItemController extends Controller
         $item = Item::firstOrNew(['id' => $id]);
         $item->item_type_id = '01';
         $item->amount_plastic_bag_taxes = Configuration::firstOrFail()->amount_plastic_bag_taxes;
-        $item->amount_service_taxes = Configuration::firstOrFail()->amount_service_taxes;
-
+        $item->amount_service_taxes = (Configuration::first())->amount_service_taxes;
         if ($request->has('date_of_due')) {
             $time = $request->date_of_due;
             $date = null;

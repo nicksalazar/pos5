@@ -144,6 +144,7 @@
                                 <th>Colaborador de mezcla</th>
                                 <th>Comentario</th>
                                 <th>Fecha de registro</th>
+                                
                                 <th></th>
                             </tr>
                             </thead>
@@ -209,7 +210,7 @@
                                 <td>{{ row.mix_collaborator }}</td>
                                 <td>{{ row.comment }}</td>
                                 <td>{{ row.created_at }}</td>
-                                <td>
+                                <td v-if="row.state_type_id !== '04'">
                                     <button
                                         class="btn waves-effect waves-light btn-xs btn-info"
                                         type="button"
