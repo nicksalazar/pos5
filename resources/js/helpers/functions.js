@@ -133,14 +133,15 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     row.unit_value = unit_value
 
-     //SERVICIO
-     let total_service_taxes = 0
-     if(row_old.has_service_taxes == true || row_old.total_service_taxes > 0){
+    //SERVICIO
+    let total_service_taxes = 0
+    if(row_old.has_service_taxes == true || row_old.total_service_taxes > 0){
 
         total_service_taxes = _.round(row.quantity * (row.unit_value * (row.item.amount_service_taxes/100)), 3)
         row.total_service_taxes = total_service_taxes
-     }
-     //END SERVICIO
+
+    }
+    //END SERVICIO
 
 
     let total_value_partial = unit_value * row.quantity
@@ -301,10 +302,6 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         total_plastic_bag_taxes = _.round(row.quantity * row.item.amount_plastic_bag_taxes, 1)
         row.total_plastic_bag_taxes = total_plastic_bag_taxes
 
-    }
-    if(row_old.has_service_taxes){
-        total_service_taxes = _.round(row.quantity * row.item.amount_service_taxes, 1)
-        row.total_service_taxes = total_service_taxes
     }
 
     // icbper

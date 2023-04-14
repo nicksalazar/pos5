@@ -1198,7 +1198,7 @@ class DocumentController extends Controller
         $d_end = $request->d_end;
         $d_start = $request->d_start;
         $date_of_issue = $request->date_of_issue;
-        $time_of_issue = $request->time_of_issue->format('H:i:s');
+        $time_of_issue = $request->time_of_issue;
         $document_type_id = $request->document_type_id;
         $state_type_id = $request->state_type_id;
         $number = $request->number;
