@@ -137,8 +137,8 @@ class ReporteVentasCollection extends ResourceCollection
                         'id' => $row->id,
                         'description' => $row->item->description,
                         'quantity' => round($row->quantity,2),
-                        'category' => $cat->count()>0?$cat->name->name:'NA',
-                        'marca' => $marca->count()>0?$marca->name->name:'NA',
+                        'category' => ($cat)?$cat->name:'NA',
+                        'marca' => ($marca)?$marca->name:'NA',
                         'unit_price' => $row->total,
                         'total_charge_item'  => $row -> total_charge,
                     ];
