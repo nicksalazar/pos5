@@ -1486,7 +1486,6 @@ export default {
             // this.row.edit = false;
             this.initForm();
             this.row.item.extra = extra;
-            //this.initializeFields()
 
             if (this.recordItem) {
                 this.row.indexi = this.recordItem.indexi
