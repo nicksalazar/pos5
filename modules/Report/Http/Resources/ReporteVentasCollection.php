@@ -39,7 +39,7 @@ class ReporteVentasCollection extends ResourceCollection
                 $payment_state = number_format($row->total - $total_paid, 2, '.', '');
 
                 $description=$row->state_type?$row->state_type->description:null;
-                
+
 
                 $document_type_id = Document::where('id', $row->id)->select('document_type_id')->get();
                 $document_type_id=$document_type_id[0]['document_type_id'];
@@ -55,7 +55,7 @@ class ReporteVentasCollection extends ResourceCollection
                 /** @var SaleNote $row */
 
                 $affected_document = null;
-                
+
                 if(in_array($document_type_id, ['07', '08']) && $row->note) {
 
                     $series = ($row->note->affected_document) ? $row->note->affected_document->series : $row->note->data_affected_document->series;
@@ -77,7 +77,7 @@ class ReporteVentasCollection extends ResourceCollection
 
             $seller = $row->getSellerData();
 
-            
+
             //dd($seller->name);
             return [
                 'id' => $row->id,
@@ -148,5 +148,5 @@ class ReporteVentasCollection extends ResourceCollection
         });
     }
 
-    
+
 }
