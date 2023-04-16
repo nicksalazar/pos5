@@ -2669,8 +2669,18 @@ export default {
             this.changeDetractionType()
         },
         clickAddItemInvoice() {
-            this.recordItem = null
-            this.showDialogAddItem = true
+            if(this.form.customer_id !== null){
+                this.errors={};
+                this.saveLocalCustomerId();
+                this.recordItem = null
+                this.showDialogAddItem = true
+                
+            }else{
+                alert('Debe seleccionar el cliente');
+                //this.errors.customer_id=['Debe seleccionar el cliente'];
+                this.showDialogAddItem = false;
+                
+            }
         },
         getFormatUnitPriceRow(unit_price) {
             return _.round(unit_price, 6)
@@ -4244,6 +4254,9 @@ export default {
         },
         showItemSeries(series) {
             return series.map(o => o['series']).join(', ');
+        },
+        saveLocalCustomerId() {
+            localStorage.customer_id = this.form.customer_id;
         }
     }
 }

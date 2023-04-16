@@ -44,7 +44,7 @@ class EstablishmentController extends Controller
                 'identity_document_type_id' => $row->identity_document_type_id,
             ];
         });
-        $rates =Rate::select('id','rate_name')->orderBy('rate_name')->get();
+        $rates = Rate::where('rate_offer','=','0')->select('id','rate_name','rate_offer')->orderBy('rate_name')->get();
         return compact('countries', 'departments', 'provinces', 'districts', 'customers','rates');
     }
 

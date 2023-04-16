@@ -22,7 +22,7 @@
             </div>
           </div>
 
-          <div class="col-md-4 center-el-checkbox mt-3">
+          <div class="col-md-4 center-el-checkbox mt-3" v-if="recordId==null">
             <div class="form-group">
               <el-checkbox v-model="form.rate_offer">Oferta</el-checkbox>
             </div>

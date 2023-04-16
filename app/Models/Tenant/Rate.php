@@ -15,11 +15,23 @@ namespace App\Models\Tenant;
 class Rate extends ModelTenant
 {
     protected $fillable = [
+        'id',
         'rate_name',
         'rate_start',
         'rate_end',
         'rate_offer'
     ];
 
+    public function item_rate()
+    {
+        return $this->hasMany(ItemRate::class);
+        //return $this->belongsToMany(ItemRate::class);
 
+    }
+    public function items()
+    {
+        return $this->belongsToMany(Item::class,'item_rate','item_id','rate_id')->withPivot('price1');
+    }
+
+   
 }
