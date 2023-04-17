@@ -712,12 +712,12 @@
                                                                                     :value="option.id"></el-option>
                                                                             </el-select>
                                                                         </td>
-                                                                        <td v-if="row.payment_method_type_id != 14">
+                                                                        <td v-if="!row.payment_method_type_id_desc">
                                                                             <el-input
                                                                                 v-model="row.reference"></el-input>
 
                                                                         </td>
-                                                                        <td v-if="row.payment_method_type_id == 14">
+                                                                        <td v-if="row.payment_method_type_id_desc">
                                                                             <el-select
                                                                                 v-model="row.reference"
                                                                                 @change="changeAdvance(index,$event)">
@@ -2688,7 +2688,7 @@ export default {
             }else if(amount > maxAmount ){
 
                 this.form.payments[index].payment = maxAmount
-                let message = 'El monto maximo del anticipo es de '+amount
+                let message = 'El monto maximo del anticipo es de '+maxAmount
                 this.$message.warning(message)
             }
 
@@ -2707,7 +2707,7 @@ export default {
                 id = this.form.fee[index].payment_method_type_id;
             }
             let payment_method_type = _.find(this.payment_method_types, {'id': id});
-
+            //console.log('paymnet tyoe: ',payment_method_type);
             if (payment_method_type.number_days) {
 
                 this.form.date_of_due = moment(this.form.date_of_issue).add(payment_method_type.number_days, 'days').format('YYYY-MM-DD')
@@ -2735,18 +2735,19 @@ export default {
                 // this.form.payments = []
                 this.enabled_payments = false
 
-            }else if(payment_method_type.id == '14'){
+            }else if(payment_method_type.description.includes('Anticipo')){
 
                 this.$notify({
                     title: '',
                     message: 'Debes seleccionar un anticipo disponible',
                     type: 'success'
                 })
-
+                this.form.payments[index].payment_method_type_id_desc = 'Anticipo';
                 this.form.date_of_due = this.form.date_of_issue
                 this.readonly_date_of_due = false
                 this.form.payment_method_type_id = null
                 this.enabled_payments = true
+
 
             }else {
 

@@ -1072,6 +1072,106 @@
 
                     </div>
                 </el-tab-pane>
+                <el-tab-pane class
+                             v-if="company.countable"
+                             name="seven">
+                    <span slot="label">Contabilidad</span>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div :class="{'has-danger': errors.purchase_cta}"
+                                 class="form-group">
+                                <label class="control-label">Cuenta de compra</label>
+                                <el-select v-model="form.purchase_cta">
+                                    <el-option v-for="option in accounts"
+                                               :key="option.id"
+                                               :label="option.code + ' - ' + option.description "
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.purchase_cta"
+                                       class="form-control-feedback"
+                                       v-text="errors.purchase_cta[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div :class="{'has-danger': errors.sale_cost_cta}"
+                                 class="form-group">
+                                <label class="control-label">Cuenta de costo de ventas</label>
+                                <el-select v-model="form.sale_cost_cta">
+                                    <el-option v-for="option in accounts"
+                                               :key="option.id"
+                                               :label="option.code + ' - ' + option.description "
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.sale_cost_cta"
+                                       class="form-control-feedback"
+                                       v-text="errors.sale_cost_cta[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div :class="{'has-danger': errors.income_cta}"
+                                 class="form-group">
+                                <label class="control-label">Cuenta de ingreso</label>
+                                <el-select v-model="form.income_cta">
+                                    <el-option v-for="option in accounts"
+                                               :key="option.id"
+                                               :label="option.code + ' - ' + option.description "
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.income_cta"
+                                       class="form-control-feedback"
+                                       v-text="errors.income_cta[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div :class="{'has-danger': errors.item_process_cta}"
+                                 class="form-group">
+                                <label class="control-label">Cuenta de producto en proceso</label>
+                                <el-select v-model="form.item_process_cta">
+                                    <el-option v-for="option in accounts"
+                                               :key="option.id"
+                                               :label="option.code + ' - ' + option.description "
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.item_process_cta"
+                                       class="form-control-feedback"
+                                       v-text="errors.item_process_cta[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div :class="{'has-danger': errors.item_finish_cta}"
+                                 class="form-group">
+                                <label class="control-label">Cuenta de producto terminado</label>
+                                <el-select v-model="form.item_finish_cta">
+                                    <el-option v-for="option in accounts"
+                                               :key="option.id"
+                                               :label="option.code + ' - ' + option.description "
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.item_finish_cta"
+                                       class="form-control-feedback"
+                                       v-text="errors.item_finish_cta[0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div :class="{'has-danger': errors.item_import_cta}"
+                                 class="form-group">
+                                <label class="control-label">Cuenta importacion en transito</label>
+                                <el-select v-model="form.item_import_cta">
+                                    <el-option v-for="option in accounts"
+                                               :key="option.id"
+                                               :label="option.code + ' - ' + option.description "
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.item_import_cta"
+                                       class="form-control-feedback"
+                                       v-text="errors.item_import_cta[0]"></small>
+                            </div>
+                        </div>
+
+                    </div>
+                </el-tab-pane>
 
                 <el-tab-pane v-if="canShowExtraData"
                              class
@@ -1282,6 +1382,7 @@ export default {
             'CatItemMoldCavity',
             'CatItemProductFamily',
             'config',
+            'company',
         ]),
         isService: function () {
             // Tener en cuenta que solo oculta las pestañas para tipo servicio.
@@ -1363,7 +1464,6 @@ export default {
             affectation_igv_types: [],
             categories: [],
             brands: [],
-            accounts: [],
             show_has_igv: true,
             purchase_show_has_igv: true,
             have_account: false,
@@ -1383,6 +1483,7 @@ export default {
             inventory_configuration: null,
             tariffs : [],
             concepts : [],
+            accounts: [],
         }
     },
     async created() {
@@ -1406,6 +1507,7 @@ export default {
                 this.attribute_types = data.attribute_types
                 this.tariffs = data.tariffs
                 this.concepts = data.concepts
+                console.log('acounts',this.accounts)
                 // this.config = data.configuration
                 if (this.canShowExtraData) {
                     this.$store.commit('setColors', data.colors);
@@ -1621,6 +1723,13 @@ export default {
                 exchange_points: false,
                 quantity_of_points: 0,
                 factory_code: null,
+
+                item_import_cta:null,
+                item_finish_cta:null,
+                item_process_cta:null,
+                income_cta:null,
+                sale_cost_cta:null,
+                purchase_cta:null,
 
             }
 

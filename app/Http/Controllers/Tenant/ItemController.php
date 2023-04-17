@@ -13,6 +13,7 @@ use App\Http\Resources\Tenant\ItemCollection;
 use App\Http\Resources\Tenant\ItemResource;
 use App\Imports\CatalogImport;
 use App\Imports\ItemsImport;
+use App\Models\Tenant\AccountMovement;
 use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Catalogs\CatColorsItem;
@@ -218,7 +219,7 @@ class ItemController extends Controller
         $system_isc_types = SystemIscType::whereActive()->orderByDescription()->get();
         $affectation_igv_types = AffectationIgvType::whereActive()->get();
         $warehouses = Warehouse::all();
-        $accounts = Account::all();
+        $accounts = AccountMovement::all();
         $tags = Tag::all();
         $categories = Category::all();
         $brands = Brand::all();

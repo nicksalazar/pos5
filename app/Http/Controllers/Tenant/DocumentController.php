@@ -17,6 +17,7 @@ use App\Imports\DocumentImportExcelFormat;
 use App\Imports\DocumentsImport;
 use App\Imports\DocumentsImportTwoFormat;
 use App\Mail\Tenant\DocumentEmail;
+use App\Models\Tenant\AccountingEntries;
 use App\Models\Tenant\Advance;
 use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\AttributeType;
@@ -589,9 +590,52 @@ class DocumentController extends Controller
         $this->associateDispatchesToDocument($request, $document_id);
         $this->associateSaleNoteToDocument($request, $document_id);
 
+        $this->createAccountingEntry($document_id);
+
+
         return $res;
     }
 
+    /* Crear los asientos contables del documento */
+    private function createAccountingEntry($document_id){
+
+        $document = Document::find($document_id);
+        Log::info('documento created: ' . json_encode($document));
+        $entry = AccountingEntries::last();
+
+        if($document && $document->document_type_id == '01'){
+
+            $seat = ($entry && $entry->count() > 0 )? intval($entry->seat) + 1 : 1;
+            $comment = ($document->customer) ? 'Factura de venta F'+ $document->stablishment->code + substr($document->series,1)+ str_pad($document->number,9,0,STR_PAD_LEFT):'Fatura F'+ $document->stablishment->code + substr($document->series,1)+ str_pad($document->number,9,0,STR_PAD_LEFT) + ' de ' + $document->customer->name ;
+
+            $total_debe = 0;
+            $total_haber = 0;
+
+            $cabeceraC = new AccountingEntries();
+            $cabeceraC->user_id = $document->user_id;
+            $cabeceraC->seat = $seat;
+            $cabeceraC->seat_general = $seat;
+            $cabeceraC->seat_date = $document->date_of_issue;
+            $cabeceraC->types_accounting_entrie_id = 1;
+            $cabeceraC->comment = $comment;
+            $cabeceraC->serie = null;
+            $cabeceraC->number = $seat;
+            $cabeceraC->total_debe = $total_debe;
+            $cabeceraC->total_haber = $total_haber;
+            $cabeceraC->revised1 = 0;
+            $cabeceraC->user_revised1 = 0;
+            $cabeceraC->revised2 = 0;
+            $cabeceraC->user_revised2 = 0;
+            $cabeceraC->currency_type_id = $document->currency_type_id;
+            $cabeceraC->doctype = $document->document_type_id;
+            $cabeceraC->is_client = ($document->customer)?true:false;
+
+
+        }else{
+            Log::info('tipo de documento no genera asiento contable de momento');
+        }
+
+    }
 
     /**
      * Validaciones previas al proceso de facturacion

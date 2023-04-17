@@ -669,6 +669,25 @@
 
                         </div>
                         <div class="row">
+
+                            <div class="col-lg-4 col-md-4"  v-if="company && company.countable">
+                                <div :class="{'has-danger': errors.account}"
+                                    class="form-group">
+                                    <label class="control-label">
+                                        Cuenta clientes
+                                    </label>
+                                    <el-select v-model="form.account"
+                                            clearable>
+                                        <el-option v-for="option in accounts"
+                                                :key="option.id"
+                                                :label="option.code + ' - ' + option.description "
+                                                :value="option.id">
+                                                <span style="float: left"> {{ option.code }} - {{ option.description }}</span>
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                            </div>
+
                             <div class="col-lg-4 col-md-4">
 
                                 <div :class="{'has-danger': errors.seller_id}"
@@ -766,8 +785,8 @@
 </template>
 
 <script>
-import {mapActions, mapState} from "vuex/dist/vuex.mjs";
 
+import {mapActions, mapState} from "vuex";
 import {serviceNumber} from '../../../mixins/functions'
 
 export default {
@@ -781,6 +800,22 @@ export default {
         'input_person',
         'parentId',
     ],
+    computed: {
+        ...mapState([
+            'config',
+            'person',
+            'parentPerson',
+
+        ]),
+        maxLength: function () {
+            if (this.form.identity_document_type_id === '6') {
+                return 11
+            }
+            if (this.form.identity_document_type_id === '1') {
+                return 8
+            }
+        },
+    },
     data() {
         return {
             form_zone: {add: false, name: null, id: null},
@@ -821,7 +856,9 @@ export default {
             person_types: [],
             identity_document_types: [],
             discount_types: [],
-            activeName: 'first'
+            activeName: 'first',
+            accounts:[],
+            company : null,
         }
     },
     async created() {
@@ -843,6 +880,8 @@ export default {
                 this.locations = response.data.locations;
                 this.person_types = response.data.person_types;
                 this.discount_types = response.data.discount_types;
+                this.accounts = response.data.accounts;
+                this.company = response.data.company;
             })
             .finally(() => {
                 if (this.api_service_token === false) {
@@ -852,21 +891,6 @@ export default {
                 }
             })
 
-    },
-    computed: {
-        ...mapState([
-            'config',
-            'person',
-            'parentPerson',
-        ]),
-        maxLength: function () {
-            if (this.form.identity_document_type_id === '6') {
-                return 11
-            }
-            if (this.form.identity_document_type_id === '1') {
-                return 8
-            }
-        },
     },
     methods: {
         ...mapActions([
@@ -907,6 +931,7 @@ export default {
                 discount_amount: 0,
                 parteRel:'NO',
                 pagoLocExt:'Local',
+                account:null,
 
             }
             this.updateEmail()
@@ -964,6 +989,8 @@ export default {
                 this.$http.get(`/${this.resource}/record/${this.recordId}`)
                     .then(response => {
                         this.form = response.data.data
+                        console.log('form', response.data.data)
+
                         if (response.data.data.contact == null) {
                             this.form.contact = {
                                 full_name: null,

@@ -154,6 +154,7 @@
             'pagoLocExtDoc',
             'parteRel',
             'pagoLocExt',
+            'account',
         ];
 
         protected $casts = [
@@ -590,7 +591,7 @@
                 'nationality_id' => $this->nationality_id,
                 'department_id' => $department['id']??null,
                 'department' => $department,
-
+                'account' => $this->account,
                 'province_id' => $province['id']??null,
                 'province' => $province,
                 'district_id' => $district['id']??null,
