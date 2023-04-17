@@ -23,8 +23,8 @@
     use App\Models\Tenant\Catalogs\SystemIscType;
     use App\Models\Tenant\Company;
     use App\Models\Tenant\Configuration;
-use App\Models\Tenant\DocumentTypesSustentoSRI;
-use App\Models\Tenant\Establishment;
+    use App\Models\Tenant\DocumentTypesSustentoSRI;
+    use App\Models\Tenant\Establishment;
     use App\Models\Tenant\GuideFile;
     use App\Models\Tenant\Item;
     use App\Models\Tenant\ItemUnitType;
@@ -52,15 +52,16 @@ use App\Models\Tenant\Establishment;
     use Symfony\Component\HttpFoundation\StreamedResponse;
     use Throwable;
     use App\Models\Tenant\GeneralPaymentCondition;
-use App\Models\Tenant\Imports;
-use App\Models\Tenant\PurchaseDocumentTypes2;
-use App\Models\Tenant\RetentionTypePurchase;
+    use App\Models\Tenant\Imports;
+    use App\Models\Tenant\PurchaseDocumentTypes2;
+    use App\Models\Tenant\RetentionTypePurchase;
     use App\Models\Tenant\RetentionsDetailEC;
     use App\Models\Tenant\RetentionsEC;
-use App\Models\Tenant\Series;
-use App\Models\Tenant\TypeDocsPurchase;
-use App\Models\Tenant\UserDefaultDocumentType;
-use Illuminate\Support\Facades\Log;
+    use App\Models\Tenant\Series;
+    use App\Models\Tenant\TypeDocsPurchase;
+    use App\Models\Tenant\UserDefaultDocumentType;
+    use Illuminate\Support\Facades\Log;
+use Modules\Sale\Models\SaleOpportunity;
 
     class PurchaseController extends Controller
     {
@@ -70,6 +71,7 @@ use Illuminate\Support\Facades\Log;
         use OfflineTrait;
 
         private $id;
+        private $purchase;
 
         public function index()
         {
@@ -674,7 +676,7 @@ use Illuminate\Support\Facades\Log;
             if (!$purchase) throw new Exception("El código {$external_id} es inválido, no se encontro el pedido relacionado");
 
             $this->reloadPDF($purchase, $format, $purchase->filename);
-            
+
             $temp = tempnam(sys_get_temp_dir(), 'purchase');
             file_put_contents($temp, $this->getStorage($purchase->filename, 'purchase'));
 

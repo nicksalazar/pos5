@@ -187,6 +187,13 @@ class Item extends ModelTenant
         'tariff_id',
         'concept_id',
 
+        'item_import_cta',
+        'item_finish_cta',
+        'item_process_cta',
+        'income_cta',
+        'sale_cost_cta',
+        'purchase_cta',
+
         // 'warehouse_id'
     ];
 
