@@ -56,7 +56,7 @@ class Firma {
 
                 $certf = openssl_x509_parse($x509cert);
                 $subject = $certf['subject']['CN'];
-                Log::info("Certificado: ".json_encode($certf));
+                //Log::info("Certificado: ".json_encode($certf));
                 $aux = null;
 
                 if (array_key_exists('O', $certf['subject'])) {
