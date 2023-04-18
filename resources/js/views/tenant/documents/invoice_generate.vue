@@ -2652,8 +2652,10 @@ export default {
         },
         changeAdvanceInput(index,event,methodType, id){
 
-            if(methodType == 14){
-                let selectedAdvance = _.find(this.advances,{'id':id})
+            let selectedAdvance = _.find(this.advances,{'id':id})
+
+            if(selectedAdvance.description.includes('Anticipo')){
+
                 console.log('VALOR INGRESADO',this.advances)
                 console.log('VALOR INGRESADOs',selectedAdvance)
                 let maxAmount = selectedAdvance.valor
