@@ -189,10 +189,10 @@
                 );
             },
             addAdvancesCustomer(){
-                console.log('addAdvancesCustomer',this.customerId)
+
                 this.$http.get(`/documents/advance/${this.customerId}`).then(
                     response => {
-                        console.log('addAdvancesCustomer',response.data)
+
                         this.advances = response.data
                     }
                 )
@@ -200,15 +200,17 @@
             changeAdvanceInput(index,event,methodType, id){
 
                 let selectedAdvance = _.find(this.advances,{'id':id})
+                let payment_method_type = _.find(this.payment_method_types, {'id': methodType});
 
-                if(selectedAdvance.description.includes('Anticipo')){
+                if(payment_method_type.description.includes('Anticipo')){
 
                     let maxAmount = selectedAdvance.valor
 
                     if(maxAmount >= event){
                         /*EL VALOR INGRESADO EN PERMITIDO EN EL ANTICIPO */
                     }else{
-                        this.form.payments[index].payment = maxAmount
+
+                        this.records[index].payment = maxAmount
                         let message = 'El monto maximo del anticipo es de '+maxAmount
                         this.$message.warning(message)
 
@@ -250,7 +252,7 @@
 
                 }
                 let payment_method_type = _.find(this.payment_method_types, {'id': id});
-                //console.log('paymnet tyoe: ',payment_method_type);
+
                 if (payment_method_type.number_days) {
 
                     this.form.date_of_due = moment(this.form.date_of_issue).add(payment_method_type.number_days, 'days').format('YYYY-MM-DD')
@@ -293,7 +295,6 @@
             },
             onSuccess(response, file, fileList) {
 
-                // console.log(response, file, fileList)
                 this.fileList = fileList
 
                 if (response.success) {
@@ -306,8 +307,6 @@
                     this.cleanFileList()
                     this.$message.error(response.message)
                 }
-
-                // console.log(this.records)
 
             },
             cleanFileList(){
@@ -396,7 +395,6 @@
                         if (error.response.status === 422) {
                             this.records[index].errors = error.response.data;
                         } else {
-                            console.log(error);
                             this.$message.error(error.response.data.message)
                         }
                     })

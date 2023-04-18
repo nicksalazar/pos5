@@ -1945,7 +1945,7 @@ export default {
             this.btnText = 'Actualizar';
             this.loading_submit = true;
             await this.$http.get(`/documents/${this.documentId}/show`).then(response => {
-                console.log('GET SHOW DATA: ',response.data.data)
+
                 this.onSetFormData(response.data.data);
             }).finally(() => this.loading_submit = false);
         }
@@ -2344,7 +2344,6 @@ export default {
             }
         },
         async onSetFormData(data) {
-            console.log('onSetFormData',data)
 
             this.currency_type = await _.find(this.currency_types, {'id': data.currency_type_id})
             this.form.establishment_id = data.establishment_id;
@@ -2653,11 +2652,9 @@ export default {
         changeAdvanceInput(index,event,methodType, id){
 
             let selectedAdvance = _.find(this.advances,{'id':id})
+            let payment_method_type = _.find(this.payment_method_types, {'id': methodType});
+            if(payment_method_type.description.includes('Anticipo')){
 
-            if(selectedAdvance.description.includes('Anticipo')){
-
-                console.log('VALOR INGRESADO',this.advances)
-                console.log('VALOR INGRESADOs',selectedAdvance)
                 let maxAmount = selectedAdvance.valor
 
                 if(maxAmount >= event){
@@ -2681,9 +2678,6 @@ export default {
 
             let payment = 0;
             let amount = _.round(total / payment_count, 2);
-
-            console.log('monto pendinete: ',amount)
-            console.log('Max amount',maxAmount)
 
             if(maxAmount >= amount ){
                 /* EL MONTO INGRESADO ESTA PERMITIDO */
@@ -2709,7 +2703,7 @@ export default {
                 id = this.form.fee[index].payment_method_type_id;
             }
             let payment_method_type = _.find(this.payment_method_types, {'id': id});
-            //console.log('paymnet tyoe: ',payment_method_type);
+
             if (payment_method_type.number_days) {
 
                 this.form.date_of_due = moment(this.form.date_of_issue).add(payment_method_type.number_days, 'days').format('YYYY-MM-DD')
@@ -2793,10 +2787,9 @@ export default {
         },
         addAdvancesCustomer(){
 
-            console.log('addAdvancesCustomer',this.form.customer_id)
             this.$http.get(`/${this.resource}/advance/${this.form.customer_id}`).then(
                 response => {
-                    console.log('addAdvancesCustomer',response.data)
+
                     this.advances = response.data
                 }
             )
@@ -3137,7 +3130,6 @@ export default {
             this.calculatePayments()
         },
         async ediItem(row, index) {
-            console.log('EditItem',row)
             row.indexi = index
             this.recordItem = row
             this.showDialogAddItem = true
@@ -3363,7 +3355,6 @@ export default {
                 await this.filterCustomers()
                 // this.form.customer_id = (this.customers.length > 0) ? this.establishment.customer_id : null
                 let alt = _.find(this.customers, {'id': this.establishment.customer_id});
-                // console.log(alt)
 
                 if (alt !== undefined) {
                     this.form.customer_id = this.establishment.customer_id
@@ -3434,7 +3425,7 @@ export default {
             })
         },
         filterSeries() {
-            // console.log('filterSeries');
+
             this.form.series_id = null
             let series = _.filter(this.all_series, {
                 'establishment_id': this.form.establishment_id,
@@ -3451,8 +3442,6 @@ export default {
 
                 });
             }
-
-            //console.log(series);
 
             this.$store.commit('setSeries', series)
             this.form.series_id = (this.series.length > 0) ? this.series[0].id : null
@@ -3514,7 +3503,7 @@ export default {
                 }
 
             } else {
-                //console.log('ITEM A ADD: ',row)
+
                 this.form.items.push(JSON.parse(JSON.stringify(row)));
             }
 
@@ -3531,9 +3520,8 @@ export default {
             this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
             let items = []
             this.form.items.forEach((row) => {
-                //console.log('changeCurrencyType init',row)
+
                 items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale, this.percentage_igv, this.configuration.currency_type_id))
-                //console.log('changeCurrencyType end',items)
 
             });
             this.form.items = items
@@ -3635,8 +3623,6 @@ export default {
 
 
                 }
-
-                // console.log(row.total_value)
 
                 if (!['21', '37'].includes(row.affectation_igv_type_id)) {
                     // total_value += parseFloat(row.total_value)
@@ -3765,8 +3751,6 @@ export default {
             let amount = parseFloat(this.total_global_charge)
             // let base = this.form.total_taxed + amount
             let factor = _.round(amount / base, 5)
-
-            console.log('this form charges',this.form)
 
             let charge = _.find(this.form.charges, {charge_type_id: '50'})
 
@@ -4035,8 +4019,6 @@ export default {
             let temp = this.form.payment_condition_id;
             // Condicion de pago Credito con cuota pasa a credito
             if (this.form.payment_condition_id === '03') this.form.payment_condition_id = '02';
-
-            console.log(path,this.form)
             this.$http.post(path, this.form).then(response => {
                 if (response.data.success) {
                     this.$eventHub.$emit('reloadDataItems', null)
@@ -4300,14 +4282,12 @@ export default {
 
             let payment = 0;
             let amount = _.round(total / payment_count, 2);
-            // console.log(amount);
             _.forEach(this.form.payments, row => {
                 payment += amount;
                 if (total - payment < 0) {
                     amount = _.round(total - payment + amount, 2);
                 }
                 row.payment = amount;
-                // console.error(row.payment)
             })
         },
         calculateFee() {
@@ -4330,16 +4310,13 @@ export default {
             if(this.form.has_retention) {
                 total_pay -= this.form.retention.amount;
             }
-            // console.log(this.form.retention)
-            // console.log(this.form.total_pending_payment)
-            // console.log(this.form.total)
 
             if (!_.isEmpty(this.form.detraction) && this.form.total_pending_payment > 0) {
                 return this.form.total_pending_payment
             }
 
             if (!_.isEmpty(this.form.retention) && this.form.total_pending_payment > 0) {
-                // console.log('1');
+
                 return this.form.total_pending_payment
             }
 
@@ -4378,7 +4355,7 @@ export default {
             }
         },
         openDialogLots(item) {
-            console.log(item);
+
             this.recordItem = item;
             this.showDialogItemSeriesIndex = true;
         },

@@ -115,7 +115,7 @@
 
                                     <td>
                                         <div class="form-group mb-0" :class="{'has-danger': row.errors.payment}">
-                                            <el-input v-model="row.payment"></el-input>
+                                            <el-input v-model="row.payment" @change="changeAdvanceInput(index,$event,row.payment_method_type_id,row.reference)" ></el-input>
                                             <small class="form-control-feedback" v-if="row.errors.payment" v-text="row.errors.payment[0]"></small>
                                         </div>
                                     </td>
@@ -316,13 +316,32 @@
                 })
             },
             addAdvancesCustomer(){
-                console.log('addAdvancesCustomer',this.customerId)
+
                 this.$http.get(`/documents/advance/${this.customerId}`).then(
                     response => {
-                        console.log('addAdvancesCustomer',response.data)
+
                         this.advances = response.data
                     }
                 )
+            },
+            changeAdvanceInput(index,event,methodType, id){
+
+                let selectedAdvance = _.find(this.advances,{'id':id})
+                let payment_method_type = _.find(this.payment_method_types, {'id': methodType});
+                if(payment_method_type.description.includes('Anticipo')){
+
+                    let maxAmount = selectedAdvance.valor
+
+                    if(maxAmount >= event){
+                        /*EL VALOR INGRESADO EN PERMITIDO EN EL ANTICIPO */
+                    }else{
+
+                        this.records[index].payment = maxAmount
+                        let message = 'El monto maximo del anticipo es de '+maxAmount
+                        this.$message.warning(message)
+
+                    }
+                }
             },
             getObjectResponse(success, message = null){
                 return {
@@ -362,7 +381,6 @@
             },
             onSuccess(response, file, fileList) {
 
-                // console.log(response, file, fileList)
                 this.fileList = fileList
 
                 if (response.success) {
@@ -376,8 +394,6 @@
                     this.cleanFileList()
                     this.$message.error(response.message)
                 }
-
-                // console.log(this.records)
 
             },
             cleanFileList(){
@@ -471,7 +487,7 @@
                         if (error.response.status === 422) {
                             this.records[index].errors = error.response.data;
                         } else {
-                            console.log(error);
+
                             this.$message.error(error.response.data.message)
                         }
                     })
@@ -512,7 +528,7 @@
                     id = this.form.fee[index].payment_method_type_id;
                 }
                 let payment_method_type = _.find(this.payment_method_types, {'id': id});
-                //console.log('paymnet tyoe: ',payment_method_type);
+
                 if (payment_method_type.number_days) {
 
                     this.form.date_of_due = moment(this.form.date_of_issue).add(payment_method_type.number_days, 'days').format('YYYY-MM-DD')
