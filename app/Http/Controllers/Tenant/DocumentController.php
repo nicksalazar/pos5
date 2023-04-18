@@ -18,6 +18,7 @@ use App\Imports\DocumentsImport;
 use App\Imports\DocumentsImportTwoFormat;
 use App\Mail\Tenant\DocumentEmail;
 use App\Models\Tenant\AccountingEntries;
+use App\Models\Tenant\AccountingEntryItems;
 use App\Models\Tenant\Advance;
 use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\AttributeType;
@@ -605,31 +606,81 @@ class DocumentController extends Controller
 
         if($document && $document->document_type_id == '01'){
 
-            $seat = ($entry && $entry->count() > 0 )? ($entry->seat + 1) : 1;
-            $comment = ($document->customer) ? 'Factura de venta F'. $document->establishment->code . substr($document->series,1). str_pad($document->number,'9','0',STR_PAD_LEFT):'Fatura F'. $document->establishment->code . substr($document->series,1). str_pad($document->number,'9','0',STR_PAD_LEFT) . ' de '. $document->customer->name ;
+            try{
+                $seat = ($entry && $entry->count() > 0 )? ($entry->seat + 1) : 1;
+                $comment = ($document->customer) ? 'Factura de venta F'. $document->establishment->code . substr($document->series,1). str_pad($document->number,'9','0',STR_PAD_LEFT):'Fatura F'. $document->establishment->code . substr($document->series,1). str_pad($document->number,'9','0',STR_PAD_LEFT) . ' de '. $document->customer->name ;
 
-            $total_debe = 0;
-            $total_haber = 0;
+                $total_debe = 0;
+                $total_haber = 0;
 
-            $cabeceraC = new AccountingEntries();
-            $cabeceraC->user_id = $document->user_id;
-            $cabeceraC->seat = $seat;
-            $cabeceraC->seat_general = $seat;
-            $cabeceraC->seat_date = $document->date_of_issue;
-            $cabeceraC->types_accounting_entrie_id = 1;
-            $cabeceraC->comment = $comment;
-            $cabeceraC->serie = null;
-            $cabeceraC->number = $seat;
-            $cabeceraC->total_debe = $total_debe;
-            $cabeceraC->total_haber = $total_haber;
-            $cabeceraC->revised1 = 0;
-            $cabeceraC->user_revised1 = 0;
-            $cabeceraC->revised2 = 0;
-            $cabeceraC->user_revised2 = 0;
-            $cabeceraC->currency_type_id = $document->currency_type_id;
-            $cabeceraC->doctype = $document->document_type_id;
-            $cabeceraC->is_client = ($document->customer)?true:false;
+                $cabeceraC = new AccountingEntries();
+                $cabeceraC->user_id = $document->user_id;
+                $cabeceraC->seat = $seat;
+                $cabeceraC->seat_general = $seat;
+                $cabeceraC->seat_date = $document->date_of_issue;
+                $cabeceraC->types_accounting_entrie_id = 1;
+                $cabeceraC->comment = $comment;
+                $cabeceraC->serie = null;
+                $cabeceraC->number = $seat;
+                $cabeceraC->total_debe = $total_debe;
+                $cabeceraC->total_haber = $total_haber;
+                $cabeceraC->revised1 = 0;
+                $cabeceraC->user_revised1 = 0;
+                $cabeceraC->revised2 = 0;
+                $cabeceraC->user_revised2 = 0;
+                $cabeceraC->currency_type_id = $document->currency_type_id;
+                $cabeceraC->doctype = $document->document_type_id;
+                $cabeceraC->is_client = ($document->customer)?true:false;
+                $cabeceraC->establishment_id = $document->establishment_id;
+                $cabeceraC->establishment = $document -> establishment;
+                $cabeceraC->prefix = 'ASC';
+                $cabeceraC->person_id = $document->customer_id;
 
+                $cabeceraC->save();
+
+                $customer = Person::find($cabeceraC->person_id);
+
+                $detalle = new AccountingEntryItems();
+                $detalle->accounting_entrie_id = $cabeceraC->id;
+                $detalle->account_movement_id = $customer->account;
+                $detalle->seat_line = 1;
+                $detalle->debe = $document->total;
+                $detalle->haber = 0;
+                $detalle->sve();
+
+                $arrayEntrys = [];
+                $n = 1;
+                foreach($document->items as $key => $value){
+
+                    $item = Item::fin($value->item_id);
+
+                    if(array_key_exists($item->purchase_cta,$arrayEntrys)){
+
+                        $arrayEntrys[$item->purchase_cta]['debe'] += ($item->sale_unit_price * intval($value->quantity));
+
+                    }else if(!array_key_exists($item->purchase_cta,$arrayEntrys)){
+                        $n += 1;
+
+                        $arrayEntrys[$item->purchase_cta] = [
+                            'seat_line' => $n,
+                            'debe' => ($item->sale_unit_price * intval($value->quantity)),
+                            'haber' => 0,
+                        ];
+                    }else if(array_key_exists($item->purchase_cta,$arrayEntrys)){
+
+                        $arrayEntrys[$item->purchase_cta]['haber'] += ($item->sale_unit_price * intval($value->quantity));
+
+                    }
+
+
+                }
+
+
+            }catch(Exception $ex){
+
+                Log::error('Error al intentar generar el asiento contable');
+                Log::error($ex->getMessage());
+            }
 
         }else{
             Log::info('tipo de documento no genera asiento contable de momento');
