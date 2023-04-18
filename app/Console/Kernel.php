@@ -32,6 +32,9 @@ class Kernel extends ConsoleKernel
         //ejecutar comandos SRI
         $schedule->command('tenancy:run sri:send')->everyMinute()->withoutOverlapping();
         $schedule->command('tenancy:run sri:see')->everyMinute()->withoutOverlapping();
+        $schedule->command('tenancy:run retentions:xml')->everyMinute()->withoutOverlapping();
+        $schedule->command('tenancy:run retentions:send')->everyMinute()->withoutOverlapping();
+        $schedule->command('tenancy:run retentions:see')->everyMinute()->withoutOverlapping();
     }
 
     /**
