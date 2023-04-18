@@ -371,7 +371,7 @@
                                                 </el-tooltip>
                                             </th>
                                             <th v-if="form.payments.length>0"
-                                                class="pb-2">Referencia
+                                                class="pb-2">Referencia/Anticipo
                                             </th>
                                             <th v-if="form.payments.length>0"
                                                 class="pb-2">Monto
@@ -407,15 +407,24 @@
                                                     </el-select>
                                                 </div>
                                             </td>
-                                            <td>
-                                                <div class="form-group mb-2 mr-2">
-                                                    <el-input v-model="row.reference"></el-input>
-                                                </div>
+                                            <td v-if="!row.payment_method_type_id_desc">
+                                                <el-input
+                                                    v-model="row.reference"></el-input>
+
+                                            </td>
+                                            <td v-else>
+                                                <el-select
+                                                    v-model="row.reference"
+                                                    @change="changeAdvance(index,$event)">
+                                                    <el-option
+                                                        v-for="option in advances"
+                                                        :key="option.id"
+                                                        :label="option.id"
+                                                        :value="option.id"></el-option>
+                                                </el-select>
                                             </td>
                                             <td>
-                                                <div class="form-group mb-2 mr-2">
-                                                    <el-input v-model="row.payment"></el-input>
-                                                </div>
+                                                <el-input v-model="row.payment"  @change="changeAdvanceInput(index,$event,row.payment_method_type_id,row.reference)"></el-input>
                                             </td>
                                             <td class="series-table-actions text-center">
                                                 <button class="btn waves-effect waves-light btn-xs btn-danger"
@@ -882,6 +891,7 @@ export default {
             type_docs:[],
             codSustentos:[],
             haveRetentions: false,
+            advances:[],
         }
     },
     async mounted() {
@@ -1201,6 +1211,75 @@ export default {
             }
 
         },
+        getTotal() {
+            let total_pay = this.form.total;
+            if(this.form.has_retention) {
+                total_pay -= this.form.retention.amount;
+            }
+
+            if (!_.isEmpty(this.form.detraction) && this.form.total_pending_payment > 0) {
+                return this.form.total_pending_payment
+            }
+
+            if (!_.isEmpty(this.form.retention) && this.form.total_pending_payment > 0) {
+
+                return this.form.total_pending_payment
+            }
+
+            // console.log('2');
+            return total_pay
+        },
+        changeAdvanceInput(index,event,methodType, id){
+
+            let selectedAdvance = _.find(this.advances,{'id':id})
+            let payment_method_type = _.find(this.payment_method_types, {'id': methodType});
+            if(payment_method_type.description.includes('Anticipo')){
+
+                let maxAmount = selectedAdvance.valor
+
+                if(maxAmount >= event){
+                    /*EL VALOR INGRESADO EN PERMITIDO EN EL ANTICIPO */
+                    
+                }else{
+                    this.form.payments[index].payment = maxAmount
+                    let message = 'El monto maximo del anticipo es de '+maxAmount
+                    this.$message.warning(message)
+
+                }
+            }
+        },
+        changeAdvance(index, id){
+
+            let selectedAdvance = _.find(this.advances,{'id':id})
+            let maxAmount = selectedAdvance.valor
+
+            let payment_count = this.form.payments.length;
+            // let total = this.form.total;
+            let total = this.getTotal()
+
+            let payment = 0;
+            let amount = _.round(total / payment_count, 2);
+
+            if(maxAmount >= amount ){
+                /* EL MONTO INGRESADO ESTA PERMITIDO */
+            }else if(amount > maxAmount ){
+
+                this.form.payments[index].payment = maxAmount
+                let message = 'El monto maximo del anticipo es de '+maxAmount
+                this.$message.warning(message)
+            }
+
+
+        },
+        addAdvancesCustomer(){
+
+            this.$http.get(`/documents/advance/${this.form.supplier_id}`).then(
+                response => {
+
+                    this.advances = response.data
+                }
+            )
+        },
         changePaymentMethodType(index) {
 
             let id = '01'
@@ -1226,6 +1305,20 @@ export default {
                     }
                 }
 
+            }else if(payment_method_type.description.includes('Anticipo')){
+
+                this.$notify({
+                    title: '',
+                    message: 'Debes seleccionar un anticipo disponible',
+                    type: 'success'
+                })
+                this.form.payments[index].payment_method_type_id_desc = 'Anticipo';
+                this.form.date_of_due = this.form.date_of_issue
+                this.readonly_date_of_due = false
+                this.form.payment_method_type_id = null
+                this.enabled_payments = true
+
+
             } else {
 
                 this.form.date_of_due = this.form.date_of_issue
@@ -1245,6 +1338,7 @@ export default {
         },
         changeSupplier() {
             this.calculatePerception()
+            this.addAdvancesCustomer()
         },
         filterSuppliers() {
 
