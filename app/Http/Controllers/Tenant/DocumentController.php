@@ -48,6 +48,7 @@ use App\Models\Tenant\Item;
 use App\Models\Tenant\PaymentCondition;
 use App\Models\Tenant\PaymentMethodType;
 use App\Models\Tenant\Person;
+use App\Models\Tenant\PurchasePayment;
 use App\Models\Tenant\SaleNote;
 use App\Models\Tenant\Series;
 use App\Models\Tenant\StateType;
@@ -1545,10 +1546,16 @@ class DocumentController extends Controller
 
         $data = $records->transform(function($row) use($client_id){
             $documents = DocumentPayment::where('reference',$row->id)->where('payment_method_type_id',$row->idMethodType)->get();
+            $purchases = PurchasePayment::where('reference',$row->id)->where('payment_method_type_id',$row->idMethodType)->get();
             $total = 0;
+
             if($documents->count()> 0){
-                $total = $documents->sum('payment');
+                $total += $documents->sum('payment');
             }
+            if($purchases->count()> 0){
+                $total += $purchases->sum('payment');
+            }
+
             $row->valor = round(($row->valor - $total),2);
             return $row;
         });
