@@ -532,7 +532,6 @@ class DocumentController extends Controller
                     'lots' => [],
                     'lots_enabled' => (bool)$row->lots_enabled,
                     'series_enabled' => (bool)$row->series_enabled,
-
                 ];
             });
         }
@@ -601,12 +600,12 @@ class DocumentController extends Controller
 
         $document = Document::find($document_id);
         Log::info('documento created: ' . json_encode($document));
-        $entry = AccountingEntries::last();
+        $entry = (AccountingEntries::get())->last();
 
         if($document && $document->document_type_id == '01'){
 
-            $seat = ($entry && $entry->count() > 0 )? intval($entry->seat) + 1 : 1;
-            $comment = ($document->customer) ? 'Factura de venta F'+ $document->stablishment->code + substr($document->series,1)+ str_pad($document->number,9,0,STR_PAD_LEFT):'Fatura F'+ $document->stablishment->code + substr($document->series,1)+ str_pad($document->number,9,0,STR_PAD_LEFT) + ' de ' + $document->customer->name ;
+            $seat = ($entry && $entry->count() > 0 )? ($entry->seat + 1) : 1;
+            $comment = ($document->customer) ? 'Factura de venta F'. $document->establishment->code . substr($document->series,1). str_pad($document->number,'9','0',STR_PAD_LEFT):'Fatura F'. $document->establishment->code . substr($document->series,1). str_pad($document->number,'9','0',STR_PAD_LEFT) . ' de '. $document->customer->name ;
 
             $total_debe = 0;
             $total_haber = 0;

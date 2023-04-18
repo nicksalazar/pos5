@@ -669,23 +669,23 @@
 
                                                                     <template v-if="showLoadVoucher">
                                                                         <td class="" style="width: 50px">
-                                                                            <!-- <el-tooltip class="item" content="Cargar voucher" effect="dark" placement="top-start"> -->
-                                                                                <el-upload
-                                                                                    :data="{'index': index}"
-                                                                                    :headers="headers_token"
-                                                                                    :multiple="false"
-                                                                                    :on-remove="(file, fileList) => handleRemoveUploadVoucher(file, fileList, index)"
-                                                                                    :action="`/finances/payment-file/upload`"
-                                                                                    :show-file-list="true"
-                                                                                    :file-list="row.file_list"
-                                                                                    :on-success="(response, file, fileList) => onSuccessUploadVoucher(response, file, fileList, index)"
-                                                                                    :limit="1"
-                                                                                    >
-                                                                                        <button  type="button" class="btn btn-sm btn-primary"  slot="trigger">
-                                                                                            <i class="fas fa-fw fa-upload"></i>
-                                                                                        </button>
-                                                                                </el-upload>
-                                                                            <!-- </el-tooltip> -->
+
+                                                                            <el-upload
+                                                                                :data="{'index': index}"
+                                                                                :headers="headers_token"
+                                                                                :multiple="false"
+                                                                                :on-remove="(file, fileList) => handleRemoveUploadVoucher(file, fileList, index)"
+                                                                                :action="`/finances/payment-file/upload`"
+                                                                                :show-file-list="true"
+                                                                                :file-list="row.file_list"
+                                                                                :on-success="(response, file, fileList) => onSuccessUploadVoucher(response, file, fileList, index)"
+                                                                                :limit="1"
+                                                                                >
+                                                                                    <button  type="button" class="btn btn-sm btn-primary"  slot="trigger">
+                                                                                        <i class="fas fa-fw fa-upload"></i>
+                                                                                    </button>
+                                                                            </el-upload>
+
                                                                         </td>
                                                                     </template>
 
