@@ -695,7 +695,8 @@ class DocumentController extends Controller
                     }
 
                     if(!($item->sale_cost_cta) && $configuration->cta_sale_costs){
-                        if(array_key_exists($item->sale_cost_cta,$arrayEntrys)){
+
+                        if(array_key_exists($configuration->cta_sale_costs,$arrayEntrys)){
 
                             $arrayEntrys[$configuration->cta_sale_costs]['debe'] += ($item->purchase_unit_price * intval($value->quantity));
 
