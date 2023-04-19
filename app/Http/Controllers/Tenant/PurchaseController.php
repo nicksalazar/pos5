@@ -11,7 +11,9 @@
     use App\Http\Requests\Tenant\PurchaseRequest;
     use App\Http\Resources\Tenant\PurchaseCollection;
     use App\Http\Resources\Tenant\PurchaseResource;
-    use App\Models\Tenant\Catalogs\AffectationIgvType;
+use App\Models\Tenant\AccountingEntries;
+use App\Models\Tenant\AccountingEntryItems;
+use App\Models\Tenant\Catalogs\AffectationIgvType;
     use App\Models\Tenant\Catalogs\AttributeType;
     use App\Models\Tenant\Catalogs\ChargeDiscountType;
     use App\Models\Tenant\Catalogs\CurrencyType;
@@ -538,6 +540,11 @@ use Modules\Sale\Models\SaleOpportunity;
                     $this->setFilename($doc);
                     $this->createPdf($doc, "a4", $doc->filename);
 
+                    if((Company::active())->countable > 0){
+                        $this->createAccountingEntry($doc->id, $data['ret']);
+                    }
+
+
                     return $doc;
                 });
 
@@ -562,6 +569,254 @@ use Modules\Sale\Models\SaleOpportunity;
             foreach ($fee as $row) {
                 $purchase->fee()->create($row);
             }
+        }
+
+         /* Crear los asientos contables del documento */
+        private function createAccountingEntry($document_id,$ret){
+
+            $document = Purchase::find($document_id);
+            //Log::info('compra: '.json_encode($document));
+            //Log::info('retenciones: ',$ret);
+
+            $entry = (AccountingEntries::get())->last();
+
+            if(count($ret) > 0){
+                $iva = 0;
+                $renta = 0;
+
+               foreach($ret as $rett){
+
+                if($rett['tipo'] == 'IVA'){
+                    $iva += floatval($rett['valor']);
+                }
+                if($rett['tipo'] == 'RENTA')
+
+                    $renta += floatval($rett['valor']);
+                }
+
+            }
+
+            if($document && $document->document_type_id == '01'){
+
+                try{
+                    $idauth = auth()->user()->id;
+                    $lista = AccountingEntries::where('user_id', '=', $idauth)->latest('id')->first();
+                    $ultimo = AccountingEntries::latest('id')->first();
+                    $configuration = Configuration::first();
+                    if (empty($lista)) {
+                        $seat = 1;
+                    } else {
+
+                        $seat = $lista->seat + 1;
+                    }
+
+                    if (empty($ultimo)) {
+                        $seat_general = 1;
+                    } else {
+                        $seat_general = $ultimo->seat_general + 1;
+                    }
+
+                    $comment = 'Factura de compra F'. $document->establishment->code . substr($document->series,1). str_pad($document->number,'9','0',STR_PAD_LEFT).' '. $document->supplier->name ;
+
+                    $total_debe = 0;
+                    $total_haber = 0;
+
+                    $cabeceraC = new AccountingEntries();
+                    $cabeceraC->user_id = $document->user_id;
+                    $cabeceraC->seat = $seat;
+                    $cabeceraC->seat_general = $seat_general;
+                    $cabeceraC->seat_date = $document->date_of_issue;
+                    $cabeceraC->types_accounting_entrie_id = 1;
+                    $cabeceraC->comment = $comment;
+                    $cabeceraC->serie = null;
+                    $cabeceraC->number = $seat;
+                    $cabeceraC->total_debe = $total_debe;
+                    $cabeceraC->total_haber = $total_haber;
+                    $cabeceraC->revised1 = 0;
+                    $cabeceraC->user_revised1 = 0;
+                    $cabeceraC->revised2 = 0;
+                    $cabeceraC->user_revised2 = 0;
+                    $cabeceraC->currency_type_id = $document->currency_type_id;
+                    $cabeceraC->doctype = $document->document_type_id;
+                    $cabeceraC->is_client = ($document->customer)?true:false;
+                    $cabeceraC->establishment_id = $document->establishment_id;
+                    $cabeceraC->establishment = $document -> establishment;
+                    $cabeceraC->prefix = 'ASC';
+                    $cabeceraC->person_id = $document->supplier_id;
+                    $cabeceraC->external_id = Str::uuid()->toString();
+
+                    $cabeceraC->save();
+                    $cabeceraC->filename = 'ASC-'.$cabeceraC->id.'-'. date('Ymd');
+                    $cabeceraC->save();
+
+                    $customer = Person::find($cabeceraC->person_id);
+
+                    $detalle = new AccountingEntryItems();
+
+                    $detalle->accounting_entrie_id = $cabeceraC->id;
+                    $detalle->account_movement_id = ($customer->account) ? $customer->account : $configuration->cta_suppliers;
+                    $detalle->seat_line = 1;
+                    $detalle->haber = $document->total;
+                    $detalle->debe = 0;
+                    $detalle->save();
+
+                    $arrayEntrys = [];
+                    $n = 1;
+
+                    foreach($document->items as $key => $value){
+
+                        $item = Item::find($value->item_id);
+                        $impuesto = AffectationIgvType::find($item->purchase_affectation_igv_type_id);
+
+
+                        if($item->purchase_cta){
+
+                            if(array_key_exists($item->purchase_cta,$arrayEntrys)){
+
+                                $arrayEntrys[$item->purchase_cta]['debe'] += floatval($value->total_value);
+
+                            }
+                            if(!array_key_exists($item->purchase_cta,$arrayEntrys)){
+                                $n += 1;
+
+                                $arrayEntrys[$item->purchase_cta] = [
+                                    'seat_line' => $n,
+                                    'debe' => floatval($value->total_value),
+                                    'haber' => 0,
+                                ];
+                            }
+                        }
+
+                        if(!($item->purchase_cta) && $configuration->cta_purchases){
+
+                            if(array_key_exists($configuration->cta_purchases,$arrayEntrys)){
+
+                                $arrayEntrys[$configuration->cta_purchases]['debe'] += floatval($value->total_value);
+
+                            }
+                            if(!array_key_exists($configuration->cta_purchases,$arrayEntrys)){
+                                $n += 1;
+
+                                $arrayEntrys[$configuration->cta_purchases] = [
+                                    'seat_line' => $n,
+                                    'debe' => floatval($value->total_value),
+                                    'haber' => 0,
+                                ];
+                            }
+                        }
+
+                        if($impuesto->account){
+
+                            if(array_key_exists($impuesto->account,$arrayEntrys)){
+
+                                $arrayEntrys[$impuesto->account]['debe'] += floatval($value->total_taxes);
+
+                            }
+                            if(!array_key_exists($impuesto->account,$arrayEntrys)){
+
+                                $n += 1;
+
+                                $arrayEntrys[$impuesto->account] = [
+                                    'seat_line' => $n,
+                                    'debe' => floatval($value->total_taxes),
+                                    'haber' => 0,
+                                ];
+
+                            }
+                        }
+
+                        if(!($impuesto->account) && $configuration->cta_taxes){
+
+                            if(array_key_exists($configuration->cta_taxes,$arrayEntrys)){
+
+                                $arrayEntrys[$configuration->cta_taxes]['debe'] += floatval($value->total_taxes);
+
+                            }
+                            if(!array_key_exists($configuration->cta_taxes,$arrayEntrys)){
+
+                                $n += 1;
+
+                                $arrayEntrys[$configuration->cta_taxes] = [
+                                    'seat_line' => $n,
+                                    'debe' => floatval($value->total_taxes),
+                                    'haber' => 0,
+                                ];
+
+                            }
+                        }
+
+                        if($iva > 0 && $configuration->cta_iva_tax){
+
+                            if(array_key_exists($configuration->cta_iva_tax,$arrayEntrys)){
+
+                                $arrayEntrys[$configuration->cta_iva_tax]['haber'] += $iva;
+
+                            }
+                            if(!array_key_exists($configuration->cta_iva_tax,$arrayEntrys)){
+
+                                $n += 1;
+
+                                $arrayEntrys[$configuration->cta_iva_tax] = [
+                                    'seat_line' => $n,
+                                    'haber' => floatval($iva),
+                                    'debe' => 0,
+                                ];
+
+                            }
+                        }
+
+                        if($renta > 0 && $configuration->cta_income_tax){
+
+                            if(array_key_exists($configuration->cta_income_tax,$arrayEntrys)){
+
+                                $arrayEntrys[$configuration->cta_income_tax]['haber'] += $renta;
+
+                            }
+                            if(!array_key_exists($configuration->cta_income_tax,$arrayEntrys)){
+
+                                $n += 1;
+
+                                $arrayEntrys[$configuration->cta_income_tax] = [
+                                    'seat_line' => $n,
+                                    'haber' => floatval($renta),
+                                    'debe' => 0,
+                                ];
+
+                            }
+                        }
+
+
+
+
+                    }
+
+                    foreach( $arrayEntrys as $key=>$value)
+                    {
+                        if($value['debe'] > 0 || $value['haber'] > 0){
+
+                            $detalle = new AccountingEntryItems();
+                            $detalle->accounting_entrie_id = $cabeceraC->id;
+                            $detalle->account_movement_id = $key;
+                            $detalle->seat_line = $value['seat_line'];
+                            $detalle->debe = $value['debe'];
+                            $detalle->haber = $value['haber'];
+                            $detalle->save();
+                        }
+
+                    }
+
+                    Log::info('arreglo de items cuentas',$arrayEntrys);
+
+                }catch(Exception $ex){
+
+                    Log::error('Error al intentar generar el asiento contable');
+                    Log::error($ex->getMessage());
+                }
+
+            }else{
+                Log::info('tipo de documento no genera asiento contable de momento');
+            }
+
         }
 
         public static function convert($inputs)
