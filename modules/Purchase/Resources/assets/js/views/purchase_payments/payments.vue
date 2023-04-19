@@ -192,7 +192,6 @@
 
                 this.$http.get(`/documents/advance/${this.customerId}`).then(
                     response => {
-
                         this.advances = response.data
                     }
                 )
