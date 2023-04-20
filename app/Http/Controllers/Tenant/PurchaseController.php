@@ -407,7 +407,7 @@ use Illuminate\Support\Facades\Log;
                         $ret->save();
 
                         foreach($data['ret'] as $retDet){
-                            Log::info(json_encode($retDet));
+                            //Log::info(json_encode($retDet));
                             $detRet = new RetentionsDetailEC();
                             $detRet->idRetencion = $ret->idRetencion;
                             $detRet->codRetencion = $retDet['code'];
@@ -563,7 +563,7 @@ use Illuminate\Support\Facades\Log;
 
         public static function convert($inputs)
         {
-            Log::info(json_encode($inputs));
+            //Log::info(json_encode($inputs));
             $company = Company::active();
             $values = [
                 'user_id' => auth()->id(),
@@ -739,7 +739,7 @@ use Illuminate\Support\Facades\Log;
                     $ret->save();
 
                     foreach($request['ret'] as $retDet){
-                        Log::info(json_encode($retDet));
+                        //Log::info(json_encode($retDet));
                         $detRet = new RetentionsDetailEC();
                         $detRet->idRetencion = $ret->idRetencion;
                         $detRet->codRetencion = $retDet['code'];

@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Modules\Offline\Models\OfflineConfiguration;
 use Html2Text\Html2Text;
 use App\Models\Tenant\Configuration;
+use Illuminate\Support\Facades\Log;
 use Modules\Finance\Helpers\UploadFileHelper;
 
 
@@ -186,7 +187,7 @@ class DocumentInput
                 if($register_series_invoice_xml && in_array($inputs['document_type_id'], ['01', '03']))
                 {
                     self::registerSeriesInvoiceXml($items_attributes, $row);
-                } 
+                }
 
                 $arayItem = [
                     'item_id' => $item->id,
@@ -199,6 +200,7 @@ class DocumentInput
                         'unit_type_id' => (key_exists('item', $row)) ? $row['item']['unit_type_id'] : $item->unit_type_id,
                         'presentation' => (key_exists('item', $row)) ? (isset($row['item']['presentation']) ? $row['item']['presentation'] : []) : [],
                         'amount_plastic_bag_taxes' => $item->amount_plastic_bag_taxes,
+                        'amount_service_taxes' => $item->amount_service_taxes,
                         'is_set' => $item->is_set,
                         'lots' => self::lots($row),
                         'IdLoteSelected' => (isset($row['IdLoteSelected']) ? $row['IdLoteSelected'] : null),
@@ -243,6 +245,7 @@ class DocumentInput
                     'name_product_xml' => $name_product_xml,
                     'update_description' => Functions::valueKeyInArray($row, 'update_description', false),
                     'additional_data' => Functions::valueKeyInArray($row, 'additional_data'),
+                    'total_service_taxes' => $row['total_service_taxes'],
 //                    'additional_data' => key_exists('additional_data', $row)?$row['additional_data']:null,
                 ];
 //                dd($arayItem);
@@ -321,9 +324,9 @@ class DocumentInput
         return null;
     }
 
-    
+
     /**
-     * 
+     *
      * Registrar series como atributos (5019) para vehiculos
      *
      * @param  array $items_attributes
@@ -333,25 +336,25 @@ class DocumentInput
     public static function registerSeriesInvoiceXml(&$items_attributes, $row)
     {
         $series = self::lots($row);
-        
+
         if(!empty($series))
         {
             $series_to_attributes = self::getVehicleSeriesToAttributes($series);
 
-            if(is_null($items_attributes)) 
+            if(is_null($items_attributes))
             {
                 $items_attributes = $series_to_attributes;
             }
             else if(is_array($items_attributes))
             {
                 $items_attributes = array_merge($items_attributes, $series_to_attributes);
-            } 
+            }
         }
     }
 
-    
+
     /**
-     * 
+     *
      * Generar arreglo de atributos en base a las series - Vehiculos
      *
      * @param  array $series
@@ -363,7 +366,7 @@ class DocumentInput
         $attribute_type_id = '5019';
         $description = 'Serie/Chasis';
 
-        foreach ($series as $serie) 
+        foreach ($series as $serie)
         {
             $attributes [] = [
                 'attribute_type_id' => $attribute_type_id,
@@ -382,8 +385,9 @@ class DocumentInput
     private static function charges($inputs)
     {
         if (array_key_exists('charges', $inputs)) {
-            if ($inputs['charges']) {
+            if ($inputs['charges'] && is_array($inputs['charges'])) {
                 $charges = [];
+
                 foreach ($inputs['charges'] as $row) {
                     $charge_type_id = $row['charge_type_id'];
                     $description = $row['description'];

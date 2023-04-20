@@ -50,11 +50,25 @@
         <ptoEmi>{{ substr($document->series,1,3) }}</ptoEmi>
         <secuencial>{{ str_pad($document->number , '9', '0', STR_PAD_LEFT) }}</secuencial>
         <dirMatriz>{{ $establishment->address }}</dirMatriz>
+        @if ($company->rimpe_emp){
+        <contribuyenteRimpe>CONTRIBUYENTE RÉGIMEN RIMPE</contribuyenteRimpe>
+        @endif
+        @if ($company->rimpe_np){
+        <contribuyenteRimpe>CONTRIBUYENTE NEGOCIO PUPULAR - RÉGIMEN RIMPE</contribuyenteRimpe>
+        @endif
+        @if($company->agente_retencion){
+        <agenteRetencion>'.$this->company->agente_retencion_num.'</agenteRetencion>
+        @endif
     </infoTributaria>
     <infoFactura>
         <fechaEmision>{{ $document->date_of_issue->format('d/m/Y') }}</fechaEmision>
         <dirEstablecimiento>{{ $establishment->address }}</dirEstablecimiento>
+        @if($company->contribuyente_especial){
+        <contribuyenteEspecial>'.$this->company->contribuyente_especial_num.'</contribuyenteEspecial>
+        @endif
+        @if($company->obligado_contabilidad && $company->obligado_contabilidad  > 0){
         <obligadoContabilidad>SI</obligadoContabilidad>
+        @endif
         @if($customer->identity_document_type_id == 1)
         <tipoIdentificacionComprador>05</tipoIdentificacionComprador>
         @endif

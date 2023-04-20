@@ -1,3 +1,5 @@
+import { isArray } from "lodash";
+
 function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pigv, currency_type_id_def = null ) {
     //console.log("porcentage ICG: "+pigv);
     //pigv = 0.12;
@@ -100,15 +102,8 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
         data_item_lot_group: getDataItemLotGroup(row_old)
     };
 
-    // console.log(row)
 
-    //SERVICIO
-    let total_service_taxes = 0
-    if(row_old.has_service_taxes){
 
-        total_service_taxes = _.round(row.quantity * (unit_value_est * (row.item.amount_service_taxes/100)), 3)
-        row.total_service_taxes = total_service_taxes
-    }
     //END SERVICIO
 
     let percentage_igv = pigv * 100
@@ -138,6 +133,16 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     row.unit_value = unit_value
 
+     //SERVICIO
+     let total_service_taxes = 0
+     if(row_old.has_service_taxes == true || row_old.total_service_taxes > 0){
+
+        total_service_taxes = _.round(row.quantity * (row.unit_value * (row.item.amount_service_taxes/100)), 3)
+        row.total_service_taxes = total_service_taxes
+     }
+     //END SERVICIO
+
+
     let total_value_partial = unit_value * row.quantity
 
 
@@ -156,7 +161,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     //     }
     //     row.discounts.splice(index, discount)
     // })
-    if (row.discounts.length > 0) {
+    if (row.discounts && row.discounts.length > 0 ) {
         row.discounts.forEach((discount, index) => {
 
             let affectation_igv_type_exonerated = ['20', '21', '30', '31', '32', '33', '34', '35', '36', '37']
@@ -242,14 +247,21 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     /* Charges */
     let charge_base = 0
     let charge_no_base = 0
+    //console.log('charge:',row.charges.length);
+    //console.log('charge JS:',row.charges);
+
+    console.log('total base charge:', row.charges[0])
     if (row.charges.length > 0) {
         row.charges.forEach((charge, index) => {
             charge.percentage = parseFloat(charge.percentage)
             charge.factor = charge.percentage / 100
             charge.base = _.round(total_value_partial, 2)
             charge.amount = _.round(charge.base * charge.factor, 2)
-            if (charge.charge_type.base) {
-                charge_base += charge.amount
+            if (charge.charge_type) {
+                if(charge.charge_type.base){
+                    charge_base += charge.amount
+                }
+
             } else {
                 charge_no_base += charge.amount
             }
@@ -302,7 +314,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
     let total = total_value + total_taxes
 
-    row.total_charge = _.round(total_charge, 2)
+
     row.total_discount = _.round(total_discount, 2)
     row.total_charge = _.round(total_charge, 2)
     row.total_value = _.round(total_value, 2)
@@ -359,7 +371,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
 
 
     // descuentos, se modifica precio unitario y total descuentos
-    if (row.discounts.length > 0) {
+    if (row.discounts && row.discounts.length > 0) {
 
         let sum_discount_no_base = 0
         let sum_discount_base = 0
@@ -414,7 +426,7 @@ function calculateRowItem(row_old, currency_type_id_new, exchange_rate_sale, pig
     //     row.total_plastic_bag_taxes = total_plastic_bag_taxes
     // }
 
-    //console.log(row)
+    console.log('RETURNED ROW: ',row)
     return row
 }
 

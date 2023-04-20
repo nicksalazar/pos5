@@ -258,6 +258,8 @@ Vue.component('tenant-finance-income-form', require('@viewsModuleFinance/income/
 Vue.component('tenant-income-types-index', require('@viewsModuleFinance/income_types/index.vue'));
 Vue.component('tenant-income-reasons-index', require('@viewsModuleFinance/income_reasons/index.vue'));
 Vue.component('tenant-finance-movements-index', require('@viewsModuleFinance/movements/index.vue'));
+Vue.component('tenant-finance-advances-index', require('@viewsModuleFinance/advances/index.vue'));
+Vue.component('tenant-finance-advances-generate', require('@viewsModuleFinance/advances/form.vue'));
 
 
 //Sale

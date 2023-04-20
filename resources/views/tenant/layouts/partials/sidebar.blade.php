@@ -945,7 +945,7 @@
                     @endif
 
                     @if(in_array('accounting', $vc_modules))
-                        <li class="nav-parent 
+                        <li class="nav-parent
                         {{ ($firstLevel === 'account' || $firstLevel === 'accounting_ledger'  )?'nav-active nav-expanded':'' }}
                         {{ ($firstLevel === 'accounting-entries')?'nav-active nav-expanded':'' }}
                         {{ ($firstLevel === 'accounts-groups')?'nav-active nav-expanded':'' }}
@@ -1091,6 +1091,12 @@
                                     <li class="{{(($firstLevel === 'finances') && ($secondLevel == 'income')) ? 'nav-active' : ''}}">
                                         <a class="nav-link"
                                            href="{{route('tenant.finances.income.index')}}">Ingresos</a>
+                                    </li>
+                                @endif
+                                @if(in_array('finances_advances', $vc_module_levels))
+                                    <li class="{{(($firstLevel === 'finances') && ($secondLevel == 'advances')) ? 'nav-active' : ''}}">
+                                        <a class="nav-link"
+                                        href="{{route('tenant.finances.advances.index')}}">Anticipos</a>
                                     </li>
                                 @endif
                                 @if(in_array('finances_unpaid', $vc_module_levels))
