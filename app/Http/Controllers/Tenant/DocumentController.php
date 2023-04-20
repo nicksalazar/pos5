@@ -591,6 +591,8 @@ class DocumentController extends Controller
         $this->associateSaleNoteToDocument($request, $document_id);
 
 
+        return $res;
+
     }
 
 
