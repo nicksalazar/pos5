@@ -651,7 +651,7 @@
                                                         <!-- Contado -->
                                                         <div v-if="!is_receivable && form.payment_condition_id === '01'"
                                                              class="table-responsive">
-                                                            <table class="text-left table">
+                                                            <table class="text-left table mb-2">
                                                                 <thead>
                                                                 <tr>
                                                                     <template v-if="showLoadVoucher && form.payments.length>0">
@@ -763,6 +763,20 @@
                                                                 </tr>
                                                                 </tbody>
                                                             </table>
+                                                        </div>
+                                                        <div style="display: grid;justify-items: end;" v-if="total_cuenta>0">
+                                                            <p style="color: red; margin-bottom: 2px;width: 70%;">
+                                                                <b>Nota: </b>
+                                                            </p>
+                                                            <p style="color: red; margin-bottom: 2px;width: 70%;">
+                                                               Pendiente a pago: {{ currency_type.symbol }} <b>{{ cuenta_pagar }} </b> 
+                                                            </p>
+                                                            <p style="color: red; margin-bottom: 2px;width: 70%;">
+                                                                Cupo de crédito: {{ currency_type.symbol }} <b>{{ cupo_credito }}</b>
+                                                            </p>
+                                                            <p style="color: red; margin-bottom: 2px;width: 70%;">
+                                                              <b>SELECCIONE OTRA CONDICIÓN DE PAGO </b> 
+                                                            </p>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -1704,6 +1718,12 @@ export default {
             showDialogItemSeriesIndex: false,
             is_client: false,
             recordItem: null,
+            record: {},
+            cuenta_pagar:0,
+            cupo_credito:0,
+            total_cuenta:0,
+            cupo:0,
+            cuenta:0,
             resource: 'documents',
             showDialogAddItem: false,
             showDialogNewPerson: false,
@@ -3830,8 +3850,29 @@ export default {
             }
 
         },
+        validacionCupo(){
+            if(this.deuda>this.cupo){
+                    return true;
+                }else{
+                    return false;
+                }
+        },
         async submit() {
+            
+            //validar cupo
+            this.total_cuenta=0;
 
+            if(this.form.payment_condition_id!=='01'){
+              await this.calcularCupo();
+             }else{
+                this.deuda=0;
+                this.cupo=0;
+             }
+             let validar= await this.validacionCupo();
+
+            if(validar){
+                return false;
+            }
             //Validando las series seleccionadas
             let errorSeries = false;
             _.forEach(this.form.items, row => {
@@ -4088,7 +4129,7 @@ export default {
             this.form.payment_method_type_id = null
 
         },
-        changePaymentCondition() {
+       changePaymentCondition() {
             this.form.fee = [];
             this.form.payments = [];
             if (this.form.payment_condition_id === '01') {
@@ -4113,7 +4154,42 @@ export default {
                 this.setTotalPendingAmountRetention(this.form.retention.amount)
             }
 
+        },
+        async calcularCupo(){
+            this.deuda=0;
+            this.cupo=0;
+            await this.$http.get(`/finances/unpaid/records?customer_id=${this.form.customer_id}&establishment_id=${this.form.establishment_id}`).then((response) => {
+                var datos;
+                datos=response.data.data;
+                datos.map((i)=>{
+                    this.cuenta_pagar=parseFloat( this.cuenta_pagar)+ parseFloat(i.total);
+                })
+                 })
+                 .catch(error => {
+                  })
+                  .then(() => {
+                 });
 
+                 await this.$http.get(`/persons/record/${this.form.customer_id}`).then((response) => {
+                this.record = response.data.data
+                this.cupo_credito=this.record.credit_quota;
+                 })
+                 .catch(error => {
+                  })
+                  .then(() => {
+                      
+                 });
+
+                this.deuda=parseFloat(this.cuenta_pagar)+parseFloat(this.form.total);
+                this.cupo=parseFloat(this.cupo_credito);
+
+                if(this.deuda>this.cupo){
+                    this.total_cuenta=this.deuda;
+                }else{
+                    this.total_cuenta=0
+                }
+
+            
         },
         clickAddFee() {
             this.form.date_of_due = moment().format('YYYY-MM-DD');
@@ -4237,7 +4313,18 @@ export default {
             let code = e.event.code;
             if (code === 'F2') {
                 //abrir el modal de agergar producto
-                if (!this.showDialogAddItem) this.showDialogAddItem = true
+                if(this.form.customer_id !== null){
+                    this.errors={};
+                    if (!this.showDialogAddItem) this.showDialogAddItem = true
+                
+                }else{
+                    //this.errors.customer_id={0:'Debe seleccionar el cliente '};
+                    alert('Debe seleccionar el cliente');
+                    if (this.showDialogAddItem) {
+                    this.showDialogAddItem = false;
+                }
+                    
+                }
             }
             if (code === 'Escape') {
                 if (this.showDialogAddItem) this.showDialogAddItem = false

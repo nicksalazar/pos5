@@ -1182,6 +1182,7 @@ export default {
             if(this.form.item.name_product_pdf && this.config.item_name_pdf_description){
                 this.form.name_product_pdf = this.form.item.name_product_pdf;
             }
+            this.calculateTotal();
         },
         focusTotalItem(change) {
             if (!change && this.form.item.calculate_quantity) {

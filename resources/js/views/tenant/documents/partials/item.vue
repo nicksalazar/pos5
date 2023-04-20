@@ -1281,8 +1281,7 @@ export default {
             this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
             //this.form.unit_price_value = this.form.item.sale_unit_price;
             await this.$http.get(`/items/get-price/${this.form.item_id}/${localStorage.customer_id}/${localStorage.establishment.id}`).then((response) => {
-                    console.log(response.data);
-                    this.form.unit_price_value = response.data.price;
+                    this.form.unit_price_value = parseFloat(response.data.price);
                 });
             this.lots = this.form.item.lots
 
@@ -1333,7 +1332,8 @@ export default {
                 this.form.name_product_pdf = this.form.item.name_product_pdf;
             }
 
-            this.getLastPriceItem()
+            this.getLastPriceItem();
+            this.calculateTotal();
 
         },
         focusTotalItem(change) {

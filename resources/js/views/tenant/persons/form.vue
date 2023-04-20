@@ -746,6 +746,20 @@
                                 </div>
                             </div>
 
+                            <div class="col-md-3">
+                                <div :class="{'has-danger': errors.credit_quota}"
+                                     class="form-group">
+                                    <label class="control-label">Cupo de crédito</label>
+                                    <el-input-number
+                                        v-model="form.credit_quota"
+                                        :controls="false"
+                                        :min="0"
+                                        :precision="0"></el-input-number>
+                                    <small v-if="errors.credit_quota"
+                                           class="form-control-feedback"
+                                           v-text="errors.credit_quota[0]"></small>
+                                </div>
+                            </div>
 
                             <!--Zona -->
                             <!--
@@ -890,6 +904,7 @@ export default {
                 id: null,
                 type: this.type,
                 credit_days: 0,
+                credit_quota: 0,
                 identity_document_type_id: '6',
                 number: '',
                 name: null,
