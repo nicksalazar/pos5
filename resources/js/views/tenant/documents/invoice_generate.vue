@@ -4052,6 +4052,8 @@ export default {
                     this.$message.error(response.data.message);
                 }
             }).catch(error => {
+
+                console.log('info: ', error.response)
                 if (error.response.status === 422) {
                     this.errors = error.response.data;
                 } else {

@@ -584,9 +584,12 @@ class DocumentController extends Controller
         $validate = $this->validateDocument($request);
         if (!$validate['success']) return $validate;
         $res = $this->storeWithData($request->all());
+        Log::info('rea: ',$res);
         $document_id = $res['data']['id'];
+
         $this->associateDispatchesToDocument($request, $document_id);
         $this->associateSaleNoteToDocument($request, $document_id);
+
 
     }
 
