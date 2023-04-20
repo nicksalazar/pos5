@@ -54,7 +54,7 @@
         <contribuyenteRimpe>CONTRIBUYENTE RÉGIMEN RIMPE</contribuyenteRimpe>
         @endif
         @if($company->rimpe_np)
-        <contribuyenteRimpe>CONTRIBUYENTE NEGOCIO PUPULAR - RÉGIMEN RIMPE</contribuyenteRimpe>
+        <contribuyenteRimpe>CONTRIBUYENTE NEGOCIO POPULAR - RÉGIMEN RIMPE</contribuyenteRimpe>
         @endif
         @if($company->agente_retencion)
         <agenteRetencion>{{ $company->agente_retencion_num }}</agenteRetencion>
