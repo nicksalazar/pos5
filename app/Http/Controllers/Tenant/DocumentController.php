@@ -803,6 +803,7 @@ class DocumentController extends Controller
         if (!$validate['success']) return $validate;
 
         $fact = DB::connection('tenant')->transaction(function () use ($request, $id) {
+
             $facturalo = new Facturalo();
             $facturalo->update($request->all(), $id);
             $facturalo->createXmlUnsigned();
