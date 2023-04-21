@@ -602,7 +602,7 @@ class DocumentController extends Controller
     private function createAccountingEntry($document_id){
 
         $document = Document::find($document_id);
-        //Log::info('documento created: ' . json_encode($document));
+        Log::info('documento created: ' . json_encode($document));
         $entry = (AccountingEntries::get())->last();
 
         if($document && $document->document_type_id == '01'){
