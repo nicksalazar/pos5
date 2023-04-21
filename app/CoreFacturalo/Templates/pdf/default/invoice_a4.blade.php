@@ -121,7 +121,7 @@
                                     <strong>CONTRIBUYENTE RÉGIMEN RIMPE</strong><br></br>
                                     @endif
                                     @if($company->rimpe_np)
-                                    <strong>CONTRIBUYENTE NEGOCIO PUPULAR - RÉGIMEN RIMPE</strong><br></br>
+                                    <strong>CONTRIBUYENTE NEGOCIO PUPULAR RIMPE</strong><br></br>
                                     @endif
                                 </td>
                             </tr>
