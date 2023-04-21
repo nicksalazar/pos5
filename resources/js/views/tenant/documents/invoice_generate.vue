@@ -164,8 +164,6 @@
                                            v-text="errors.currency_type_id[0]"></small>
                                 </div>
                             </div>
-
-
                             <div class="col-lg-2 align-self-end" v-if=" ! configuration.send_auto">
                                 <div :class="{'has-danger': errors.aproved}"
                                      class="form-group">
