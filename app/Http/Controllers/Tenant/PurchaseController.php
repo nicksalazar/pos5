@@ -533,6 +533,7 @@ use Modules\Sale\Models\SaleOpportunity;
                         if (isset($payment['payment_destination_id'])) {
                             $this->createGlobalPayment($record_payment, $payment);
                         }
+                        $this->createAccountingEntryPayment($doc->id,$payment['payment']);
                     }
 
                     $this->savePurchaseFee($doc, $data['fee']);
@@ -785,9 +786,6 @@ use Modules\Sale\Models\SaleOpportunity;
                             }
                         }
 
-
-
-
                     }
 
                     foreach( $arrayEntrys as $key=>$value)
@@ -806,6 +804,96 @@ use Modules\Sale\Models\SaleOpportunity;
                     }
 
                     Log::info('arreglo de items cuentas',$arrayEntrys);
+
+                }catch(Exception $ex){
+
+                    Log::error('Error al intentar generar el asiento contable');
+                    Log::error($ex->getMessage());
+                }
+
+            }else{
+                Log::info('tipo de documento no genera asiento contable de momento');
+            }
+
+        }
+
+         /* Crear los asientos contables del documento */
+        private function createAccountingEntryPayment($document_id,$monto){
+
+            $document = Purchase::find($document_id);
+            $entry = (AccountingEntries::get())->last();
+
+            if($document && $document->document_type_id == '01'){
+
+                try{
+                    $idauth = auth()->user()->id;
+                    $lista = AccountingEntries::where('user_id', '=', $idauth)->latest('id')->first();
+                    $ultimo = AccountingEntries::latest('id')->first();
+                    $configuration = Configuration::first();
+                    if (empty($lista)) {
+                        $seat = 1;
+                    } else {
+
+                        $seat = $lista->seat + 1;
+                    }
+
+                    if (empty($ultimo)) {
+                        $seat_general = 1;
+                    } else {
+                        $seat_general = $ultimo->seat_general + 1;
+                    }
+
+                    $comment = 'Pago factura de compra '. substr($document->series,0). str_pad($document->number,'9','0',STR_PAD_LEFT).' '. $document->supplier->name ;
+
+                    $total_debe = $monto;
+                    $total_haber = $monto;
+
+                    $cabeceraC = new AccountingEntries();
+                    $cabeceraC->user_id = $document->user_id;
+                    $cabeceraC->seat = $seat;
+                    $cabeceraC->seat_general = $seat_general;
+                    $cabeceraC->seat_date = $document->date_of_issue;
+                    $cabeceraC->types_accounting_entrie_id = 1;
+                    $cabeceraC->comment = $comment;
+                    $cabeceraC->serie = null;
+                    $cabeceraC->number = $seat;
+                    $cabeceraC->total_debe = $total_debe;
+                    $cabeceraC->total_haber = $total_haber;
+                    $cabeceraC->revised1 = 0;
+                    $cabeceraC->user_revised1 = 0;
+                    $cabeceraC->revised2 = 0;
+                    $cabeceraC->user_revised2 = 0;
+                    $cabeceraC->currency_type_id = $document->currency_type_id;
+                    $cabeceraC->doctype = $document->document_type_id;
+                    $cabeceraC->is_client = ($document->customer)?true:false;
+                    $cabeceraC->establishment_id = $document->establishment_id;
+                    $cabeceraC->establishment = $document -> establishment;
+                    $cabeceraC->prefix = 'ASC';
+                    $cabeceraC->person_id = $document->supplier_id;
+                    $cabeceraC->external_id = Str::uuid()->toString();
+
+                    $cabeceraC->save();
+                    $cabeceraC->filename = 'ASC-'.$cabeceraC->id.'-'. date('Ymd');
+                    $cabeceraC->save();
+
+                    $customer = Person::find($cabeceraC->person_id);
+
+                    $detalle = new AccountingEntryItems();
+
+                    $detalle->accounting_entrie_id = $cabeceraC->id;
+                    $detalle->account_movement_id = ($customer->account) ? $customer->account : $configuration->cta_suppliers;
+                    $detalle->seat_line = 1;
+                    $detalle->haber = $monto;
+                    $detalle->debe = 0;
+                    $detalle->save();
+
+                    $detalle2 = new AccountingEntryItems();
+                    $detalle2->accounting_entrie_id = $cabeceraC->id;
+                    $detalle2->account_movement_id = $configuration->cta_paymnets;
+                    $detalle2->seat_line = 2;
+                    $detalle2->haber = 0;
+                    $detalle2->debe = $monto;
+                    $detalle2->save();
 
                 }catch(Exception $ex){
 
@@ -1055,6 +1143,11 @@ use Modules\Sale\Models\SaleOpportunity;
 
                 $this->deleteAllPayments($doc->purchase_payments);
 
+                $asientos = AccountingEntries::where('document_id',$request['document_id'])->get();
+                foreach($asientos as $ass){
+                    $ass->delete();
+                }
+
                 foreach ($request['payments'] as $payment) {
 
                     $record_payment = $doc->purchase_payments()->create($payment);
@@ -1068,6 +1161,9 @@ use Modules\Sale\Models\SaleOpportunity;
                             'filename' => $payment['payment_filename']
                         ]);
                     }
+
+
+                    $this->createAccountingEntryPayment($doc->id,$payment['payment']);
                 }
 
                 $doc->fee()->delete();
@@ -1078,6 +1174,10 @@ use Modules\Sale\Models\SaleOpportunity;
                     $this->setFilename($doc);
                 }
                 $this->createPdf($doc, "a4", $doc->filename);
+
+                if((Company::active())->countable > 0){
+                    $this->createAccountingEntry($doc->id, $request['ret']);
+                }
 
                 return $doc;
             });
