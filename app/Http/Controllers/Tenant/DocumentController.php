@@ -370,6 +370,7 @@ class DocumentController extends Controller
         /** Informacion adicional */
 
         return compact(
+
             'items',
             'categories',
             'affectation_igv_types',
@@ -1562,8 +1563,6 @@ class DocumentController extends Controller
 
     public function getRecords($request)
     {
-
-
         $d_end = $request->d_end;
         $d_start = $request->d_start;
         $date_of_issue = $request->date_of_issue;

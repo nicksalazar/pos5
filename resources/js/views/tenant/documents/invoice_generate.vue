@@ -166,21 +166,21 @@
                             </div>
 
 
-                            <div class="col-lg-2 align-self-end">
-                                <div :class="{'has-danger': errors.active}"
+                            <div class="col-lg-2 align-self-end" v-if=" ! configuration.send_auto">
+                                <div :class="{'has-danger': errors.aproved}"
                                      class="form-group">
                                     <label class="control-label">Mandar a Autorizar? </label>
                                     <el-switch
-                                        v-model="form.apoved"
+                                        v-model="form.aproved"
                                         class="ml-2"
                                         inline-prompt
                                         style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
                                         active-text="Si"
                                         inactive-text="No"
                                     />
-                                    <small v-if="errors.fodinfa"
+                                    <small v-if="errors.aproved"
                                            class="form-control-feedback"
-                                           v-text="errors.fodinfa[0]"></small>
+                                           v-text="errors.aproved[0]"></small>
                                 </div>
                             </div>
                         </div>

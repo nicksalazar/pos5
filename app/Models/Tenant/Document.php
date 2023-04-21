@@ -269,9 +269,11 @@ class Document extends ModelTenant
         'agent_id',
         'force_send_by_summary',
         'dispatch_ticket_pdf',
+        'aproved',
     ];
 
     protected $casts = [
+
         'date_of_issue' => 'date',
         'time_of_issue' => 'time',
         'user_rel_suscription_plan_id' => 'int',
@@ -284,6 +286,7 @@ class Document extends ModelTenant
         'point_system' => 'bool',
         'force_send_by_summary' => 'bool',
         'dispatch_ticket_pdf' => 'bool',
+        'aproved' => 'bool',
     ];
 
     public static function boot()
@@ -305,7 +308,7 @@ class Document extends ModelTenant
         $this->attributes['additional_data'] = (is_null($value))?null:json_encode($value);
     }
 
-    
+
     public function getTimeofIssue($value)
     {
         return (is_null($value))?null:(object) json_decode($value);

@@ -141,7 +141,7 @@ class DocumentUpdateInput
 
             'sale_notes_relateds' => Functions::valueKeyInArray($inputs, 'sale_notes_relateds'),
             'seller_id' => Functions::valueKeyInArray($inputs, 'seller_id'),
-
+            'aproved' => Functions::valueKeyInArray($inputs, 'aproved', false),
         ];
     }
 
