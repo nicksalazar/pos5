@@ -73,6 +73,11 @@
                                 Actividades del sistema
                             </a>
                         </li>
+                        <li>
+                            <a href="#" data-toggle="collapse" data-target="#system_activity_logs_id">
+                                Reporte ATS
+                            </a>
+                        </li>
 
                         <ul id="system_activity_logs_id" class="collapse">
                             <li>
@@ -122,6 +127,21 @@
                         <li>
                             <a href="{{route('tenant.reports.purchases.quotations')}}">
                                 Orden de compra Vs Compra
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('tenant.reports.purchases.quotations')}}">
+                                Reporte bases es impuestos
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('tenant.reports.purchases.quotations')}}">
+                                Reporte compras retenciones
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('tenant.reports.purchases.quotations')}}">
+                                DEtalle de compras
                             </a>
                         </li>
                     </ul>
@@ -186,6 +206,12 @@
                         </li>
                         <li>
                             <a href="{{route('tenant.reports.reporte_ventas.index')}}">Reporte de Ventas</a>
+                        </li>
+                        <li>
+                            <a href="{{route('tenant.reports.reporte_ventas.index')}}">Reporte bases e impuestos</a>
+                        </li>
+                        <li>
+                            <a href="{{route('tenant.reports.reporte_ventas.index')}}">Detalle de ventas</a>
                         </li>
 
                     </ul>
