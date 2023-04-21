@@ -33,8 +33,7 @@
                         <th>Tipo de maquinaria</th>
                         <th>Marca</th>
                         <th>Modelo</th>
-                        <th>Fuerza minima</th>
-                        <th>Fuerza máxima</th>
+                        <th>Fuerza de cierre</th>
                         <th></th>
                     <tr>
                     <tr slot-scope="{ index, row }">
@@ -48,8 +47,7 @@
                         </td>
                         <td>{{ row.brand }}</td>
                         <td>{{ row.model }}</td>
-                        <td>{{ row.minimum_force }}</td>
-                        <td>{{ row.maximum_force }}</td>
+                        <td>{{ row.closing_force }}</td>
                         <td>
                             <button
                                 class="btn waves-effect waves-light btn-xs btn-info"

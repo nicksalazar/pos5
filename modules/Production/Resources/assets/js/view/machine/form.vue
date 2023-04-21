@@ -67,50 +67,23 @@
                                        class="form-control-feedback"
                                        v-text="errors.model[0]"></small>
                             </div>
-                        </div> 
-                        
-                        <div class="col-sm-6 col-md-3">
-                            <div :class="{'has-danger': errors.minimum_force}"
+                        </div> <div class="col-sm-6 col-md-3">
+                            <div :class="{'has-danger': errors.closing_force}"
                                  class="form-group">
                                 <label class="control-label">
-                                    capacidad minima
+                                    Fuerza de cierre
                                 </label>
-                                <el-input v-model="form.minimum_force"></el-input>
-                                <small v-if="errors.minimum_force"
+                                <el-input v-model="form.closing_force"></el-input>
+                                <small v-if="errors.closing_force"
                                        class="form-control-feedback"
-                                       v-text="errors.minimum_force[0]"></small>
+                                       v-text="errors.closing_force[0]"></small>
                             </div>
                         </div>
-
-                        <div class="col-sm-6 col-md-3">
-                            <div :class="{'has-danger': errors.maximum_force}"
-                                 class="form-group">
-                                <label class="control-label">
-                                    capacidad maxima
-                                </label>
-                                <el-input v-model="form.maximum_force"></el-input>
-                                <small v-if="errors.maximum_force"
-                                       class="form-control-feedback"
-                                       v-text="errors.maximum_force[0]"></small>
-                            </div>
-                        </div>
-
-
-                        <div class="col-sm-6 col-md-3">
-                            <div class="form-group" :class="{'has-danger': errors.unit_type_id}">
-                                <label class="control-label">Unidad</label>
-                                <el-select v-model="form.unit_type_id" dusk="unit_type_id">
-                                    <el-option v-for="option in unit_types" :key="option.id" :value="option.id" :label="option.description"></el-option>
-                                </el-select>
-                                <small class="form-control-feedback" v-if="errors.unit_type_id" v-text="errors.unit_type_id[0]"></small>
-                            </div>
-                        </div>
-                       
                     </div>
                 </div>
                 <div class="form-actions text-right mt-4">
                     <el-button
-                        @click.prevent="onClose()">
+                        @click.prevent="close()">
                         Cancelar
                     </el-button>
                     <el-button
@@ -149,11 +122,9 @@ export default {
             form: {
                 id:null,
                 machine_type_id:null,
-                unit_type_id: null,
                 brand:'',
                 model:'',
-                maximum_force:'',
-                minimum_force: '',
+                closing_force:'',
             },
             aux_supplier_id: null,
             machine_types: [],
@@ -191,7 +162,6 @@ export default {
             this.$http.get(`/${this.resource}/tables`)
                 .then(response => {
                     this.machine_types = response.data.machine_types
-                    this.unit_types = response.data.unit_types
                 })
 
         },
@@ -202,10 +172,7 @@ export default {
                 machine_type_id:null,
                 brand:'',
                 model:'',
-                maximum_force:'',
-                minimum_force: '',
-                unit_type_id: null,
-
+                closing_force:'',
             }
             this.isUpdate()
 

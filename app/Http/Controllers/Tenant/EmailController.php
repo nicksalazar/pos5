@@ -89,7 +89,11 @@
         protected function SendAMail($mailable)
         {
             Configuration::setConfigSmtpMail();
+            
+            
             $ret = true;
+            
+            Log::error(json_encode(Config::get('mail')));
             try {
 
                 Mail::to($this->getArrayEmail())->send($mailable);

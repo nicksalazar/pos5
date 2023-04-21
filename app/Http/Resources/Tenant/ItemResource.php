@@ -113,6 +113,7 @@
                 'has_perception' => (bool)$this->has_perception,
                 'percentage_perception' => $this->percentage_perception,
                 'item_unit_types' => $this->item_unit_types,
+                'item_rate' => $this->item_rates,
                 'image' => $this->image,
                 'account_id' => $this->account_id,
                 'category_id' => $this->category_id,
@@ -192,13 +193,6 @@
                 'factory_code' => $this->factory_code,
                 'tariff_id' => $this->tariff_id,
                 'concept_id' => $this->concept_id,
-                'has_service_taxes' => (bool) $this->has_service_taxes,
-                'item_import_cta' => $this->item_import_cta,
-                'item_finish_cta'=> $this->item_finish_cta,
-                'item_process_cta' => $this->item_process_cta,
-                'income_cta' => $this->income_cta,
-                'sale_cost_cta' => $this->sale_cost_cta,
-                'purchase_cta' => $this->purchase_cta,
 
             ];
         }

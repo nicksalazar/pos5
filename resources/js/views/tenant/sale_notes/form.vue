@@ -782,8 +782,18 @@
             this.showDialogAddItem = true
         },
         clickAddItem() {
-            this.recordItem = null
-            this.showDialogAddItem = true
+            if(this.form.customer_id !== null){
+                this.errors={};
+                this.saveLocalCustomerId();
+                this.recordItem = null
+                this.showDialogAddItem = true
+                
+            }else{
+                alert('Debe seleccionar el cliente');
+                //this.errors.customer_id=['Debe seleccionar el cliente'];
+                this.showDialogAddItem = false;
+                
+            }
         },
         changePaymentMethodType(index) {
 
@@ -954,7 +964,7 @@
                 this.form.seller_id = seller.id
 
             }
-
+            this.saveLocalCustomerId();
         },
         searchRemoteCustomers(input) {
 
@@ -1550,7 +1560,18 @@
             let code = e.event.code;
             if (code === 'F2') {
                 //abrir el modal de agergar producto
-                if (!this.showDialogAddItem) this.showDialogAddItem = true
+                if(this.form.customer_id !== null){
+                    this.errors={};
+                    if (!this.showDialogAddItem) this.showDialogAddItem = true
+                
+                }else{
+                    //this.errors.customer_id={0:'Debe seleccionar el cliente '};
+                    alert('Debe seleccionar el cliente');
+                    if (this.showDialogAddItem) {
+                    this.showDialogAddItem = false;
+                }
+                    
+                }
             }
             if (code === 'Escape') {
                 if (this.showDialogAddItem) {
@@ -1591,7 +1612,9 @@
                 identity_document_type_id: null
             }
         },
-
+        saveLocalCustomerId() {
+            localStorage.customer_id = this.form.customer_id;
+        }
     }
 }
 </script>
