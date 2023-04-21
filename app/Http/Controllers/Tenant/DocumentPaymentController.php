@@ -123,9 +123,16 @@ class DocumentPaymentController extends Controller
             }
 
         }
+        if($id){
+
+            $asientos = AccountingEntries::where('document_id','CF'.$id)->get();
+            foreach($asientos as $ass){
+                $ass->delete();
+            }
+        }
 
         if((Company::active())->countable > 0 ){
-            $this->createAccountingEntry($request->document_id, $request);
+            $this->createAccountingEntry($request->document_id, $data);
         }
 
         return [
@@ -139,7 +146,7 @@ class DocumentPaymentController extends Controller
     private function createAccountingEntry($document_id, $request){
 
         $document = Document::find($document_id);
-        Log::info('documento created: ' . json_encode($document));
+        //Log::info('documento created: ' . json_encode($document));
         $entry = (AccountingEntries::get())->last();
 
         if($document && $document->document_type_id == '01'){
@@ -190,6 +197,7 @@ class DocumentPaymentController extends Controller
                 $cabeceraC->prefix = 'ASC';
                 $cabeceraC->person_id = $document->customer_id;
                 $cabeceraC->external_id = Str::uuid()->toString();
+                $cabeceraC->document_id = 'CF'.$request->id;
 
                 $cabeceraC->save();
                 $cabeceraC->filename = 'ASC-'.$cabeceraC->id.'-'. date('Ymd');
@@ -229,6 +237,11 @@ class DocumentPaymentController extends Controller
     {
         $item = DocumentPayment::findOrFail($id);
         $item->delete();
+
+        $asientos = AccountingEntries::where('document_id','CF'.$id)->get();
+        foreach($asientos as $ass){
+            $ass->delete();
+        }
 
         return [
             'success' => true,
