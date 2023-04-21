@@ -13,8 +13,6 @@
     use Illuminate\Database\Eloquent\Builder;
     use Illuminate\Database\Eloquent\Relations\BelongsTo;
     use App\Models\Tenant\SoapType;
-use App\Models\Tenant\Warehouse;
-
     /**
      * Class Production
      *
@@ -84,7 +82,6 @@ use App\Models\Tenant\Warehouse;
             'user_id',
             'item_id',
             'quantity',
-            'warehouse_id',
             'inventory_id_reference',
             'machine_id',
             'production_order',
@@ -183,11 +180,6 @@ use App\Models\Tenant\Warehouse;
         public function machine()
         {
             return $this->belongsTo(Machine::class);
-        }
-
-        public function warehouse()
-        {
-            return $this->belongsTo(Warehouse::class);
         }
 
 

@@ -90,12 +90,6 @@
                                 <el-option key="05"
                                            label="Stock > Stock mínimo"
                                            value="05"></el-option>
-                                <el-option key="06"
-                                           label="Stock < Stock mínimo"
-                                           value="06"></el-option>
-                                <el-option key="07"
-                                           label="Stock <= Stock mínimo"
-                                           value="07"></el-option>
                             </el-select>
                         </div>
 
@@ -412,7 +406,6 @@ export default {
 
             await this.$http.get(`/${this.resource}/records?${this.getQueryParameters()}`)
                 .then(response => {
-                    console.log(`/${this.resource}/records?${this.getQueryParameters()}`)
                     this.records = response.data.data;
                     this.pagination = response.data.meta
                     this.pagination.per_page = parseInt(response.data.meta.per_page)

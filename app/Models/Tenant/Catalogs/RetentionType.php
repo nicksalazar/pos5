@@ -15,7 +15,6 @@ class RetentionType extends ModelCatalog
         'percentage',
         'description',
         'code',
-        'type_id',
-        'code2',
+        'type_id'
     ];
 }

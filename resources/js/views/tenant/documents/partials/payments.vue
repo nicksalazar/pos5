@@ -3,6 +3,10 @@
         <div class="form-body">
             <div class="row">
                 <div class="col-md-12" v-if="records.length > 0">
+                    <!--<div class="right-wrapper pull-right">
+                        <button type="button" @click.prevent="clickDownloadReport()" class="btn btn-custom btn-sm  mt-2 mr-2"><i class="fas fa-money-bill-wave-alt"></i> Reporte</button>
+                    </div>-->
+
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -17,7 +21,7 @@
                                 <template v-if="external">
                                     <th>Imprimir</th>
                                 </template>
-
+                                
                                 <th></th>
                             </tr>
                             </thead>
@@ -73,7 +77,7 @@
                                         <button type="button" class="btn waves-effect waves-light btn-xs btn-primary" @click.prevent="clickOptionsPrint()"><i class="fas fa-file-upload"></i></button>
                                     </td>
                                 </template>
-
+                                    
 
                                     <td class="series-table-actions text-right">
 
@@ -98,7 +102,7 @@
                                     </td>
                                     <td>
                                         <div class="form-group mb-0" :class="{'has-danger': row.errors.payment_method_type_id}">
-                                            <el-select v-model="row.payment_method_type_id"  @change="changePaymentMethodType(index)">
+                                            <el-select v-model="row.payment_method_type_id">
                                                 <el-option v-for="option in payment_method_types" v-show="option.id != '09'" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                             </el-select>
                                             <small class="form-control-feedback" v-if="row.errors.payment_method_type_id" v-text="row.errors.payment_method_type_id[0]"></small>
@@ -112,10 +116,10 @@
                                             <small class="form-control-feedback" v-if="row.errors.payment_destination_id" v-text="row.errors.payment_destination_id[0]"></small>
                                         </div>
                                     </td>
-
+                                    
                                     <td>
                                         <div class="form-group mb-0" :class="{'has-danger': row.errors.payment}">
-                                            <el-input v-model="row.payment" @change="changeAdvanceInput(index,$event,row.payment_method_type_id,row.reference)" ></el-input>
+                                            <el-input v-model="row.payment"></el-input>
                                             <small class="form-control-feedback" v-if="row.errors.payment" v-text="row.errors.payment[0]"></small>
                                         </div>
                                     </td>
@@ -178,24 +182,8 @@
                                             </div>
 
                                         </div>
-
                                         <div class="col-md-5">
-
-                                            <div class="form-group mb-0" :class="{'has-danger': row.errors.reference}" v-if="row.payment_method_type_id_desc">
-                                                <el-select
-                                                    v-model="row.reference"
-                                                    @change="changeAdvance(index,$event)">
-                                                    <el-option
-                                                        v-for="option in advances"
-                                                        :key="option.id"
-                                                        :label="option.id"
-                                                        :value="option.id"></el-option>
-                                                </el-select>
-                                               <small class="form-control-feedback" v-if="row.errors.reference" v-text="row.errors.reference[0]"></small>
-
-                                            </div>
-
-                                            <div class="form-group mb-0" :class="{'has-danger': row.errors.reference}"  v-else>
+                                            <div class="form-group mb-0" :class="{'has-danger': row.errors.reference}">
                                                 <el-input v-model="row.reference" placeholder="Referencia y/o N° Operación" :disabled="row.payment_received == '0'"></el-input>
                                                 <small class="form-control-feedback" v-if="row.errors.reference" v-text="row.errors.reference[0]"></small>
                                             </div>
@@ -269,7 +257,7 @@
     import DialogLinkPayment from './dialog_link_payment'
     import DocumentOptions from '../../../../../../modules/Finance/Resources/assets/js/views/unpaid/partials/options'
     export default {
-        props: ['showDialog', 'documentId', 'external','configuration','customerId'],
+        props: ['showDialog', 'documentId', 'external','configuration'],
         mixins: [deletable],
         components: {
             DialogLinkPayment,
@@ -293,7 +281,6 @@
                 showDialogOptions: false,
                 showDialogClose:false,
                 type:'document',
-                advances:[],
             }
         },
         async created() {
@@ -307,41 +294,12 @@
                 })
             await this.events();
 
-
         },
         methods: {
             events(){
                 this.$eventHub.$on('reloadDataPayments', ()=>{
                     this.getData()
                 })
-            },
-            addAdvancesCustomer(){
-
-                this.$http.get(`/documents/advance/${this.customerId}`).then(
-                    response => {
-
-                        this.advances = response.data
-                    }
-                )
-            },
-            changeAdvanceInput(index,event,methodType, id){
-
-                let selectedAdvance = _.find(this.advances,{'id':id})
-                let payment_method_type = _.find(this.payment_method_types, {'id': methodType});
-                if(payment_method_type.description.includes('Anticipo')){
-
-                    let maxAmount = selectedAdvance.valor
-
-                    if(maxAmount >= event){
-                        /*EL VALOR INGRESADO EN PERMITIDO EN EL ANTICIPO */
-                    }else{
-
-                        this.records[index].payment = maxAmount
-                        let message = 'El monto maximo del anticipo es de '+maxAmount
-                        this.$message.warning(message)
-
-                    }
-                }
             },
             getObjectResponse(success, message = null){
                 return {
@@ -381,6 +339,7 @@
             },
             onSuccess(response, file, fileList) {
 
+                // console.log(response, file, fileList)
                 this.fileList = fileList
 
                 if (response.success) {
@@ -394,6 +353,8 @@
                     this.cleanFileList()
                     this.$message.error(response.message)
                 }
+
+                // console.log(this.records)
 
             },
             cleanFileList(){
@@ -424,12 +385,11 @@
                         this.records = response.data.data
                     });
 
-                this.addAdvancesCustomer();
                 this.$eventHub.$emit('reloadDataUnpaid')
 
             },
             clickAddRow() {
-
+                
                 this.records.push({
                     id: null,
                     date_of_payment: moment().format('YYYY-MM-DD'),
@@ -439,7 +399,7 @@
                     filename: null,
                     temp_path: null,
                     payment: parseFloat(this.document.total_difference),
-                    // payment: 0,
+                    // payment: 0,                    
                     errors: {},
                     loading: false,
                     payment_received: '1',
@@ -487,91 +447,24 @@
                         if (error.response.status === 422) {
                             this.records[index].errors = error.response.data;
                         } else {
-
+                            console.log(error);
                             this.$message.error(error.response.data.message)
                         }
                     })
             },
-            changeAdvance(index, id){
-
-                let selectedAdvance = _.find(this.advances,{'id':id})
-                let maxAmount = selectedAdvance.valor
-
-                let payment_count = this.records.length;
-                // let total = this.form.total;
-                let total = this.document.total_difference;
-
-                let payment = 0;
-                let amount = _.round(total / payment_count, 2);
-
-                if(maxAmount >= amount ){
-                    /* EL MONTO INGRESADO ESTA PERMITIDO */
-                }else if(amount > maxAmount ){
-
-                    this.records[index].payment = maxAmount
-                    let message = 'El monto maximo del anticipo es de '+maxAmount
-                    this.$message.warning(message)
-                }
-
-
-            },
-            changePaymentMethodType(index) {
-
-                let id = '01';
-
-                if (this.records[index] !== undefined &&
-                    this.records[index].payment_method_type_id !== undefined) {
-                    id = this.records[index].payment_method_type_id;
-
-                } else if (this.form.fee[index] !== undefined &&
-                    this.form.fee[index].payment_method_type_id !== undefined) {
-                    id = this.form.fee[index].payment_method_type_id;
-                }
-                let payment_method_type = _.find(this.payment_method_types, {'id': id});
-
-                if (payment_method_type.number_days) {
-
-                    this.form.date_of_due = moment(this.form.date_of_issue).add(payment_method_type.number_days, 'days').format('YYYY-MM-DD')
-                    // this.form.payments = []
-                    this.enabled_payments = false
-                    this.readonly_date_of_due = true
-                    this.form.payment_method_type_id = payment_method_type.id
-
-                    let date = moment(this.form.date_of_issue).add(payment_method_type.number_days, 'days').format('YYYY-MM-DD')
-
-                    // let date = moment()
-                    //     .add(payment_method_type.number_days, 'days')
-                    //     .format('YYYY-MM-DD')
-
-                    if (this.form.fee !== undefined) {
-                        for (let index = 0; index < this.form.fee.length; index++) {
-                            this.form.fee[index].date = date;
-                        }
-                    }
-
-                } else if (payment_method_type.id == '09') {
-
-                    this.form.payment_method_type_id = payment_method_type.id
-                    this.form.date_of_due = this.form.date_of_issue
-                    // this.form.payments = []
-                    this.enabled_payments = false
-
-                }else if(payment_method_type.description.includes('Anticipo')){
-
-                    this.$notify({
-                        title: '',
-                        message: 'Debes seleccionar un anticipo disponible',
-                        type: 'success'
-                    })
-                    this.records[index].payment_method_type_id_desc = 'Anticipo';
-
-
-                }else {
-
-
-                }
-
-            },
+            // filterDocumentType(row){
+            //
+            //     if(row.contingency){
+            //         this.document_types = _.filter(this.all_document_types, item => (item.id == '01' || item.id =='03'))
+            //         row.document_type_id = (this.document_types.length > 0)?this.document_types[0].id:null
+            //     }else{
+            //         row.document_type_id = null
+            //         this.document_types = this.all_document_types
+            //     }
+            // },
+            // initDocumentTypes(){
+            //     this.document_types = (this.all_document_types.length > 0) ? this.all_document_types : []
+            // },
             close() {
                 this.$emit('update:showDialog', false);
                 // this.initDocumentTypes()

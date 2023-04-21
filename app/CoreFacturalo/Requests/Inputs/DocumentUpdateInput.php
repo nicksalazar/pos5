@@ -162,7 +162,6 @@ class DocumentUpdateInput
                         'unit_type_id' => (key_exists('item', $row)) ? $row['item']['unit_type_id'] : $item->unit_type_id,
                         'presentation' => (key_exists('item', $row)) ? (isset($row['item']['presentation']) ? $row['item']['presentation'] : []) : [],
                         'amount_plastic_bag_taxes' => $item->amount_plastic_bag_taxes,
-                        'amount_service_taxes' => $item->amount_service_taxes,
                         'is_set' => $item->is_set,
                         'lots' => self::lots($row),
                         'IdLoteSelected' => (isset($row['IdLoteSelected']) ? $row['IdLoteSelected'] : null),
@@ -173,7 +172,7 @@ class DocumentUpdateInput
                         'cod_digemid' => $item->cod_digemid,
                         'unit_price' => $row['unit_price'] ?? 0,
                         'purchase_unit_price' => $row['item']['purchase_unit_price'] ?? 0,
-
+                        
                         'exchanged_for_points' => $row['item']['exchanged_for_points'] ?? false,
                         'used_points_for_exchange' => $row['item']['used_points_for_exchange'] ?? null,
 
@@ -208,7 +207,6 @@ class DocumentUpdateInput
                     'name_product_xml' => Functions::valueKeyInArray($row, 'name_product_pdf') ? DocumentInput::getNameProductXml($row, $inputs) : null,
                     'update_description' => Functions::valueKeyInArray($row, 'update_description', false),
                     'additional_data' => Functions::valueKeyInArray($row, 'additional_data'),
-                    'total_service_taxes' => $row['total_service_taxes'],
                 ];
             }
 
@@ -267,7 +265,7 @@ class DocumentUpdateInput
     private static function charges($inputs)
     {
         if (array_key_exists('charges', $inputs)) {
-            if ($inputs['charges']  && is_array($inputs['charges'])) {
+            if ($inputs['charges']) {
                 $charges = [];
                 foreach ($inputs['charges'] as $row) {
                     $charge_type_id = $row['charge_type_id'];

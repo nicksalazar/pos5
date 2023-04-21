@@ -30,6 +30,7 @@
      * App\Models\Tenant\Person
      *
      * @property int|null                             $seller_id
+     * @property int|null                             $rate_id
      * @property User                                 $seller
      * @property int|null                             $zone_id
      * @property Zone                                 $zone
@@ -142,8 +143,10 @@
             // 'zone',
             'observation',
             'credit_days',
+            'credit_quota',
             'optional_email',
             'seller_id',
+            'rate_id',
             'zone_id',
             'status',
             'parent_id',
@@ -154,7 +157,6 @@
             'pagoLocExtDoc',
             'parteRel',
             'pagoLocExt',
-            'account',
         ];
 
         protected $casts = [
@@ -164,6 +166,7 @@
             'enabled' => 'bool',
             'status' => 'int',
             'credit_days' => 'int',
+            'credit_quota' => 'int',
             'seller_id' => 'int',
             'zone_id' => 'int',
             'parent_id' => 'int',
@@ -510,6 +513,10 @@
             if ($this->person_type !== null) {
                 $person_type_descripton = $this->person_type->description;
             }
+            $person_discount = '';
+            if ($this->person_type !== null) {
+                $person_discount = $this->person_type->discount;
+            }
             $optional_mail = $this->getOptionalEmailArray();
             $optional_mail_send = [];
             if (!empty($this->email)) {
@@ -580,6 +587,7 @@
                 'zone' => $this->getZone(),
                 'zone_id' => $this->zone_id,
                 'seller_id' => $this->seller_id,
+                'rate_id' => $this->rate_id,
                 'website' => $this->website,
                 'document_type' => $this->identity_document_type->description,
                 'enabled' => (bool)$this->enabled,
@@ -591,7 +599,7 @@
                 'nationality_id' => $this->nationality_id,
                 'department_id' => $department['id']??null,
                 'department' => $department,
-                'account' => $this->account,
+
                 'province_id' => $province['id']??null,
                 'province' => $province,
                 'district_id' => $district['id']??null,
@@ -605,11 +613,13 @@
                 'condition' => $this->condition,
                 'person_type_id' => $this->person_type_id,
                 'person_type' => $person_type_descripton,
+                'person_discount' => floatval($person_discount),
                 'contact' => $this->contact,
                 'comment' => $this->comment,
                 'addresses' => $addresses,
                 'parent_id' => $this->parent_id,
                 'credit_days' => (int)$this->credit_days,
+                'credit_quota' => (int)$this->credit_quota,
                 'optional_email' => $optional_mail,
                 'optional_email_send' => implode(',', $optional_mail_send),
                 'childrens' => [],

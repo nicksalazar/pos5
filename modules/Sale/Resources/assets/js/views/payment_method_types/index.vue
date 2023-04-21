@@ -21,7 +21,6 @@
                         <th>Código</th>
                         <th>Descripción</th>
                         <th>Condición de pago</th>
-                        <th>Condición SRI</th>
                         <th class="text-right">Acciones</th>
                     </tr>
                     </thead>
@@ -30,10 +29,7 @@
                         <td>{{ index + 1 }}</td>
                         <td>{{ row.id }}</td>
                         <td>{{ row.description }}</td>
-                        <td v-if="row.is_credit == 1">Crédito</td>
-                        <td v-if="row.is_cash == 1">Contado</td>
-                        <td v-if="row.is_advance == 1">Anticipo</td>
-                        <td>{{ (row.sri_desciption) ? row.sri_desciption:'N/A' }}</td>
+                        <td>{{ (row.is_credit == 1)?'Crédito':'Contado' }}</td>
                         <td class="text-right">
 
                             <template v-if="row.show_actions">
