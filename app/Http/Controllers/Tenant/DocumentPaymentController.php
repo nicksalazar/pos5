@@ -24,6 +24,7 @@ use App\Models\Tenant\Company;
 use App\Models\Tenant\Configuration;
 use App\Models\Tenant\Person;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class DocumentPaymentController extends Controller
 {
@@ -138,7 +139,7 @@ class DocumentPaymentController extends Controller
     private function createAccountingEntry($document_id, $request){
 
         $document = Document::find($document_id);
-        //Log::info('documento created: ' . json_encode($document));
+        Log::info('documento created: ' . json_encode($document));
         $entry = (AccountingEntries::get())->last();
 
         if($document && $document->document_type_id == '01'){
@@ -175,8 +176,8 @@ class DocumentPaymentController extends Controller
                 $cabeceraC->comment = $comment;
                 $cabeceraC->serie = null;
                 $cabeceraC->number = $seat;
-                $cabeceraC->total_debe = $total_debe;
-                $cabeceraC->total_haber = $total_haber;
+                $cabeceraC->total_debe = $request->payment;
+                $cabeceraC->total_haber = $request->payment;
                 $cabeceraC->revised1 = 0;
                 $cabeceraC->user_revised1 = 0;
                 $cabeceraC->revised2 = 0;
@@ -207,13 +208,10 @@ class DocumentPaymentController extends Controller
                 $detalle2 = new AccountingEntryItems();
                 $detalle2->accounting_entrie_id = $cabeceraC->id;
                 $detalle2->account_movement_id = $configuration->cta_charge;
-                $detalle2->seat_line = 1;
+                $detalle2->seat_line = 2;
                 $detalle2->debe = $request->payment;
                 $detalle2->haber = 0;
                 $detalle2->save();
-
-
-
 
             }catch(Exception $ex){
 
@@ -226,9 +224,6 @@ class DocumentPaymentController extends Controller
         }
 
     }
-
-
-
 
     public function destroy($id)
     {

@@ -602,7 +602,7 @@ class DocumentController extends Controller
     private function createAccountingEntry($document_id){
 
         $document = Document::find($document_id);
-        Log::info('documento created: ' . json_encode($document));
+        //Log::info('documento created: ' . json_encode($document));
         $entry = (AccountingEntries::get())->last();
 
         if($document && $document->document_type_id == '01'){
@@ -1064,6 +1064,11 @@ class DocumentController extends Controller
         $validate = $this->validateDocument($request);
         if (!$validate['success']) return $validate;
 
+        $asientos = AccountingEntries::where('document_id',$id)->get();
+        foreach($asientos as $ass){
+            $ass->delete();
+        }
+
         $fact = DB::connection('tenant')->transaction(function () use ($request, $id) {
             $facturalo = new Facturalo();
             $facturalo->update($request->all(), $id);
@@ -1075,6 +1080,11 @@ class DocumentController extends Controller
 
             return $facturalo;
         });
+
+
+        if((Company::active())->countable > 0 ){
+            $this->createAccountingEntry($id);
+        }
 
         $document = $fact->getDocument();
         $response = $fact->getResponse();
