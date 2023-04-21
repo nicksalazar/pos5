@@ -768,7 +768,7 @@
                                                             <p style="color: red; margin-bottom: 2px;width: 70%;">
                                                                 <b>Nota: </b>
                                                             </p>
-                                                            <p style="color: red; margin-bottom: 2px;width: 70%;">
+                                                            <p style="color: red; margin-bottom: 2px;width: 70%;" v-if="cuenta_pagar>0">
                                                                Pendiente a pago: {{ currency_type.symbol }} <b>{{ cuenta_pagar }} </b> 
                                                             </p>
                                                             <p style="color: red; margin-bottom: 2px;width: 70%;">
