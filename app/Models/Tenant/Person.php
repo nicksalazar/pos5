@@ -513,6 +513,10 @@
             if ($this->person_type !== null) {
                 $person_type_descripton = $this->person_type->description;
             }
+            $person_discount = '';
+            if ($this->person_type !== null) {
+                $person_discount = $this->person_type->discount;
+            }
             $optional_mail = $this->getOptionalEmailArray();
             $optional_mail_send = [];
             if (!empty($this->email)) {
@@ -609,6 +613,7 @@
                 'condition' => $this->condition,
                 'person_type_id' => $this->person_type_id,
                 'person_type' => $person_type_descripton,
+                'person_discount' => floatval($person_discount),
                 'contact' => $this->contact,
                 'comment' => $this->comment,
                 'addresses' => $addresses,
