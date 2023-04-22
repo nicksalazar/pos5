@@ -80,7 +80,7 @@
 
             self::SetWarehouseToUser($item);
 
-            return $item->orderBy('id')->get();
+            return $item->orderBy('description')->get();
         }
 
 
@@ -101,7 +101,7 @@
             // $input = self::setInputByRequest($request);
             $item = self::getAllItemBase($request, false, $id);
 
-            return $item->orderBy('id')->get();
+            return $item->orderBy('description')->get();
         }
 
         /**
@@ -222,7 +222,7 @@
                 }
             }
 
-            return $item->whereIsActive()->orderBy('id');
+            return $item->whereIsActive()->orderBy('description');
         }
 
         /**
@@ -312,7 +312,7 @@
             }
 
 
-            return $item->orderBy('id')->get();
+            return $item->orderBy('description')->get();
 
         }
 

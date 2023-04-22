@@ -63,7 +63,6 @@
             'total_base_other_taxes',
             'percentage_other_taxes',
             'total_other_taxes',
-            'total_service_taxes',
             'total_taxes',
 
             'price_type_id',
@@ -82,8 +81,7 @@
             'name_product_pdf',
             'additional_information',
             'name_product_xml',
-            'additional_data',
-
+            'additional_data'
         ];
 
         public static function boot()

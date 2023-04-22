@@ -174,7 +174,6 @@ export default {
           .get(`/${this.resource}/record/${this.recordId}`)
           .then((response) => {
             let data = response.data;
-            console.log('dart', data);
             let valor = this.account_groups.find((item) => {
               if (item.id === data.account_group_id) {
                 return item.code;
@@ -189,8 +188,6 @@ export default {
               cost_center: data.cost_center,
               account_group_id: data.account_group_id,
             };
-                console.log('tis form', this.form);
-            //this.form = response.data;
           });
       }
     },
@@ -203,7 +200,6 @@ export default {
       this.form.prefix = valor.code;
     },
     submit() {
-      console.log('form',this.form);
       this.loading_submit = true;
       if( this.form.inputcode!=null && this.form.inputcode!="" && this.form.prefix!=0){
         this.form.code = this.form.prefix + this.form.inputcode;

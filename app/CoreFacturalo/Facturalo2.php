@@ -39,7 +39,6 @@ use Modules\Inventory\Models\Warehouse;
 use App\CoreFacturalo\Requests\Inputs\Functions;
 use App\Models\Tenant\PurchaseSettlement;
 use App\CoreFacturalo\Services\Helpers\SendDocumentPse;
-use Illuminate\Support\Facades\Log;
 use Modules\Finance\Traits\FilePaymentTrait;
 
 
@@ -1277,7 +1276,6 @@ class Facturalo
                     // cambiamos el filename
                     $inputs['filename'] = Functions::filename(Company::active(), $inputs['document_type_id'], $inputs['series'], $inputs['number']);
                 }
-                Log::info('UP DOCUMENTS'.json_encode($inputs));
                 $document->fill($inputs);
                 $document->save();
 

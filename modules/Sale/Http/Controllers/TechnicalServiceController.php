@@ -62,9 +62,7 @@
             return [
                 'id' => 'Número',
                 'customer' => 'Cliente',
-                'serial_number' => 'Número Serie',
                 'date_of_issue' => 'Fecha de emisión',
-
             ];
         }
 

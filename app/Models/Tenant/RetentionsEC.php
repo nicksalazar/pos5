@@ -9,7 +9,6 @@ class RetentionsEC extends ModelTenant
 {
     protected $table = 'retenciones_join';
     protected $fillable = [
-
         'id',
         'idRetencion',
         'idDocumento',
@@ -21,17 +20,5 @@ class RetentionsEC extends ModelTenant
         'codSustento',
         'codDocSustento',
         'numAuthSustento',
-        'claveAcceso',
-        'status_id',
-        'response_envio',
-        'response_message_envio',
-        'response_verification',
-        'DateTimeAutorization',
-        'response_message_verification',
-        'verificated',
-        'external_id',
-        'filename',
-        'barCode',
-
     ];
 }

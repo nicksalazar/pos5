@@ -25,12 +25,10 @@
                 'brand' => [
                     'required',
                 ],
-                'maximum_force' => [
+                'closing_force' => [
                     'required',
                 ],
-                'minimum_force' => [
-                    'required',
-                ], 
+
 
                 /*
                  *

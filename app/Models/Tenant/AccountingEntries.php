@@ -43,7 +43,6 @@ class AccountingEntries extends ModelTenant
         'filename',
         'person_id',
         'person',
-        'document_id',
         'created_at',
         'updated_at',
 
@@ -104,5 +103,5 @@ class AccountingEntries extends ModelTenant
         return $this->belongsTo(CurrencyType::class, 'currency_type_id');
     }
 
-
+    
 }

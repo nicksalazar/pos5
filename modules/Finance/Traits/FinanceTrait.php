@@ -2,7 +2,7 @@
 
     namespace Modules\Finance\Traits;
 
-    use App\Models\Tenant\{AccountingEntries, DocumentPayment, PurchasePayment, SaleNotePayment, PurchaseSettlementPayment};
+    use App\Models\Tenant\{DocumentPayment, PurchasePayment, SaleNotePayment, PurchaseSettlementPayment};
     use App\Models\Tenant\BankAccount;
     use App\Models\Tenant\Cash;
     use App\Models\Tenant\Company;
@@ -133,14 +133,6 @@
         {
 
             foreach ($payments as $payment) {
-                $records = AccountingEntries::where('document_id','CF'.$payment->id)->get();
-                foreach($records as $record){
-                    $record->delete();
-                }
-                $records2 = AccountingEntries::where('document_id','PC'.$payment->id)->get();
-                foreach($records2 as $record){
-                    $record->delete();
-                }
                 $payment->delete();
             }
 
@@ -805,7 +797,7 @@
 
 
         /**
-         *
+         * 
          * Obtener soap_type_id para registro de entorno
          *
          * @return string

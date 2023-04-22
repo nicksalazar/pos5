@@ -21,8 +21,7 @@ use Maatwebsite\Excel\Excel;
 use Carbon\Carbon;
 use App\Exports\ClientExport;
 use App\Models\System\Configuration;
-use App\Models\Tenant\AccountMovement;
-use App\Models\Tenant\Company;
+use App\Models\Tenant\Rate;
 use Barryvdh\DomPDF\Facade as PDF;
 use Mpdf\HTMLParserMode;
 use Mpdf\Mpdf;
@@ -83,11 +82,9 @@ class PersonController extends Controller
         // $configuration = Configuration::first();
         // $api_service_token = $configuration->token_apiruc == 'false' ? config('configuration.api_service_token') : $configuration->token_apiruc;
         $api_service_token = \App\Models\Tenant\Configuration::getApiServiceToken();
-        $accounts = AccountMovement::all();
-        $company = Company::first();
-
+        $rates = Rate::where('rate_offer','=','0')->select('id','rate_name','rate_offer')->orderBy('rate_name')->get();
         return compact('countries', 'departments', 'provinces', 'districts',
-            'identity_document_types', 'locations', 'person_types', 'api_service_token', 'zones', 'sellers', 'discount_types','accounts','company');
+            'identity_document_types', 'locations', 'person_types', 'api_service_token', 'zones', 'sellers', 'discount_types','rates');
     }
 
     public function record($id)

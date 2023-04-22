@@ -20,7 +20,6 @@ use Mpdf\Mpdf;
 use Mpdf\Config\ConfigVariables;
 use Mpdf\Config\FontVariables;
 use App\CoreFacturalo\Template;
-use App\Models\Tenant\AccountMovement;
 use App\Models\Tenant\Company;
 use App\Models\Tenant\Establishment;
 use App\Models\Tenant\FormatTemplate;
@@ -313,9 +312,9 @@ class ConfigurationController extends Controller
     {
         $configuration = Configuration::first();
         return ['data'=>$configuration->getCollectionData()];
+        $record = new ConfigurationResource($configuration);
 
-        //$record = new ConfigurationResource($configuration);
-        //return  $record;
+        return  $record;
     }
 
     public function store(ConfigurationRequest $request)
@@ -407,8 +406,8 @@ class ConfigurationController extends Controller
     {
         $affectation_igv_types = AffectationIgvType::whereActive()->get();
         $global_discount_types = ChargeDiscountType::whereIn('id', ['02', '03'])->whereActive()->get();
-        $ctas = AccountMovement::get();
-        return compact('affectation_igv_types', 'global_discount_types','ctas');
+
+        return compact('affectation_igv_types', 'global_discount_types');
     }
 
     public function visualDefaults()
