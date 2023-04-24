@@ -21,8 +21,6 @@ class PaymentMethodTypeController extends Controller
 
         return new PaymentMethodTypeCollection($records);
     }
-
-
     public function record($id)
     {
         //JOINSOFTWARE
