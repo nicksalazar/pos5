@@ -545,8 +545,6 @@ use Modules\Sale\Models\SaleOpportunity;
                         $this->createAccountingEntry($doc->id, $data['ret']);
                         $this->createAccountingEntryPayment($doc->id);
                     }
-
-
                     return $doc;
                 });
 

@@ -146,7 +146,7 @@ class DocumentPaymentController extends Controller
     private function createAccountingEntry($document_id, $request){
 
         $document = Document::find($document_id);
-        //Log::info('documento created: ' . json_encode($document));
+        Log::info('documento created: ' . json_encode($document));
         $entry = (AccountingEntries::get())->last();
 
         if($document && $document->document_type_id == '01'){
@@ -240,6 +240,10 @@ class DocumentPaymentController extends Controller
 
         $asientos = AccountingEntries::where('document_id','CF'.$id)->get();
         foreach($asientos as $ass){
+            $ass->delete();
+        }
+        $asientos2 = AccountingEntries::where('document_id','PC'.$id)->get();
+        foreach($asientos2 as $ass){
             $ass->delete();
         }
 
