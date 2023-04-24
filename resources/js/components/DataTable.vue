@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-loading="loading_submit">
         <div class="row ">
             <div class="col-md-12 col-lg-12 col-xl-12 ">
                 <div class="row" v-if="applyFilter">

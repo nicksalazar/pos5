@@ -1095,6 +1095,7 @@ export default {
 //
 
             if (this.recordItem) {
+
                 if (this.recordItem.item !== undefined && this.recordItem.item.extra !== undefined) {
                     this.extra_temp = this.recordItem.item.extra
                 }
@@ -1108,7 +1109,7 @@ export default {
                 this.form.has_service_taxes = (this.recordItem.total_service_taxes > 0) ? true : false
                 this.form.warehouse_id = this.recordItem.warehouse_id
                 this.isUpdateWarehouseId = this.recordItem.warehouse_id
-
+                this.form.total_service_taxes = this.recordItem.total_service_taxes
                 this.form.attributes = this.recordItem.attributes;
                 this.form.discounts = this.recordItem.discounts;
                 this.form.charges = this.recordItem.charges;
@@ -1279,11 +1280,7 @@ export default {
             this.form.item = _.find(this.items, {'id': this.form.item_id});
             this.form.item = this.setExtraFieldOfitem(this.form.item)
             this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
-            //this.form.unit_price_value = this.form.item.sale_unit_price;
-            await this.$http.get(`/items/get-price/${this.form.item_id}/${localStorage.customer_id}/${localStorage.establishment.id}`).then((response) => {
-                    this.form.unit_price_value = parseFloat(response.data.price);
-                });
-
+            this.form.unit_price_value = this.form.item.sale_unit_price;
             this.lots = this.form.item.lots
 
             this.form.has_igv = this.form.item.has_igv;
@@ -1314,7 +1311,6 @@ export default {
                         duration: row.duration,
                     })
                 })
-                
             }
 
             this.form.lots_group = this.form.item.lots_group
@@ -1334,9 +1330,8 @@ export default {
                 this.form.name_product_pdf = this.form.item.name_product_pdf;
             }
 
-            this.getLastPriceItem();
-            this.calculateTotal();
-            await this.comprobarDescuento();
+            this.getLastPriceItem()
+
         },
         focusTotalItem(change) {
             if (!change && this.form.item.calculate_quantity) {
@@ -1452,9 +1447,7 @@ export default {
                 }
             }
 
-
             this.form.input_unit_price_value = this.form.unit_price_value;
-
             this.form.unit_price = unit_price;
             this.form.item.unit_price = unit_price;
             this.form.item.presentation = this.item_unit_type;
@@ -1462,6 +1455,9 @@ export default {
 
             let IdLoteSelected = this.form.IdLoteSelected
             let document_item_id = this.form.document_item_id
+
+            console.log('ANTES DE ENVIAR: ', this.form)
+
             this.row = calculateRowItem(this.form, this.currencyTypeIdActive, this.exchangeRateSale, this.percentageIgv);
 
             this.row.item.name_product_pdf = this.row.name_product_pdf || '';
@@ -1491,6 +1487,7 @@ export default {
 
             this.showMessageDetraction()
 
+            console.log('DESPUES DE ENVIAR: ', this.row)
             this.$emit('add', this.row);
 
             if (this.search_item_by_barcode) {
@@ -1791,27 +1788,6 @@ export default {
             this.history_item_id = item.id;
             this.showDialogHistorySales = true;
             // console.log(item)
-        },
-        async comprobarDescuento(){
-            await this.$http.get(`/persons/record/${localStorage.customer_id}`).then((response) => {
-                    console.log('persona ',response.data);
-                    let datos=response.data.data;
-                    if(datos.person_discount>0){
-
-                        this.$el.querySelector(".el-collapse-item__header").click();
-                        this.form.discounts.push({
-                        discount_type_id: '00',
-                        discount_type: 'discount',
-                        description: datos.person_type,
-                        percentage: datos.person_discount,
-                        factor: 0,
-                        amount: 0,
-                        base: 0,
-                        is_amount: false
-                    })
-                       
-                    }
-                });
         },
     }
 }

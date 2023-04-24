@@ -66,7 +66,7 @@
                                 Bandeja descarga de reportes
                             </a>
                         </li>
-                        
+
                         {{-- Actividades del sistema --}}
                         <li>
                             <a href="#" data-toggle="collapse" data-target="#system_activity_logs_id">
@@ -124,7 +124,6 @@
                                 Productos
                             </a>
                         </li>
-<<<<<<< HEAD
                         <li>
                             <a href="{{route('tenant.reports.purchases.quotations')}}">
                                 Orden de compra Vs Compra
@@ -145,8 +144,6 @@
                                 DEtalle de compras
                             </a>
                         </li>
-=======
->>>>>>> producto-lista-precios
                     </ul>
                 </div>
             </div>
@@ -199,7 +196,7 @@
                         <li>
                             <a href="{{route('tenant.reports.sales_consolidated.index')}}">Consolidado de items</a>
                         </li>
-                        
+
                         <li>
                             <a href="{{route('tenant.reports.tips.index')}}">Propinas</a>
                         </li>
@@ -207,7 +204,6 @@
                         <li>
                             <a href="{{route('tenant.reports.state_account.index')}}">Estado de cuenta</a>
                         </li>
-<<<<<<< HEAD
                         <li>
                             <a href="{{route('tenant.reports.reporte_ventas.index')}}">Reporte de Ventas</a>
                         </li>
@@ -218,9 +214,6 @@
                             <a href="{{route('tenant.reports.reporte_ventas.index')}}">Detalle de ventas</a>
                         </li>
 
-=======
-                        
->>>>>>> producto-lista-precios
                     </ul>
                 </div>
             </div>
@@ -257,6 +250,9 @@
                             <a href="{{route('tenant.reports.order_notes_consolidated.index')}}">
                                 Consolidado de items
                             </a>
+                        </li>
+                        <li>
+                            <a href="{{route('tenant.reports.order_notes_general.report')}}">Pedido Vs Despachado</a>
                         </li>
                     </ul>
                 </div>

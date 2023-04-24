@@ -546,6 +546,10 @@
                                             <button type="button" class="btn waves-effect waves-light btn-xs btn-danger"
                                                     @click.prevent="clickRemoveItem(index)">x
                                             </button>
+                                            <button class="btn waves-effect waves-light btn-xs btn-info"
+                                                type="button"
+                                                @click="ediItem(row, index)">
+                                            <span style='font-size:10px;'>&#9998;</span></button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -720,6 +724,7 @@
         <purchase-form-item :showDialog.sync="showDialogAddItem"
                             :currency-type-id-active="form.currency_type_id"
                             :exchange-rate-sale="form.exchange_rate_sale"
+                            :record-item="recordItem"
                             :localHasGlobalIgv="localHasGlobalIgv"
                             :percentage-igv="percentage_igv"
                             @add="addRow"></purchase-form-item>
@@ -755,6 +760,7 @@ export default {
         return {
             input_person: {},
             type: 'edit',
+            recordItem: null,
             resource: 'purchases',
             maxLength1: null,
             maxLength2: null,
@@ -823,7 +829,7 @@ export default {
                 this.type_docs = response.data.typeDocs
                 this.codSustentos = response.data.codSustentos
                 this.document_types2 = response.data.typeDocs2
-                console.log('tipos de documentos Local: ',response.data.typeDocs2)
+                //console.log('tipos de documentos Local: ',response.data.typeDocs2)
 
                 this.charges_types = response.data.charges_types
                 this.form.currency_type_id = (this.currency_types.length > 0) ? this.currency_types[0].id : null
@@ -856,7 +862,7 @@ export default {
         this.initGlobalIgv()
 
         this.initRecord()
-        this.changeDocumentType2()
+        //this.changeDocumentType2()
         //this.addRetentions()
     },
     computed: {
@@ -1143,6 +1149,7 @@ export default {
                     if (this.form.payment_condition_id == '02') this.readonly_date_of_due = true
 
                     this.changeDocumentType()
+                    this.changeDocumentType2()
                     this.calculateTotal()
 
                 })
@@ -1276,7 +1283,7 @@ export default {
             this.initInputPerson()
             this.readonly_date_of_due = false
             this.initGlobalIgv()
-
+            this.recordItem = null
         },
         initGlobalIgv() {
             this.localHasGlobalIgv = this.configuration.checked_global_igv_to_purchase
@@ -1326,14 +1333,23 @@ export default {
         },
         changeDocumentType2() {
             var document = _.find(this.document_types2,{'idType': this.form.document_type_intern})
-            console.log('documento seleccionado',document.DocumentTypeID)
+            //console.log('documento seleccionado',document.DocumentTypeID)
             this.form.document_type_id = document.DocumentTypeID
             //this.codSustentos = _.find(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
             this.codSustentos = _.filter(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
         },
         addRow(row) {
-            this.form.items.push(row)
-            this.calculateTotal()
+
+            if (this.recordItem) {
+                //this.form.items.$set(this.recordItem.indexi, row)
+                this.form.items[this.recordItem.indexi] = row
+                this.recordItem = null
+            } else {
+
+                this.form.items.push(row);
+            }
+
+            this.calculateTotal();
         },
         clickRemoveItem(index) {
             this.form.items.splice(index, 1)
@@ -1377,12 +1393,10 @@ export default {
             })
 
             this.form.total_ret = retenido
-            console.log('total valor con retencion',total - retenido)
+            //console.log('total valor con retencion',total - retenido)
             this.form.total = _.round(total - retenido, 2)
         },
         calculateTotal() {
-
-
             let total_discount = 0
             let total_charge = 0
             let total_exportation = 0
@@ -1400,15 +1414,17 @@ export default {
             let toal_retenido = 0
 
             this.form.ret = []
-            //console.log('TOTAL ITEMS: '+this.form.items.length)
-            this.form.ret = []
-            //console.log('TOTAL ITEMS: '+this.form.items.length)
+
             this.form.items.forEach((row) => {
 
-                console.log('Rows: ',row)
+                //console.log('Rows: ',row)
                 if(row.iva_retention > 0 || row.income_retention > 0){
 
-                    this.haveRetentions = true
+                    retention_iva = parseFloat(row.iva_retention)
+                    retention_renta = parseFloat(row.income_retention)
+
+                    toal_retenido += (retention_iva + retention_renta)
+
                     if(this.form.ret.length > 0){
                         let nuevaRet = true
 
@@ -1425,7 +1441,7 @@ export default {
                                 const retIncomeDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
                                 if(data.tipo == 'RENTA' && data.desciption == retIncomeDesc.description){
                                     data.valor += parseFloat(row.income_retention)
-                                    dato.base += row.unit_value
+                                    dato.base += row.unit_value * row.quantity
                                     nuevaRet = false
                                 }
                             }
@@ -1434,14 +1450,14 @@ export default {
                         });
 
                         if(nuevaRet){
-                            console.log('Nueva Retencion')
+                            //console.log('Nueva Retencion')
 
                             if(row.iva_retention > 0 ){
                                 let retencionLocal = {}
                                 retencionLocal.tipo = 'IVA'
                                 retencionLocal.valor  = parseFloat(row.iva_retention)
                                 const retIvaDesc = _.find(this.retention_types_iva, {'id': row.retention_type_id_iva})
-                                console.log('Tipo retencion IVA: '+retIvaDesc.description)
+                                //console.log('Tipo retencion IVA: '+retIvaDesc.description)
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
@@ -1453,17 +1469,17 @@ export default {
                                 retencionLocal.tipo = 'RENTA'
                                 retencionLocal.valor  = parseFloat(row.income_retention)
                                 const retIvaDesc = _.find(this.retention_types_income, {'id': row.retention_type_id_income})
-                                console.log('Tipo retencion RENTA: '+retIvaDesc.description)
+                                //console.log('Tipo retencion RENTA: '+retIvaDesc.description)
                                 retencionLocal.desciption  = retIvaDesc.description
                                 retencionLocal.code  = retIvaDesc.code
                                 retencionLocal.porcentajeRet  = retIvaDesc.percentage
-                                retencionLocal.base  = row.unit_value
+                                retencionLocal.base  = row.unit_value * row.quantity
                                 this.form.ret.push(retencionLocal)
                             }
                         }
 
                     }else{
-                        console.log('Retencion Inicial')
+                        //console.log('Retencion Inicial')
                         if(row.iva_retention > 0 ){
                             let retencionLocal = {}
                             retencionLocal.tipo = 'IVA'
@@ -1485,7 +1501,7 @@ export default {
                             retencionLocal.desciption  = retIvaDesc.description
                             retencionLocal.code  = retIvaDesc.code
                             retencionLocal.porcentajeRet  = retIvaDesc.percentage
-                            retencionLocal.base  = row.unit_value
+                            retencionLocal.base  = row.unit_value * row.quantity
                             this.form.ret.push(retencionLocal)
                         }
 
@@ -1495,16 +1511,6 @@ export default {
 
                 total_discount += parseFloat(row.total_discount)
                 total_charge += parseFloat(row.total_charge)
-
-                retention_iva = parseFloat(row.iva_retention)
-                retention_renta = parseFloat(row.income_retention)
-
-                toal_retenido += (retention_iva + retention_renta)
-
-                retention_iva = parseFloat(row.iva_retention)
-                retention_renta = parseFloat(row.income_retention)
-
-                toal_retenido += (retention_iva + retention_renta)
 
                 if (row.affectation_igv_type_id === '10') {
                     total_taxed += parseFloat(row.total_value)
@@ -1553,7 +1559,6 @@ export default {
 
             // isc
 
-
             this.form.total_base_isc = _.round(total_base_isc, 2)
             this.form.total_isc = _.round(total_isc, 2)
 
@@ -1569,9 +1574,6 @@ export default {
             this.form.total_taxes = _.round(total_igv + total_isc, 2)
             this.form.total_ret =  _.round(toal_retenido, 2)
 
-            console.log('total ACTUAL '+ total)
-            console.log('total ACTUAL2 '+ toal_retenido)
-
             total = total - toal_retenido
 
             this.form.total =  _.round(total, 2)
@@ -1579,7 +1581,7 @@ export default {
             this.calculatePerception()
             this.calculatePayments()
             this.calculateFee()
-
+            this.recordItem = null
 
         },
         calculatePerception() {
@@ -1632,6 +1634,11 @@ export default {
                 error_by_item: error_by_item,
             }
 
+        },
+        async ediItem(row, index) {
+            row.indexi = index
+            this.recordItem = row
+            this.showDialogAddItem = true
         },
         async submit() {
 

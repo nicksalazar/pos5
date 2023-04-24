@@ -3,22 +3,11 @@
         <form autocomplete="off" @submit.prevent="submit">
             <div class="form-body"> 
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <div class="form-group" :class="{'has-danger': errors.description}">
                             <label class="control-label">Descripción <span class="text-danger">*</span></label>
                             <el-input v-model="form.description" dusk="description"></el-input>
                             <small class="form-control-feedback" v-if="errors.description" v-text="errors.description[0]"></small>
-                        </div>
-                    </div> 
-                    <div class="col-md-4">
-                        <div class="form-group" :class="{'has-danger': errors.discount}">
-                            <label class="control-label">Descuento % <span class="text-danger">*</span></label>
-                            <el-input-number
-                                        v-model="form.discount"
-                                        :controls="false"
-                                        :min="0"
-                                        :precision="2"></el-input-number>
-                            <small class="form-control-feedback" v-if="errors.discount" v-text="errors.discount[0]"></small>
                         </div>
                     </div> 
                 </div>  
@@ -54,7 +43,6 @@
                 this.form = {
                     id: null,
                     description: null, 
-                    discount: null, 
                 }
             },
             create() { 

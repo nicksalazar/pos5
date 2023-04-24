@@ -65,9 +65,13 @@
                             ></small>
                         </div>
                     </div>
-                    <div class="col-md-3" v-show="form.is_credit">
+                    <div class="col-md-3" v-show="form.is_credit == 1">
                         <label class="control-label">Número de dias</label>
                         <el-input v-model="form.number_days" :maxlength="3"></el-input>
+                    </div>
+                    <div class="col-md-3" v-show="form.is_credit == 2 && isCompanieCountable">
+                        <label class="control-label">Cuenta Contable</label>
+                        <el-input v-model="form.countable_acount" :required="form.is_credit == 2 && isCompanieCountable"></el-input>
                     </div>
                 </div>
             </div>
@@ -95,6 +99,10 @@
                     {
                         'id': 1,
                         'name': 'Crédito',
+                    },
+                    {
+                        'id': 2,
+                        'name': 'Anticipo',
                     }
                 ],
                 pago_sri_list:[],
@@ -102,6 +110,7 @@
                 errors: {},
                 form: {},
                 options: [],
+                isCompanieCountable : false,
             }
         },
         created() {
@@ -125,18 +134,27 @@
                     this.$http.get(`/${this.resource}/record/${this.recordId}`)
                         .then(response => {
                             console.log(response.data)
-                            this.form = response.data,
+                            this.form = response.data
+                            if(response.data.is_advance == 1){
+                                this.form.is_credit = 2;
+                            }
                             this.pago_sri_list = response.data.pago_sri_list
+                            this.isCompanieCountable = (response.data.isCountable > 0) ? true:false
                         })
                 } else {
                     this.$http.get(`/${this.resource}/record/join6v`)
                         .then(response => {
                             this.pago_sri_list = response.data.pago_sri_list
+                            this.isCompanieCountable = (response.data.isCountable > 0) ? true:false
                         })
                 }
             },
             submit() {
                 this.loading_submit = true
+                if(this.form.is_credit == 2){
+                    this.form.is_credit = 0
+                    this.form.is_advance = 1
+                }
                 this.$http.post(`/${this.resource}`, this.form)
                     .then(response => {
                         if (response.data.success) {
