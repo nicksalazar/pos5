@@ -69,9 +69,29 @@
                         <label class="control-label">Número de dias</label>
                         <el-input v-model="form.number_days" :maxlength="3"></el-input>
                     </div>
-                    <div class="col-md-3" v-show="form.is_credit == 2 && isCompanieCountable">
-                        <label class="control-label">Cuenta Contable</label>
-                        <el-input v-model="form.countable_acount" :required="form.is_credit == 2 && isCompanieCountable"></el-input>
+                    <div class="col-md-3" v-show="form.is_credit != 1 && isCompanieCountable">
+                        <label class="control-label">Cuenta contable para cobros</label>
+                                <el-select v-model="form.countable_acount">
+                                    <el-option v-for="option in accounts"
+                                               :key="option.id"
+                                               :label="option.code + ' - ' + option.description "
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.countable_acount"
+                                       class="form-control-feedback"
+                                       v-text="errors.countable_acount[0]"></small>
+                    </div>
+                    <div class="col-md-3" v-show="form.is_credit != 1 && isCompanieCountable">
+                        <label class="control-label">Cuenta contable para pagos</label>
+                                <el-select v-model="form.countable_acount_payment">
+                                    <el-option v-for="option in accounts"
+                                               :key="option.id"
+                                               :label="option.code + ' - ' + option.description "
+                                               :value="option.id"></el-option>
+                                </el-select>
+                                <small v-if="errors.countable_acount_payment"
+                                       class="form-control-feedback"
+                                       v-text="errors.countable_acount_payment[0]"></small>
                     </div>
                 </div>
             </div>
@@ -111,6 +131,7 @@
                 form: {},
                 options: [],
                 isCompanieCountable : false,
+                accounts:[],
             }
         },
         created() {
@@ -140,12 +161,14 @@
                             }
                             this.pago_sri_list = response.data.pago_sri_list
                             this.isCompanieCountable = (response.data.isCountable > 0) ? true:false
+                            this.accounts = response.data.accounts
                         })
                 } else {
                     this.$http.get(`/${this.resource}/record/join6v`)
                         .then(response => {
                             this.pago_sri_list = response.data.pago_sri_list
                             this.isCompanieCountable = (response.data.isCountable > 0) ? true:false
+                            this.accounts = response.data.accounts
                         })
                 }
             },
