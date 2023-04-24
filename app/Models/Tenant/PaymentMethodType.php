@@ -76,6 +76,7 @@
             'is_advance',
             'pago_sri',
             'countable_acount',
+            'countable_acount_payment',
         ];
 
         public const CASH_PAYMENT_ID = '01';

@@ -206,6 +206,7 @@ class DocumentPaymentController extends Controller
                 $customer = Person::find($cabeceraC->person_id);
 
                 $detalle = new AccountingEntryItems();
+                $ceuntaC = PaymentMethodType::find($request->payment_method_type_id);
                 $detalle->accounting_entrie_id = $cabeceraC->id;
                 $detalle->account_movement_id = ($customer->account) ? $customer->account : $configuration->cta_clients;
                 $detalle->seat_line = 1;
@@ -215,7 +216,7 @@ class DocumentPaymentController extends Controller
 
                 $detalle2 = new AccountingEntryItems();
                 $detalle2->accounting_entrie_id = $cabeceraC->id;
-                $detalle2->account_movement_id = $configuration->cta_charge;
+                $detalle2->account_movement_id = ($ceuntaC && $ceuntaC->countable_acount)?$ceuntaC->countable_acount:$configuration->cta_charge;
                 $detalle2->seat_line = 2;
                 $detalle2->debe = $request->payment;
                 $detalle2->haber = 0;
