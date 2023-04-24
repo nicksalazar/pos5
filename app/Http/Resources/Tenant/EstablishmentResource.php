@@ -29,7 +29,6 @@ class EstablishmentResource extends JsonResource
             'web_address' => $this->web_address,
             'aditional_information' => $this->aditional_information,
             'customer_id' => $this->customer_id,
-            'rate_id' => $this->rate_id,
             'customer_number' => optional($this->customer)->number,
             'logo' => $this->logo ? asset($this->logo) : null,
             'has_igv_31556' => $this->has_igv_31556,

@@ -80,16 +80,5 @@ class TenancyDatabaseSeeder extends Seeder
             ['id'=> 9, 'name' => 'ASIENTOS MANUALES','created_at'=>Carbon::now(),'updated_at'=>Carbon::now()],
           
         ]);
-
-         DB::table('rates')->insert([
-            [
-            'id'=> 1, 
-            'rate_name' => 'Tarifa PVP',
-            'rate_start'=>Carbon::now(),
-            'rate_end'=>Carbon::now()->addYear(2),
-            'created_at'=>Carbon::now(),
-            'updated_at'=>Carbon::now()
-            ]
-        ]);
     }
 }

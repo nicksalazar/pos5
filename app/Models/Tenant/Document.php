@@ -275,6 +275,7 @@ class Document extends ModelTenant
     protected $casts = [
 
         'date_of_issue' => 'date',
+        'time_of_issue' => 'time',
         'user_rel_suscription_plan_id' => 'int',
         'quantity_period' => 'int',
         'enabled_concurrency' => 'bool',

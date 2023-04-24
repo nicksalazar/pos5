@@ -19,10 +19,12 @@
                 'item_id' => [
                     'required'
                 ],
+                'warehouse_id' => [
+                    'required'
+                ],
                 'quantity' => [
                     'required'
                 ],
-                'warehouse_id' => [ 'required'],
                 'name' => [ 'required'],
                 'machine_id' => [ 'required'],
             ];
@@ -33,6 +35,7 @@
                 $rules['date_start'] = 'required';
                 $rules['time_start'] = 'required';
             }
+
         
             if ($state === '03') {
                 $rules['date_end'] = 'required';

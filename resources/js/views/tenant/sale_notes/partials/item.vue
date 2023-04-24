@@ -1138,13 +1138,8 @@ export default {
 
             this.form.item = { ..._.find(this.items, {'id': this.form.item_id}) }
             // this.form.item = _.find(this.items, {'id': this.form.item_id});
-            
             this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
-            //this.form.unit_price_value = this.form.item.sale_unit_price;
-            await this.$http.get(`/items/get-price/${this.form.item_id}/${localStorage.customer_id}/${localStorage.establishment.id}`).then((response) => {
-                    this.form.unit_price_value = response.data.price;
-                });
-            //await this.comprobarDescuento();
+            this.form.unit_price_value = this.form.item.sale_unit_price;
             this.lots = this.form.item.lots
 
             this.form.has_igv = this.form.item.has_igv;
@@ -1182,32 +1177,6 @@ export default {
             if(this.form.item.name_product_pdf && this.config.item_name_pdf_description){
                 this.form.name_product_pdf = this.form.item.name_product_pdf;
             }
-            this.calculateTotal();
-        },
-
-        async comprobarDescuento(){
-            await this.$http.get(`/persons/record/${localStorage.customer_id}`).then((response) => {
-                    console.log('persona ',response.data);
-                    let datos=response.data.data;
-                    if(datos.person_discount>0){
-
-                        this.$el.querySelector(".el-collapse-item__header").click();
-                       /* this.form.discounts.push({
-                        discount_type_id: null,
-                        discount_type: null,
-                        description: null,
-                        percentage: 0,
-                        factor: 0,
-                        amount: 0,
-                        base: 0,
-                        is_amount: false
-                    })
-                            */
-                    }
-                });
-        },
-        buttonPressed(e){
-            console.log(e.target.id);  // Get ID of Clicked Element
         },
         focusTotalItem(change) {
             if (!change && this.form.item.calculate_quantity) {

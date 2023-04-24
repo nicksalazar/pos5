@@ -110,7 +110,7 @@ use Picqer\Barcode\BarcodeGeneratorPNG;
  */
 class Item extends ModelTenant
 {
-    protected $with = ['item_type', 'unit_type', 'currency_type', 'warehouses','item_unit_types', 'tags','item_lots','item_rates','rates'];
+    protected $with = ['item_type', 'unit_type', 'currency_type', 'warehouses','item_unit_types', 'tags','item_lots'];
 
     public const SERVICE_UNIT_TYPE = 'ZZ';
 
@@ -169,7 +169,6 @@ class Item extends ModelTenant
         'web_platform_id',
         'has_plastic_bag_taxes',
         'has_service_taxes',
-        'amount_service_taxes',
         'barcode',
         'sanitary',
         'cod_digemid',
@@ -187,6 +186,13 @@ class Item extends ModelTenant
         'factory_code',
         'tariff_id',
         'concept_id',
+
+        'item_import_cta',
+        'item_finish_cta',
+        'item_process_cta',
+        'income_cta',
+        'sale_cost_cta',
+        'purchase_cta',
 
         // 'warehouse_id'
     ];
@@ -498,16 +504,6 @@ class Item extends ModelTenant
     public function item_unit_types()
     {
         return $this->hasMany(ItemUnitType::class);
-    }
-
-    public function item_rates()
-    {
-        return $this->hasMany(ItemRate::class);
-    }
-
-    public function rates()
-    {
-        return $this->belongsToMany(Rate::class,'item_rate','item_id','rate_id')->withPivot('price1');
     }
 
     /**
@@ -964,6 +960,7 @@ class Item extends ModelTenant
             'purchase_affectation_igv_type_id' => $this->purchase_affectation_igv_type_id,
             'calculate_quantity'               => (bool)$this->calculate_quantity,
             'has_plastic_bag_taxes'            => (bool)$this->has_plastic_bag_taxes,
+            'has_service_taxes'                => (bool)$this->has_service_taxes,
             'amount_plastic_bag_taxes'         => $this->amount_plastic_bag_taxes,
             'has_service_taxes'                => (bool)$this->has_service_taxes,
             'amount_service_taxes'             => $this->amount_service_taxes,
@@ -1303,7 +1300,7 @@ class Item extends ModelTenant
             ->setInArray('suggested_price',0)
             ->setInArray('has_plastic_bag_taxes',false)
             ->setInArray('has_isc',false)
-            ->setInArray('has_plastic_bag_taxes',false)
+            ->setInArray('has_service_taxes',false)
             ->setInArray('warehouse_id',$warehouse)
             ->setInArray('image','imagen-no-disponible.jpg')
             ->setInArray('image_medium','imagen-no-disponible.jpg')
@@ -2225,6 +2222,23 @@ class Item extends ModelTenant
         });
     }
 
+
+    public function scopeWhereStockMinMax($query)
+    {
+        $stockmin = (int)$this->stock_min;
+        return $query->whereHas('warehouses', function($query) use($stockmin) {
+            $query->where('stock', '<', $stockmin);
+        });
+    }
+
+    public function scopeWhereStockMinMaxEqual($query)
+    {
+        $stockmin = (int)$this->stock_min;
+        return $query->whereHas('warehouses', function($query) use($stockmin) {
+            //$query->where('stock', '<=', $stockmin);
+            $query->where('stock', '>', $stockmin);
+        });
+    }
 
     /**
      *
