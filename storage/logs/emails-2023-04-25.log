@@ -7883,3 +7883,13 @@ Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/poscl
 Linea : 114
 
   
+[2023-04-25 13:23:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:23:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
