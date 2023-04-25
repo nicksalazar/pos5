@@ -1028,7 +1028,7 @@ export default {
                         this.form = response.data.data
                         console.log('form', response.data.data)
 
-                        if (response.data.data.contact == null) {
+git                         if (response.data.data.contact == null) {
                             this.form.contact = {
                                 full_name: null,
                                 phone: null,
