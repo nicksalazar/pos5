@@ -1,14 +1,14 @@
 <?php return array (
   'app' => 
   array (
-    'name' => 'Laravel',
+    'name' => 'JoinDev',
     'env' => 'local',
-    'debug' => true,
-    'url' => 'http://pro51.ec',
+    'debug' => false,
+    'url' => 'http://jdevco.com',
     'timezone' => 'America/Lima',
     'locale' => 'es',
     'fallback_locale' => 'en',
-    'key' => 'base64:WD3lqKIzN4gEEKC6WflFvG3XdqycUDvmW3Mn2HKKabE=',
+    'key' => 'base64:d40f4lOana/mEUl3d/mRRx4gVc8cl4W/mG4jCA70HQY=',
     'cipher' => 'AES-256-CBC',
     'providers' => 
     array (
@@ -209,7 +209,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => 'C:\\laragon\\www\\pro51\\storage\\framework/cache/data',
+        'path' => '/var/www/html/posclouddev/storage/framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -239,7 +239,7 @@
         'connection' => 'default',
       ),
     ),
-    'prefix' => 'laravel_cache',
+    'prefix' => 'joindev_cache',
   ),
   'configuration' => 
   array (
@@ -248,7 +248,7 @@
     'api_service_url' => 'https://apiperu.dev',
     'api_service_token' => false,
     'sunat_alternate_server' => false,
-    'app_url_base' => 'pro51.ec',
+    'app_url_base' => 'jdevco.com',
   ),
   'cors' => 
   array (
@@ -281,7 +281,7 @@
       'sqlite' => 
       array (
         'driver' => 'sqlite',
-        'database' => 'poscloud',
+        'database' => 'joindev',
         'prefix' => '',
       ),
       'mysql' => 
@@ -289,9 +289,9 @@
         'driver' => 'mysql',
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'poscloud',
+        'database' => 'joindev',
         'username' => 'root',
-        'password' => '',
+        'password' => 'JOIN2023*',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
@@ -304,9 +304,9 @@
         'driver' => 'pgsql',
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'poscloud',
+        'database' => 'joindev',
         'username' => 'root',
-        'password' => '',
+        'password' => 'JOIN2023*',
         'charset' => 'utf8',
         'prefix' => '',
         'schema' => 'public',
@@ -317,9 +317,9 @@
         'driver' => 'sqlsrv',
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'poscloud',
+        'database' => 'joindev',
         'username' => 'root',
-        'password' => '',
+        'password' => 'JOIN2023*',
         'charset' => 'utf8',
         'prefix' => '',
       ),
@@ -328,9 +328,9 @@
         'driver' => 'mysql',
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'poscloud',
+        'database' => 'joindev',
         'username' => 'root',
-        'password' => '',
+        'password' => 'JOIN2023*',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
@@ -369,10 +369,10 @@
     'orientation' => 'portrait',
     'defines' => 
     array (
-      'font_dir' => 'C:\\laragon\\www\\pro51\\storage\\fonts/',
-      'font_cache' => 'C:\\laragon\\www\\pro51\\storage\\fonts/',
-      'temp_dir' => 'C:\\Users\\DELL\\AppData\\Local\\Temp',
-      'chroot' => 'C:\\laragon\\www\\pro51',
+      'font_dir' => '/var/www/html/posclouddev/storage/fonts/',
+      'font_cache' => '/var/www/html/posclouddev/storage/fonts/',
+      'temp_dir' => '/tmp',
+      'chroot' => '/var/www/html/posclouddev',
       'enable_font_subsetting' => false,
       'pdf_backend' => 'CPDF',
       'default_media_type' => 'screen',
@@ -391,7 +391,7 @@
     'exports' => 
     array (
       'chunk_size' => 1000,
-      'temp_path' => 'C:\\Users\\DELL\\AppData\\Local\\Temp',
+      'temp_path' => '/tmp',
       'csv' => 
       array (
         'delimiter' => ';',
@@ -461,7 +461,7 @@
     ),
     'temporary_files' => 
     array (
-      'local_path' => 'C:\\laragon\\www\\pro51\\storage\\framework/laravel-excel',
+      'local_path' => '/var/www/html/posclouddev/storage/framework/laravel-excel',
       'remote_disk' => NULL,
       'remote_prefix' => NULL,
       'force_resync_remote' => NULL,
@@ -474,7 +474,7 @@
     'extra_log' => false,
     'suscription_facturalo' => false,
     'apk_url' => 'https://facturaloperu.com/apk/app-debug.apk',
-    'wiki_pharmacy' => 'http://pro51.ec/docs/4.X/modulo-farmacia',
+    'wiki_pharmacy' => 'http://jdevco.com/docs/4.X/modulo-farmacia',
     'wiki_production' => 'https://gitlab.com/carlomagno83/facturadorpro4/-/wikis/App-Produccion',
     'AllowClientUseOwnApiperuToken' => false,
   ),
@@ -487,19 +487,19 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\laragon\\www\\pro51\\storage\\app',
+        'root' => '/var/www/html/posclouddev/storage/app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\laragon\\www\\pro51\\storage\\app/public',
-        'url' => 'http://pro51.ec/storage',
+        'root' => '/var/www/html/posclouddev/storage/app/public',
+        'url' => 'http://jdevco.com/storage',
         'visibility' => 'public',
       ),
       'core' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\laragon\\www\\pro51\\app\\CoreFacturalo',
+        'root' => '/var/www/html/posclouddev/app/CoreFacturalo',
       ),
       's3' => 
       array (
@@ -522,17 +522,17 @@
       'tenancy-default' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\laragon\\www\\pro51\\storage\\app/tenancy/tenants',
+        'root' => '/var/www/html/posclouddev/storage/app/tenancy/tenants',
       ),
       'tenancy-webserver-apache2' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\laragon\\www\\pro51\\storage\\app/tenancy/webserver/apache2',
+        'root' => '/var/www/html/posclouddev/storage/app/tenancy/webserver/apache2',
       ),
       'tenancy-webserver-nginx' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\laragon\\www\\pro51\\storage\\app/tenancy/webserver/nginx',
+        'root' => '/var/www/html/posclouddev/storage/app/tenancy/webserver/nginx',
       ),
     ),
   ),
@@ -689,7 +689,7 @@
       'local' => 
       array (
         'type' => 'city',
-        'path' => 'C:\\laragon\\www\\pro51\\database\\maxmind/GeoLite2-City.mmdb',
+        'path' => '/var/www/html/posclouddev/database/maxmind/GeoLite2-City.mmdb',
       ),
     ),
     'ip_api' => 
@@ -704,14 +704,14 @@
     array (
       'token' => NULL,
     ),
+    'kloudend' => 
+    array (
+      'token' => NULL,
+    ),
     'testing' => 
     array (
       'enabled' => true,
       'ip' => '66.102.0.0',
-    ),
-    'kloudend' => 
-    array (
-      'token' => NULL,
     ),
   ),
   'logging' => 
@@ -730,27 +730,27 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => 'C:\\laragon\\www\\pro51\\storage\\logs/laravel.log',
+        'path' => '/var/www/html/posclouddev/storage/logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => 'C:\\laragon\\www\\pro51\\storage\\logs/laravel.log',
+        'path' => '/var/www/html/posclouddev/storage/logs/laravel.log',
         'level' => 'debug',
         'days' => 7,
       ),
       'facturalo' => 
       array (
         'driver' => 'daily',
-        'path' => 'C:\\laragon\\www\\pro51\\storage\\logs/facturalo.log',
+        'path' => '/var/www/html/posclouddev/storage/logs/facturalo.log',
         'level' => 'debug',
         'days' => 7,
       ),
       'emails' => 
       array (
         'driver' => 'daily',
-        'path' => 'C:\\laragon\\www\\pro51\\storage\\logs/emails.log',
+        'path' => '/var/www/html/posclouddev/storage/logs/emails.log',
         'level' => 'debug',
         'days' => 7,
       ),
@@ -802,7 +802,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => 'C:\\laragon\\www\\pro51\\resources\\views/vendor/mail',
+        0 => '/var/www/html/posclouddev/resources/views/vendor/mail',
       ),
     ),
   ),
@@ -834,7 +834,7 @@
     'stubs' => 
     array (
       'enabled' => false,
-      'path' => 'C:\\laragon\\www\\pro51/vendor/nwidart/laravel-modules/src/Commands/stubs',
+      'path' => '/var/www/html/posclouddev/vendor/nwidart/laravel-modules/src/Commands/stubs',
       'files' => 
       array (
         'routes/web' => 'Routes/web.php',
@@ -896,9 +896,9 @@
     ),
     'paths' => 
     array (
-      'modules' => 'C:\\laragon\\www\\pro51\\modules',
-      'assets' => 'C:\\laragon\\www\\pro51\\public\\modules',
-      'migration' => 'C:\\laragon\\www\\pro51\\database/migrations',
+      'modules' => '/var/www/html/posclouddev/modules',
+      'assets' => '/var/www/html/posclouddev/public/modules',
+      'migration' => '/var/www/html/posclouddev/database/migrations',
       'generator' => 
       array (
         'config' => 
@@ -1028,7 +1028,7 @@
       'enabled' => false,
       'paths' => 
       array (
-        0 => 'C:\\laragon\\www\\pro51\\vendor/*/*',
+        0 => '/var/www/html/posclouddev/vendor/*/*',
       ),
     ),
     'composer' => 
@@ -1129,7 +1129,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => 'C:\\laragon\\www\\pro51\\storage\\framework/sessions',
+    'files' => '/var/www/html/posclouddev/storage/framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -1138,7 +1138,7 @@
       0 => 2,
       1 => 100,
     ),
-    'cookie' => 'laravel_session',
+    'cookie' => 'joindev_session',
     'path' => '/',
     'domain' => NULL,
     'secure' => false,
@@ -1234,7 +1234,7 @@
       'tenant-connection-name' => 'tenant',
       'tenant-division-mode' => 'database',
       'password-generator' => 'Hyn\\Tenancy\\Generators\\Database\\DefaultPasswordGenerator',
-      'tenant-migrations-path' => 'C:\\laragon\\www\\pro51\\database\\migrations/tenant',
+      'tenant-migrations-path' => '/var/www/html/posclouddev/database/migrations/tenant',
       'tenant-seed-class' => 'TenancyDatabaseSeeder',
       'auto-create-tenant-database' => true,
       'auto-create-tenant-database-user' => true,
@@ -1250,7 +1250,7 @@
     ),
     'routes' => 
     array (
-      'path' => 'C:\\laragon\\www\\pro51\\routes/tenants.php',
+      'path' => '/var/www/html/posclouddev/routes/tenants.php',
       'replace-global' => false,
     ),
     'folders' => 
@@ -1294,7 +1294,7 @@
   ),
   'tenant' => 
   array (
-    'app_url_base' => 'pro51.ec',
+    'app_url_base' => 'jdevco.com',
     'items_per_page' => '20',
     'items_per_page_simple_d_table' => '5',
     'items_per_page_simple_d_table_params' => 10,
@@ -1340,9 +1340,9 @@
   array (
     'paths' => 
     array (
-      0 => 'C:\\laragon\\www\\pro51\\resources\\views',
+      0 => '/var/www/html/posclouddev/resources/views',
     ),
-    'compiled' => 'C:\\laragon\\www\\pro51\\storage\\framework\\views',
+    'compiled' => '/var/www/html/posclouddev/storage/framework/views',
   ),
   'webserver' => 
   array (
@@ -1409,7 +1409,7 @@
     array (
       'enabled' => true,
       'driver' => 'file',
-      'path' => 'C:\\laragon\\www\\pro51\\storage\\debugbar',
+      'path' => '/var/www/html/posclouddev/storage/debugbar',
       'connection' => NULL,
       'provider' => '',
     ),
