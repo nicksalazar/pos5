@@ -376,8 +376,8 @@ use Modules\Sale\Models\SaleOpportunity;
             //Log::info(json_encode($request->ret));
             $data = self::convert($request);
             $docIntern = PurchaseDocumentTypes2::where('idType',$request->document_type_intern)->get();
-            $alteraStock = (bool)($docIntern && $docIntern->stock)?$docIntern->stock:0;
-            $signo = ($alteraStock && $alteraStock->sign == 0)? -1 : 1;
+            $alteraStock = (bool)($docIntern && $docIntern[0]->stock)?$docIntern[0]->stock:0;
+            $signo = ($docIntern && $docIntern[0]->sign == 0)? -1 : 1;
 
             Log::info(json_encode($data));
             try {
@@ -431,7 +431,7 @@ use Modules\Sale\Models\SaleOpportunity;
 
                     foreach ($data['items'] as $row) {
                         $p_item = new PurchaseItem();
-                        $row['quantity'] = floatval($row['quantity']) * $signo;
+                        $row['quantity'] = $row['quantity'] * $signo;
                         $p_item->fill($row);
                         $lots = $row['lots'] ?? null;
                         if ($lots != null) {
