@@ -138,7 +138,6 @@ use Modules\Sale\Models\SaleOpportunity;
                     break;
             }
 
-
             return $records;
 
         }
