@@ -22,7 +22,7 @@
                         <th>Fecha Fin</th>
                         <th class="text-center">Es Oferta?</th>
                         <th class="text-center" width="100px">Acciones</th>
-                    <tr>
+                    </tr>
                     <tr slot-scope="{ index, row }">
                         <td>{{ index }}</td>
                         <td>{{ row.rate_name }}</td>
@@ -45,17 +45,15 @@
 
             <person-types-form :showDialog.sync="showDialog"
                           :recordId="recordId" ></person-types-form>
- 
+
         </div>
     </div>
 </template>
 
 <script>
-
     import PersonTypesForm from './form.vue'
     import DataTable from '../../../components/DataTable.vue'
     import {deletable} from '../../../mixins/deletable'
-
     export default {
         props:['typeUser'],
         mixins: [deletable],
@@ -76,7 +74,6 @@
                 this.recordId = recordId
                 this.showDialog = true
             },
-
             clickDelete(id) {
                 this.destroy(`/${this.resource}/${id}`).then(() =>
                     this.$eventHub.$emit('reloadData')

@@ -13,6 +13,7 @@ use App\Http\Resources\Tenant\ItemCollection;
 use App\Http\Resources\Tenant\ItemResource;
 use App\Imports\CatalogImport;
 use App\Imports\ItemsImport;
+use App\Models\Tenant\AccountMovement;
 use App\Models\Tenant\Catalogs\AffectationIgvType;
 use App\Models\Tenant\Catalogs\AttributeType;
 use App\Models\Tenant\Catalogs\CatColorsItem;
@@ -38,12 +39,10 @@ use App\Models\Tenant\ImportConcepts;
 use App\Models\Tenant\Item;
 use App\Models\Tenant\ItemImage;
 use App\Models\Tenant\ItemMovement;
-use App\Models\Tenant\ItemRate;
 use App\Models\Tenant\ItemSupply;
 use App\Models\Tenant\ItemTag;
 use App\Models\Tenant\ItemUnitType;
 use App\Models\Tenant\ItemWarehousePrice;
-use App\Models\Tenant\Person;
 use App\Models\Tenant\Rate;
 use App\Models\Tenant\Tariff;
 use App\Models\Tenant\Warehouse;
@@ -68,7 +67,8 @@ use Mpdf\HTMLParserMode;
 use Mpdf\Mpdf;
 use setasign\Fpdi\Fpdi;
 use Modules\Inventory\Models\InventoryConfiguration;
-
+use App\Models\Tenant\ItemRate;
+use App\Models\Tenant\Person;
 
 class ItemController extends Controller
 {
@@ -221,7 +221,7 @@ class ItemController extends Controller
         $system_isc_types = SystemIscType::whereActive()->orderByDescription()->get();
         $affectation_igv_types = AffectationIgvType::whereActive()->get();
         $warehouses = Warehouse::all();
-        $accounts = Account::all();
+        $accounts = AccountMovement::all();
         $tags = Tag::all();
         $categories = Category::all();
         $brands = Brand::all();
@@ -252,6 +252,7 @@ class ItemController extends Controller
         $inventory_configuration = InventoryConfiguration::firstOrFail();
         $tariffs = Tariff::where('active',1)->get();
         $concepts = ImportConcepts::get();
+        $rates =Rate::select('id','rate_name')->orderBy('rate_name')->get();
         /*
         $configuration = Configuration::select(
             'affectation_igv_type_id',
@@ -259,7 +260,6 @@ class ItemController extends Controller
             'show_extra_info_to_item'
         )->firstOrFail();
         */
-        $rates =Rate::select('id','rate_name')->orderBy('rate_name')->get();
         return compact(
             'unit_types',
             'currency_types',
@@ -297,16 +297,17 @@ class ItemController extends Controller
 
     public function store(ItemRequest $request) {
 
-
         $id = $request->input('id');
         if (!$request->barcode) {
             if ($request->internal_id) {
                 $request->merge(['barcode' => $request->internal_id]);
             }
         }
+
         $item = Item::firstOrNew(['id' => $id]);
         $item->item_type_id = '01';
         $item->amount_plastic_bag_taxes = Configuration::firstOrFail()->amount_plastic_bag_taxes;
+        $item->amount_service_taxes = (Configuration::first())->amount_service_taxes;
         if ($request->has('date_of_due')) {
             $time = $request->date_of_due;
             $date = null;
@@ -394,7 +395,6 @@ class ItemController extends Controller
                 $item_unit_type->save();
             }
         }
-
         foreach ($request->item_rate as $val) {
             $item_rate = ItemRate::firstOrNew(['id' => $val['id']]);
             $item_rate->item_id = $item->id;
@@ -759,7 +759,17 @@ class ItemController extends Controller
 
         }
 
+    }
 
+    public function destroyItemRate($id)
+    {
+        $item_unit_type = ItemRate::findOrFail($id);
+        $item_unit_type->delete();
+
+        return [
+            'success' => true,
+            'message' => 'Registro eliminado con éxito'
+        ];
     }
 
     public function destroyItemUnitType($id)
@@ -772,24 +782,14 @@ class ItemController extends Controller
             'message' => 'Registro eliminado con éxito'
         ];
     }
-    public function destroyItemRate($id)
-    {
-        $item_unit_type = ItemRate::findOrFail($id);
-        $item_unit_type->delete();
-
-        return [
-            'success' => true,
-            'message' => 'Registro eliminado con éxito'
-        ];
-    }
     public function getPrice($item,$customer,$establishment)
     {
         $date_now=date('Y-m-d');
         $product=Item::findOrFail($item);
         $price=0;
-       
+
         $price_ofert=$product->rates()->where('rate_offer',1)->whereDate('rate_start','<=',$date_now)->whereDate('rate_end','>=',$date_now)->get();
-        
+
         if(count($price_ofert)>0){
             $price= $price_ofert[0]->pivot->price1;
         }else{
@@ -804,7 +804,7 @@ class ItemController extends Controller
         }
 
         return compact('price');
-        
+
 
     }
 

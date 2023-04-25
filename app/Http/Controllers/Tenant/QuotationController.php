@@ -43,6 +43,9 @@ use Mpdf\Config\FontVariables;
 use Mpdf\HTMLParserMode;
 use Mpdf\Mpdf;
 use Modules\Inventory\Models\Warehouse as ModuleWarehouse;
+use Swift_SmtpTransport;
+use Illuminate\Support\Facades\Config;
+use Swift_Mailer;
 
 
 class QuotationController extends Controller
@@ -830,7 +833,9 @@ class QuotationController extends Controller
         $email = $customer_email;
         $mailable = new QuotationEmail($client, $quotation);
         $id = (int)$request->id;
-        $sendIt = EmailController::SendMail($email, $mailable, $id, 3);
+
+
+        //$sendIt = EmailController::SendMail($email, $mailable, $id, 3);
         /*
         Configuration::setConfigSmtpMail();
         $array_email = explode(',', $customer_email);
@@ -845,6 +850,13 @@ class QuotationController extends Controller
             Mail::to($customer_email)->send(new QuotationEmail($client, $quotation));
         }
         */
+        $backup = Mail::getSwiftMailer();
+        $transport =  new Swift_SmtpTransport(Config::get('mail.host'), Config::get('mail.port'), Config::get('mail.encryption'));
+        $transport->setUsername(Config::get('mail.username'));
+        $transport->setPassword(Config::get('mail.password'));
+        $mailer = new Swift_Mailer($transport);
+        Mail::setSwiftMailer($mailer);
+        Mail::to($email)->send($mailable);
         return [
             'success' => true
         ];

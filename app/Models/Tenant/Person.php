@@ -30,7 +30,6 @@
      * App\Models\Tenant\Person
      *
      * @property int|null                             $seller_id
-     * @property int|null                             $rate_id
      * @property User                                 $seller
      * @property int|null                             $zone_id
      * @property Zone                                 $zone
@@ -143,11 +142,10 @@
             // 'zone',
             'observation',
             'credit_days',
-            'credit_quota',
             'optional_email',
             'seller_id',
-            'rate_id',
             'zone_id',
+            'rate_id',
             'status',
             'parent_id',
             'accumulated_points',
@@ -157,6 +155,8 @@
             'pagoLocExtDoc',
             'parteRel',
             'pagoLocExt',
+            'account',
+            'credit_quota',
         ];
 
         protected $casts = [
@@ -166,13 +166,13 @@
             'enabled' => 'bool',
             'status' => 'int',
             'credit_days' => 'int',
-            'credit_quota' => 'int',
             'seller_id' => 'int',
             'zone_id' => 'int',
             'parent_id' => 'int',
             'accumulated_points' => 'float',
             'has_discount' => 'bool',
             'discount_amount' => 'float',
+            'credit_quota' => 'int',
         ];
 
         // protected static function boot()
@@ -599,7 +599,7 @@
                 'nationality_id' => $this->nationality_id,
                 'department_id' => $department['id']??null,
                 'department' => $department,
-
+                'account' => $this->account,
                 'province_id' => $province['id']??null,
                 'province' => $province,
                 'district_id' => $district['id']??null,
@@ -619,7 +619,6 @@
                 'addresses' => $addresses,
                 'parent_id' => $this->parent_id,
                 'credit_days' => (int)$this->credit_days,
-                'credit_quota' => (int)$this->credit_quota,
                 'optional_email' => $optional_mail,
                 'optional_email_send' => implode(',', $optional_mail_send),
                 'childrens' => [],
@@ -627,6 +626,7 @@
                 'has_discount' => $this->has_discount,
                 'discount_type' => $this->discount_type,
                 'discount_amount' => $this->discount_amount,
+                'credit_quota' => (int)$this->credit_quota,
 
             ];
             if ($childrens == true) {

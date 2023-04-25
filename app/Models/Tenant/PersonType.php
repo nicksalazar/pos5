@@ -33,6 +33,7 @@ class PersonType extends ModelTenant
         return $this->discount;
     }
 
+
     /**
      * @param string $description
      *
@@ -43,6 +44,7 @@ class PersonType extends ModelTenant
         $this->description = $description;
         return $this;
     }
+
     public function setDiscount(string $discount)
     : PersonType {
         $this->discount = $discount;

@@ -110,10 +110,10 @@ class Establishment extends ModelTenant
     {
         return $query->withOut(['country', 'department', 'province', 'district']);
     }
-    
-    
+
+
     /**
-     * 
+     *
      * Obtener id del almacén
      *
      * @return int

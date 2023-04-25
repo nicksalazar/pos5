@@ -33,5 +33,4 @@ class Rate extends ModelTenant
         return $this->belongsToMany(Item::class,'item_rate','item_id','rate_id')->withPivot('price1');
     }
 
-   
 }

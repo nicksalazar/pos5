@@ -159,7 +159,6 @@
                                            v-text="errors.person_type_id[0]"></small>
                                 </div>
                             </div>
-
                             <div class="col-md-4">
                                 <div :class="{'has-danger': errors.rate_id}"
                                      class="form-group">
@@ -689,6 +688,25 @@
 
                         </div>
                         <div class="row">
+
+                            <div class="col-lg-4 col-md-4"  v-if="company && company.countable">
+                                <div :class="{'has-danger': errors.account}"
+                                    class="form-group">
+                                    <label class="control-label">
+                                        Cuenta clientes
+                                    </label>
+                                    <el-select v-model="form.account"
+                                            clearable>
+                                        <el-option v-for="option in accounts"
+                                                :key="option.id"
+                                                :label="option.code + ' - ' + option.description "
+                                                :value="option.id">
+                                                <span style="float: left"> {{ option.code }} - {{ option.description }}</span>
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                            </div>
+
                             <div class="col-lg-4 col-md-4">
 
                                 <div :class="{'has-danger': errors.seller_id}"
@@ -746,6 +764,16 @@
                                 </div>
                             </div>
 
+                            <div class="col-md-4">
+                                <div :class="{'has-danger': errors.limit_credit}"
+                                     class="form-group">
+                                    <label class="control-label">Cupo crédito</label>
+                                    <el-input-number v-model="form.limit_credit" :min="0" ></el-input-number>
+                                    <small v-if="errors.contact"
+                                           class="form-control-feedback"
+                                           v-text="errors.limit_credit[0]"></small>
+                                </div>
+                            </div>
                             <div class="col-md-3">
                                 <div :class="{'has-danger': errors.credit_quota}"
                                      class="form-group">
@@ -790,8 +818,8 @@
 </template>
 
 <script>
-import {mapActions, mapState} from "vuex/dist/vuex.mjs";
 
+import {mapActions, mapState} from "vuex";
 import {serviceNumber} from '../../../mixins/functions'
 
 export default {
@@ -805,6 +833,22 @@ export default {
         'input_person',
         'parentId',
     ],
+    computed: {
+        ...mapState([
+            'config',
+            'person',
+            'parentPerson',
+
+        ]),
+        maxLength: function () {
+            if (this.form.identity_document_type_id === '6') {
+                return 11
+            }
+            if (this.form.identity_document_type_id === '1') {
+                return 8
+            }
+        },
+    },
     data() {
         return {
             form_zone: {add: false, name: null, id: null},
@@ -846,7 +890,9 @@ export default {
             rates: [],
             identity_document_types: [],
             discount_types: [],
-            activeName: 'first'
+            activeName: 'first',
+            accounts:[],
+            company : null,
         }
     },
     async created() {
@@ -869,6 +915,8 @@ export default {
                 this.person_types = response.data.person_types;
                 this.rates = response.data.rates;
                 this.discount_types = response.data.discount_types;
+                this.accounts = response.data.accounts;
+                this.company = response.data.company;
             })
             .finally(() => {
                 if (this.api_service_token === false) {
@@ -878,21 +926,6 @@ export default {
                 }
             })
 
-    },
-    computed: {
-        ...mapState([
-            'config',
-            'person',
-            'parentPerson',
-        ]),
-        maxLength: function () {
-            if (this.form.identity_document_type_id === '6') {
-                return 11
-            }
-            if (this.form.identity_document_type_id === '1') {
-                return 8
-            }
-        },
     },
     methods: {
         ...mapActions([
@@ -904,7 +937,6 @@ export default {
                 id: null,
                 type: this.type,
                 credit_days: 0,
-                credit_quota: 0,
                 identity_document_type_id: '6',
                 number: '',
                 name: null,
@@ -914,6 +946,8 @@ export default {
                 department_id: null,
                 province_id: null,
                 district_id: null,
+                rate_id: null,
+                credit_quota: 0,
                 address: null,
                 telephone: null,
                 condition: null,
@@ -922,7 +956,6 @@ export default {
                 perception_agent: false,
                 percentage_perception: 0,
                 person_type_id: null,
-                rate_id: null,
                 comment: null,
                 addresses: [],
                 contact: {
@@ -935,6 +968,7 @@ export default {
                 discount_amount: 0,
                 parteRel:'NO',
                 pagoLocExt:'Local',
+                account:null,
 
             }
             this.updateEmail()
@@ -992,6 +1026,8 @@ export default {
                 this.$http.get(`/${this.resource}/record/${this.recordId}`)
                     .then(response => {
                         this.form = response.data.data
+                        console.log('form', response.data.data)
+
                         if (response.data.data.contact == null) {
                             this.form.contact = {
                                 full_name: null,

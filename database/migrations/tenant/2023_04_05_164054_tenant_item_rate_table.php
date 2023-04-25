@@ -26,7 +26,7 @@ class TenantItemRateTable extends Migration
             $table->foreign('item_id')->references('id')->on('items');
         });
     }
-    
+
     /**
      * Reverse the migrations.
      *

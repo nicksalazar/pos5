@@ -12,9 +12,8 @@ use App\Http\Resources\Tenant\EstablishmentResource;
 use App\Http\Resources\Tenant\EstablishmentCollection;
 use App\Models\Tenant\Warehouse;
 use App\Models\Tenant\Person;
-use App\Models\Tenant\Rate;
 use Modules\Finance\Helpers\UploadFileHelper;
-
+use App\Models\Tenant\Rate;
 
 class EstablishmentController extends Controller
 {
@@ -34,6 +33,7 @@ class EstablishmentController extends Controller
         $departments = Department::whereActive()->orderByDescription()->get();
         $provinces = Province::whereActive()->orderByDescription()->get();
         $districts = District::whereActive()->orderByDescription()->get();
+        $rates = Rate::where('rate_offer','=','0')->select('id','rate_name','rate_offer')->orderBy('rate_name')->get();
 
         $customers = Person::whereType('customers')->orderBy('name')->take(1)->get()->transform(function($row) {
             return [
@@ -44,7 +44,7 @@ class EstablishmentController extends Controller
                 'identity_document_type_id' => $row->identity_document_type_id,
             ];
         });
-        $rates = Rate::where('rate_offer','=','0')->select('id','rate_name','rate_offer')->orderBy('rate_name')->get();
+
         return compact('countries', 'departments', 'provinces', 'districts', 'customers','rates');
     }
 

@@ -164,25 +164,23 @@
                                            v-text="errors.currency_type_id[0]"></small>
                                 </div>
                             </div>
-                            <!-- JOINSOFTWARE
-                            <div class="col-lg-2 align-self-end">
-                                <div :class="{'has-danger': errors.exchange_rate_sale}"
+                            <div class="col-lg-2 align-self-end" v-if=" ! configuration.send_auto">
+                                <div :class="{'has-danger': errors.aproved}"
                                      class="form-group">
-                                    <label class="control-label">Tipo de cambio
-                                        <el-tooltip class="item"
-                                                    content="Tipo de cambio del día, extraído de SUNAT"
-                                                    effect="dark"
-                                                    placement="top-end">
-                                            <i class="fa fa-info-circle"></i>
-                                        </el-tooltip>
-                                    </label>
-                                    <el-input v-model="form.exchange_rate_sale"></el-input>
-                                    {{-- <el-input :disabled="isUpdate" v-model="form.exchange_rate_sale"></el-input> --}}
-                                    <small v-if="errors.exchange_rate_sale"
+                                    <label class="control-label">Mandar a Autorizar? </label>
+                                    <el-switch
+                                        v-model="form.aproved"
+                                        class="ml-2"
+                                        inline-prompt
+                                        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                                        active-text="Si"
+                                        inactive-text="No"
+                                    />
+                                    <small v-if="errors.aproved"
                                            class="form-control-feedback"
-                                           v-text="errors.exchange_rate_sale[0]"></small>
+                                           v-text="errors.aproved[0]"></small>
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
                     <div class="card-body border-top no-gutters">
@@ -200,7 +198,6 @@
                                            class="border-left rounded-left border-info"
                                            dusk="customer_id"
                                            filterable
-
                                            @focus="focus_on_client = true"
                                            @blur="focus_on_client = false"
                                            placeholder="Escriba el nombre o número de documento del cliente"
@@ -284,6 +281,10 @@
                                         <template v-if="row.total_service_taxes > 0">
                                             <br/><small>Adicionales: {{ currency_type.symbol }}
                                             {{ row.total_service_taxes }}</small>
+                                        </template>
+                                        <template v-if="row.total_charge > 0">
+                                            <br/><small>Cargo incluido: {{ currency_type.symbol }}
+                                            {{ row.total_charge }}</small>
                                         </template>
                                         <br/><small>{{ row.affectation_igv_type.description }}</small>
                                         <template v-if="row.item.lots && row.item.lots.length > 0">
@@ -405,13 +406,6 @@
                                                     </tr>
                                                 </template>
 
-<!--                                                <template v-if="form.retention">-->
-<!--                                                    <tr v-if="form.retention.amount > 0">-->
-<!--                                                        <td>M. RETENCIÓN ({{ form.retention.percentage * 100 }}%):</td>-->
-<!--                                                        <td>{{ currency_type.symbol }} {{ form.retention.amount }}</td>-->
-<!--                                                    </tr>-->
-<!--                                                </template>-->
-
                                                 <tr v-if="form.total_exportation > 0">
                                                     <td>OP.EXPORTACIÓN:</td>
                                                     <td>{{ currency_type.symbol }} {{ form.total_exportation }}</td>
@@ -469,16 +463,12 @@
                                                         <el-input-number v-model="total_global_charge"
                                                                          :disabled="config.active_allowance_charge == true ? true:false"
                                                                          :min="0"
+
                                                                          class="input-custom"
                                                                          controls-position="right"
                                                                          @change="calculateTotal"></el-input-number>
                                                     </td>
                                                 </tr>
-
-<!--                                                <tr v-if="form.total > 0">-->
-<!--                                                    <td><strong>TOTAL A PAGAR</strong>:</td>-->
-<!--                                                    <td>{{ currency_type.symbol }} {{ form.total }}</td>-->
-<!--                                                </tr>-->
 
                                                 <template v-if="form.has_retention">
                                                     <tr v-if="form.total > 0">
@@ -518,15 +508,6 @@
                                                         </el-select>
                                                     </td>
                                                 </tr>
-
-
-                                                <!-- <template v-if="form.detraction">
-                                                    <tr v-if="form.detraction.amount > 0 && form.total_pending_payment > 0">
-                                                        <td width="60%">M. PENDIENTE:</td>
-                                                        <td>{{ currency_type.symbol }} {{ form.total_pending_payment }}</td>
-                                                    </tr>
-                                                </template> -->
-
                                                 <template v-if="form.detraction || form.retention">
                                                     <tr v-if="form.total_pending_payment > 0">
                                                         <!-- <tr v-if="form.detraction.amount > 0 && form.total_pending_payment > 0"> -->
@@ -537,7 +518,6 @@
                                                         </td>
                                                     </tr>
                                                 </template>
-
 
                                                 <tr v-if="form.total > 0">
                                                     <!-- Metodos de pago -->
@@ -672,7 +652,7 @@
                                                                             </el-tooltip>
                                                                         </th>
                                                                         <th v-if="form.payments.length>0"
-                                                                            style="width: 100px">Referencia
+                                                                            style="width: 100px">Referencia/Anticipo
                                                                         </th>
                                                                         <th v-if="form.payments.length>0"
                                                                             style="width: 100px">Monto
@@ -687,23 +667,23 @@
 
                                                                     <template v-if="showLoadVoucher">
                                                                         <td class="" style="width: 50px">
-                                                                            <!-- <el-tooltip class="item" content="Cargar voucher" effect="dark" placement="top-start"> -->
-                                                                                <el-upload
-                                                                                    :data="{'index': index}"
-                                                                                    :headers="headers_token"
-                                                                                    :multiple="false"
-                                                                                    :on-remove="(file, fileList) => handleRemoveUploadVoucher(file, fileList, index)"
-                                                                                    :action="`/finances/payment-file/upload`"
-                                                                                    :show-file-list="true"
-                                                                                    :file-list="row.file_list"
-                                                                                    :on-success="(response, file, fileList) => onSuccessUploadVoucher(response, file, fileList, index)"
-                                                                                    :limit="1"
-                                                                                    >
-                                                                                        <button  type="button" class="btn btn-sm btn-primary"  slot="trigger">
-                                                                                            <i class="fas fa-fw fa-upload"></i>
-                                                                                        </button>
-                                                                                </el-upload>
-                                                                            <!-- </el-tooltip> -->
+
+                                                                            <el-upload
+                                                                                :data="{'index': index}"
+                                                                                :headers="headers_token"
+                                                                                :multiple="false"
+                                                                                :on-remove="(file, fileList) => handleRemoveUploadVoucher(file, fileList, index)"
+                                                                                :action="`/finances/payment-file/upload`"
+                                                                                :show-file-list="true"
+                                                                                :file-list="row.file_list"
+                                                                                :on-success="(response, file, fileList) => onSuccessUploadVoucher(response, file, fileList, index)"
+                                                                                :limit="1"
+                                                                                >
+                                                                                    <button  type="button" class="btn btn-sm btn-primary"  slot="trigger">
+                                                                                        <i class="fas fa-fw fa-upload"></i>
+                                                                                    </button>
+                                                                            </el-upload>
+
                                                                         </td>
                                                                     </template>
 
@@ -730,12 +710,24 @@
                                                                                     :value="option.id"></el-option>
                                                                             </el-select>
                                                                         </td>
-                                                                        <td>
+                                                                        <td v-if="!row.payment_method_type_id_desc">
                                                                             <el-input
                                                                                 v-model="row.reference"></el-input>
+
+                                                                        </td>
+                                                                        <td v-if="row.payment_method_type_id_desc">
+                                                                            <el-select
+                                                                                v-model="row.reference"
+                                                                                @change="changeAdvance(index,$event)">
+                                                                                <el-option
+                                                                                    v-for="option in advances"
+                                                                                    :key="option.id"
+                                                                                    :label="option.id"
+                                                                                    :value="option.id"></el-option>
+                                                                            </el-select>
                                                                         </td>
                                                                         <td>
-                                                                            <el-input v-model="row.payment"></el-input>
+                                                                            <el-input v-model="row.payment"  @change="changeAdvanceInput(index,$event,row.payment_method_type_id,row.reference)"></el-input>
                                                                         </td>
 
 
@@ -769,13 +761,13 @@
                                                                 <b>Nota: </b>
                                                             </p>
                                                             <p style="color: red; margin-bottom: 2px;width: 70%;" v-if="cuenta_pagar>0">
-                                                               Pendiente a pago: {{ currency_type.symbol }} <b>{{ cuenta_pagar }} </b> 
+                                                               Pendiente a pago: {{ currency_type.symbol }} <b>{{ cuenta_pagar }} </b>
                                                             </p>
                                                             <p style="color: red; margin-bottom: 2px;width: 70%;">
                                                                 Cupo de crédito: {{ currency_type.symbol }} <b>{{ cupo_credito }}</b>
                                                             </p>
                                                             <p style="color: red; margin-bottom: 2px;width: 70%;">
-                                                              <b>SELECCIONE OTRA CONDICIÓN DE PAGO </b> 
+                                                              <b>SELECCIONE OTRA CONDICIÓN DE PAGO </b>
                                                             </p>
                                                         </div>
                                                     </td>
@@ -950,6 +942,77 @@
                                         <!-- Metodos de pago -->
                                         <td class="p-0"
                                             colspan="2">
+                                            <!-- Anticipo -->
+                                            <div v-if="!is_receivable && form.payment_condition_id === '04'">
+                                                <table class="text-left">
+                                                    <thead>
+                                                    <tr>
+                                                        <th v-if="form.payments.length>0"
+                                                            style="width: 120px">Anticipos disponibles
+                                                        </th>
+                                                        <template v-if="enabled_payments">
+                                                            <th
+                                                                style="width: 100px">Fecha
+                                                            </th>
+                                                            <th v-if="form.payments.length>0"
+                                                                style="width: 100px">Monto
+                                                            </th>
+                                                            <th style="width: 30px"></th>
+                                                        </template>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr v-for="(row, index) in form.payments"
+                                                        :key="index">
+                                                        <td>
+                                                            <el-select
+                                                                v-model="row.payment_method_type_id"
+                                                                @change="changePaymentMethodType(index)">
+                                                                <el-option
+                                                                    v-for="option in cash_payment_metod"
+                                                                    :key="option.id"
+                                                                    :label="option.description"
+                                                                    :value="option.id"></el-option>
+                                                            </el-select>
+                                                        </td>
+                                                        <template v-if="enabled_payments">
+                                                            <td>
+                                                                <el-date-picker
+                                                                    v-model="row.date"
+                                                                    :clearable="false"
+                                                                    format="dd/MM/yyyy"
+                                                                    type="date"
+                                                                    :readonly="readonly_date_of_due"
+                                                                    value-format="yyyy-MM-dd"></el-date-picker>
+                                                            </td>
+                                                            <td>
+                                                                <el-input v-model="row.payment"></el-input>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button
+                                                                    class="btn waves-effect waves-light btn-xs btn-danger"
+                                                                    type="button"
+                                                                    @click.prevent="clickCancel(index)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </template>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="5">
+                                                            <label class="control-label">
+                                                                <a class=""
+                                                                   href="#"
+                                                                   @click.prevent="clickAddPayment"><i
+                                                                    class="fa fa-plus font-weight-bold text-info"></i>
+                                                                    <span style="color: #777777">Agregar pago</span></a>
+
+                                                            </label>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                             <!-- Crédito con cuotas -->
                                             <div v-if="form.payment_condition_id === '03'">
                                                 <table v-if="form.fee.length>0"
@@ -1706,8 +1769,7 @@ export default {
                     preventDefault: true,
                 },
             ],
-            // default_document_type: null,
-            // default_series_type: null,
+            advances:[],
             focus_on_client: false,
             dateValid: false,
             input_person: {},
@@ -1718,12 +1780,6 @@ export default {
             showDialogItemSeriesIndex: false,
             is_client: false,
             recordItem: null,
-            record: {},
-            cuenta_pagar:0,
-            cupo_credito:0,
-            total_cuenta:0,
-            cupo:0,
-            cuenta:0,
             resource: 'documents',
             showDialogAddItem: false,
             showDialogNewPerson: false,
@@ -1783,7 +1839,13 @@ export default {
             error_global_discount: false,
             headers_token: headers_token,
             showDialogReportCustomer: false,
-            report_to_customer_id: null
+            report_to_customer_id: null,
+            record: {},
+            cuenta_pagar:0,
+            cupo_credito:0,
+            total_cuenta:0,
+            cupo:0,
+            cuenta:0,
         }
     },
     computed: {
@@ -1799,6 +1861,16 @@ export default {
             'series',
             'all_series',
         ]),
+        validacionCupo(){
+            if(this.deuda>this.cupo){
+                    return true;
+                }else{
+                    return false;
+                }
+        },
+        advance_payment_metod:function(){
+            return _.filter(this.payment_method_types, {'is_advance': true})
+        },
         credit_payment_metod: function () {
             return _.filter(this.payment_method_types, {'is_credit': true})
         },
@@ -1898,6 +1970,7 @@ export default {
             this.btnText = 'Actualizar';
             this.loading_submit = true;
             await this.$http.get(`/documents/${this.documentId}/show`).then(response => {
+
                 this.onSetFormData(response.data.data);
             }).finally(() => this.loading_submit = false);
         }
@@ -2296,7 +2369,7 @@ export default {
             }
         },
         async onSetFormData(data) {
-            console.log('onSetFormData')
+
             this.currency_type = await _.find(this.currency_types, {'id': data.currency_type_id})
             this.form.establishment_id = data.establishment_id;
             this.form.document_type_id = data.document_type_id;
@@ -2354,6 +2427,7 @@ export default {
             this.form.total_unaffected = parseFloat(data.total_unaffected);
             this.form.total_value = parseFloat(data.total_value);
             this.form.total_charge = parseFloat(data.total_charge);
+            this.total_global_charge = parseFloat(data.total_charge);
             this.form.total = parseFloat(data.total);
             this.form.subtotal = parseFloat(data.subtotal);
             this.form.total_igv_free = parseFloat(data.total_igv_free);
@@ -2386,9 +2460,6 @@ export default {
             this.form.quotation_id = data.quotation_id;
 
             this.form.additional_information = this.onPrepareAdditionalInformation(data.additional_information);
-
-            // this.form.additional_information = data.additional_information;
-            // this.form.fee = [];
             this.prepareDataDetraction()
             this.prepareDataRetention()
 
@@ -2401,13 +2472,10 @@ export default {
             this.establishment = data.establishment;
 
             this.changeDateOfIssue();
-            // await this.filterCustomers();
             this.updateChangeDestinationSale();
-
             this.prepareDataCustomer()
+            //this.calculateTotal();
 
-            this.calculateTotal();
-            // this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
         },
         prepareDataGlobalDiscount(data)
         {
@@ -2516,7 +2584,8 @@ export default {
 
                 i.discounts = (i.discounts) ? Object.values(i.discounts) : []
                 // i.discounts = i.discounts || [];
-                i.charges = i.charges || [];
+                //i.charges = i.charges || [];
+                i.charges = (i.charges) ? Object.values(i.charges) : []
                 i.attributes = i.attributes || [];
                 i.item.id = i.item_id;
                 i.additional_information = this.onPrepareAdditionalInformation(i.additional_information);
@@ -2605,12 +2674,55 @@ export default {
             // this.readonly_date_of_due = false
             // this.form.payment_method_type_id = null
         },
+        changeAdvanceInput(index,event,methodType, id){
+
+            let selectedAdvance = _.find(this.advances,{'id':id})
+            let payment_method_type = _.find(this.payment_method_types, {'id': methodType});
+            if(payment_method_type.description.includes('Anticipo')){
+
+                let maxAmount = selectedAdvance.valor
+
+                if(maxAmount >= event){
+                    /*EL VALOR INGRESADO EN PERMITIDO EN EL ANTICIPO */
+                }else{
+                    this.form.payments[index].payment = maxAmount
+                    let message = 'El monto maximo del anticipo es de '+maxAmount
+                    this.$message.warning(message)
+
+                }
+            }
+        },
+        changeAdvance(index, id){
+
+            let selectedAdvance = _.find(this.advances,{'id':id})
+            let maxAmount = selectedAdvance.valor
+
+            let payment_count = this.form.payments.length;
+            // let total = this.form.total;
+            let total = this.getTotal()
+
+            let payment = 0;
+            let amount = _.round(total / payment_count, 2);
+
+            if(maxAmount >= amount ){
+                /* EL MONTO INGRESADO ESTA PERMITIDO */
+            }else if(amount > maxAmount ){
+
+                this.form.payments[index].payment = maxAmount
+                let message = 'El monto maximo del anticipo es de '+maxAmount
+                this.$message.warning(message)
+            }
+
+
+        },
         changePaymentMethodType(index) {
 
             let id = '01';
+
             if (this.form.payments[index] !== undefined &&
                 this.form.payments[index].payment_method_type_id !== undefined) {
                 id = this.form.payments[index].payment_method_type_id;
+
             } else if (this.form.fee[index] !== undefined &&
                 this.form.fee[index].payment_method_type_id !== undefined) {
                 id = this.form.fee[index].payment_method_type_id;
@@ -2644,7 +2756,21 @@ export default {
                 // this.form.payments = []
                 this.enabled_payments = false
 
-            } else {
+            }else if(payment_method_type.description.includes('Anticipo')){
+
+                this.$notify({
+                    title: '',
+                    message: 'Debes seleccionar un anticipo disponible',
+                    type: 'success'
+                })
+                this.form.payments[index].payment_method_type_id_desc = 'Anticipo';
+                this.form.date_of_due = this.form.date_of_issue
+                this.readonly_date_of_due = false
+                this.form.payment_method_type_id = null
+                this.enabled_payments = true
+
+
+            }else {
 
                 this.form.date_of_due = this.form.date_of_issue
                 this.readonly_date_of_due = false
@@ -2660,6 +2786,7 @@ export default {
         keyupCustomer() {
 
             if (this.input_person.number) {
+
 
                 if (!isNaN(parseInt(this.input_person.number))) {
 
@@ -2679,7 +2806,18 @@ export default {
                             break;
                     }
                 }
+
+
             }
+        },
+        addAdvancesCustomer(){
+
+            this.$http.get(`/${this.resource}/advance/${this.form.customer_id}`).then(
+                response => {
+
+                    this.advances = response.data
+                }
+            )
         },
         addDocumentDetraction(detraction) {
             this.form.detraction = detraction
@@ -2694,12 +2832,12 @@ export default {
                 this.saveLocalCustomerId();
                 this.recordItem = null
                 this.showDialogAddItem = true
-                
+
             }else{
                 alert('Debe seleccionar el cliente');
                 //this.errors.customer_id=['Debe seleccionar el cliente'];
                 this.showDialogAddItem = false;
-                
+
             }
         },
         getFormatUnitPriceRow(unit_price) {
@@ -2999,7 +3137,6 @@ export default {
                 reference: null,
                 payment_destination_id: this.getPaymentDestinationId(),
                 payment: total,
-
                 payment_received: true,
                 filename: null,
                 temp_path: null,
@@ -3253,7 +3390,6 @@ export default {
                 await this.filterCustomers()
                 // this.form.customer_id = (this.customers.length > 0) ? this.establishment.customer_id : null
                 let alt = _.find(this.customers, {'id': this.establishment.customer_id});
-                // console.log(alt)
 
                 if (alt !== undefined) {
                     this.form.customer_id = this.establishment.customer_id
@@ -3316,7 +3452,7 @@ export default {
             });
             await this.getPercentageIgv();
             this.changeCurrencyType();
-            // }
+
         },
         assignmentDateOfPayment() {
             this.form.payments.forEach((payment) => {
@@ -3324,7 +3460,7 @@ export default {
             })
         },
         filterSeries() {
-            // console.log('filterSeries');
+
             this.form.series_id = null
             let series = _.filter(this.all_series, {
                 'establishment_id': this.form.establishment_id,
@@ -3341,8 +3477,6 @@ export default {
 
                 });
             }
-
-            //console.log(series);
 
             this.$store.commit('setSeries', series)
             this.form.series_id = (this.series.length > 0) ? this.series[0].id : null
@@ -3404,6 +3538,7 @@ export default {
                 }
 
             } else {
+
                 this.form.items.push(JSON.parse(JSON.stringify(row)));
             }
 
@@ -3416,10 +3551,13 @@ export default {
             if(this.config.enabled_point_system) this.setTotalExchangePoints()
         },
         changeCurrencyType() {
+
             this.currency_type = _.find(this.currency_types, {'id': this.form.currency_type_id})
             let items = []
             this.form.items.forEach((row) => {
-                items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale, this.percentage_igv))
+
+                items.push(calculateRowItem(row, this.form.currency_type_id, this.form.exchange_rate_sale, this.percentage_igv, this.configuration.currency_type_id))
+
             });
             this.form.items = items
             this.calculateTotal()
@@ -3448,10 +3586,8 @@ export default {
 
             this.form.items.forEach((row) => {
 
-                console.log("INVOICE CREATE ROW",row)
-
                 total_discount += parseFloat(row.total_discount)
-                total_charge += parseFloat(row.total_charge)
+                total_charge += parseFloat(row.total_charge + row.total_service_taxes)
 
                 if (row.affectation_igv_type_id === '10' || row.affectation_igv_type_id === '11' || row.affectation_igv_type_id === '12') {
                     // total_taxed += parseFloat(row.total_value)
@@ -3523,8 +3659,6 @@ export default {
 
                 }
 
-                // console.log(row.total_value)
-
                 if (!['21', '37'].includes(row.affectation_igv_type_id)) {
                     // total_value += parseFloat(row.total_value)
                     if (row.total_value_without_rounding) {
@@ -3559,7 +3693,7 @@ export default {
                 // isc
                 total_isc += parseFloat(row.total_isc)
                 total_base_isc += parseFloat(row.total_base_isc)
-                this.total_global_charge += _.round(row.total_service_taxes,2)
+                this.total_global_charge += _.round(row.total_service_taxes,3)
             });
 
             // isc
@@ -3640,7 +3774,7 @@ export default {
 
             if (this.config.active_allowance_charge) {
                 let percentage_allowance_charge = parseFloat(this.config.percentage_allowance_charge)
-                this.total_global_charge += _.round(base * (percentage_allowance_charge / 100), 2)
+                this.total_global_charge += _.round(base * (percentage_allowance_charge / 100), 3)
             }
 
             if (this.total_global_charge == 0) {
@@ -3653,13 +3787,11 @@ export default {
             // let base = this.form.total_taxed + amount
             let factor = _.round(amount / base, 5)
 
-            // console.log(base,factor, amount)
-
             let charge = _.find(this.form.charges, {charge_type_id: '50'})
 
             if (amount > 0 && !charge) {
 
-                this.form.total_charge = _.round(amount, 2)
+                this.form.total_charge = _.round(amount, 3)
                 this.form.total = _.round(base  + this.form.total_taxes + this.form.total_charge, 2)
 
                 this.form.charges.push({
@@ -3672,13 +3804,12 @@ export default {
 
             } else {
 
-                let pos = this.form.charges.indexOf(charge);
+                let pos = String(this.form.charges).indexOf(charge);
 
                 if (pos > -1) {
 
-                    this.form.total_charge = _.round(amount, 2)
+                    this.form.total_charge = _.round(amount, 3)
                     this.form.total = _.round(base + this.form.total_taxes + this.form.total_charge, 2)
-
                     this.form.charges[pos].base = base
                     this.form.charges[pos].amount = amount
                     this.form.charges[pos].factor = factor
@@ -3693,7 +3824,11 @@ export default {
         deleteChargeGlobal() {
 
             let charge = _.find(this.form.charges, {charge_type_id: '50'})
-            let index = this.form.charges.indexOf(charge)
+            let index = -1
+            if(this.form.charges.length > 0 ){
+                index = this.form.charges.indexOf(charge)
+            }
+
 
             if (index > -1) {
                 this.form.charges.splice(index, 1)
@@ -3850,18 +3985,10 @@ export default {
             }
 
         },
-        validacionCupo(){
-            if(this.deuda>this.cupo){
-                    return true;
-                }else{
-                    return false;
-                }
-        },
         async submit() {
-            
+
             //validar cupo
             this.total_cuenta=0;
-
             if(this.form.payment_condition_id!=='01'){
               await this.calcularCupo();
              }else{
@@ -3869,10 +3996,10 @@ export default {
                 this.cupo=0;
              }
              let validar= await this.validacionCupo();
-
             if(validar){
                 return false;
             }
+
             //Validando las series seleccionadas
             let errorSeries = false;
             _.forEach(this.form.items, row => {
@@ -3939,7 +4066,6 @@ export default {
             let temp = this.form.payment_condition_id;
             // Condicion de pago Credito con cuota pasa a credito
             if (this.form.payment_condition_id === '03') this.form.payment_condition_id = '02';
-
             this.$http.post(path, this.form).then(response => {
                 if (response.data.success) {
                     this.$eventHub.$emit('reloadDataItems', null)
@@ -4090,20 +4216,15 @@ export default {
             }
 
             this.setCustomerAccumulatedPoints(customer.id, this.config.enabled_point_system)
-
             let seller = this.sellers.find(element => element.id == customer.seller_id)
             if (seller !== undefined) {
                 this.form.seller_id = seller.id
-
             }
 
             // retencion para clientes con ruc
             this.validateCustomerRetention(customer.identity_document_type_id)
+            this.addAdvancesCustomer()
 
-            /*if(this.customer_addresses.length > 0) {
-                let address = _.find(this.customer_addresses, {'main' : 1});
-                this.form.customer_address_id = address.id;
-            }*/
         },
         validateCustomerRetention(identity_document_type_id) {
 
@@ -4129,7 +4250,8 @@ export default {
             this.form.payment_method_type_id = null
 
         },
-       changePaymentCondition() {
+        changePaymentCondition() {
+
             this.form.fee = [];
             this.form.payments = [];
             if (this.form.payment_condition_id === '01') {
@@ -4154,6 +4276,7 @@ export default {
                 this.setTotalPendingAmountRetention(this.form.retention.amount)
             }
 
+
         },
         async calcularCupo(){
             this.deuda=0;
@@ -4169,7 +4292,6 @@ export default {
                   })
                   .then(() => {
                  });
-
                  await this.$http.get(`/persons/record/${this.form.customer_id}`).then((response) => {
                 this.record = response.data.data
                 this.cupo_credito=this.record.credit_quota;
@@ -4177,19 +4299,16 @@ export default {
                  .catch(error => {
                   })
                   .then(() => {
-                      
-                 });
 
+                 });
                 this.deuda=parseFloat(this.cuenta_pagar)+parseFloat(this.form.total);
                 this.cupo=parseFloat(this.cupo_credito);
-
                 if(this.deuda>this.cupo){
                     this.total_cuenta=this.deuda;
                 }else{
                     this.total_cuenta=0
                 }
 
-            
         },
         clickAddFee() {
             this.form.date_of_due = moment().format('YYYY-MM-DD');
@@ -4242,14 +4361,12 @@ export default {
 
             let payment = 0;
             let amount = _.round(total / payment_count, 2);
-            // console.log(amount);
             _.forEach(this.form.payments, row => {
                 payment += amount;
                 if (total - payment < 0) {
                     amount = _.round(total - payment + amount, 2);
                 }
                 row.payment = amount;
-                // console.error(row.payment)
             })
         },
         calculateFee() {
@@ -4272,16 +4389,13 @@ export default {
             if(this.form.has_retention) {
                 total_pay -= this.form.retention.amount;
             }
-            // console.log(this.form.retention)
-            // console.log(this.form.total_pending_payment)
-            // console.log(this.form.total)
 
             if (!_.isEmpty(this.form.detraction) && this.form.total_pending_payment > 0) {
                 return this.form.total_pending_payment
             }
 
             if (!_.isEmpty(this.form.retention) && this.form.total_pending_payment > 0) {
-                // console.log('1');
+
                 return this.form.total_pending_payment
             }
 
@@ -4316,14 +4430,14 @@ export default {
                 if(this.form.customer_id !== null){
                     this.errors={};
                     if (!this.showDialogAddItem) this.showDialogAddItem = true
-                
+
                 }else{
                     //this.errors.customer_id={0:'Debe seleccionar el cliente '};
                     alert('Debe seleccionar el cliente');
                     if (this.showDialogAddItem) {
                     this.showDialogAddItem = false;
                 }
-                    
+
                 }
             }
             if (code === 'Escape') {
@@ -4331,7 +4445,7 @@ export default {
             }
         },
         openDialogLots(item) {
-            console.log(item);
+
             this.recordItem = item;
             this.showDialogItemSeriesIndex = true;
         },

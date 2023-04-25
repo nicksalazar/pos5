@@ -126,7 +126,6 @@
 
                         </div>
                     </div>
-
                     <div class="col-md-4">
                         <div :class="{'has-danger': errors.rate_id}"
                              class="form-group">
@@ -146,7 +145,6 @@
                                            v-text="errors.rate_id[0]"></small>
                         </div>
                     </div>
-
                     <div class="col-lg-6 col-md-6 form-group" style="padding-top: 29px;">
                         <img v-if="preview" :src="preview" alt="Vista previa" class="img-fluid img-thumbnail mb-2">
                         <input type="file" ref="inputFile" class="hidden" @change="onSelectImage" accept="image/png, image/jpeg, image/jpg">
@@ -258,7 +256,6 @@
                     department_id: null,
                     province_id: null,
                     district_id: null,
-                    rate_id: null,
                     address: null,
                     telephone: null,
                     email: null,
@@ -268,6 +265,7 @@
                     aditional_information: null,
                     customer_id: null,
                     has_igv_31556: false,
+                    rate_id: null,
                 }
                 this.file = null;
                 this.preview = null;

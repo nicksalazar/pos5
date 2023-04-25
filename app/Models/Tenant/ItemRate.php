@@ -34,7 +34,6 @@ class ItemRate extends ModelTenant
     }
     public function rate() {
         return $this->belongsTo(Rate::class);
-        //return $this->belongsToMany(Rate::class);
     }
 
     /**

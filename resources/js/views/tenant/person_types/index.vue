@@ -39,7 +39,7 @@
 
             <person-types-form :showDialog.sync="showDialog"
                           :recordId="recordId" ></person-types-form>
- 
+
         </div>
     </div>
 </template>

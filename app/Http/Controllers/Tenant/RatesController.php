@@ -12,9 +12,9 @@ class RatesController extends Controller
 {
     public function index()
     {
-       
+
         return view('tenant.rates.index');
-        
+
     }
     public function columns()
     {
@@ -44,7 +44,7 @@ class RatesController extends Controller
         $person_type = Rate::firstOrNew(['id' => $id]);
         $person_type->fill($request->all());
         $person_type->save();
-  
+
 
         return [
             'success' => true,
@@ -54,11 +54,11 @@ class RatesController extends Controller
 
     public function destroy($id)
     {
-        try {            
-            
+        try {
+
             $rate = Rate::findOrFail($id);
             $rate_type = 'Tarifa';
-            $rate->delete(); 
+            $rate->delete();
 
             return [
                 'success' => true,
@@ -70,8 +70,8 @@ class RatesController extends Controller
             return ($e->getCode() == '23000') ? ['success' => false,'message' => "El {$rate_type} esta siendo usado por otros registros, no puede eliminar"] : ['success' => false,'message' => "Error inesperado, no se pudo eliminar la {$rate_type}"];
 
         }
-        
+
     }
- 
+
 
 }
