@@ -6918,3 +6918,15 @@ Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/poscl
 Linea : 114
 
   
+[2023-04-25 16:30:58] local.ERROR: Codigo : 0
+Mensaje : Address in mailbox given [] does not comply with RFC 2822, 3.6.2.
+Linea : 104
+
+  
+[2023-04-25 16:34:00] local.ERROR: Codigo : 530
+Mensaje : Expected response code 250 but got code "530", with message "530-5.7.0 Authentication Required. Learn more at
+530 5.7.0  https://support.google.com/mail/?p=WantAuthError j191-20020a1f23c8000000b00439b14bf73dsm2479214vkj.14 - gsmtp
+"
+Linea : 114
+
+  

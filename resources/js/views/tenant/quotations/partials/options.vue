@@ -127,13 +127,9 @@
                             popper-class="el-select-document_type"
                             @change="changeDocumentType"
                         >
-<!--                            <el-option-->
-<!--                                v-for="option in document_types"-->
-<!--                                :key="option.id"-->
-<!--                                :label="option.description"-->
-<!--                                :value="option.id"-->
-<!--                            ></el-option>-->
+
                             <el-option key="nv" label="NOTA DE VENTA" value="nv"></el-option>
+                            <el-option key="ft" label="FACTURA ELECTRÓNICA" value="nt"></el-option>
                         </el-select>
                         <small
                             v-if="errors.document_type_id"
@@ -1083,7 +1079,8 @@ export default {
             let customer = _.find(this.customers, {
                 id: this.document.customer_id,
             });
-
+            this.customer_email = customer.email
+            this.form.customer_telephone = customer.phone
             if (
                 identity_document_types.includes(
                     customer.identity_document_type_id
