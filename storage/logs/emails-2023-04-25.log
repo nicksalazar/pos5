@@ -7893,3 +7893,983 @@ Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/poscl
 Linea : 114
 
   
+[2023-04-25 13:24:15] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:24:16] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:25:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:25:15] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:26:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:26:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:27:09] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:27:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:28:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:28:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:29:17] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:29:19] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:30:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:30:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:31:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:31:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:32:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:32:15] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:33:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:33:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:34:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:34:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:35:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:35:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:36:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:36:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:37:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:37:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:38:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:38:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:39:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:39:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:40:17] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:40:18] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:41:16] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:41:17] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:42:09] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:42:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:43:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:43:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:44:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:44:16] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:45:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:45:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:46:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:46:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:47:08] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:47:09] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:48:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:48:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:49:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:49:15] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:50:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:50:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:51:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:51:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:52:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:52:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:53:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:53:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:54:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:54:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:55:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:55:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:56:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:56:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:57:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:57:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:58:19] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:58:20] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:59:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 13:59:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:00:16] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:00:17] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:01:26] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:01:27] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:02:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:02:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:03:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:03:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:04:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:04:15] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:05:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:05:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:06:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:06:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:07:17] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:07:18] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:08:15] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:08:17] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:09:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:09:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:10:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:10:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:11:17] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:11:18] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:12:09] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:12:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:13:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:13:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:14:29] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:14:31] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:15:25] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:15:26] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:16:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:16:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:17:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:17:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:18:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:18:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:19:17] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:19:19] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:20:18] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:20:19] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:21:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:21:16] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:22:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:22:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:23:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:23:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:24:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:24:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:25:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:25:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:26:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:26:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:27:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:27:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:28:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:28:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:29:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:29:15] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:30:09] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:30:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:31:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:31:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:32:18] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:32:19] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:33:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:33:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:34:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:34:15] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:35:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:35:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:36:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:36:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:37:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:37:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:38:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:38:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:39:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:39:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:40:18] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:40:19] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:41:18] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:41:19] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:42:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:42:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:43:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:43:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:44:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:44:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:45:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:45:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:46:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:46:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:47:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:47:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:48:09] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:48:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:49:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:49:15] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:50:17] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:50:19] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:51:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:51:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:52:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:52:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:53:15] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:53:16] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:54:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:54:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:55:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:55:13] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:56:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:56:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:57:10] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:57:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:58:12] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:58:14] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:59:09] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 14:59:11] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 15:00:16] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 15:00:18] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 15:01:28] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
+[2023-04-25 15:01:29] local.ERROR: Codigo : 0
+Mensaje : Trying to get property 'logo' of non-object (View: /var/www/html/posclouddev/resources/views/tenant/templates/email/document.blade.php)
+Linea : 114
+
+  
