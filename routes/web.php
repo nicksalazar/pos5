@@ -189,6 +189,8 @@ if ($hostname) {
             Route::post('items', 'Tenant\ItemController@store');
             Route::delete('items/{item}', 'Tenant\ItemController@destroy');
             Route::delete('items/item-unit-type/{item}', 'Tenant\ItemController@destroyItemUnitType');
+            Route::delete('items/item-rate/{item}', 'Tenant\ItemController@destroyItemRate');
+            Route::get('items/get-price/{item}/{customer}/{establishment}/', 'Tenant\ItemController@getPrice');
             Route::post('items/import', 'Tenant\ItemController@import');
             Route::post('items/catalog', 'Tenant\ItemController@catalog');
             Route::get('items/import/tables', 'Tenant\ItemController@tablesImport');
@@ -294,6 +296,16 @@ if ($hostname) {
                 Route::get('/record/{id}', 'Tenant\TypesAccountingEntriesController@record');
                 Route::post('', 'Tenant\TypesAccountingEntriesController@store');
                 Route::delete('/{id}', 'Tenant\TypesAccountingEntriesController@destroy');
+            });
+
+            //Lista Tarifas
+            Route::prefix('rates-lists')->group(function () {
+                Route::get('', 'Tenant\RatesController@index')->name('tenant.rateslist.index')->middleware(['redirect.level', 'tenant.internal.mode']);
+                Route::get('/columns', 'Tenant\RatesController@columns');
+                Route::get('/records', 'Tenant\RatesController@records');
+                Route::get('/record/{id}', 'Tenant\RatesController@record');
+                Route::post('', 'Tenant\RatesController@store');
+                Route::delete('/{id}', 'Tenant\RatesController@destroy');
             });
 
             //Documents

@@ -27,6 +27,7 @@ use Barryvdh\DomPDF\Facade as PDF;
 use Mpdf\HTMLParserMode;
 use Mpdf\Mpdf;
 use Picqer\Barcode\BarcodeGeneratorPNG;
+use App\Models\Tenant\Rate;
 
 class PersonController extends Controller
 {
@@ -85,8 +86,9 @@ class PersonController extends Controller
         $api_service_token = \App\Models\Tenant\Configuration::getApiServiceToken();
         $accounts = AccountMovement::all();
         $company = Company::first();
+        $rates = Rate::where('rate_offer','=','0')->select('id','rate_name','rate_offer')->orderBy('rate_name')->get();
 
-        return compact('countries', 'departments', 'provinces', 'districts',
+        return compact('rates','countries', 'departments', 'provinces', 'districts',
             'identity_document_types', 'locations', 'person_types', 'api_service_token', 'zones', 'sellers', 'discount_types','accounts','company');
     }
 
