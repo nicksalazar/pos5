@@ -1172,7 +1172,6 @@
 
                     </div>
                 </el-tab-pane>
-
                 <el-tab-pane v-if="canShowExtraData"
                              class
                              name="last">
@@ -1181,7 +1180,6 @@
                         :form.sync="form"
                     ></extra-info>
                 </el-tab-pane>
-
                 <el-tab-pane class
                              v-if="form.is_for_production && canSeeProduction"
                              name="six">
@@ -1329,6 +1327,87 @@
                         -->
                     </div>
                 </el-tab-pane>
+                <el-tab-pane class
+                                 v-if="!isService"
+
+                                 name="seven">
+                        <span slot="label">Tarifas</span>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="separator-title mt-0">
+                                    Listado de Tarifas
+                                    <el-tooltip class="item"
+                                                content="Aplica para realizar compra/venta"
+                                                effect="dark"
+                                                placement="top">
+                                        <i class="fa fa-info-circle"></i>
+                                    </el-tooltip>
+                                </h5>
+                            </div>
+                            <div v-if="form.item_rate.length > 0"
+                                 class="col-md-12">
+                                <div class="table-responsive col-md-8">
+                                    <table class="table table-sm mb-0">
+                                        <thead class="bg-light">
+                                        <tr>
+                                            <th class="text-center">Tarifa</th>
+                                            <th class="text-center">Precio</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="(row, index) in form.item_rate"
+                                            :key="index">
+                                            <template v-if="row.id">
+                                                <td class="text-center">{{ row.rate.rate_name }}</td>
+                                                <td class="text-center">
+                                                    <el-input v-model="row.price1"></el-input>
+                                                </td>
+                                                <td class="series-table-actions text-right">
+                                                    <button class="btn waves-effect waves-light btn-xs btn-danger"
+                                                            type="button"
+                                                            @click.prevent="clickDeleteRate(row.id)">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </template>
+                                            <template v-else>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <el-select v-model="row.rate_id"
+                                                                   dusk="item_rate.unit_type_id">
+                                                            <el-option v-for="option in rates"
+                                                                       :key="option.id"
+                                                                       :label="option.rate_name"
+                                                                       :value="option.id"></el-option>
+                                                        </el-select>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <el-input v-model="row.price1"></el-input>
+                                                    </div>
+                                                </td>
+                                                <td class="series-table-actions text-right">
+                                                    <button class="btn waves-effect waves-light btn-xs btn-danger"
+                                                            type="button"
+                                                            @click.prevent="clickCancelRate(index)">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <a class="control-label font-weight-bold text-info"
+                                   href="#"
+                                   @click="clickAddRowRate"> [ + Agregar]</a>
+                            </div>
+                        </div>
+                    </el-tab-pane>
             </el-tabs>
             <div class="form-actions text-right pt-2 mt-2">
                 <el-button @click.prevent="close()">Cancelar</el-button>
@@ -1479,11 +1558,17 @@ export default {
             },
             attribute_types: [],
             activeName: 'first',
+            item_rate: {
+                id: null,
+                //rate_id: null,
+                price1: 0,
+            },
             fromPharmacy: false,
             inventory_configuration: null,
             tariffs : [],
             concepts : [],
             accounts: [],
+            rates: [],
         }
     },
     async created() {
@@ -1507,6 +1592,7 @@ export default {
                 this.attribute_types = data.attribute_types
                 this.tariffs = data.tariffs
                 this.concepts = data.concepts
+                this.rates = data.rates
                 console.log('acounts',this.accounts)
                 // this.config = data.configuration
                 if (this.canShowExtraData) {
@@ -1557,6 +1643,33 @@ export default {
                 this.$store.commit('setConfiguration', response.data.data);
                 this.loadConfiguration()
             })
+        },
+        clickDeleteRate(id) {
+            this.$http.delete(`/${this.resource}/item-rate/${id}`)
+                .then(res => {
+                    if (res.data.success) {
+                        this.loadRecord()
+                        this.$message.success('Se eliminó correctamente el registro')
+                    }
+                })
+                .catch(error => {
+                    if (error.response.status === 500) {
+                        this.$message.error('Error al intentar eliminar');
+                    } else {
+                        console.log(error.response.data.message)
+                    }
+                })
+        },
+        clickAddRowRate() {
+            this.form.item_rate.push({
+                id: null,
+                rate_id:null,
+                //unit_type_id: 'NIU',
+                price1: 0,
+            })
+        },
+        clickCancelRate(index) {
+            this.form.item_rate.splice(index, 1)
         },
         purchaseChangeIsc() {
 
@@ -1693,6 +1806,7 @@ export default {
                 has_igv: true,
                 has_perception: false,
                 item_unit_types: [],
+                item_rate: [],
                 percentage_of_profit: 0,
                 percentage_perception: null,
                 image: null,

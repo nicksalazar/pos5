@@ -62,8 +62,8 @@ class FacturasSRI extends Command
                 try {
                     //$this->info('CONSULTANDO: '.$document->clave_SRI);
                     $response = new TenantDocumentController();
-                    $resp = $response->validarSRI($document->id);
-                    $document->sunat_shipping_status = json_encode($resp);
+                    $res = $response->validarSRI($document->id);
+                    $document->sunat_shipping_status = json_encode($res);
                     $document->success_sunat_shipping_status = true;
                     $document->save();
                     $this->info('DOCUMENTO VALIDADO: '.$document->clave_SRI);

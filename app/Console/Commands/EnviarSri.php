@@ -69,8 +69,8 @@ class EnviarSri extends Command
                 try {
                     //$this->info('CLAVE ACCESO: '.$document->clave_SRI);
                     $response = new TenantDocumentController();
-                    $resp = $response->send($document->id);
-                    $document->sunat_shipping_status = json_encode($resp);
+                    $res = $response->send($document->id);
+                    $document->sunat_shipping_status = json_encode($res);
                     $document->success_sunat_shipping_status = true;
                     $document->save();
                     $this->info('DOCUMENTO ENVIADO AL SRI: '.$document->clave_SRI);

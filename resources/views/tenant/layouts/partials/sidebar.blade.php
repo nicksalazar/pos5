@@ -421,6 +421,7 @@
                         {{ ($firstLevel === 'brands')?'nav-active nav-expanded':'' }}
                         {{ ($firstLevel === 'item-lots')?'nav-active nav-expanded':'' }}
                         {{ ($firstLevel === 'item-sets')?'nav-active nav-expanded':'' }}
+                        {{ ($firstLevel === 'rates-lists')?'nav-active nav-expanded':'' }}
                             ">
                             <a class="nav-link"
                                href="#">
@@ -494,6 +495,10 @@
                                     <li class="{{ ($firstLevel === 'zones')?'nav-active':'' }}">
                                         <a class="nav-link"
                                            href="{{route('tenant.zone.index')}}">Zonas</a>
+                                    </li>
+                                    <li class="{{ ($firstLevel === 'rates-lists')?'nav-active':'' }}">
+                                        <a class="nav-link"
+                                           href="{{route('tenant.rateslist.index')}}">Tarifas</a>
                                     </li>
 
                             </ul>

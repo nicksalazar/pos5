@@ -1280,7 +1280,11 @@ export default {
             this.form.item = _.find(this.items, {'id': this.form.item_id});
             this.form.item = this.setExtraFieldOfitem(this.form.item)
             this.form.item_unit_types = _.find(this.items, {'id': this.form.item_id}).item_unit_types
-            this.form.unit_price_value = this.form.item.sale_unit_price;
+            //this.form.unit_price_value = this.form.item.sale_unit_price;
+            await this.$http.get(`/items/get-price/${this.form.item_id}/${localStorage.customer_id}/${localStorage.establishment.id}`).then((response) => {
+
+                    this.form.unit_price_value = parseFloat(response.data.price);
+                });
             this.lots = this.form.item.lots
 
             this.form.has_igv = this.form.item.has_igv;
@@ -1330,7 +1334,9 @@ export default {
                 this.form.name_product_pdf = this.form.item.name_product_pdf;
             }
 
-            this.getLastPriceItem()
+            this.getLastPriceItem();
+            this.calculateTotal();
+            await this.comprobarDescuento();
 
         },
         focusTotalItem(change) {
@@ -1788,6 +1794,26 @@ export default {
             this.history_item_id = item.id;
             this.showDialogHistorySales = true;
             // console.log(item)
+        },
+        async comprobarDescuento(){
+            await this.$http.get(`/persons/record/${localStorage.customer_id}`).then((response) => {
+                    console.log('persona ',response.data);
+                    let datos=response.data.data;
+                    if(datos.person_discount>0){
+                        this.$el.querySelector(".el-collapse-item__header").click();
+                        this.form.discounts.push({
+                        discount_type_id: '00',
+                        discount_type: 'discount',
+                        description: datos.person_type,
+                        percentage: datos.person_discount,
+                        factor: 0,
+                        amount: 0,
+                        base: 0,
+                        is_amount: false
+                    })
+
+                    }
+                });
         },
     }
 }

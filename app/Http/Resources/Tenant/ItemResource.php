@@ -199,6 +199,7 @@
                 'income_cta' => $this->income_cta,
                 'sale_cost_cta' => $this->sale_cost_cta,
                 'purchase_cta' => $this->purchase_cta,
+                'item_rate' => $this->item_rates,
 
             ];
         }
