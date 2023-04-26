@@ -128,8 +128,8 @@
                             @change="changeDocumentType"
                         >
 
-                            <el-option key="nv" label="NOTA DE VENTA" value="nv"></el-option>
-                            <el-option key="ft" label="FACTURA ELECTRÓNICA" value="nt"></el-option>
+                            <el-option key="nv" label="NOTA DE VENTA" value="80"></el-option>
+                            <el-option key="ft" label="FACTURA ELECTRÓNICA" value="01"></el-option>
                         </el-select>
                         <small
                             v-if="errors.document_type_id"
@@ -1054,6 +1054,7 @@ export default {
             // this.filterSeries()
             this.document.is_receivable = false;
             this.series = [];
+            console.log('series',this.all_series)
 
             if (this.document.document_type_id !== "nv") {
                 this.filterSeries();
@@ -1063,7 +1064,7 @@ export default {
 
             } else {
                 this.series = _.filter(this.all_series, {
-                    document_type_id: "80",
+                    document_type_id: ["80",'01'],
                 });
                 this.document.series_id =
                     this.series.length > 0 ? this.series[0].id : null;
