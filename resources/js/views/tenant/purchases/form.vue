@@ -40,7 +40,7 @@
                             <div :class="{'has-danger': errors.codSustento}"
                                  class="form-group">
                                 <label class="control-label">Código Tributario</label>
-                                <el-select v-model="form.codSustento" :required="haveRetentions">
+                                <el-select v-model="form.codSustento" :required="is_countable">
                                     <el-option v-for="option in codSustentos"
                                                :key="option.id"
                                                :label="option.description"
@@ -213,7 +213,7 @@
                                 :maxlength="maxLength1"
                                 show-word-limit
                                 dusk="sequential_number"
-                                :required="haveRetentions"
+                                :required="is_countable"
                                 >
                             </el-input>
                             <small v-if="errors.sequential_number"
@@ -227,7 +227,7 @@
                             <el-input
                                 v-model="form.auth_number"
                                 :maxlength="maxLength2"
-                                :required="haveRetentions"
+                                :required="is_countable"
                                 show-word-limit
                                 dusk="auth_number">
                             </el-input>
@@ -267,6 +267,20 @@
                             </div>
                         </div>
 
+                        <div class="form-group col-sm-12 col-md-6 col-lg-2"
+                            :class="{'has-danger': errors.afected_document}"
+                            v-if="is_credit_note">
+                            <label class="control-label">Documento Afectado</label>
+                            <el-input
+                                v-model="form.afected_document"
+                                dusk="afected_document"
+                                :required="is_credit_note"
+                                >
+                            </el-input>
+                            <small v-if="errors.afected_document"
+                                    class="form-control-feedback"
+                                    v-text="errors.afected_document[0]"></small>
+                        </div>
 
                         <div class="col-12">&nbsp;</div>
 
@@ -890,8 +904,12 @@ export default {
             imports:[],
             type_docs:[],
             codSustentos:[],
+            codSustentos_all:[],
             haveRetentions: false,
             advances:[],
+
+            is_countable:false,
+            is_credit_note:false,
         }
     },
     async mounted() {
@@ -906,7 +924,7 @@ export default {
                 this.retention_types_income = data.retention_types_income
                 this.imports = data.imports
                 this.type_docs = data.typeDocs
-                this.codSustentos = data.codSustentos
+                this.codSustentos_all = data.codSustentos
                 this.document_types2 = data.typeDocs2
                 console.log("TIPO DE DOCUMENTOS COMPRAS LOCAL",data.typeDocs2)
                 // this.establishment = data.establishment
@@ -1480,11 +1498,15 @@ export default {
             this.filterSuppliers()
         },
         changeDocumentType2() {
+
             var document = _.find(this.document_types2,{'idType': this.form.document_type_intern})
-            console.log('documento seleccionado',document.DocumentTypeID)
+            console.log('documento seleccionado',document)
             this.form.document_type_id = document.DocumentTypeID
             //this.codSustentos = _.find(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
-            this.codSustentos = _.filter(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
+            this.codSustentos = _.filter(this.codSustentos_all,{'idTipoComprobante':document.DocumentTypeID})
+
+            this.is_countable  = (document.accountant && document.accountant > 0)
+            this.is_credit_note = (document.DocumentTypeID == '04')
         },
         addRow(row) {
 

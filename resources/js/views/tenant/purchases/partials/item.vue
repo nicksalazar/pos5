@@ -1144,6 +1144,7 @@ export default {
             if (val && val.type_id == '02') {
 
                 if(item.has_igv){
+
                     if (item.sale_affectation_igv_type_id == '10') {
                         this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * (this.iva - (this.iva / 1.12)), 3) * this.form.quantity
                         console.log("valor RET: " + (parseFloat(val.percentage) + ' ' + this.iva ))
@@ -1152,7 +1153,7 @@ export default {
                     } else if (item.sale_affectation_igv_type_id == '12') {
                         this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * (this.iva - (this.iva / 1.14)), 3) * this.form.quantity
                     } else if (item.sale_affectation_igv_type_id == '30') {
-                        this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * this.iva, 3) * this.form.quantity
+                        this.form.iva_retention = 0
                     }
 
                 }else{
@@ -1164,7 +1165,7 @@ export default {
                     } else if (item.sale_affectation_igv_type_id == '12') {
                         this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * ((this.iva * 1.14) - this.iva), 3) * this.form.quantity
                     } else if (item.sale_affectation_igv_type_id == '30') {
-                        this.form.iva_retention = _.round((parseFloat(val.percentage) / 100) * this.iva, 3) * this.form.quantity
+                        this.form.iva_retention = 0
                     }
                 }
                 //_.round
