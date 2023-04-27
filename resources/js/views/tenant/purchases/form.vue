@@ -1505,7 +1505,8 @@ export default {
             //this.codSustentos = _.find(this.codSustentos,{'idTipoComprobante':this.form.document_type_id})
             this.codSustentos = _.filter(this.codSustentos_all,{'idTipoComprobante':document.DocumentTypeID})
 
-            this.is_countable  = (document.accountant && document.accountant > 0)
+            this.is_countable  = (document.accountant > 0)
+            console.log('es contable: ',this.is_countable)
             this.is_credit_note = (document.DocumentTypeID == '04')
         },
         addRow(row) {
