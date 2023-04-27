@@ -119,7 +119,7 @@
                                        v-text="errors.currency_type_id[0]"></small>
                             </div>
                         </div>
-                        <div class="col-lg-2" v-if="form.currency_type_id != config.currency_type_id">
+                        <div class="col-lg-2">
                             <div :class="{'has-danger': errors.exchange_rate_sale}"
                                  class="form-group">
                                 <label class="control-label">Tipo de cambio
@@ -1395,7 +1395,7 @@ export default {
                 payment_method_type_id: '01',
                 currency_type_id: this.config.currency_type_id,
                 purchase_order: null,
-                exchange_rate_sale: 0,
+                exchange_rate_sale: 1,
                 total_prepayment: 0,
                 total_charge: 0,
                 total_discount: 0,
@@ -1489,7 +1489,7 @@ export default {
         async changeDateOfIssue() {
             this.form.date_of_due = this.form.date_of_issue
             await this.searchExchangeRateByDate(this.form.date_of_issue).then(response => {
-                this.form.exchange_rate_sale = response
+                //this.form.exchange_rate_sale = response
             })
             await this.getPercentageIgv();
             this.changeCurrencyType();
