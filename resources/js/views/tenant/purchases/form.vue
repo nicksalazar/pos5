@@ -1079,7 +1079,7 @@ export default {
                         // this.changeDocumentType()
 
                     })
-
+                    this.changeSupplier()
             }
         },
         async validate_payments() {
@@ -1360,17 +1360,9 @@ export default {
         },
         filterSuppliers() {
 
-            /*if (this.form.document_type_id === '01') {
-                // this.suppliers = _.filter(this.all_suppliers, {'identity_document_type_id': '6'})
-                this.suppliers = _.filter(this.all_suppliers, (item) => {
-                    return ['6', '0'].includes(item.identity_document_type_id)
-                })
-                this.selectSupplier()
+            this.suppliers = this.all_suppliers  //_.filter(this.all_suppliers, (c) => { return c.identity_document_type_id !== '6' })
+            this.selectSupplier()
 
-            } else {*/
-                this.suppliers = this.all_suppliers  //_.filter(this.all_suppliers, (c) => { return c.identity_document_type_id !== '6' })
-                this.selectSupplier()
-            //}
         },
         selectSupplier() {
 
