@@ -1156,7 +1156,8 @@ export default {
                     this.form.sequential_number = dato.sequential_number
                     this.form.observation = dato.observation
                     this.form.is_aproved = (dato.is_aproved && dato.is_aproved > 0) ? true:false
-
+                    this.form.import_id = dato.import_id
+                    this.form.tipo_doc_id = dato.tipo_doc_id
                     //this.form.haveRetentions = dato.haveRetentions
                     //this.retencionesActuales = dato.retenciones
 
