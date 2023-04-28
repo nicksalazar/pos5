@@ -245,7 +245,8 @@
                         </div>
 
                         <div class="col-12">&nbsp;</div>
-                        <div class="col-md-8 mt-2">
+
+                         <div class="col-md-8 mt-2">
                             <div class="form-group">
                                 <el-checkbox v-model="form.is_aproved"
                                             >¿Desea Autorizar las retenciones de esta compra?
@@ -1356,6 +1357,7 @@ export default {
                 auth_number: '',
                 sequential_number: '',
                 observation: '',
+                is_aproved:false,
 
             }
 
